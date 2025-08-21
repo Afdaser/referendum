@@ -24,6 +24,7 @@ use yii\bootstrap\Html;
  */
 class Tag extends ActiveRecord
 {
+    public static $subdomen = null;
     /**
      * {@inheritdoc}
      */
@@ -135,5 +136,23 @@ class Tag extends ActiveRecord
             }
         }
         return $tagId;
+    }
+
+    public function getUrl()
+    {
+        if (is_null(self::$subdomen)) {
+            $host = explode('.', $_SERVER['SERVER_NAME']);
+            if (in_array($host[0], ['en', 'uk', 'ua', 'ru', 'no'])) {
+                self::$subdomen = $host[0];
+            } else {
+                self::$subdomen = '';
+            }
+        }
+
+        $tag = urlencode($this->name);
+        if (self::$subdomen === '') {
+            return SITE_PROTOCOL . "{$this->language->name}." . SITE_DOMAIN . "/tag/{$tag}";
+        }
+        return "/tag/{$tag}";
     }
 }

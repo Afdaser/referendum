@@ -8,7 +8,7 @@
         <div class="poll_block">
             <div class="top_poll_b clearfix">
                 <?php foreach($poll->Tags as $pollTag) :?>
-                    <a href="<?= Url::toRoute(['/poll/search/tag', 'tag' => $pollTag->name ]); ?>" class="link_poll">#<?php echo $pollTag->name; ?></a>
+                    <a href="<?= $pollTag->url ?>" class="link_poll">#<?php echo $pollTag->name; ?></a>
                 <?php endforeach; ?>
 
                 <span class="right_block_share_icon">

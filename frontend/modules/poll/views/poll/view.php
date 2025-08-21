@@ -63,7 +63,7 @@ if (!empty($poll->pollLanguage)) {
                     </div>
                     <div class="top_poll_b clearfix bottom_space_for_chart">
                         <?php foreach ($poll->tags as $pollTag) : ?>
-                            <a href="<?= Url::toRoute(['/poll/search/tag', 'tag' => $pollTag->name ]); ?>" class="link_poll">#<?= $pollTag->name; ?></a>
+                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
                         <?php endforeach; ?>
 
                         <span class="chosen_graph_b animated_b">

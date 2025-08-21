@@ -27,7 +27,7 @@ $qty = $dataProvider->count;
 <?php else: ?>
 
             <div class="chart_b" style="margin-bottom: 5px;">
-                <h1>search/tag</h1>
+                <h1>tag/index</h1>
                 <h4><?= Yii::t('app', 'No matching results'); ?></h4>
                 <p>
                     You may change the content of this page by modifying

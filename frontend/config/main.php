@@ -216,23 +216,23 @@ return [
                     'route' => 'poll/ajax/up-answer-rating'
                 ],
                 // For debug:
-                    'search/hot-polls' => 'poll/search/hot-polls',
+                    'search/hot-polls' => 'poll/site/hot-polls',
 
                                     'updates' => 'page/updates',
                 // Search
 				[
     'pattern' => 'tag/<tag:\w+>/page/<page:\d+>',
-    'route' => 'poll/search/tag',
+    'route' => 'poll/tag/index',
     'defaults' => ['page' => 1], // По умолчанию 1-я страница
 ],
 [
     'pattern' => 'tag/<tag:\w+>',
-    'route' => 'poll/search/tag',
+    'route' => 'poll/tag/index',
   
 ],
   /*              [
                     'pattern' => 'tag/<tag:\w+>',
-                    'route' => 'poll/search/tag'
+                    'route' => 'poll/tag/index'
                 ],*/
                 // poll/ajax/*
                 [
@@ -254,7 +254,7 @@ return [
                     'route' => 'poll/search/search',
                 ],
 
-//                    '/tag/<tag:\w+>' => '/poll/search/tag',
+//                    '/tag/<tag:\w+>' => '/poll/tag/index',
                     'site/actualPolls' => 'poll/site/actual-polls',
                     'site/myPolls' => 'poll/site/my-polls',
                     'site/myPolls/<sorting:(desc|asc|default)>/<period:\w+>/<limit:(2|5|10)>' => 'poll/site/my-polls',

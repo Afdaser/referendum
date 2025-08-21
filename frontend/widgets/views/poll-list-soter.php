@@ -21,7 +21,7 @@ if (Yii::$app->controller->action->id == 'index' && $category == 'hot') {
     $uriPrefix = Url::toRoute([$route]);
     $uriPrefix = '/site/hotPolls';
 } elseif($category == 'search' && !empty($tag)) {
-    $route = '/poll/search/tag'; // . Yii::$app->controller->action->id;
+    $route = '/poll/tag/index'; // . Yii::$app->controller->action->id;
     $uriPrefix = Url::toRoute([$route, 'tag' => $tag]);
 } else {
     $route = '/poll/site/' . Yii::$app->controller->action->id;

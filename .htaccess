@@ -1,0 +1,103 @@
+#<ifModule mod_deflate.c>
+#    AddOutputFilterByType DEFLATE text/html text/plain text/xml application/xml application/xhtml+xml text/css text/javascript application/javascript application/x-javascript
+#</ifModule>
+
+# Options FollowSymLinks
+AddDefaultCharset utf-8
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+
+    RewriteRule ^xadmin/plugins/(.*)$ backend/web/plugins/$1 [L]
+    RewriteRule ^data/(.*)$ frontend/web/data/$1 [L]
+    RewriteRule ^thumbs/(.*)$ frontend/web/thumbs/$1 [L]
+
+    #SITEMAPS:
+
+    RewriteCond %{HTTP_HOST} ^en.referendum.social$
+    RewriteRule ^poll-sitemap.xml sitemaps/en.poll.xml
+
+    RewriteCond %{HTTP_HOST} ^en.referendum.social$
+    RewriteRule ^tags-sitemap.xml sitemaps/en.tags.xml
+
+    RewriteCond %{HTTP_HOST} ^en.referendum.social$
+    RewriteRule ^sitemap.xml sitemaps/en.index.xml
+
+
+   RewriteCond %{HTTP_HOST} ^ru.referendum.social$
+   RewriteRule ^poll-sitemap.xml sitemaps/ru.poll.xml
+
+   RewriteCond %{HTTP_HOST} ^ru.referendum.social$
+   RewriteRule ^tags-sitemap.xml sitemaps/ru.tags.xml
+
+   RewriteCond %{HTTP_HOST} ^ru.referendum.social$
+   RewriteRule ^sitemap.xml sitemaps/ru.index.xml
+
+
+   RewriteCond %{HTTP_HOST} ^ua.referendum.social$
+   RewriteRule ^poll-sitemap.xml sitemaps/ua.poll.xml
+
+   RewriteCond %{HTTP_HOST} ^ua.referendum.social$
+   RewriteRule ^tags-sitemap.xml sitemaps/ua.tags.xml
+
+   RewriteCond %{HTTP_HOST} ^ua.referendum.social$
+   RewriteRule ^sitemap.xml sitemaps/ua.index.xml
+
+
+   RewriteCond %{HTTP_HOST} ^no.referendum.social$
+   RewriteRule ^poll-sitemap.xml sitemaps/no.poll.xml
+
+   RewriteCond %{HTTP_HOST} ^no.referendum.social$
+   RewriteRule ^tags-sitemap.xml sitemaps/no.tags.xml
+
+   RewriteCond %{HTTP_HOST} ^no.referendum.social$
+   RewriteRule ^sitemap.xml sitemaps/no.index.xml
+
+
+
+   RewriteCond %{HTTP_HOST} ^referendum.social$
+   RewriteRule ^sitemap.xml sitemaps/index.xml
+   
+   RewriteRule ^search/tag/(.*)$ /tag/$1 [R=301,L]
+
+   # /SITEMAPS.
+
+    # the main rewrite rule for the frontend application
+    # # Base:
+    # # RewriteCond %{REQUEST_URI} !^/(backend/web|xadmin)
+    # # NOt call Yii2
+    RewriteCond %{REQUEST_URI} !^/(backend/web|xadmin|sitemap)
+    RewriteCond %{REQUEST_URI} !^(.*)sitemap.xml$
+    RewriteRule !^frontend/web /frontend/web%{REQUEST_URI} [L]
+
+    # redirect to the page without a trailing slash (uncomment if necessary)
+    #RewriteCond %{REQUEST_URI} ^/xadmin/$
+    #RewriteRule ^(xadmin)/ /$1 [L,R=301]
+    # the main rewrite rule for the backend application
+    RewriteCond %{REQUEST_URI} ^/xadmin
+    RewriteRule ^xadmin(.*) /backend/web/$1 [L]
+
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_URI} /+[^\.]+$
+#RewriteRule ^(.*[^/])$ $1/ [L,R=301]
+
+    # if a directory or a file of the frontend application exists, use the request directly
+    RewriteCond %{REQUEST_URI} ^/frontend/web
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # otherwise forward the request to index.php
+    RewriteRule . /frontend/web/index.php [L]
+
+    # if a directory or a file of the backend application exists, use the request directly
+    RewriteCond %{REQUEST_URI} ^/backend/web
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # otherwise forward the request to index.php
+    RewriteRule . /backend/web/index.php [L]
+
+    RewriteCond %{REQUEST_URI} \.(htaccess|htpasswd|svn|git)
+    RewriteRule \.(htaccess|htpasswd|svn|git) - [F]
+</IfModule>
+
+Redirect 301 /poll/view/382 https://en.referendum.social/

@@ -1,0 +1,20 @@
+<?php
+return array(
+	'Опитувань на сторінку'=>'Avstemninger på siden',
+	'Cтворити нове'=>'Lag ny',
+	'Сортування'=>'Sortere',
+	'Рейтинг по спаданню'=>'Vurdering ved å redusere',
+	'Рейтинг по зростанню'=>'Vurdering ved å øke',
+	'За замовчуванням'=>'Som standard',
+	'Головна'=>'Hovedside',
+	'Пошук'=>'Søk',
+	'Пошук по назві опитування'=>'Søk etter avstemningsnavn',
+	'Пошук по тегах'=>'Søk etter tags',
+	'Країна'=>'Land',
+	'Регіон'=>'Region',
+	'Знайдено результатів'=>'Resultater funnet',
+	'за день'=>'daglig',
+	'за неділю'=>'ukentlig',
+	'за місяць'=>'månedlig',
+	'за рік'=>'årlig',
+);

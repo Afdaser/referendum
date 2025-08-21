@@ -1,0 +1,128 @@
+.yiiPager {
+    margin: 0;
+    padding: 0;
+}
+
+.pagination>.selected>a,
+.pagination>.selected>span,
+.pagination>.selected>a:hover,
+.pagination>.selected>span:hover,
+.pagination>.selected>a:focus,
+.pagination>.selected>span:focus {
+    background-color: #058f42;
+    color: #fff;
+}
+
+.bottom_pagination_b .pagination {
+    margin: 0;
+}
+
+.btn_block .login{
+    float: left;
+    width: 47.5%;
+    height: 24px;
+    line-height: 22px;
+    border: 1px solid #e29b14;
+    color: #333333;
+    background: #f5c356;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 3px;
+}
+
+.btn_block .login:hover {
+    background: #ffdf7b;
+}
+
+div.social_auth {
+    display: inline-block;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    border-radius: 18px;
+    background: #3b5998;
+    text-decoration: none;
+    margin: 0 5px;
+    padding-top: 4px;
+    font-size: 15px;
+    color: #fff;
+}
+
+div.social_auth.vk {
+    background: #597da3;
+}
+
+div.social_auth.twitter {
+    background: #55acee;
+}
+
+div.social_auth.google {
+    background: #d73d32;
+    padding-left: 2px;
+}
+
+button.send_btn {
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    display: block;
+    width: 100%;
+    height: 28px;
+    line-height: 26px;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #3ac469;
+}
+
+button.send_btn:hover {
+    background-color: #058f42;
+}
+
+button.my_profile {
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 3px;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    background: #3ac469;
+    margin-top: 15px;
+}
+
+button.my_profile:hover {
+    background-color: #058f42;
+}
+
+button.modal_add {
+    height: 32px;
+    line-height: 32px;
+    text-align: left;
+    padding-left: 40px;
+}
+
+button.next_modal_btn {
+    padding: 0;
+    text-align: center;
+    width: 210px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+h1.title {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+    margin-top: 13px;
+    word-break: break-all;
+}

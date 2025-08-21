@@ -1,0 +1,139 @@
+<?php
+
+namespace common\models;
+
+use Yii;
+use common\components\ActiveRecord;
+use yii\bootstrap\Html;
+
+/**
+ * This is the model class for table "{{%tag}}".
+ *
+ * @property int $id ID
+ * @property string $name Name
+ * @property int|null $language_id Language
+ * @property string|null $description Description
+ * @property int|null $created_by Created by:
+ * @property int|null $updated_by Updated by:
+ * @property int|null $created_at Created at:
+ * @property int|null $updated_at Updated at:
+ *
+ * @property Language $language
+ * @property PollTag[] $pollTags
+ * @property Poll[] $polls
+ */
+class Tag extends ActiveRecord
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return '{{%tag}}';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['name'], 'required'],
+            [['language_id', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['description'], 'string'],
+            [['name'], 'string', 'max' => 255],
+            [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'name' => Yii::t('app', 'Name'),
+            'language_id' => Yii::t('app', 'Language'),
+            'description' => Yii::t('app', 'Description'),
+            'created_by' => Yii::t('app', 'Created by:'),
+            'updated_by' => Yii::t('app', 'Updated by:'),
+            'created_at' => Yii::t('app', 'Created at:'),
+            'updated_at' => Yii::t('app', 'Updated at:'),
+        ];
+    }
+
+    /**
+     * Gets query for [[Language]].
+     *
+     * @return \yii\db\ActiveQuery|\common\models\query\LanguageQuery
+     */
+    public function getLanguage()
+    {
+        return $this->hasOne(Language::class, ['id' => 'language_id']);
+    }
+
+    /**
+     * Gets query for [[PollTags]].
+     *
+     * @return \yii\db\ActiveQuery|\common\models\query\PollTagQuery
+     */
+    public function getPollTags()
+    {
+        return $this->hasMany(PollTag::class, ['tag_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Polls]].
+     *
+     * @return \yii\db\ActiveQuery|\common\models\query\PollQuery
+     */
+    public function getPolls()
+    {
+        return $this->hasMany(Poll::class, ['id' => 'poll_id'])->viaTable('{{%poll_tag}}', ['tag_id' => 'id']);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return \common\models\query\TagQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \common\models\query\TagQuery(get_called_class());
+    }
+
+    /*
+     * return tag`s id by name
+     * @tag - tag`s name
+     */
+    public static function getTagId($tag)
+    {
+        $result = 0;
+//        $item = Tag::model()->findByAttributes(array('name' => CHtml::encode($tag)));
+        $item = Tag::find()->where(['name' => Html::encode($tag)])->one();
+        if ($item) {
+            $result = $item->id;
+        }
+        return $result;
+    }
+
+    /*
+     * Create new tag and return it`s ID
+     */
+    public static function createNewTag($name, $languageId)
+    {
+        $tagId = 0;
+        $name = trim($name);
+        if ($name != '') {
+            $tagId = self::getTagId($name);
+            if (!$tagId) {
+                $tag = new Tag;
+                $tag->name = $name;
+                $tag->language_id = $languageId;
+                $tag->save();
+                $tagId = $tag->id;
+            }
+        }
+        return $tagId;
+    }
+}

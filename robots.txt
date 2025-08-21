@@ -1,0 +1,17 @@
+User-agent: *
+Disallow: /user/profile
+Disallow: /user/newAnswers
+Disallow: /user/newComments
+Disallow: /user/passwordRecovery
+Disallow: /site/myPolls
+Disallow: /*vote?option
+Disallow: /site/userProfile/
+Disallow: /site/hotPolls
+Disallow: /*reply
+Disallow: /site/search
+Disallow: /site/captcha*
+Disallow: /updates*
+Disallow: /*per-page=10
+Disallow: */site/actualPolls
+
+Allow:

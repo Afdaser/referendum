@@ -1,0 +1,27 @@
+/* 
+    Created on : Aug 21, 2020, 9:26:27 AM
+    Author     : alex
+*/
+/*
+body {
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+
+/* */
+.box-transform {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(100% + 150px);
+  height: calc(100% + 150px);
+  will-change: transform;
+  animation: bgPos 100s linear infinite;
+  transform: translate3d(75px, -75px, 0) rotate(0.001deg);
+  background-position: 50% 50%;
+  background-size: cover;
+  pointer-events: none;
+  zoom: 1;
+  z-index: -1;
+}

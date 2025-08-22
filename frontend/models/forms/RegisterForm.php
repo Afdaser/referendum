@@ -87,12 +87,11 @@ class RegisterForm extends Model {
                 'agreeTerms',
                 'message' => Yii::t("main", 'Ви маєте погодитись з правилами та умовами сайту.')
             ),
-            array(
-                'verifyCode',
-                'captcha',
-                'captchaAction' => '/site/captcha',
-                'message' => Yii::t("main", 'Введіть вірний код перевірки.')
-            ),
+                /* array(
+                  'verifyCode',
+                  'captcha',
+                  'message'=>Yii::t("main", 'Введіть вірний код перевірки.')
+                  ), */
         );
     }
 

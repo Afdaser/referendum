@@ -233,27 +233,68 @@ if (!empty($poll->pollLanguage)) {
             ); ?>
         </p>
 
+        <?php if (!empty($poll->tags)): ?>
+            <p><?= Yii::t('poll', 'Теги: {tags}', [
+                    'tags' => implode(', ', array_map(function ($tag) {
+                        return Html::encode($tag->name);
+                    }, $poll->tags))
+                ]); ?></p>
+        <?php endif; ?>
+
         <?php
         $options = $poll->pollOptions ?? [];
         if (!empty($options)):
             $totalVotes = 0;
+            $registeredVotes = 0;
+            $guestVotes = 0;
+            $mostPopular = null;
+            $maxVotes = -1;
             foreach ($options as $opt) {
-                $totalVotes += (int) ($opt->optionVotesCount + $opt->optionGuestVotesCount);
+                $optionVotes = (int) $opt->optionVotesCount;
+                $optionGuestVotes = (int) $opt->optionGuestVotesCount;
+                $votes = $optionVotes + $optionGuestVotes;
+                $totalVotes += $votes;
+                $registeredVotes += $optionVotes;
+                $guestVotes += $optionGuestVotes;
+                if ($votes > $maxVotes) {
+                    $maxVotes = $votes;
+                    $mostPopular = $opt;
+                }
             }
         ?>
+            <p><?= Yii::t('poll', 'Проголосували: {reg} зареєстрованих користувачів і {guest} гостей.', [
+                    'reg' => $registeredVotes,
+                    'guest' => $guestVotes,
+                ]); ?></p>
             <p><?= Yii::t('poll', 'В цьому публічному опитуванні та опитуванні громадської думки представлені такі варіанти відповідей:') ?></p>
             <ul class="poll-options-stats">
-                <?php foreach ($options as $opt): 
+                <?php foreach ($options as $opt):
+                    if ($mostPopular && $opt->id == $mostPopular->id) {
+                        continue;
+                    }
                     $votes = (int) ($opt->optionVotesCount + $opt->optionGuestVotesCount);
                     $percent = \common\models\PollOption::getPercentRating($totalVotes, $votes);
                 ?>
                     <li itemprop="suggestedAnswer" itemscope itemtype="https://schema.org/Answer">
-                        <span itemprop="text"><?= Html::encode($opt->title) ?></span> 
+                        <span itemprop="text"><?= Html::encode($opt->title) ?></span>
                         <span class="dash">—</span>
                         <strong itemprop="upvoteCount"><?= $votes ?></strong> <?= Yii::t('poll', 'голосів') ?>
                         (<span itemprop="percentage"><?= number_format($percent, 1) ?>%</span>)
                     </li>
                 <?php endforeach; ?>
+                <?php if ($mostPopular):
+                    $votes = (int) ($mostPopular->optionVotesCount + $mostPopular->optionGuestVotesCount);
+                    $percent = \common\models\PollOption::getPercentRating($totalVotes, $votes);
+                ?>
+                    <li itemprop="suggestedAnswer" itemscope itemtype="https://schema.org/Answer" class="popular-option">
+                        <span itemprop="text"><?= Html::encode($mostPopular->title) ?></span>
+                        <span class="dash">—</span>
+                        <strong itemprop="upvoteCount"><?= $votes ?></strong> <?= Yii::t('poll', 'голосів') ?>
+                        (<span itemprop="percentage"><?= number_format($percent, 1) ?>%</span>)
+                        <span class="dash">—</span>
+                        <span class="popular-text"><?= Yii::t('poll', 'Цей варіант вибрали найбільше') ?></span>
+                    </li>
+                <?php endif; ?>
             </ul>
         <?php else: ?>
             <p class="muted"><?= Yii::t('poll', 'У цьому опитуванні ще немає варіантів відповіді.'); ?></p>

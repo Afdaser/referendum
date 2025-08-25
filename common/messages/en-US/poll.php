@@ -73,4 +73,7 @@ Registration on the site is required not only to see the results of surveys, but
         'This public opinion survey and online poll has the following answer options:',
     'У цьому опитуванні ще немає варіантів відповіді.' =>
         'There are no answer options in this public opinion poll yet.',
+    'Теги: {tags}' => 'Tags: {tags}',
+    'Проголосували: {reg} зареєстрованих користувачів і {guest} гостей.' => 'Votes cast: {reg} registered users and {guest} guests.',
+    'Цей варіант вибрали найбільше' => 'This option received the most votes',
 );

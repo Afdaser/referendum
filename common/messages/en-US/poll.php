@@ -65,15 +65,15 @@ Registration on the site is required not only to see the results of surveys, but
     'Опитування користувача'=>'user\'s poll',
         'Мала статистика про голосування "{title}"' => 'Brief statistics for poll "{title}"',
     'Коротка статистика та результати опитування "{title}"' => 'Brief statistics and results for online poll "{title}"',
-    'Це онлайн-опитування під назвою «{title}» було створено {date}. Наразі воно зібрало {votes} {votesWord} і {comments} {commentsWord}, відображаючи поточну громадську думку та результати голосування.' =>
-        'This public opinion poll titled "{title}" was created on {date}. So far it has collected {votes} {votesWord} and {comments} {commentsWord}, reflecting current public opinion and voting results.',
     'голосів' => 'votes',
     'коментарів' => 'comments',
     'В цьому публічному опитуванні та опитуванні громадської думки представлені такі варіанти відповідей:' =>
         'This public opinion survey and online poll has the following answer options:',
     'У цьому опитуванні ще немає варіантів відповіді.' =>
         'There are no answer options in this public opinion poll yet.',
-    'Теги: {tags}' => 'Tags: {tags}',
-    'Проголосували: {reg} зареєстрованих користувачів і {guest} гостей.' => 'Votes cast: {reg} registered users and {guest} guests.',
-    'Цей варіант вибрали найбільше' => 'This option received the most votes',
+    'Це опитування стосується таких тем: {tags}' => 'This survey relates to the following topics: {tags}',
+    'Це онлайн-опитування під назвою «{title}» було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.' =>
+        'This online poll titled "{title}" was created on {date}. It has currently collected {votes} votes, including {reg} registered users and {guest} unregistered, and {comments} comments, reflecting current public opinion and voting results.',
+    'Як видно з опитування "{title}" найбільше вибрали варіант "{option}". За нього проголосували {votes} голосів і це {percent}% від всього голосування.' =>
+        'As seen from the poll "{title}", the option "{option}" was chosen the most. It received {votes} votes, which is {percent}% of all voting.',
 );

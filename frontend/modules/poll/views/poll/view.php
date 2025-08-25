@@ -219,8 +219,8 @@ if (!empty($poll->pollLanguage)) {
     <div class="info_block">
         <h2 itemprop="alternativeHeadline"><?= Yii::t('poll', 'Коротка статистика та результати опитування "{title}"', ['title' => $poll->title]); ?></h2>
         <?php
-        $options = isset($poll->pollOptions) ? $poll->pollOptions : array();
-        $stats = array('total' => 0, 'registered' => 0, 'guest' => 0, 'max' => -1, 'most' => null);
+        $options = $poll->pollOptions ?? [];
+        $stats = ['total' => 0, 'registered' => 0, 'guest' => 0, 'max' => -1, 'most' => null];
         foreach ($options as $opt) {
             $votes = (int)$opt->optionVotesCount + (int)$opt->optionGuestVotesCount;
             $stats['total'] += $votes;
@@ -246,11 +246,9 @@ if (!empty($poll->pollLanguage)) {
             ); ?>
         </p>
         <?php if (!empty($poll->tags)): ?>
-            <p><?= Yii::t('poll', 'Це опитування стосується таких тем: {tags}', array(
-                    'tags' => implode(', ', array_map(function ($tag) {
-                        return Html::a(Html::encode($tag->name), $tag->url);
-                    }, $poll->tags))
-                )); ?></p>
+            <p><?= Yii::t('poll', 'Це опитування стосується таких тем: {tags}', [
+                    'tags' => implode(', ', array_map(fn($tag) => Html::a(Html::encode($tag->name), $tag->url), $poll->tags))
+                ]); ?></p>
         <?php endif; ?>
         <?php if (!empty($options)): ?>
             <p><?= Yii::t('poll', 'В цьому публічному опитуванні та опитуванні громадської думки представлені такі варіанти відповідей:') ?></p>

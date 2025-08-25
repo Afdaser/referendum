@@ -57,20 +57,21 @@
 <?= Yii::t('main', 'Введіть код'); ?> *
                     </div>
                     <div class="right_reg_label item_param item_show clearfix">
-                        <?php // Віджет капчі Yii2 для перевірки користувача ?>
-                        <?= \yii\captcha\Captcha::widget([
-            'name' => 'RegisterForm[verifyCode]',
-            'captchaAction' => 'site/captcha',
-            'options' => [
-                'class' => 'autocomplete for_captcha',
-            ],
-            'imageOptions' => [
-                'alt' => 'Captcha',
-                'title' => 'Натисніть для оновлення',
-                'class' => 'right_captcha_b',
-            ],
-            'template' => '{input}{image}',
-        ]); ?>
+                        <input name="RegisterForm[verifyCode]" type="text" class="autocomplete for_captcha" value="">
+                        <span class="right_captcha_b">
+    <?= \yii\captcha\Captcha::widget([
+        'name' => 'RegisterForm[verifyCode]',
+        'captchaAction' => '/site/captcha',
+        'imageOptions' => [
+            'alt' => 'Captcha',
+            'title' => 'Натисніть для оновлення',
+            'style' => 'cursor:pointer;',
+            'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();"
+        ],
+        'template' => '{image}',
+    ]); ?>
+</span>
+
                     </div>
                 </div>
                 <div class="bottom_text_reg">

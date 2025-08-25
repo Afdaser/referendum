@@ -525,15 +525,14 @@ class UserController extends Controller
     /*
          * Captcha
          */
-    public function actions()
-    {
-        return [
-            'captcha' => [
-                'class' => \yii\captcha\CaptchaAction::class,
-                'height' => 80,
-                'width' => 160,
+    public function actions(){
+        return array(
+            'captcha'=>array(
+                'class'=>'CCaptchaAction',
+                'height'=>80,
+                'width'=>160,
                 'offset' => 5,
-            ],
-        ];
+            ),
+        );
     }
 }

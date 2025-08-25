@@ -108,10 +108,18 @@ use frontend\helpers\Url;
                         <div class="right_reg_label item_param item_show clearfix">
                             <input name="RegisterForm[verifyCode]" type="text" class="autocomplete for_captcha" value="">
                             <span class="right_captcha_b">
-                                <?php /* $this->widget('CCaptcha', array(
-                                    'showRefreshButton' => false,
-                                    'clickableImage' => true,
-                                )) /* *  / ?>
+                                <?= \yii\captcha\Captcha::widget([
+                                    'name' => 'RegisterForm[verifyCode]',
+                                    'captchaAction' => '/site/captcha',
+                                    'imageOptions' => [
+                                        'alt' => 'Captcha',
+                                        'title' => 'Натисніть для оновлення',
+                                        'style' => 'cursor:pointer;',
+                                        'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();",
+                                    ],
+                                    'template' => '{image}',
+                                ]);
+                                ?>
                             </span>
                         </div>
                     </div>

@@ -71,4 +71,7 @@ return array(
         'Denne online-avstemningen og meningsmålingen har følgende svaralternativer:',
     'У цьому опитуванні ще немає варіантів відповіді.' =>
         'Det finnes foreløpig ingen svaralternativer i denne meningsmålingen.',
+    'Теги: {tags}' => 'Merker: {tags}',
+    'Проголосували: {reg} зареєстрованих користувачів і {guest} гостей.' => 'Stemmer: {reg} registrerte brukere og {guest} gjester.',
+    'Цей варіант вибрали найбільше' => 'Dette alternativet fikk flest stemmer',
 );

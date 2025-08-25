@@ -63,15 +63,15 @@ return array(
         'ЗБЕРЕГТИ'=>'LAGRE',
     'Опитування користувача'=>'brukerens meningsmåling',
         'Коротка статистика та результати опитування "{title}"' => 'Kort statistikk og resultater for online-avstemningen "{title}"',
-    'Це онлайн-опитування під назвою «{title}» було створено {date}. Наразі воно зібрало {votes} {votesWord} і {comments} {commentsWord}, відображаючи поточну громадську думку та результати голосування.' =>
-        'Denne offentlige meningsmålingen med tittelen "{title}" ble opprettet {date}. Så langt har den samlet {votes} {votesWord} og {comments} {commentsWord}, og viser gjeldende resultater og folkeopinion.',
     'голосів' => 'stemmer',
     'коментарів' => 'kommentarer',
     'В цьому публічному опитуванні та опитуванні громадської думки представлені такі варіанти відповідей:' =>
         'Denne online-avstemningen og meningsmålingen har følgende svaralternativer:',
     'У цьому опитуванні ще немає варіантів відповіді.' =>
         'Det finnes foreløpig ingen svaralternativer i denne meningsmålingen.',
-    'Теги: {tags}' => 'Merker: {tags}',
-    'Проголосували: {reg} зареєстрованих користувачів і {guest} гостей.' => 'Stemmer: {reg} registrerte brukere og {guest} gjester.',
-    'Цей варіант вибрали найбільше' => 'Dette alternativet fikk flest stemmer',
+    'Це опитування стосується таких тем: {tags}' => 'Denne avstemningen gjelder følgende emner: {tags}',
+    'Це онлайн-опитування під назвою «{title}» було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.' =>
+        'Denne nettavstemningen med tittelen «{title}» ble opprettet {date}. Den har nå samlet {votes} stemmer, hvorav {reg} registrerte brukere og {guest} uregistrerte, samt {comments} kommentarer, og gjenspeiler dagens folkemeningsresultater.',
+    'Як видно з опитування "{title}" найбільше вибрали варіант "{option}". За нього проголосували {votes} голосів і це {percent}% від всього голосування.' =>
+        'Som det fremgår av avstemningen "{title}" ble alternativet "{option}" valgt flest ganger. Det fikk {votes} stemmer, noe som er {percent}% av alle stemmene.',
 );

@@ -6,9 +6,9 @@ return array(
         'голосів'=>'Voted',
         'Відкрите голосування'=>'Open poll',
         'Закрите голосування'=>'Closed poll',
-		'Для того щоб прийняти участь в опитуванні, або побачити результати необхідно зареєструватись, або увійти.'=> 'To take part in the survey, or to see the results, you need to register or log in. 
+        'Для того щоб прийняти участь в опитуванні, або побачити результати необхідно зареєструватись, або увійти.'=> 'To take part in the survey, or to see the results, you need to register or log in. 
 Registration on the site is required not only to see the results of surveys, but also to show data analysis to it. All survey results are available to everyone. We dont collect your data and not selling it to third party.',
-		'Це опитування вам не підходить, тому ви бачите одразу результати.'=>'This poll does not suit you, so you can immediately see the results.',
+        'Це опитування вам не підходить, тому ви бачите одразу результати.'=>'This poll does not suit you, so you can immediately see the results.',
         'Відповісти'=>'Reply',
         'Назад'=>'Back',
         'Показати голоси'=>'Show votes',
@@ -72,8 +72,8 @@ Registration on the site is required not only to see the results of surveys, but
     'У цьому опитуванні ще немає варіантів відповіді.' =>
         'There are no answer options in this poll yet.',
     'Це опитування стосується таких тем: {tags}' => 'This poll covers the following topics: {tags}',
-    'Це онлайн-опитування під назвою «{title}» було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.' =>
-        'This online poll titled "{title}" was created on {date}. It has collected {votes} votes so far, including {reg} from registered users and {guest} from guests, along with {comments} comments, reflecting current public opinion and voting results.',
+    'Це онлайн-опитування було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.' =>
+        'This online poll was created on {date}. It has collected {votes} votes so far, including {reg} from registered users and {guest} from guests, along with {comments} comments, reflecting current public opinion and voting results.',
     'Як видно з опитування «{title}» найбільше вибрали варіант «{answer}». За нього проголосували {votes} голосів і це {percent}% від всього голосування.' =>
         'As seen from the poll "{title}", the option "{answer}" was chosen the most. It received {votes} votes, which is {percent}% of the total.',
 );

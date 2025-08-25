@@ -70,8 +70,8 @@ return array(
     'У цьому опитуванні ще немає варіантів відповіді.' =>
         'Det finnes foreløpig ingen svaralternativer i denne avstemningen.',
     'Це опитування стосується таких тем: {tags}' => 'Denne avstemningen gjelder følgende temaer: {tags}',
-    'Це онлайн-опитування під назвою «{title}» було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.' =>
-        'Denne nettavstemningen med tittelen «{title}» ble opprettet {date}. Den har så langt samlet {votes} stemmer, hvorav {reg} fra registrerte brukere og {guest} fra gjester, samt {comments} kommentarer, som gjenspeiler dagens folkemeningsresultater.',
+    'Це онлайн-опитування було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.' =>
+        'Denne nettbaserte avstemningen ble opprettet {date}. Den har for øyeblikket samlet {votes} stemmer, inkludert {reg} registrerte brukere og {guest} ikke-registrerte brukere, og {comments} kommentarer, som gjenspeiler gjeldende opinion og avstemningsresultater.',
     'Як видно з опитування «{title}» найбільше вибрали варіант «{answer}». За нього проголосували {votes} голосів і це {percent}% від всього голосування.' =>
         'Som det fremgår av avstemningen «{title}» ble alternativet «{answer}» valgt flest ganger. Det fikk {votes} stemmer, noe som utgjør {percent}% av totalen.',
 );

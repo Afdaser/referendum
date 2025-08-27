@@ -17,7 +17,7 @@ class TagSearch extends Tag
     public function rules()
     {
         return [
-            [['id', 'language_id', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'language_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'polls_count'], 'integer'],
             [['name', 'description'], 'safe'],
         ];
     }
@@ -64,6 +64,7 @@ class TagSearch extends Tag
             'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'polls_count' => $this->polls_count,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])

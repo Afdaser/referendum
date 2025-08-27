@@ -41,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'language.name',
             ],
             'description:raw',
+            'polls_count',
             //'created_by',
             //'updated_by',
             //'created_at:datetime',

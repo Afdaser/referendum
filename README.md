@@ -1,5 +1,7 @@
 # referendum-social
 
+Документацію дивіться у [docs/overview.md](docs/overview.md).
+
 
 
 ## Getting started

@@ -17,6 +17,7 @@ use yii\bootstrap\Html;
  * @property int|null $updated_by Updated by:
  * @property int|null $created_at Created at:
  * @property int|null $updated_at Updated at:
+ * @property int $polls_count Polls Count
  *
  * @property Language $language
  * @property PollTag[] $pollTags
@@ -40,7 +41,7 @@ class Tag extends ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['language_id', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['language_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'polls_count'], 'integer'],
             [['description'], 'string'],
             [['name'], 'string', 'max' => 255],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
@@ -61,6 +62,7 @@ class Tag extends ActiveRecord
             'updated_by' => Yii::t('app', 'Updated by:'),
             'created_at' => Yii::t('app', 'Created at:'),
             'updated_at' => Yii::t('app', 'Updated at:'),
+            'polls_count' => Yii::t('app', 'Polls Count'),
         ];
     }
 

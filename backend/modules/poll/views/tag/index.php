@@ -40,7 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Language::dropDownAllItems(),
                 'value' => 'language.name',
             ],
-            'description:raw',
+            [
+                'attribute' => 'description',
+                'value' => function (Tag $model) {
+                    return preg_split("/\r\n|\r|\n/", $model->description)[0] ?? '';
+                },
+            ],
+            'polls_count',
             //'created_by',
             //'updated_by',
             //'created_at:datetime',

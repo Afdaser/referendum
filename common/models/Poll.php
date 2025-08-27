@@ -68,6 +68,8 @@ class Poll extends ActiveRecord
 
     public $showResultOnMainPage = NULL;
 
+    private $tagIds = [];
+
     /**
      * {@inheritdoc}
      */
@@ -1193,6 +1195,7 @@ class Poll extends ActiveRecord
             return false;
         }
 
+        $this->tagIds = $this->getPollTags()->select('tag_id')->column();
         $optionIds = $this->getPollOptions()->select('id')->column();
         if (!empty($optionIds)) {
             OptionGuestVote::deleteAll(['option_id' => $optionIds]);
@@ -1200,6 +1203,15 @@ class Poll extends ActiveRecord
         }
 
         return true;
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+
+        if (!empty($this->tagIds)) {
+            Tag::updateAllCounters(['polls_count' => -1], ['id' => $this->tagIds]);
+        }
     }
 
     /*

@@ -1180,6 +1180,28 @@ class Poll extends ActiveRecord
         }
     }
 
+    /**
+     * Видаляє всі пов'язані голоси перед видаленням опитування.
+     *
+     * Це усуває помилку цілісності та прибирає зайві записи.
+     *
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        $optionIds = $this->getPollOptions()->select('id')->column();
+        if (!empty($optionIds)) {
+            OptionGuestVote::deleteAll(['option_id' => $optionIds]);
+            OptionVote::deleteAll(['option_id' => $optionIds]);
+        }
+
+        return true;
+    }
+
     /*
      * Return user polls that has new comments
      */

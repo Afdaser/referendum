@@ -69,6 +69,25 @@ class PollTag extends \yii\db\ActiveRecord
         return $this->hasOne(Tag::class, ['id' => 'tag_id']);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($insert) {
+            Tag::updateAllCounters(['polls_count' => 1], ['id' => $this->tag_id]);
+        } elseif (array_key_exists('tag_id', $changedAttributes)) {
+            Tag::updateAllCounters(['polls_count' => -1], ['id' => $changedAttributes['tag_id']]);
+            Tag::updateAllCounters(['polls_count' => 1], ['id' => $this->tag_id]);
+        }
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+
+        Tag::updateAllCounters(['polls_count' => -1], ['id' => $this->tag_id]);
+    }
+
     /**
      * {@inheritdoc}
      * @return \common\models\query\PollTagQuery the active query used by this AR class.

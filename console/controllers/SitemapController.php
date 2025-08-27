@@ -175,7 +175,7 @@ class SitemapController extends Controller
             ->from('tag t')
             ->innerJoin('poll_tag p2t', 'p2t.tag_id = t.id')
             ->innerJoin('poll p', 'p2t.poll_id = p.id')
-            ->where(['p.is_deleted' => 0]) // тільки активні
+            ->where(['p.status' => Poll::POLL_STATUS_ACTIVE]) // тільки активні опитування
             ->groupBy(['t.id', 't.language_id', 't.name'])
             ->orderBy(['t.name' => SORT_ASC])
             ->asArray()->all();

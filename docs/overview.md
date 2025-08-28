@@ -56,3 +56,4 @@ php yii sitemap/index
 
 В англомовній локалізації для кращої індексації використовуються ключові фрази на кшталт "Opinions {tag} polling" та "polls {tag} update".
 
+

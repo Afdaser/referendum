@@ -34,6 +34,8 @@ php init
 
 ## Тестування
 
+Фреймворк PHPUnit налаштований у файлі `phpunit.xml`. Базові прикладові тести містяться в каталозі `tests/`.
+
 ```bash
 vendor/bin/phpunit
 ```

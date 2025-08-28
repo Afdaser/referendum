@@ -194,18 +194,27 @@ class Tag extends ActiveRecord
         $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}.', [
             'tag' => $this->name,
             'date' => $created,
-        ]);
-        $parts[] = Yii::t('tag', 'На цю тему на даний момент є {count} опитувань.', [
             'count' => $pollCount,
         ]);
+        $sentence = Yii::t('tag', 'На цю тему на даний момент є {count} опитувань.', [
+            'count' => $pollCount,
+            'tag' => $this->name,
+        ]);
+        if ($sentence !== '') {
+            $parts[] = $sentence;
+        }
 
         if ($popularPoll) {
             $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}.', [
                 'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
-            ]);
-            $parts[] = Yii::t('tag', 'Воно набрало {votes} голосів.', [
                 'votes' => $popularPoll->countPollOptionsVoters,
             ]);
+            $sentence = Yii::t('tag', 'Воно набрало {votes} голосів.', [
+                'votes' => $popularPoll->countPollOptionsVoters,
+            ]);
+            if ($sentence !== '') {
+                $parts[] = $sentence;
+            }
         }
 
         if ($topRatedPoll) {
@@ -213,7 +222,9 @@ class Tag extends ActiveRecord
                 'title' => Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()),
                 'rating' => $topRatedPoll->rating,
             ]);
-            $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.');
+            $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.', [
+                'tag' => $this->name,
+            ]);
         }
 
         if ($latestPoll) {

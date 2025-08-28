@@ -1,7 +1,10 @@
 <?php
 
 use frontend\widgets\WPollList;
+<<<<<<< codex/create-tag-information-display-fsxom5
+=======
 use yii\helpers\Html;
+>>>>>>> main
 
 /** @var yii\web\View $this */
 $qty = $dataProvider->count;
@@ -27,8 +30,13 @@ $qty = $dataProvider->count;
 <?php endif; ?>
 
         <div class="info_block">
+<<<<<<< codex/create-tag-information-display-fsxom5
+            <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
+            <p><?= $tagModel->getInfoText(); ?></p>
+=======
             <h2><?= Yii::t('tag', 'Статистика тегу "{tag}"', ['tag' => $tagModel->name]); ?></h2>
             <p><?= Html::encode($tagModel->getInfoText()); ?></p>
+>>>>>>> main
         </div>
 
     </div>

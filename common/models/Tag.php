@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use common\components\ActiveRecord;
 use yii\bootstrap\Html;
+use common\models\Poll;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -156,5 +157,72 @@ class Tag extends ActiveRecord
             return SITE_PROTOCOL . "{$this->language->name}." . SITE_DOMAIN . "/tag/{$tag}";
         }
         return "/tag/{$tag}";
+    }
+
+    /**
+     * Формує короткий текстовий опис тегу
+     *
+     * @return string
+     */
+    public function getInfoText()
+    {
+        $pollQuery = $this->getPolls()->where(['status' => Poll::POLL_STATUS_ACTIVE]);
+        $polls = $pollQuery->all();
+        $pollCount = count($polls);
+
+        $created = $this->created_at
+            ? date('d.m.Y', $this->created_at)
+            : Yii::t('tag', 'невідомо');
+
+        $latestPoll = null;
+        $popularPoll = null;
+        $topRatedPoll = null;
+
+        foreach ($polls as $poll) {
+            if ($latestPoll === null || strtotime($poll->date_add) > strtotime($latestPoll->date_add)) {
+                $latestPoll = $poll;
+            }
+            if ($popularPoll === null || $poll->countPollOptionsVoters > $popularPoll->countPollOptionsVoters) {
+                $popularPoll = $poll;
+            }
+            if ($topRatedPoll === null || $poll->rating > $topRatedPoll->rating) {
+                $topRatedPoll = $poll;
+            }
+        }
+
+        $parts = [];
+        $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}.', [
+            'tag' => $this->name,
+            'date' => $created,
+        ]);
+        $parts[] = Yii::t('tag', 'На цю тему на даний момент є {count} опитувань.', [
+            'count' => $pollCount,
+        ]);
+
+        if ($popularPoll) {
+            $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}.', [
+                'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
+            ]);
+            $parts[] = Yii::t('tag', 'Воно набрало {votes} голосів.', [
+                'votes' => $popularPoll->countPollOptionsVoters,
+            ]);
+        }
+
+        if ($topRatedPoll) {
+            $parts[] = Yii::t('tag', 'Опитування з найбільшим рейтингом — {title} має рейтинг {rating}.', [
+                'title' => Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()),
+                'rating' => $topRatedPoll->rating,
+            ]);
+            $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.');
+        }
+
+        if ($latestPoll) {
+            $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
+                'tag' => $this->name,
+                'date' => date('d.m.Y', strtotime($latestPoll->date_add)),
+            ]);
+        }
+
+        return implode(' ', $parts);
     }
 }

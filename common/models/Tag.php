@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use common\components\ActiveRecord;
 use yii\bootstrap\Html;
+use common\models\Poll;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -156,5 +157,48 @@ class Tag extends ActiveRecord
             return SITE_PROTOCOL . "{$this->language->name}." . SITE_DOMAIN . "/tag/{$tag}";
         }
         return "/tag/{$tag}";
+    }
+
+    /**
+     * Формує короткий текстовий опис тегу
+     *
+     * @return string
+     */
+    public function getInfoText()
+    {
+        $pollQuery = $this->getPolls()->where(['status' => Poll::POLL_STATUS_ACTIVE]);
+        $pollCount = $pollQuery->count();
+
+        $created = $this->created_at
+            ? date('d.m.Y', $this->created_at)
+            : Yii::t('tag', 'невідомо');
+
+        $latestPoll = (clone $pollQuery)->orderBy(['date_add' => SORT_DESC])->one();
+        $popularPoll = (clone $pollQuery)->orderBy(['rating' => SORT_DESC])->one();
+
+        $parts = [];
+        $parts[] = Yii::t('tag', 'Тег #{tag} створено {date}.', [
+            'tag' => $this->name,
+            'date' => $created,
+        ]);
+        $parts[] = Yii::t('tag', 'Під тегом {tag} {count} опитувань.', [
+            'tag' => $this->name,
+            'count' => $pollCount,
+        ]);
+
+        if ($popularPoll) {
+            $parts[] = Yii::t('tag', 'Найпопулярніше опитування — "{title}" ({votes} голосів).', [
+                'title' => Html::encode($popularPoll->title),
+                'votes' => $popularPoll->countPollOptionsVoters,
+            ]);
+        }
+
+        if ($latestPoll) {
+            $parts[] = Yii::t('tag', 'Останнє опитування додане {date}.', [
+                'date' => date('d.m.Y', strtotime($latestPoll->date_add)),
+            ]);
+        }
+
+        return implode(' ', $parts);
     }
 }

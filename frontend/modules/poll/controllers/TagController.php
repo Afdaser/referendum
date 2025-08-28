@@ -58,6 +58,7 @@ class TagController extends Controller
             'searchModel' => $searchModel,
             'dataProvider'=> $dataProvider,
             'tag'         => $tag,
+            'tagModel'    => $tagModel,
             'category'    => 'search',
         ]);
     }

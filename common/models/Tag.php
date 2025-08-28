@@ -167,18 +167,13 @@ class Tag extends ActiveRecord
     public function getInfoText()
     {
         $pollQuery = $this->getPolls()->where(['status' => Poll::POLL_STATUS_ACTIVE]);
-<<<<<<< codex/create-tag-information-display-fsxom5
         $polls = $pollQuery->all();
         $pollCount = count($polls);
-=======
-        $pollCount = $pollQuery->count();
->>>>>>> main
 
         $created = $this->created_at
             ? date('d.m.Y', $this->created_at)
             : Yii::t('tag', 'невідомо');
 
-<<<<<<< codex/create-tag-information-display-fsxom5
         $latestPoll = null;
         $popularPoll = null;
         $topRatedPoll = null;
@@ -199,53 +194,42 @@ class Tag extends ActiveRecord
         $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}.', [
             'tag' => $this->name,
             'date' => $created,
-        ]);
-        $parts[] = Yii::t('tag', 'На цю тему на даний момент є {count} опитувань.', [
-=======
-        $latestPoll = (clone $pollQuery)->orderBy(['date_add' => SORT_DESC])->one();
-        $popularPoll = (clone $pollQuery)->orderBy(['rating' => SORT_DESC])->one();
-
-        $parts = [];
-        $parts[] = Yii::t('tag', 'Тег #{tag} створено {date}.', [
-            'tag' => $this->name,
-            'date' => $created,
-        ]);
-        $parts[] = Yii::t('tag', 'Під тегом {tag} {count} опитувань.', [
-            'tag' => $this->name,
->>>>>>> main
             'count' => $pollCount,
         ]);
-
-        if ($popularPoll) {
-<<<<<<< codex/create-tag-information-display-fsxom5
-            $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}.', [
-                'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
-            ]);
-            $parts[] = Yii::t('tag', 'Воно набрало {votes} голосів.', [
-=======
-            $parts[] = Yii::t('tag', 'Найпопулярніше опитування — "{title}" ({votes} голосів).', [
-                'title' => Html::encode($popularPoll->title),
->>>>>>> main
-                'votes' => $popularPoll->countPollOptionsVoters,
-            ]);
+        $sentence = Yii::t('tag', 'На цю тему на даний момент є {count} опитувань.', [
+            'count' => $pollCount,
+            'tag' => $this->name,
+        ]);
+        if ($sentence !== '') {
+            $parts[] = $sentence;
         }
 
-<<<<<<< codex/create-tag-information-display-fsxom5
+        if ($popularPoll) {
+            $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}.', [
+                'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
+                'votes' => $popularPoll->countPollOptionsVoters,
+            ]);
+            $sentence = Yii::t('tag', 'Воно набрало {votes} голосів.', [
+                'votes' => $popularPoll->countPollOptionsVoters,
+            ]);
+            if ($sentence !== '') {
+                $parts[] = $sentence;
+            }
+        }
+
         if ($topRatedPoll) {
             $parts[] = Yii::t('tag', 'Опитування з найбільшим рейтингом — {title} має рейтинг {rating}.', [
                 'title' => Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()),
                 'rating' => $topRatedPoll->rating,
             ]);
-            $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.');
+            $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.', [
+                'tag' => $this->name,
+            ]);
         }
 
         if ($latestPoll) {
             $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
                 'tag' => $this->name,
-=======
-        if ($latestPoll) {
-            $parts[] = Yii::t('tag', 'Останнє опитування додане {date}.', [
->>>>>>> main
                 'date' => date('d.m.Y', strtotime($latestPoll->date_add)),
             ]);
         }

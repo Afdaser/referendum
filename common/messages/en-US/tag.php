@@ -1,5 +1,6 @@
 <?php
 return [
+<<<<<<< codex/create-tag-information-display-fsxom5
     'Найцікавіші опитування на тему "{tag}"' => 'Top polls on the topic "{tag}"',
     'Опитування на тему "{tag}" були створені {date}.' => 'Polls on the topic "{tag}" were created on {date}.',
     'На цю тему на даний момент є {count} опитувань.' => 'There are currently {count} polls on this topic.',
@@ -10,3 +11,13 @@ return [
     'Останнє опитування по темі {tag} було додано {date}.' => 'The latest poll on the topic {tag} was added on {date}.',
     'невідомо' => 'unknown',
 ];
+=======
+    'Статистика тегу "{tag}"' => 'Tag statistics for "{tag}"',
+    'Тег #{tag} створено {date}.' => 'Tag #{tag} was created on {date}.',
+    'Під тегом {tag} {count} опитувань.' => 'There are {count} polls under the tag {tag}.',
+    'Найпопулярніше опитування — "{title}" ({votes} голосів).' => 'The most popular poll is "{title}" with {votes} votes.',
+    'Останнє опитування додане {date}.' => 'The latest poll was added on {date}.',
+    'невідомо' => 'unknown',
+];
+
+>>>>>>> main

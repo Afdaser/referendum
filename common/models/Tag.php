@@ -170,8 +170,10 @@ class Tag extends ActiveRecord
         $polls = $pollQuery->all();
         $pollCount = count($polls);
 
+        $formatter = Yii::$app->formatter;
+        $formatter->locale = Yii::$app->language;
         $created = $this->created_at
-            ? date('d.m.Y', $this->created_at)
+            ? $formatter->asDate($this->created_at, 'long')
             : Yii::t('tag', 'невідомо');
 
         $latestPoll = null;
@@ -191,30 +193,17 @@ class Tag extends ActiveRecord
         }
 
         $parts = [];
-        $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}.', [
+        $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}, і відтоді колекція думок {tag} зросла до {count} опитувань.', [
             'tag' => $this->name,
             'date' => $created,
             'count' => $pollCount,
         ]);
-        $sentence = Yii::t('tag', 'На цю тему на даний момент є {count} опитувань.', [
-            'count' => $pollCount,
-            'tag' => $this->name,
-        ]);
-        if ($sentence !== '') {
-            $parts[] = $sentence;
-        }
 
         if ($popularPoll) {
-            $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}.', [
+            $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}, який набрав {votes} голосів.', [
                 'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
                 'votes' => $popularPoll->countPollOptionsVoters,
             ]);
-            $sentence = Yii::t('tag', 'Воно набрало {votes} голосів.', [
-                'votes' => $popularPoll->countPollOptionsVoters,
-            ]);
-            if ($sentence !== '') {
-                $parts[] = $sentence;
-            }
         }
 
         if ($topRatedPoll) {
@@ -230,7 +219,7 @@ class Tag extends ActiveRecord
         if ($latestPoll) {
             $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
                 'tag' => $this->name,
-                'date' => date('d.m.Y', strtotime($latestPoll->date_add)),
+                'date' => $formatter->asDate(strtotime($latestPoll->date_add), 'long'),
             ]);
         }
 

@@ -13,6 +13,8 @@ if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
 }
 
+$publishedAt = new \DateTime($poll->date_add, new \DateTimeZone('America/Chicago'));
+
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
@@ -148,7 +150,7 @@ if (!empty($poll->pollLanguage)) {
                             </a>
                         </span>
                         <span class="item_bottom_poll"><?= Yii::t('poll', 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?></span>
-                        <span class="item_bottom_poll" itemprop="datePublished" content="<?= $poll->date_add; ?>"><?= $poll->date_add; ?></span>
+                        <span class="item_bottom_poll" itemprop="datePublished" content="<?= $publishedAt->format(DATE_ATOM); ?>"><?= $poll->date_add; ?></span>
                         <?php if ($poll->isOpen()): ?>
                             <div class="right_poll_status open">
                                 <?= Yii::t('poll', 'Відкрите голосування'); ?>

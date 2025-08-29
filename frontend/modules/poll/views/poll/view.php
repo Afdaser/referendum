@@ -23,8 +23,8 @@ if (!empty($poll->pollLanguage)) {
             <div class="inner_b_chart">
                 <!-- Додаємо мікророзмітку для DiscussionForumPosting -->
                 <div class="poll_block" itemscope itemtype="https://schema.org/DiscussionForumPosting">
-                    <meta itemprop="mainEntityOfPage" content="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];?>" />
-                    <meta itemprop="url" content="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];?>" />
+                    <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
+                    <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
 
                     <div class="top_poll_b clearfix">
                         <span class="right_block_share_icon">

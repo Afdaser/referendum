@@ -25,6 +25,7 @@ if (!empty($poll->pollLanguage)) {
                 <div class="poll_block" itemscope itemtype="https://schema.org/DiscussionForumPosting">
                     <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
                     <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
+                    <meta itemprop="image" content="<?= Yii::$app->request->hostInfo; ?>/img/kvadrat.png" />
 
                     <div class="top_poll_b clearfix">
                         <span class="right_block_share_icon">

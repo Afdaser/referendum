@@ -17,7 +17,7 @@ class PageMetaData extends BaseObject {
     const OG = 'og';
     const TWITTER = 'twitter';
 
-    public $imageDefault = '/img/logo.png';
+    public $imageDefault = '/img/kvadrat.png';
     protected $baseDataKeys = [
         'host',
         'uri',
@@ -40,9 +40,9 @@ class PageMetaData extends BaseObject {
         'robots' => 'index, follow',
         'image' => [
             'uri' => '',
-            'width' => '1200',
-            'height' => '630',
-            'mime' => 'image/jpeg',
+            'width' => '',
+            'height' => '',
+            'mime' => 'image/png',
         ],
     ];
     /*

@@ -51,5 +51,11 @@ return [
         'nb-NO' => '. Klikk for å delta i avstemningen, se resultater og diskutere det',
     ],
     'descriptionMaxLenth' => 156,
+    'langDomains' => [
+        1 => 'ua.referendum.social',
+        2 => 'ru.referendum.social',
+        3 => 'en.referendum.social',
+        4 => 'no.referendum.social',
+    ],
 ];
 

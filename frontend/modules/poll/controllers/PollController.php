@@ -88,10 +88,21 @@ class PollController extends \yii\web\Controller
             throw new NotFoundHttpException(Yii::t('poll', 'Сторінку не знайдено'));
 //            throw new CHttpException(404, Yii::t('poll', 'Сторінку не знайдено'));
         }
-		$tags = [];
-		foreach ($poll->tags as $pollTag){
-			$tags[] = $pollTag->name;
-		}
+
+        $langDomains = Yii::$app->params['langDomains'] ?? [];
+        $canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
+        $canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;
+        if (Yii::$app->request->hostName !== $canonicalDomain) {
+            return $this->redirect($canonicalUrl, 301);
+        }
+        Yii::$app->view->registerLinkTag([
+            'rel' => 'canonical',
+            'href' => $canonicalUrl,
+        ]);
+                $tags = [];
+                foreach ($poll->tags as $pollTag){
+                        $tags[] = $pollTag->name;
+                }
 
 //		$this->pageTitle = $poll->title . ' ' . Yii::t('main', 'опрос');
                 Yii::$app->page->setTitle($poll->title . ' ' . Yii::t('main', 'опрос'));
@@ -139,31 +150,6 @@ class PollController extends \yii\web\Controller
         } else {
             $error = Html::errorSummary($answer)?json_encode(Html::errorSummary($answer)):null;
         }
-        
-// ✅ Додаємо canonical
-
-
-
-// Відповідність мов до піддоменів
-$langDomains = [
-    1 => 'ua.referendum.social',
-    2 => 'ru.referendum.social',
-    3 => 'en.referendum.social',
-    4 => 'no.referendum.social',
-    // додай ще, якщо з’являться інші мови
-];
-
-// Визначаємо потрібний домен по мові опитування
-$canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
-
-// Правильний canonical URL у форматі /poll/ID
-$canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;
-
-// Реєструємо тег canonical незалежно від поточного піддомену
-Yii::$app->view->registerLinkTag([
-    'rel' => 'canonical',
-    'href' => $canonicalUrl,
-]);
 
 //		var_dump($poll->describe);
         return $this->render('view', [

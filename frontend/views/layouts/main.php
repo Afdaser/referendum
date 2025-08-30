@@ -44,7 +44,7 @@ $locale = Yii::$app->language;
     <?= Yii::$app->page->robotsHtml; ?>
     <?= Yii::$app->page->metaDescriptionHtml; ?>
 
-    <?= Yii::$app->page->prepareOpenGraph(); ?>
+    <?= Yii::$app->page->prepare(); ?>
     <?= Yii::$app->page->openGraphHtml; ?>
     <?php /* = Yii::$app->page->adjustOpenGraph(); /* */ ?>
     

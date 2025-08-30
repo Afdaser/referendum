@@ -78,7 +78,7 @@ return [
         ],
         'page' => [
             'class' => 'frontend\components\PageMetaData',
-            'imageDefault' => '/images/logo_gbs.png',
+            'imageDefault' => '/img/kvadrat.png',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

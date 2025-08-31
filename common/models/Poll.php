@@ -1038,7 +1038,7 @@ class Poll extends ActiveRecord
         foreach($options as $i=>$option){
             $data[$i]['option'] = $option->title;
 
-            if(!$sex && !isset($age) && !$country && !$registration){
+            if(!$sex && !isset($age) && !$country && $registration == 0){
                 $value = $option->optionVotesCount;
                 $value += $option->optionGuestVotesCount;
             } else {
@@ -1069,10 +1069,7 @@ class Poll extends ActiveRecord
                     }
 
                     $value = (int)$query->count();
-
-                    if($registration == 0){
-                        $value += $option->optionGuestVotesCount;
-                    }
+                    // Гостьові голоси не враховуються при наявності інших фільтрів
                 }
             }
             $data[$i]['value'] = $value;

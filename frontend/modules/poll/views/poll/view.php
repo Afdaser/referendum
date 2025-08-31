@@ -131,12 +131,22 @@ if (!empty($poll->pollLanguage)) {
                                         <?php endforeach;?>
                                     </select>
                                 </span>
+                                <!--
                                 <span class="item_show region">
                                     <?= Yii::t('poll', 'Регіон'); ?><br>
                                     <input type="text" id="region" style="display: none">
                                     <input type="text" class="autocomplete region" id="regionAC">
                                     <a href="#" class="del_btn"></a>
                                     <div class="autocomplete-suggestions" style="position: absolute; display: none; max-height: 300px; z-index: 9999;"></div>
+                                </span>
+                                -->
+                                <span class="item_show">
+                                    <?= Yii::t('poll', 'Реєстрація'); ?><br>
+                                    <select class="registration">
+                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
+                                        <option value="1"><?= Yii::t('poll', 'Зареєстровані'); ?></option>
+                                        <option value="2"><?= Yii::t('poll', 'Незареєстровані'); ?></option>
+                                    </select>
                                 </span>
                             </div>
                         </div>
@@ -342,14 +352,15 @@ jQuery('#answer_text').on('keyup', function () {
     }
 });
 
-jQuery(document).on('change', '.gender, .age, .country', function () {
-    filterDataChart($pollId, $pollTitle);
-});
+ jQuery(document).on('change', '.gender, .age, .country, .registration', function () {
+     filterDataChart($pollId, $pollTitle);
+ });
 
 jQuery(document).on('click', '.clear_btn', function () {
     clearChartFilters($pollId, $pollTitle);
 });
 
+/*
 jQuery(document).on('change', '.country', function () {
     refreshRegions(jQuery('.country').val(), jQuery('span.region'), 'regionAC', 'region', 'cityAC', jQuery('.city'), 'city');
     jQuery('#regionAC').val('');
@@ -364,6 +375,7 @@ jQuery(document).on('click', '.del_btn', function () {
 jQuery(document).on('click', '.autocomplete-suggestion', function () {
     filterDataChart($pollId, $pollTitle);
 });
+*/
 
 jQuery(document).on('click', '.pie_chart,.horizontal_b_chart,.vertical_b_chart', function () {
     jQuery('#container$pollId').removeClass('pie').removeClass('bar').removeClass('column');

@@ -16,12 +16,14 @@ $(document).ready(function () {
         $('#poll_modal_content_step0').show();
     });
     // Country:
+    /*
     $(document).on('change', '.country', function () {
         console.log('Country::refreshRegions-main():');
         window.refreshRegions($('.country').val(), $('span.region'), 'regionAC', 'region', 'cityAC', $('.city'), 'city');
         $('#regionAC').val('');
         $('#region').val(0);
     });
+    */
     /* //END NEW POLL */
 
     $('#btn_create_new_poll').click(function () {

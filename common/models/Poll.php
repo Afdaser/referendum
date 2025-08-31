@@ -1025,7 +1025,7 @@ class Poll extends ActiveRecord
     /*
      * Return the array with poll`s data, required to chart builds
      */
-    public function getChartData($sex = 0, $ageInterval = 0, $country = 0, $region = 0){
+    public function getChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0){
         $data = array();
         $max = 0;
         $maxIndex = 0;
@@ -1038,34 +1038,42 @@ class Poll extends ActiveRecord
         foreach($options as $i=>$option){
             $data[$i]['option'] = $option->title;
 
-            if(!$sex && !isset($age) && !$country && !$region){
+            if(!$sex && !isset($age) && !$country && !$registration){
                 $value = $option->optionVotesCount;
                 $value += $option->optionGuestVotesCount;
             } else {
-                $query = OptionVote::find()->alias('ov')
-                    ->leftJoin('{{%profile}} p', 'p.user_id = ov.user_id')
-                    ->where(['ov.option_id' => $option->id]);
+                if($registration == 2){
+                    $value = $option->optionGuestVotesCount;
+                } else {
+                    $query = OptionVote::find()->alias('ov')
+                        ->leftJoin('{{%profile}} p', 'p.user_id = ov.user_id')
+                        ->where(['ov.option_id' => $option->id]);
 
-                if($country){
-                    $query->andWhere(['p.country_id' => $country]);
+                    if($country){
+                        $query->andWhere(['p.country_id' => $country]);
+                    }
+
+//                    if($region){
+//                        $query->andWhere(['p.region_id' => $region]);
+//                    }
+
+                    if($sex){
+                        $query->andWhere(['p.gender' => $sex]);
+                    }
+
+                    if(isset($age)){
+                        $query->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
+                            ':min' => $age['min'],
+                            ':max' => $age['max'],
+                        ]));
+                    }
+
+                    $value = (int)$query->count();
+
+                    if($registration == 0){
+                        $value += $option->optionGuestVotesCount;
+                    }
                 }
-
-                if($region){
-                    $query->andWhere(['p.region_id' => $region]);
-                }
-
-                if($sex){
-                    $query->andWhere(['p.gender' => $sex]);
-                }
-
-                if(isset($age)){
-                    $query->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
-                        ':min' => $age['min'],
-                        ':max' => $age['max'],
-                    ]));
-                }
-
-                $value = (int)$query->count();
             }
             $data[$i]['value'] = $value;
             if($data[$i]['value'] > $max){

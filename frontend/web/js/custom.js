@@ -338,13 +338,14 @@ function filterDataChart(id,title){
     gender = $('.gender').val();
     age = $('.age').val();
     country = $('.country').val();
-    region = $('#region').val();
+    // region = $('#region').val();
+    registration = $('.registration').val() || 0;
 
     /* url: '/poll/GetChartData' */
     $.ajax({
         type: 'POST',
         url: '/poll/ajax/get-chart-data',
-        data: {gender: gender, age: age, country: country, region: region, id: id},
+        data: {gender: gender, age: age, country: country, registration: registration, id: id},
         success: function (data) {
             data = JSON.parse(data);
             for(i in data.bar.series){
@@ -447,8 +448,8 @@ function refreshChart(popUpNum) {
 }
 
 function clearChartFilters(id,title){
-    $('.gender option:first, .age option:first, .country option:first').prop('selected',true);
-    $('#region, #regionAC').val('');
+    $('.gender option:first, .age option:first, .country option:first, .registration option:first').prop('selected',true);
+    //$('#region, #regionAC').val('');
     filterDataChart(id,title);
 }
 

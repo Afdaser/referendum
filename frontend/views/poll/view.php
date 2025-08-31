@@ -120,6 +120,7 @@ if (!empty($poll->pollLanguage)) {
                                                     <?php endforeach;?>>
                                                 </select>
                                             </span>
+                                            <!--
                                             <span class="item_show region">
                                                 <?php echo Yii::t("poll", 'Регіон'); ?><br>
                                                 <input type="text" id="region" style="display: none">
@@ -127,7 +128,16 @@ if (!empty($poll->pollLanguage)) {
                                                 <a href="#" class="del_btn"></a>
                                                 <div class="autocomplete-suggestions" style="position: absolute; display: none; max-height: 300px; z-index: 9999;"></div>
                                             </span>
-							</div>
+                                            -->
+                                            <span class="item_show">
+                                                <?php echo Yii::t("poll", 'Реєстрація'); ?><br>
+                                                <select class="registration">
+                                                    <option value="0"><?php echo Yii::t("poll", 'Всі'); ?></option>
+                                                    <option value="1"><?php echo Yii::t("poll", 'Зареєстровані'); ?></option>
+                                                    <option value="2"><?php echo Yii::t("poll", 'Незареєстровані'); ?></option>
+                                                </select>
+                                            </span>
+                                            </div>
 						</div>
 					</div>
 					<div class="bottom_poll_b clearfix">
@@ -245,7 +255,7 @@ if (!empty($poll->pollLanguage)) {
         <?php endif;?>
     });
 
-    jQuery(document).on('change','.gender, .age, .country',function(){
+    jQuery(document).on('change','.gender, .age, .country, .registration',function(){
         filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
@@ -253,6 +263,7 @@ if (!empty($poll->pollLanguage)) {
         clearChartFilters(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
+/*
     jQuery(document).on('change','.country',function(){
         refreshRegions(jQuery('.country').val(),jQuery('span.region'),'regionAC','region','cityAC',jQuery('.city'),'city');
         jQuery('#regionAC').val('');
@@ -267,6 +278,7 @@ if (!empty($poll->pollLanguage)) {
    jQuery(document).on('click','.autocomplete-suggestion',function(){
        filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
+*/
 
     jQuery(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart',function(){
         jQuery('#container<?php echo $poll->id; ?>').removeClass('pie').removeClass('bar').removeClass('column');

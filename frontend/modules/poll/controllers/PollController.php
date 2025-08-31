@@ -370,12 +370,13 @@ class PollController extends \yii\web\Controller
                     $gender = intval(Yii::$app->request->post('gender'));
                     $ageInterval = intval(Yii::$app->request->post('age'));
                     $country = intval(Yii::$app->request->post('country'));
-                    if($country){
-                        $region = intval(Yii::$app->request->post('region'));
-                    } else {
-                        $region = 0;
-                    }
-                    $chartData = $poll->getChartData($gender,$ageInterval,$country,$region);
+//                    if($country){
+//                        $region = intval(Yii::$app->request->post('region'));
+//                    } else {
+//                        $region = 0;
+//                    }
+                    $registration = intval(Yii::$app->request->post('registration'));
+                    $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration);
                     $result['bar'] = StringHelper::formatForBarAjax($chartData);
                     $result['pie'] = StringHelper::formatForPieAjax($chartData);
 

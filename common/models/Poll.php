@@ -6,6 +6,7 @@ use Yii;
 use common\components\ActiveRecord;
 use common\helpers\StringHelper;
 use yii\bootstrap\Html;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "{{%poll}}".
@@ -1041,41 +1042,30 @@ class Poll extends ActiveRecord
                 $value = $option->optionVotesCount;
                 $value += $option->optionGuestVotesCount;
             } else {
-                // #TODO_Yii1ToYii2_#01
-                $value = $option->optionVotesCount;
-                $value += $option->optionGuestVotesCount;
-
-/*
-                $criteria = new CDbCriteria;
-///                $criteria->addCondition('t.user_id IS NOT NULL'); // #TASK:3.1 Gues can vote
-                $criteria->with = array('user');
-                $criteria->addCondition('option_id = :option');
-                $criteria->params[':option'] = $option->id;
+                $query = OptionVote::find()->alias('ov')
+                    ->leftJoin('{{%profile}} p', 'p.user_id = ov.user_id')
+                    ->where(['ov.option_id' => $option->id]);
 
                 if($country){
-                    $criteria->addCondition('country_id = :country');
-                    $criteria->params[':country'] = $country;
+                    $query->andWhere(['p.country_id' => $country]);
                 }
 
                 if($region){
-                    $criteria->addCondition('region_id = :region');
-                    $criteria->params[':region'] = $region;
+                    $query->andWhere(['p.region_id' => $region]);
                 }
 
                 if($sex){
-                    $criteria->addCondition('sex = :sex');
-                    $criteria->params[':sex'] = $sex;
+                    $query->andWhere(['p.gender' => $sex]);
                 }
 
                 if(isset($age)){
-                    $criteria->addCondition('year(CURDATE())-year(date_birthday) BETWEEN :minDate and :maxDate');
-                    $criteria->params[':minDate'] = $age['min'];
-                    $criteria->params[':maxDate'] = $age['max'];
+                    $query->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
+                        ':min' => $age['min'],
+                        ':max' => $age['max'],
+                    ]));
                 }
 
-                $criteria->together = true;
-                $value = OptionVote::model()->count($criteria);
- */
+                $value = (int)$query->count();
             }
             $data[$i]['value'] = $value;
             if($data[$i]['value'] > $max){

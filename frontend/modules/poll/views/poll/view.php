@@ -5,6 +5,7 @@ use frontend\helpers\Url;
 use common\helpers\StringHelper;
 use common\models\User;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /** @var yii\web\View $this */
 /* @var Poll $poll */
@@ -322,60 +323,58 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
     </div>
 </div>
 
-<script>
-    $(function()
-    {
-        var maxLength = $('#answer_text').attr('maxlength');        
-        $('#answer_text').keyup(function()
-        {
-            var curLength = $('#answer_text').val().length;         
-            $(this).val($(this).val().substr(0, maxLength));     
-            var remaning = maxLength - curLength;
-            if (remaning < 0) remaning = 0;
-            $('#textareaFeedback').html(remaning);
-            if (remaning < 10)
-            {
-                $('#textareaFeedback').addClass('warning')
-            }
-            else
-            {
-                $('#textareaFeedback').removeClass('warning')
-            }
-        })
-    })
+<?php
+$pollId = $poll->id;
+$pollTitle = Json::encode($poll->title);
 
-    $(function() {
-        <?php if(isset($error) && $error):?>
-            alert(<?= strip_tags($error);?>);
-        <?php endif;?>
-    });
+$js = <<<JS
+var maxLength = jQuery('#answer_text').attr('maxlength');
+jQuery('#answer_text').on('keyup', function () {
+    var curLength = jQuery('#answer_text').val().length;
+    jQuery(this).val(jQuery(this).val().substr(0, maxLength));
+    var remaning = maxLength - curLength;
+    if (remaning < 0) remaning = 0;
+    jQuery('#textareaFeedback').html(remaning);
+    if (remaning < 10) {
+        jQuery('#textareaFeedback').addClass('warning');
+    } else {
+        jQuery('#textareaFeedback').removeClass('warning');
+    }
+});
 
-    $(document).on('change','.gender, .age, .country',function(){
-        filterDataChart(<?= $poll->id;?>,'<?= $poll->title;?>');
-    });
+jQuery(document).on('change', '.gender, .age, .country', function () {
+    filterDataChart($pollId, $pollTitle);
+});
 
-    $(document).on('click','.clear_btn',function(){
-        clearChartFilters(<?= $poll->id;?>,'<?= $poll->title;?>');
-    });
+jQuery(document).on('click', '.clear_btn', function () {
+    clearChartFilters($pollId, $pollTitle);
+});
 
-    $(document).on('change','.country',function(){
-        refreshRegions($('.country').val(),$('span.region'),'regionAC','region','cityAC',$('.city'),'city');
-        $('#regionAC').val('');
-        $('#region').val(0);
-    });
+jQuery(document).on('change', '.country', function () {
+    refreshRegions(jQuery('.country').val(), jQuery('span.region'), 'regionAC', 'region', 'cityAC', jQuery('.city'), 'city');
+    jQuery('#regionAC').val('');
+    jQuery('#region').val(0);
+});
 
-    $(document).on('click','.del_btn',function(){
-        $('#regionAC').val('');
-        $('#region').val(0);
-    });
+jQuery(document).on('click', '.del_btn', function () {
+    jQuery('#regionAC').val('');
+    jQuery('#region').val(0);
+});
 
-    $(document).on('click','.autocomplete-suggestion',function(){
-        filterDataChart(<?= $poll->id;?>,'<?= $poll->title;?>');
-    });
+jQuery(document).on('click', '.autocomplete-suggestion', function () {
+    filterDataChart($pollId, $pollTitle);
+});
 
-    $(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart',function(){
-        $('#container<?= $poll->id; ?>').removeClass('pie').removeClass('bar').removeClass('column');
-        $('#container<?= $poll->id; ?>').addClass($(this).attr('data-id'));
-        filterDataChart(<?= $poll->id;?>,'<?= $poll->title;?>');
-    });
-</script>
+jQuery(document).on('click', '.pie_chart,.horizontal_b_chart,.vertical_b_chart', function () {
+    jQuery('#container$pollId').removeClass('pie').removeClass('bar').removeClass('column');
+    jQuery('#container$pollId').addClass(jQuery(this).attr('data-id'));
+    filterDataChart($pollId, $pollTitle);
+});
+JS;
+
+$this->registerJs($js, View::POS_READY);
+
+if (isset($error) && $error) {
+    $this->registerJs('alert(' . Json::encode(strip_tags($error)) . ');', View::POS_READY);
+}
+?>

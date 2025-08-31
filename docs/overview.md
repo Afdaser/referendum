@@ -30,7 +30,10 @@ docker-compose up -d
 ```bash
 composer install
 php init
+cp .env.example .env
 ```
+
+Після копіювання файлу `.env` заповніть у ньому змінні `DB_DSN`, `DB_USERNAME`, `DB_PASSWORD` та за потреби `DB_TEST_DSN`.
 
 ## Тестування
 

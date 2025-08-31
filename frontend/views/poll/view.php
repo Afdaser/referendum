@@ -218,59 +218,59 @@ if (!empty($poll->pollLanguage)) {
 
 <script>
 
-	$(function()
-	{
-		var maxLength = $('#answer_text').attr('maxlength');        //(1)
-		$('#answer_text').keyup(function()
-		{
-			var curLength = $('#answer_text').val().length;         //(2)
-			$(this).val($(this).val().substr(0, maxLength));     //(3)
-			var remaning = maxLength - curLength;
-			if (remaning < 0) remaning = 0;
-			$('#textareaFeedback').html(remaning);//(4)
-			if (remaning < 10)          //(5)
-			{
-				$('#textareaFeedback').addClass('warning')
-			}
-			else
-			{
-				$('#textareaFeedback').removeClass('warning')
-			}
-		})
-	})
+        jQuery(function()
+        {
+                var maxLength = jQuery('#answer_text').attr('maxlength');        //(1)
+                jQuery('#answer_text').on('keyup', function()
+                {
+                        var curLength = jQuery('#answer_text').val().length;         //(2)
+                        jQuery(this).val(jQuery(this).val().substr(0, maxLength));     //(3)
+                        var remaning = maxLength - curLength;
+                        if (remaning < 0) remaning = 0;
+                        jQuery('#textareaFeedback').html(remaning);//(4)
+                        if (remaning < 10)          //(5)
+                        {
+                                jQuery('#textareaFeedback').addClass('warning')
+                        }
+                        else
+                        {
+                                jQuery('#textareaFeedback').removeClass('warning')
+                        }
+                })
+        })
 
-    $(function() {
+    jQuery(function() {
         <?php if(isset($error) && $error):?>
             alert(<?php echo strip_tags($error);?>);
         <?php endif;?>
     });
 
-    $(document).on('change','.gender, .age, .country',function(){
+    jQuery(document).on('change','.gender, .age, .country',function(){
         filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
-    $(document).on('click','.clear_btn',function(){
+    jQuery(document).on('click','.clear_btn',function(){
         clearChartFilters(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
-    $(document).on('change','.country',function(){
-        refreshRegions($('.country').val(),$('span.region'),'regionAC','region','cityAC',$('.city'),'city');
-        $('#regionAC').val('');
-        $('#region').val(0);
+    jQuery(document).on('change','.country',function(){
+        refreshRegions(jQuery('.country').val(),jQuery('span.region'),'regionAC','region','cityAC',jQuery('.city'),'city');
+        jQuery('#regionAC').val('');
+        jQuery('#region').val(0);
     });
 
-    $(document).on('click','.del_btn',function(){
-        $('#regionAC').val('');
-        $('#region').val(0);
+    jQuery(document).on('click','.del_btn',function(){
+        jQuery('#regionAC').val('');
+        jQuery('#region').val(0);
     });
 
-   $(document).on('click','.autocomplete-suggestion',function(){
+   jQuery(document).on('click','.autocomplete-suggestion',function(){
        filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
-    $(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart',function(){
-        $('#container<?php echo $poll->id; ?>').removeClass('pie').removeClass('bar').removeClass('column');
-        $('#container<?php echo $poll->id; ?>').addClass($(this).attr('data-id'));
+    jQuery(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart',function(){
+        jQuery('#container<?php echo $poll->id; ?>').removeClass('pie').removeClass('bar').removeClass('column');
+        jQuery('#container<?php echo $poll->id; ?>').addClass(jQuery(this).attr('data-id'));
         filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 </script>

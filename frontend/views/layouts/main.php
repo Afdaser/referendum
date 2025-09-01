@@ -5,6 +5,7 @@
 
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
+use frontend\assets\DeferredCssAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
 
@@ -15,6 +16,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 
 AppAsset::register($this);
+$deferredCss = DeferredCssAsset::register($this);
 
 /*
 <?php
@@ -63,6 +65,9 @@ $locale = Yii::$app->language;
     <!-- Styles
     ================================================== -->
     <?php $this->head() ?>
+    <?php foreach ($deferredCss->css as $cssFile): ?>
+        <noscript><link rel="stylesheet" href="<?= $cssFile ?>"></noscript>
+    <?php endforeach; ?>
     
     <?= Yii::$app->page->faviconHtml ?>
 

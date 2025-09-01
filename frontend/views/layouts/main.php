@@ -94,7 +94,7 @@ $locale = Yii::$app->language;
             </div>
             <div class="container clearfix">
                 <div class="row clearfix">
-                    <div class="top_banner_b" style="height: auto !important;">
+                    <div class="top_banner_b" style="min-height:270px;height:auto !important;">
 <?php if(YII_ENV == 'prod'): ?>
                             <ins class="adsbygoogle"
                                  style="display:block"

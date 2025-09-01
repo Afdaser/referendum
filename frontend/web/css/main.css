@@ -339,9 +339,6 @@ a.inner_slide_b:hover .item_normal {
 .slider_controls .slider_prev:hover {
     background: url(/img/slider/arrow_left_hover.png) 0 0;
 }
-.top_banner_b {
-    margin: 0 0;
-}
 .top_banner_b img {
     width: 100%;
 }
@@ -413,6 +410,8 @@ a.inner_slide_b:hover .item_normal {
     height: auto !important;
 }
 .top_banner_b{
+    /* Резервуємо місце під верхній банер, щоб запобігти зміщенню макета */
+    margin: 0;
     min-height: 270px;
     min-width: 223px;
 }

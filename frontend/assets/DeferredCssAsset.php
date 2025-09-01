@@ -18,7 +18,7 @@ class DeferredCssAsset extends AssetBundle
     ];
     public $cssOptions = [
         'media' => 'print',
-        'onload' => "this.media='all'",
+        'onload' => "this.media='all';this.onload=null",
     ];
     public $js = [];
     public $depends = [

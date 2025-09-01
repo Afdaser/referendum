@@ -63,6 +63,7 @@ return array(
         'від'=>'Fra',
         'до'=>'til',
         'Закрите до кількості голосів'=>'Stengt til antall stemmer:',
+        'Посилання скопійовано' => 'Lenke kopiert',
         'ЗБЕРЕГТИ'=>'LAGRE',
     'Опитування користувача'=>'brukerens meningsmåling',
         'Коротка статистика та результати опитування "{title}"' => 'Kort statistikk og resultater for avstemningen "{title}"',

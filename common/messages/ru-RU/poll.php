@@ -64,6 +64,7 @@ Registration on the site is required not only to see the results of surveys, but
     'від' => 'From',
     'до' => 'to',
     'Закрите до кількості голосів' => 'Closed until the number of votes:',
+    'Посилання скопійовано' => 'Ссылка скопирована',
     'ЗБЕРЕГТИ' => 'SAVE',
     'Опитування користувача' => 'user\'s poll',
 'Мала статистика про голосування "{title}"' => 'Немного данных об опросе "{title}"',

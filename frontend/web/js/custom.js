@@ -169,6 +169,25 @@ $(document).ready(function(){
             })
         }
     );
+
+    $(document).on('click', '.copy_link', function(e){
+        e.preventDefault();
+        var url = $(this).data('url');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url);
+        } else {
+            var $temp = $('<input>');
+            $('body').append($temp);
+            $temp.val(url).select();
+            document.execCommand('copy');
+            $temp.remove();
+        }
+        var $msg = $(this).closest('.right_block_share_icon').find('.copy_link_message');
+        $msg.fadeIn(200, function(){
+            var $self = $(this);
+            setTimeout(function(){ $self.fadeOut(200); }, 2000);
+        });
+    });
 });
 
 function arrayTotal(data)

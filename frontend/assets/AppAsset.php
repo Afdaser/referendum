@@ -24,6 +24,11 @@ class AppAsset extends AssetBundle
         '/css/main.css',
         '/css/custom.css',
     ];
+    public $cssOptions = [
+        'rel' => 'preload',
+        'as' => 'style',
+        'onload' => "this.onload=null;this.rel='stylesheet'",
+    ];
     public $js = [
 //        '/js/vendor/jquery-1.10.1.min.js',
 

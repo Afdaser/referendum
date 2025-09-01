@@ -116,3 +116,4 @@ php yii sitemap/index
 ## Валідація HTML
 
 - Атрибути `width` та `height` у логотипі хедера вказані без `px`, що відповідає стандарту HTML і проходить валідацію.
+- Видалено зайвий контейнер `<div class="wrapper">` із шаблону `frontend/views/layouts/main.php`, який спричиняв помилку «Unclosed element div».

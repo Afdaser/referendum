@@ -1,17 +1,16 @@
-<?php 
-use yii\bootstrap\Html;
-?>
-<?php // $url = $this->createAbsoluteUrl("poll/view", array("id" => $poll->id)); ?>
-<?php // $url = $this->createAbsoluteUrl($poll->url); ?>
-<?php $url = $poll->absoluteUrl; ?>
-<?php $describe = $poll->getPollDescribe(); ?>
 <?php
+use yii\bootstrap\Html;
+// $url = $this->createAbsoluteUrl("poll/view", array("id" => $poll->id));
+// $url = $this->createAbsoluteUrl($poll->url);
+$url = $poll->absoluteUrl;
+$describe = $poll->getPollDescribe();
 
 $pollDescribe = $poll->describe;
 $pollDescribe = strip_tags($pollDescribe);
 $pollDescribe = preg_replace('/([^\pL\pN\pP\pS\pZ])|([\xC2\xA0])/u', ' ', $pollDescribe);
 $pollDescribe = str_replace('  ',' ', $pollDescribe);
 $pollDescribe = trim($pollDescribe);
+$copyMessage = Yii::t('poll', 'Посилання скопійовано');
 
 ?>
 <span class="share_icon">
@@ -38,5 +37,9 @@ $pollDescribe = trim($pollDescribe);
             <i class="fa fa-google-plus"></i>
         </a>
 <?php /* */?>
+        <a href="javascript:void(0)" class="copy_link icon_share" data-url="<?php echo $url; ?>">
+            <i class="fa fa-link"></i>
+        </a>
     </span>
 </span>
+<span class="copy_link_message"><?= Html::encode($copyMessage); ?></span>

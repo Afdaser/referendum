@@ -18,6 +18,9 @@ class AppAsset extends AssetBundle
         '/css/normalize.min.css',
         '/css/bootstrap.min.css',
         '/css/bootstrap-theme.min.css',
+        '/css/outdatedBrowser.min.css',
+        '/css/jquery.bxslider.css',
+        '/css/font-awesome.css',
         '/css/main.css',
         '/css/custom.css',
     ];

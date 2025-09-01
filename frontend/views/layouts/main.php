@@ -88,9 +88,8 @@ $locale = Yii::$app->language;
         <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
     </div>
 
-    <div class="wrapper">
-        <?= $this->render('main/header'); ?>
-        <div class="content">
+    <?= $this->render('main/header'); ?>
+
             <div class="sub_header_slider_b">
                 <?= WTopPollsSlider::widget(); ?>
             </div>
@@ -213,8 +212,6 @@ if ($tagName && ($getPage === null || (int)$getPage === 1)) {
                 </div>
             </div>
         </div>
-    </div>
-    <!-- .wrapper -->
 <?= $this->render('main/footer'); ?>
 <!-- Javascript
 ================================================== -->

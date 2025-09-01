@@ -1039,44 +1039,42 @@ class Poll extends ActiveRecord
             $data[$i]['option'] = $option->title;
 
             if(!$sex && !isset($age) && !$country && $registration == 0){
-                $value = $option->optionVotesCount;
-                $value += $option->optionGuestVotesCount;
+                $value = $option->optionVotesCount + $option->optionGuestVotesCount;
+            } elseif($registration == 2){
+                // лише незареєстровані голоси
+                $value = $option->optionGuestVotesCount;
             } else {
-                if($registration == 2){
-                    $value = $option->optionGuestVotesCount;
-                } else {
-                    $query = OptionVote::find()->alias('ov')
-                        ->leftJoin('{{%profile}} p', 'p.user_id = ov.user_id')
-                        ->where(['ov.option_id' => $option->id]);
+                $query = OptionVote::find()->alias('ov')
+                    ->leftJoin('{{%profile}} p', 'p.user_id = ov.user_id')
+                    ->where(['ov.option_id' => $option->id]);
 
-                    if($country){
-                        $query->andWhere(['p.country_id' => $country]);
-                    }
+                if($country){
+                    $query->andWhere(['p.country_id' => $country]);
+                }
 
-//                    if($region){
-//                        $query->andWhere(['p.region_id' => $region]);
-//                    }
+                if($sex){
+                    $query->andWhere(['p.gender' => $sex]);
+                }
 
-                    if($sex){
-                        $query->andWhere(['p.gender' => $sex]);
-                    }
+                if(isset($age)){
+                    $query->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
+                        ':min' => $age['min'],
+                        ':max' => $age['max'],
+                    ]));
+                }
 
-                    if(isset($age)){
-                        $query->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
-                            ':min' => $age['min'],
-                            ':max' => $age['max'],
-                        ]));
-                    }
+                $value = (int)$query->count();
 
-                    $value = (int)$query->count();
-                    // Гостьові голоси не враховуються при наявності інших фільтрів
+                if($registration == 0){
+                    // додаємо гостьові голоси без додаткових фільтрів
+                    $value += $option->optionGuestVotesCount;
                 }
             }
             $data[$i]['value'] = $value;
+            $sum += $data[$i]['value'];
             if($data[$i]['value'] > $max){
                 $max = $data[$i]['value'];
                 $maxIndex = $i;
-                $sum += $data[$i]['value'];
             }
         }
 

@@ -16,7 +16,6 @@ class AppAsset extends AssetBundle
         'css/site.css',
         // Referendum social
         '/css/normalize.min.css',
-        '/css/bootstrap.min.css',
         '/css/bootstrap-theme.min.css',
         '/css/outdatedBrowser.min.css',
         '/css/jquery.bxslider.css',

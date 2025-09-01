@@ -12,12 +12,12 @@ use frontend\widgets\WSearchForm;
         <div class="row">
             <?php if (Yii::$app->request->url == '/') : ?>
                 <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
-                    <img src="/img/layout/logo.png" alt="logo of site online-statistics" width="184px" height="58px"><br>
+                    <img src="/img/layout/logo.png" alt="logo of site online-statistics" width="184" height="58"><br>
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
                 </div>
             <?php else: ?>
                 <a href="/" class="logo">
-                    <img src="/img/layout/logo.png" alt="logo of site online-statistics" width="184px" height="58px">
+                    <img src="/img/layout/logo.png" alt="logo of site online-statistics" width="184" height="58">
                     <br>
                     <span class="sub_text_logo">
                         <?php echo Yii::t("main", 'кожен голос важливий'); ?>

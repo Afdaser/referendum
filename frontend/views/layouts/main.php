@@ -15,6 +15,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 
 $bundle = AppAsset::register($this);
+$this->registerCssFile('/css/bootstrap.min.css');
 
 $locale = Yii::$app->language;
 
@@ -49,11 +50,12 @@ $locale = Yii::$app->language;
     ================================================== -->
     <?php $this->head() ?>
     <noscript>
+        <?= Html::cssFile('/css/bootstrap.min.css') ?>
         <?php foreach ($bundle->css as $cssFile): ?>
             <?= Html::cssFile(rtrim($bundle->baseUrl, '/') . '/' . ltrim($cssFile, '/')) ?>
         <?php endforeach; ?>
     </noscript>
-    
+
     <?= Yii::$app->page->faviconHtml ?>
 
     <?= $this->render('main/meta'); ?>

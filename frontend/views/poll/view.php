@@ -1,9 +1,12 @@
 <?php
-/* @var $this SiteController */
-/* @var $poll Poll */
+
+use yii\helpers\Url;
+
+/* @var $this yii\web\View */
+/* @var $poll \common\models\Poll */
 
 if (!empty($poll->pollLanguage)) {
-    Yii::app()->params['canonical'] = Yii::app()->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
+    Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', ['id' => $poll->id]);
 }
 
 ?>
@@ -11,7 +14,7 @@ if (!empty($poll->pollLanguage)) {
 	<div class="row right_cut_row">
 		<div class="chart_b" style="margin-bottom: 5px;">
 			<div class="top_b_chart">
-				<a class="btn_prev_var" href="<?php echo Yii::app()->request->urlReferrer; ?>"><?php echo Yii::t("poll", 'Назад'); ?></a>
+                                <a class="btn_prev_var" href="<?= Yii::$app->request->referrer; ?>"><?= Yii::t("poll", 'Назад'); ?></a>
 			</div>
 			<div class="inner_b_chart">
 				<div class="poll_block">
@@ -51,8 +54,8 @@ if (!empty($poll->pollLanguage)) {
 					</div>
 					<div class="top_poll_b clearfix bottom_space_for_chart">
 						<?php foreach ($poll->Tags as $pollTag) : ?>
-							<a href="<?php echo Yii::app()->createUrl('site/search', array('tag' => $pollTag->name)) ?>"
-							   class="link_poll">#<?php echo $pollTag->name; ?></a>
+                                                        <a href="<?= Url::to(['/site/search', 'tag' => $pollTag->name]) ?>"
+                                                           class="link_poll">#<?= $pollTag->name; ?></a>
 						<?php endforeach; ?>
 
                         <span class="chosen_graph_b animated_b">
@@ -141,7 +144,7 @@ if (!empty($poll->pollLanguage)) {
 						</div>
 					</div>
 					<div class="bottom_poll_b clearfix">
-								<span class="item_bottom_poll"> <?php echo Yii::t("poll", 'Користувач'); ?>: <a	href="<?php echo Yii::app()->createUrl('/site/userProfile',array('id'=>$poll->user_id));?>"><?php echo $poll->user->getFullUserName();?></a></span>
+                                                                <span class="item_bottom_poll"> <?php echo Yii::t("poll", 'Користувач'); ?>: <a href="<?= Url::to(['/site/userProfile', 'id' => $poll->user_id]); ?>"><?= $poll->user->getFullUserName();?></a></span>
 						<span class="item_bottom_poll"> <?php echo Yii::t("poll", 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?></span>
 						<?php if ($poll->isOpen()): ?>
 							<div class="right_poll_status open">
@@ -158,7 +161,7 @@ if (!empty($poll->pollLanguage)) {
 				</div>
 			</div>
 		</div>
-		<?php if(0 && Yii::app()->user->isGuest){
+                <?php if(0 && Yii::$app->user->isGuest){
                     // Guest can vote
                     ?>
 			<a data-target="#registrtion_step_1" data-toggle="modal" href="#" class="item_list_poll" style="text-align:center;padding-left:70px;padding-right:70px;">
@@ -198,7 +201,7 @@ if (!empty($poll->pollLanguage)) {
                 </ul>
                 <div class="tab-content">
                     <div id="middle_text_input_b" class="middle_text_input_b tab-pane">
-                        <FORM METHOD="POST" ACTION="<?php echo Yii::app()->createUrl('/poll/addAnswer')?>">
+                        <form method="POST" action="<?= Url::to(['/poll/addAnswer']) ?>">
                         <input name="Profile[answer][poll_id]" type="text" class="autocomplete" value="<?php echo $poll->id;?>" hidden>
                         <textarea id="answer_text" maxlength="60" name="Profile[answer][title]"><?php echo $answerModel->title;?></textarea>
                         <div class="count_symbols">
@@ -207,17 +210,17 @@ if (!empty($poll->pollLanguage)) {
                         <div class="bottom_btn_b">
                             <button type="submit" class="send_btn"><?php echo Yii::t("poll", 'Надіслати'); ?><i class="send_icon"></i></button>
                         </div>
-                        </FORM>
+                        </form>
                     </div>
                     <div id="middle_text_input__comment_b" class="middle_text_input_b comments tab-pane active">
-                        <FORM METHOD="POST" ACTION="<?php echo Yii::app()->createUrl('/poll/addComment')?>">
+                        <form method="POST" action="<?= Url::to(['/poll/addComment']) ?>">
                             <input name="Profile[comment][poll_id]" type="text" class="autocomplete" value="<?php echo $poll->id;?>" hidden>
                             <input name="Profile[comment][parent_id]" type="text" class="autocomplete" value="<?php echo isset($commentModel->parent_id)?$commentModel->parent_id:'';?>" hidden>
                             <textarea name="Profile[comment][content]"><?php echo $commentModel->content;?></textarea>
                             <div class="bottom_btn_b">
                                 <button type="submit" class="send_btn"><?php echo Yii::t("poll", 'Надіслати'); ?><i class="send_icon"></i></button>
                             </div>
-                        </FORM>
+                        </form>
                     </div>
                 </div>
             </div>

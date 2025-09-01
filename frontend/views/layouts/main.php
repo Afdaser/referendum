@@ -5,6 +5,7 @@
 
 use common\widgets\Alert;
 use frontend\assets\AppAsset;
+use frontend\assets\DeferredCssAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
 
@@ -15,6 +16,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 
 AppAsset::register($this);
+DeferredCssAsset::register($this);
 
 /*
 <?php

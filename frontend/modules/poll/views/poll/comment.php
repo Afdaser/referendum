@@ -13,7 +13,7 @@ use common\models\User;
 ?>
 <div class="title_comment_item_b clearfix" itemprop="author" itemtype="https://schema.org/Person" itemscope>
     <a href="<?= Url::toRoute(['/poll/site/user-profile', 'id' => $comment->user_id]); ?>" class="name_link" itemprop="url"><span itemprop="name"><?= User::getUserName($comment->user_id); ?></span></a>
-    <span class="date_writing" itemprop="datePublished" content="<?= StringHelper::relative_date($comment->date_add); ?>"><?= StringHelper::relative_date($comment->date_add); ?></span>
+    <span class="date_writing" itemprop="datePublished" content="<?= date('Y-m-d', strtotime($comment->date_add)); ?>"><?= StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat" itemprop="userInteractionCount">
         <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $comment->id; ?>"></a>
         <span class="rating" data-id="<?= $comment->id; ?>">

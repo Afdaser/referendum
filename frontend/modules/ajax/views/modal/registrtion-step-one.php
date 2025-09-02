@@ -66,7 +66,7 @@
             'alt' => 'Captcha',
             'title' => 'Натисніть для оновлення',
             'style' => 'cursor:pointer;',
-            'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();"
+            'onclick' => "this.src = this.src.split('?')[0] + '?refresh=' + Math.random();"
         ],
         'template' => '{image}',
     ]); ?>

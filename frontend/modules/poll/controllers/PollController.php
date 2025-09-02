@@ -439,7 +439,7 @@ class PollController extends \yii\web\Controller
     public function actions(){
         return array(
             'captcha'=>array(
-                'class'=>'CCaptchaAction',
+                'class' => 'yii\captcha\CaptchaAction',
                 'height'=>80,
                 'width'=>160,
                 'offset' => 5,

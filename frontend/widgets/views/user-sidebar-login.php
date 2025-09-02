@@ -41,7 +41,7 @@ use frontend\helpers\Url;
             'id' => 'loginBtn'
         ]) ?>
 
-        <a href="#" class="toggle_modal_registrtion"><?= Yii::t("main", 'Реєстрація'); ?></a>
+        <a href="#" class="toggle_modal_registration"><?= Yii::t("main", 'Реєстрація'); ?></a>
     </div>
 
     <?php ActiveForm::end(); ?>
@@ -56,7 +56,7 @@ use frontend\helpers\Url;
 
 <div class="divider_auth"></div>
 <!-- Modal DEV2404_M01 -->
-<div class="modal new_poll" id="registrtion_step_1" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal new_poll" id="registration_step_1" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -109,18 +109,19 @@ use frontend\helpers\Url;
                             <input name="RegisterForm[verifyCode]" type="text" class="autocomplete for_captcha" value="">
                             <span class="right_captcha_b">
                                 <?= \yii\captcha\Captcha::widget([
-                                    'name' => 'RegisterForm[verifyCode]',
+                                    'model' => $registerForm,
+                                    'attribute' => 'verifyCode',
                                     'captchaAction' => '/site/captcha',
                                     'imageOptions' => [
-                                        'alt' => 'Captcha',
-                                        'title' => 'Натисніть для оновлення',
-                                        'style' => 'cursor:pointer;',
-                                        'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();",
-                                    ],
-                                    'template' => '{image}',
-                                ]);
-                                ?>
-                            </span>
+                                    'alt' => 'Captcha',
+                                    'title' => 'Натисніть для оновлення',
+                                    'style' => 'cursor:pointer;',
+                                    'onclick' => "var img=this; jQuery.ajax({url:'/site/captcha?refresh=1', cache:false, dataType:'json', success:function(data){img.src=data.url;}}); return false;",
+                                ],
+                                'template' => '{image}',
+                            ]);
+                            ?>
+                        </span>
                         </div>
                     </div>
                     <div class="bottom_text_reg">
@@ -281,9 +282,9 @@ if(isset($error)) {
     $errorMessage = strip_tags($error);
     $scriptLogin .= <<<JS_LOGIN
     $(function() {
-alert('#registrtion_step_1');
+alert('#registration_step_1');
 /*
-//        $('#registrtion_step_1').modal('show'); //DEV.R#03
+//        $('#registration_step_1').modal('show'); //DEV.R#03
 /* */
         alert({$errorMessage});
     });
@@ -360,7 +361,7 @@ jQuery(document).ready(function( $ ) {
 
     <?php if(isset($error)):?>
         $(function() {
-            $('#registrtion_step_1').modal('show');  //DEV.Rx#04
+            $('#registration_step_1').modal('show');  //DEV.Rx#04
             alert(<?php echo strip_tags($error);?>);
         });
     <?php endif;?>

@@ -77,10 +77,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="btn_block clearfix">
                         <button type="submit" id="loginBtn" class="login" name="login-button">Вхід</button>
 <?php /* #DEV:REGISTRATION:OLD */ ?>
-                        <a href="#" data-toggle="modal" data-target="#registrtion_step_1">Реєстрація #D3B</a>
+                        <a href="#" data-toggle="modal" data-target="#registration_step_1">Реєстрація #D3B</a>
                         <hr>
 <?php /* */ ?>
-                        <a href="#" class="toggle_modal_registrtion">Реєстрація</a>
+                        <a href="#" class="toggle_modal_registration">Реєстрація</a>
                     </div>
                 </form>
 

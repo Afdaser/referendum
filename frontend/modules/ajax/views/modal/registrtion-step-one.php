@@ -60,13 +60,14 @@
                         <input name="RegisterForm[verifyCode]" type="text" class="autocomplete for_captcha" value="">
                         <span class="right_captcha_b">
     <?= \yii\captcha\Captcha::widget([
-        'name' => 'RegisterForm[verifyCode]',
+        'model' => $registerForm,
+        'attribute' => 'verifyCode',
         'captchaAction' => '/site/captcha',
         'imageOptions' => [
             'alt' => 'Captcha',
             'title' => 'Натисніть для оновлення',
             'style' => 'cursor:pointer;',
-            'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();"
+            'onclick' => "var img=this; jQuery.ajax({url:'/site/captcha?refresh=1', cache:false, dataType:'json', success:function(data){img.src=data.url;}}); return false;"
         ],
         'template' => '{image}',
     ]); ?>

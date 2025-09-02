@@ -28,31 +28,34 @@ class RegisterForm extends Model {
      * and password needs to be authenticated.
      */
     public function rules() {
-        return array(
+        return [
             // username and password are required
-            array(
+            [
                 ['email', 'login', 'password'],
                 'required',
                 'message' => Yii::t("main", 'Введіть') . ' {attribute}.'
-            ),
+            ],
             // username must have email format
-            array(
+            [
                 'email',
                 'email',
                 'message' => Yii::t("main", 'Введіть email коректного формату!')
-            ),
+            ],
             // username must have unique email
-            array(
+            [
                 'login',
-                'loginUnique',
+                'unique',
+                'targetClass' => User::class,
+                'targetAttribute' => 'username',
                 'message' => Yii::t("main", 'Оберіть інший логін!')
-            ),
+            ],
             // username must have unique email
-            array(
+            [
                 'email',
-                'emailUnique',
+                'unique',
+                'targetClass' => User::class,
                 'message' => Yii::t("main", 'Оберіть інший email!')
-            ),
+            ],
             // password must have correct string length
             [
                 'password',
@@ -87,45 +90,13 @@ class RegisterForm extends Model {
                 'agreeTerms',
                 'message' => Yii::t("main", 'Ви маєте погодитись з правилами та умовами сайту.')
             ),
-            array(
+            [
                 'verifyCode',
                 'captcha',
                 'captchaAction' => '/site/captcha',
                 'message' => Yii::t("main", 'Введіть вірний код перевірки.')
-            ),
-        );
-    }
-
-    /**
-     * Rules login unique
-     * @param $attribute
-     * @param $params
-     */
-    public function loginUnique($attribute, $params) {
-        if ($this->$attribute) {
-            // # Yii1:OLD:
-            // $user = User::model()->findByAttributes(array('login' => CHtml::encode($this->$attribute)));
-            $user = User::find()->where(['username' => Html::encode($this->$attribute)])->all();
-            if ($user) {
-                $this->addError($attribute, Yii::t("main", 'Оберіть інший логін!'));
-            }
-        }
-    }
-
-    /**
-     * Rules email unique
-     * @param $attribute
-     * @param $params
-     */
-    public function emailUnique($attribute, $params) {
-        if ($this->$attribute) {
-            // # Yii1:OLD:
-            // $user = User::model()->findByAttributes(array('email' => CHtml::encode($this->$attribute)));
-            $user = User::find()->where(['email' => Html::encode($this->$attribute)])->all();
-            if ($user) {
-                $this->addError($attribute, Yii::t("main", 'Оберіть інший email!'));
-            }
-        }
+            ],
+        ];
     }
 
     /**

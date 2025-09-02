@@ -164,7 +164,7 @@ if (!empty($poll->pollLanguage)) {
                 <?php if(0 && Yii::$app->user->isGuest){
                     // Guest can vote
                     ?>
-			<a data-target="#registrtion_step_1" data-toggle="modal" href="#" class="item_list_poll" style="text-align:center;padding-left:70px;padding-right:70px;">
+                        <a data-target="#registration_step_1" data-toggle="modal" href="#" class="item_list_poll" style="text-align:center;padding-left:70px;padding-right:70px;">
                             <?php echo Yii::t("poll", 'Для того щоб прийняти участь в опитуванні, або побачити результати необхідно зареєструватись.'); ?>
                         </a>
 		<?php } ?>

@@ -140,7 +140,7 @@ $(document).ready(function () {
                      }
                      /* */
                     $('#my_profile_all').modal('show'); //DEV.R#03
-//                    $('#registrtion_step_1').modal('show'); //DEV.R#03
+//                    $('#registration_step_1').modal('show'); //DEV.R#03
                 });
     });
     /*
@@ -148,9 +148,9 @@ $(document).ready(function () {
      $(document).ready(function () {
      /* */
 
-//    $('.toggle_modal_registrtion').on
-    $('.toggle_modal_registrtion').click(function () {
-        $('#registrtion_step_1').children('.modal-dialog')
+//    $('.toggle_modal_registration').on
+    $('.toggle_modal_registration').click(function () {
+        $('#registration_step_1').children('.modal-dialog')
                 .load(window.rfrndm.routes.ajax.registrtion_step_one, function (responseTxt, statusTxt, xhr) {
                     if (statusTxt == "success") {
                         // alert("External content loaded successfully!");
@@ -158,11 +158,11 @@ $(document).ready(function () {
                     if (statusTxt == "error") {
                         alert("Error: " + xhr.status + ": " + xhr.statusText);
                     }
-                    $('#registrtion_step_1').modal('show'); //DEV.R#03
+                    $('#registration_step_1').modal('show'); //DEV.R#03
                 });
 
 //        alert('modal');
-        //$('#registrtion_step_1').children('.modal-dialog').hide(1000);
+        //$('#registration_step_1').children('.modal-dialog').hide(1000);
 
     });
 //    alert('~/js/custom-modal.js');

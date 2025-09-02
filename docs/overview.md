@@ -106,6 +106,7 @@ php yii sitemap/index
 ## Усунення залишків Yii 1
 
 У шаблоні перегляду опитування (`frontend/views/poll/view.php`) видалено застарілі виклики `Yii::app()`. Тепер використовується синтаксис `Yii::$app` та помічник `Url::to()`, що відповідає стандартам Yii 2.
+Також у формах реєстрації та опитувань замінено CCaptchaAction на сучасний yii\captcha\CaptchaAction.
 
 
 

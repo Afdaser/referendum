@@ -115,7 +115,6 @@ use frontend\helpers\Url;
                                         'alt' => 'Captcha',
                                         'title' => 'Натисніть для оновлення',
                                         'style' => 'cursor:pointer;',
-                                        'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();",
                                     ],
                                     'template' => '{image}',
                                 ]);

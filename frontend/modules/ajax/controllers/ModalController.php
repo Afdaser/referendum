@@ -4,11 +4,9 @@ namespace app\modules\ajax\controllers;
 
 use yii\web\Controller;
 use frontend\models\forms\RegisterForm;
-//use common\models\Poll;
 use frontend\models\forms\PollForm as Poll;
-
-//use Yii;
-use yii\bootstrap\Html;
+use Yii;
+use yii\helpers\Html;
 
 /**
  * Modal controller for the `ajax` module
@@ -21,25 +19,16 @@ class ModalController extends Controller
      */
     public function actionRegistrtionStepOne()
     {
-            $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-                $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
-  //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
-                }
-/*
-                else {
-                    $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(CHtml::errorSummary($model))));
-                }
-            } else {
-                $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model));
-/* */
-            }
-            
+        $model = new RegisterForm();
+        $request = Yii::$app->request;
+        if ($model->load($request->post()) && $model->register()) {
+            // успішна реєстрація, додаткова логіка за потреби
+        }
+
         return $this->renderPartial('registrtion-step-one', [
-            'registerForm'=>$model,
-            'error'=>json_encode(Html::errorSummary($model)),
-            ]);
+            'registerForm' => $model,
+            'error' => json_encode(Html::errorSummary($model)),
+        ]);
     }
 
     /**

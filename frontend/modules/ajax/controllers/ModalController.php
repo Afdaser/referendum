@@ -24,7 +24,7 @@ class ModalController extends Controller
             $model = new RegisterForm;
             if(isset($_POST['RegisterForm'])){
                 $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
+                if($model->register())  {
   //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
                 }
 /*

@@ -106,25 +106,23 @@ use frontend\helpers\Url;
                             <?php echo Yii::t("main", 'Введіть код'); ?> *
                         </div>
                         <div class="right_reg_label item_param item_show clearfix">
-                            <input name="RegisterForm[verifyCode]" type="text" class="autocomplete for_captcha" value="">
-                            <span class="right_captcha_b">
-                                <?= \yii\captcha\Captcha::widget([
-                                    'name' => 'RegisterForm[verifyCode]',
-                                    'captchaAction' => '/site/captcha',
-                                    'imageOptions' => [
-                                        'alt' => 'Captcha',
-                                        'title' => 'Натисніть для оновлення',
-                                        'style' => 'cursor:pointer;',
-                                        'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();",
-                                    ],
-                                    'template' => '{image}',
-                                ]);
-                                ?>
-                            </span>
+                            <?= \yii\captcha\Captcha::widget([
+                                'model' => $registerForm,
+                                'attribute' => 'verifyCode',
+                                'captchaAction' => 'site/captcha',
+                                'imageOptions' => [
+                                    'alt' => 'Captcha',
+                                    'title' => 'Натисніть для оновлення',
+                                    'style' => 'cursor:pointer;',
+                                ],
+                                'options' => ['class' => 'autocomplete for_captcha'],
+                                'template' => '{input}<span class="right_captcha_b">{image}</span>',
+                            ]);
+                            ?>
                         </div>
                     </div>
                     <div class="bottom_text_reg">
-                        <input name="RegisterForm[agreeTerms]" type="checkbox" id="agreeTerms">
+                        <input name="RegisterForm[agreeTerms]" value="1" type="checkbox" id="agreeTerms">
                         <?php echo Yii::t("main", 'Погоджуюсь з'); ?> <a href="#" id="rules-block"><?php echo Yii::t("main", 'Правилами та умовами'); ?></a> <?php echo Yii::t("main", 'сайту'); ?>.
                     </div>
                     <div class="clearfix"></div>

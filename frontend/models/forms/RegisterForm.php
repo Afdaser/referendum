@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use common\models\User;
 use yii\bootstrap\Html;
+use common\helpers\StringHelper;
 
 /**
  * RegisterForm class.
@@ -18,7 +19,7 @@ class RegisterForm extends Model {
     public $login;
     public $password;
     public $passwordRepeat;
-    public $agreeTerms;
+    public $agreeTerms = 0;
     public $verifyCode;
     public $_identity;
 
@@ -81,16 +82,25 @@ class RegisterForm extends Model {
                 'required',
                 'message' => Yii::t("main", 'Повторіть пароль.')
             ),
-            // rememberMe needs to be a boolean
-            array(
+            // agree with site terms is required
+            [
                 'agreeTerms',
+                'required',
+                'requiredValue' => 1,
+                'message' => Yii::t("main", 'Ви маєте погодитись з правилами та умовами сайту.'),
+            ],
+            [
                 'agreeTerms',
-                'message' => Yii::t("main", 'Ви маєте погодитись з правилами та умовами сайту.')
-            ),
+                'boolean',
+                'trueValue' => 1,
+                'falseValue' => 0,
+            ],
             array(
                 'verifyCode',
                 'captcha',
-                'captchaAction' => '/site/captcha',
+                'captchaAction' => 'site/captcha',
+                'caseSensitive' => true,
+                'skipOnEmpty' => false,
                 'message' => Yii::t("main", 'Введіть вірний код перевірки.')
             ),
         );
@@ -105,8 +115,8 @@ class RegisterForm extends Model {
         if ($this->$attribute) {
             // # Yii1:OLD:
             // $user = User::model()->findByAttributes(array('login' => CHtml::encode($this->$attribute)));
-            $user = User::find()->where(['username' => Html::encode($this->$attribute)])->all();
-            if ($user) {
+            $exists = User::find()->where(['username' => Html::encode($this->$attribute)])->exists();
+            if ($exists) {
                 $this->addError($attribute, Yii::t("main", 'Оберіть інший логін!'));
             }
         }
@@ -121,21 +131,10 @@ class RegisterForm extends Model {
         if ($this->$attribute) {
             // # Yii1:OLD:
             // $user = User::model()->findByAttributes(array('email' => CHtml::encode($this->$attribute)));
-            $user = User::find()->where(['email' => Html::encode($this->$attribute)])->all();
-            if ($user) {
+            $exists = User::find()->where(['email' => Html::encode($this->$attribute)])->exists();
+            if ($exists) {
                 $this->addError($attribute, Yii::t("main", 'Оберіть інший email!'));
             }
-        }
-    }
-
-    /**
-     * Rules terms required
-     * @param $attribute
-     * @param $params
-     */
-    public function agreeTerms($attribute, $params) {
-        if (!$this->$attribute) {
-            $this->addError($attribute, Yii::t("main", 'Ви маєте погодитись з правилами та умовами сайту.'));
         }
     }
 
@@ -157,6 +156,10 @@ class RegisterForm extends Model {
      * @return boolean whether register is successful
      */
     public function register() {
+        if (!$this->validate()) {
+            return false;
+        }
+
         $result = false;
         $createDate = date('Y-m-d h:i:s');
         $user = new User;

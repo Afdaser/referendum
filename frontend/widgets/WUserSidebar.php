@@ -5,7 +5,6 @@ namespace frontend\widgets;
 use Yii;
 use yii\bootstrap4\Widget;
 use common\models\form\LoginForm;
-use frontend\models\SignupForm;
 use frontend\models\forms\RegisterForm;
 use frontend\models\forms\PollForm as Poll;
 
@@ -47,55 +46,16 @@ class WUserSidebar extends Widget
 
     public function run() {
         if(Yii::$app->user->isGuest){
-//            $model = new LoginForm;
             $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-//                $model->attributes = $_POST['RegisterForm'];
-                $attributes = Yii::$app->request->post('RegisterForm');
-//                $model->load(['RegisterForm' => $attributes]);
+            if(Yii::$app->request->isPost){
+                $attributes = Yii::$app->request->post('RegisterForm', []);
                 $model->load(['RegisterForm' => $attributes]);
-//                $model->attributes = $_POST['RegisterForm'];
-
-                if ($model->validate()) {
-                    $signupFormModel = new SignupForm();
-                    $signupAttributes = [
-                        'username' => $attributes['login'],
-                        'email' => $attributes['email'],
-                        'password' => $attributes['password'],
-                    ];
-//                    $signupFormModel->load(Yii::$app->request->post());
-                    $signupFormModel->load(['SignupForm' => $signupAttributes]);
-                    if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // return $this->goHome();
-                    }
-
-                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
-                } else {
-                   //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
+                if($model->register()){
+                    return $this->render('user-sidebar', ['refresh' => true]);
                 }
-
-//                die(__FILE__.'#'.__LINE__);
-
-//                    echo '<h2>Errors:</h2><pre>';
-//                    var_dump($model->getErrors());
-//                    var_dump(Html::errorSummary($model));
-//                    echo '</pre>';
-//                    die(__METHOD__ . '#' . __LINE__);
-
-/*
-                if($model->validate() && $model->register())  {
-                    return $this->render('user-sidebar',array('refresh'=>true));
-                }
-                else {
-                    return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(Html::errorSummary($model))));
-                }
-/* */
-            } else {
-                return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model));
+                return $this->render('user-sidebar-login', ["model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))]);
             }
+            return $this->render('user-sidebar-login', ["model" => $this->model, 'registerForm' => $model]);
         } else {
 //            if(Yii::$app->request->isPost){
 //                $resultOfSaving = $this->processNewPoll();

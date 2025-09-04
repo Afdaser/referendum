@@ -57,6 +57,7 @@ class TagController extends Controller
             'tag'         => $tag,
             'tagModel'    => $tagModel,
             'category'    => 'search',
+            'page'        => $page,
         ]);
     }
 }

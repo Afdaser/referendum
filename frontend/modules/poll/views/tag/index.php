@@ -25,10 +25,12 @@ $qty = $dataProvider->count;
         </div>
 <?php endif; ?>
 
+<?php if ($page <= 1) : ?>
         <div class="info_block">
             <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
             <p><?= $tagModel->getInfoText(); ?></p>
         </div>
+<?php endif; ?>
 
     </div>
 </div>

@@ -88,6 +88,8 @@ class PollSearch extends Poll
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -7 day 00:00'));
                 } elseif($params['period'] == 'month') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -1 month 00:00'));
+                } elseif($params['period'] == 'halfyear') {
+                    $dateFrom = date('Y-m-d H:i:s',strtotime('today -6 month 00:00'));
                 } elseif($params['period'] == 'year') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -1 year 00:00'));
                 }

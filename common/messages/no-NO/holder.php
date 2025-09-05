@@ -16,6 +16,7 @@ return array(
   'за день'=>'daglig',
   'за неділю'=>'ukentlig',
   'за місяць'=>'månedlig',
+  'за півроку'=>'halvårlig',
   'за рік'=>'årlig',
 return array(
   'важливий кожен голос'=>

@@ -15,6 +15,7 @@ return array(
 	'Знайдено результатів'=>'Resultater funnet',
 	'за день'=>'daglig',
 	'за неділю'=>'ukentlig',
-	'за місяць'=>'månedlig',
-	'за рік'=>'årlig',
+        'за місяць'=>'månedlig',
+        'за півроку'=>'halvårlig',
+        'за рік'=>'årlig',
 );

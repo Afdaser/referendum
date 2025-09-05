@@ -20,7 +20,7 @@
                 <p>limit: 10</p>
                 <p>category: hot</p>
                 <p>tag: </p>
-                <p>period: month</p>
+                <p>period: halfyear</p>
             </div>
 
             <div style="border:2px dashed red;">
@@ -45,13 +45,14 @@
                     <select onchange="document.location.href = & quot; /site/hotPolls / desc / & quot; + $(this).val() + & quot; /10?click=true&quot;">
                         <option value="day">за день</option>
                         <option value="week">за неділю</option>
-                        <option value="month" selected="">за місяць</option>
+                        <option value="month">за місяць</option>
+                        <option value="halfyear" selected="">за півроку</option>
                         <option value="year">за рік</option>
                     </select>
                 </span>
                 <span class="right_select_sort">
                     Сортування:
-                    <select class="sort" onchange="document.location.href = & quot; /site/hotPolls / & quot; + $(this).val() + & quot; /month/10 & quot;">
+                    <select class="sort" onchange="document.location.href = & quot; /site/hotPolls / & quot; + $(this).val() + & quot; /halfyear/10 & quot;">
                         <option value="desc" selected="">Рейтинг по спаданню</option>
                         <option value="asc">Рейтинг по зростанню</option>
                     </select>

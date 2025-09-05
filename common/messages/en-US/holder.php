@@ -16,8 +16,8 @@ return array(
   'за день'=>'daily',
   'за неділю'=>'weekly',
   'за місяць'=>'monthly',
+  'за півроку'=>'half year',
   'за рік'=>'yearly',
-return array(
   'важливий кожен голос'=>
       'Every vote is important',
   'Той хто володіє інформацією - володіє світом'=>

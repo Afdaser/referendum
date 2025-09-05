@@ -36,7 +36,7 @@ class SiteController extends Controller
      * Main page - category HotPolls
      */
 // sorting:(desc|asc)>/<period:\w+>/<perPage
-    public function actionIndex($language = null, $sorting = 'desc', $period = 'month', $limit = 10) {
+    public function actionIndex($language = null, $sorting = 'desc', $period = 'halfyear', $limit = 10) {
         $this->sorting = $sorting;
         $this->period = $period;
         $this->limit = $limit;
@@ -151,6 +151,10 @@ class SiteController extends Controller
             }
         }
 
+        if (empty($this->period)) {
+            $this->period = 'halfyear';
+        }
+
         if(empty($this->sorting)){
             if (!$this->sorting = Html::encode(Yii::$app->request->get('sort', false))) {
                 if ($this->data['category'] == 'own') {
@@ -227,7 +231,7 @@ class SiteController extends Controller
         if (!$period = Html::encode(Yii::$app->request->get('period', false))) {
 //                $period = 'day';
 //                $period = 'week';
-            $period = 'month';
+            $period = 'halfyear';
 //                $period = 'year';
         }
 

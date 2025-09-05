@@ -36,7 +36,7 @@ class SiteController extends Controller
      * Main page - category HotPolls
      */
 // sorting:(desc|asc)>/<period:\w+>/<perPage
-    public function actionIndex($language = null, $sorting = 'desc', $period = 'month', $limit = 10) {
+    public function actionIndex($language = null, $sorting = 'desc', $period = 'halfyear', $limit = 10) {
         $this->sorting = $sorting;
         $this->period = $period;
         $this->limit = $limit;

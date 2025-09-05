@@ -163,7 +163,7 @@ Polls on the page:
         if (!$this->data['period'] = Html::encode(Yii::$app->request->get('period', false))) {
 //                $this->data['period'] = 'day';
 //                $this->data['period'] = 'week';
-            $this->data['period'] = 'month';
+            $this->data['period'] = 'halfyear';
 //                $this->data['period'] = 'year';
         }
 

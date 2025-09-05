@@ -14,7 +14,8 @@ return array(
 	'Регіон'=>'Region',
 	'Знайдено результатів'=>'Results found',
 	'за день'=>'daily',
-	'за неділю'=>'weekly',
-	'за місяць'=>'monthly',
-	'за рік'=>'yearly',
+        'за неділю'=>'weekly',
+        'за місяць'=>'monthly',
+        'за півроку'=>'half-year',
+        'за рік'=>'yearly',
 );

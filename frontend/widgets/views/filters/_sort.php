@@ -203,6 +203,8 @@ use common\models\User;
                             <?php if ($period == 'week'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за неділю'); ?></option>
                     <option value="month"
                             <?php if ($period == 'month'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за місяць'); ?></option>
+                    <option value="halfyear"
+                            <?php if ($period == 'halfyear'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за півроку'); ?></option>
                     <option value="year"
                             <?php if ($period == 'year'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за рік'); ?></option>
                 </select>

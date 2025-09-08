@@ -176,6 +176,19 @@ class PollOption extends ActiveRecord
         return new \common\models\query\PollOptionQuery(get_called_class());
     }
 
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        OptionGuestVote::deleteAll(['option_id' => $this->id]);
+        OptionVote::deleteAll(['option_id' => $this->id]);
+        PollOptionRating::deleteAll(['poll_option_id' => $this->id]);
+
+        return true;
+    }
+
     /*
      * set attributes and return model
      */

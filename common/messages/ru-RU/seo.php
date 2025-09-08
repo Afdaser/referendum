@@ -1,5 +1,7 @@
 <?php
 return [
+    'home_title' => 'Последние опросы общественного мнения обо всём | Referendum',
+    'home_description' => 'Опросы и мнения обо всём — участвуйте в опросах и обсуждениях: голосуйте, пишите комментарии, предлагайте варианты ответов или создавайте собственные опросы. 📊 Присоединяйтесь! 🌟',
     'main_page_text' => '
 <p>Our site offers to get answers to the one you are interested in poll and see the real picture of support for politicians, issues of tolerance, peoples mood and other things, thanks to statistics, through a sociological survey.</p>
 <p><strong>The one who owns the information owns the world. And the best information is statistics.</strong></p>

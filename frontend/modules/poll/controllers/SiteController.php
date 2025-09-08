@@ -11,6 +11,7 @@ use common\models\User;
 use common\models\Poll;
 use common\models\search\PollSearch;
 use common\models\Tag;
+use common\models\Language;
 
 class SiteController extends Controller
 {
@@ -41,6 +42,34 @@ class SiteController extends Controller
         $this->period = $period;
         $this->limit = $limit;
         $this->category = 'hot';
+
+        $langDomains = Yii::$app->params['langDomains'] ?? [];
+        $langCode = substr(Yii::$app->language, 0, 2);
+        if ($langCode === 'uk') {
+            $langCode = 'ua';
+        }
+        $languageId = Language::getLanguageByName($langCode);
+        $canonicalDomain = $langDomains[$languageId] ?? 'en.referendum.social';
+        $canonicalUrl = 'https://' . $canonicalDomain . '/';
+        if (Yii::$app->request->hostName !== $canonicalDomain) {
+            return $this->redirect($canonicalUrl, 301);
+        }
+        Yii::$app->view->registerLinkTag([
+            'rel' => 'canonical',
+            'href' => $canonicalUrl,
+        ]);
+
+        if ($langCode === 'ua') {
+            $title = 'Останні опитування громадської думки про все | Referendum';
+            $description = 'Опитування та думки про все — беріть участь в опитуваннях і обговореннях: голосуйте, пишіть коментарі, пропонуйте варіанти відповідей або створюйте власні опитування. 📊 Долучайтеся! 🌟';
+        } else {
+            $title = Yii::t('seo', 'home_title');
+            $description = Yii::t('seo', 'home_description');
+        }
+        Yii::$app->page->setTitle($title);
+        Yii::$app->page->setDescription($description);
+        $this->view->title = $title;
+
         return self::renderIndex($this->category);
     }
 

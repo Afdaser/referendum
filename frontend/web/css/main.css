@@ -691,6 +691,10 @@ a.radio_link:active .radio_circle{
 /* */
     background: url(/img/layout/radio_circle.png);
 }
+.item_chose_poll.see_results .link_text {
+    color: #147536;
+    font-style: italic;
+}
 .middle_name_poll_b {
     margin-bottom: 25px;
 }

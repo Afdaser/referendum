@@ -89,6 +89,10 @@ class PollController extends \yii\web\Controller
 //            throw new CHttpException(404, Yii::t('poll', 'Сторінку не знайдено'));
         }
 
+        if (Yii::$app->request->get('result')) {
+            $poll->showResultOnMainPage = true;
+        }
+
         $langDomains = Yii::$app->params['langDomains'] ?? [];
         $canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
         $canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;

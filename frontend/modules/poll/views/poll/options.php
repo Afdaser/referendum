@@ -20,6 +20,11 @@ use yii\web\View;
             </a>
         </div>
     <?php endforeach;?>
+    <div class="item_chose_poll see_results">
+        <a href="<?= Url::toRoute(['/poll/poll/view', 'id' => $poll->id, 'result' => 1]); ?>" class="radio_link poll-see-results"><span class="radio_circle"></span>
+            <span class="link_text"><?= Yii::t('poll', 'Побачити результати'); ?></span>
+        </a>
+    </div>
 <?php else:?>
     <div class="inner_container_graph" id="container<?= $poll->id; ?>"></div>
 <?php endif;?>

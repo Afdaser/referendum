@@ -20,6 +20,15 @@ use yii\web\View;
             </a>
         </div>
     <?php endforeach;?>
+    <div class="item_chose_poll see_results">
+        <form method="post" action="<?= Url::toRoute(['/poll/poll/view', 'id' => $poll->id]); ?>">
+            <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
+            <input type="hidden" name="result" value="1">
+            <button type="submit" class="radio_link poll-see-results"><span class="radio_circle"></span>
+                <span class="link_text"><?= Yii::t('poll', 'Побачити результати'); ?></span>
+            </button>
+        </form>
+    </div>
 <?php else:?>
     <div class="inner_container_graph" id="container<?= $poll->id; ?>"></div>
 <?php endif;?>

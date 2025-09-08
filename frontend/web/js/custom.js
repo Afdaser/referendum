@@ -180,22 +180,7 @@ $(document).ready(function(){
                 setTimeout(function(){ $self.fadeOut(200); }, 2000);
             });
         };
-        var fallbackCopy = function(text){
-            var $temp = $('<input>');
-            $('body').append($temp);
-            $temp.val(text).select();
-            document.execCommand('copy');
-            $temp.remove();
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
-            navigator.clipboard.writeText(url).then(showMessage, function(){
-                fallbackCopy(url);
-                showMessage();
-            });
-        } else {
-            fallbackCopy(url);
-            showMessage();
-        }
+        navigator.clipboard.writeText(url).then(showMessage, showMessage);
     });
 });
 

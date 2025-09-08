@@ -1,5 +1,7 @@
 <?php
 return [
+    'home_title' => 'Siste meningsmålinger om alt | Referendum',
+    'home_description' => 'Avstemninger og meninger om alt – delta i avstemninger og diskusjoner: stem, skriv kommentarer, foreslå svaralternativer eller lag dine egne avstemninger. 📊 Dykk inn! 🌟',
     'main_page_text' => '
 <p>Nettstedet vårt tilbyr å få svar på den du er interessert i meningsmåling og se det virkelige bildet av støtte til politikere, spørsmål om toleranse, folks humør og andre ting, takket være statistikk, gjennom en sosiologisk undersøkelse.</p>
 <p><strong>Den som eier informasjonen eier verden. Og den beste informasjonen er statistikk.</strong></p>

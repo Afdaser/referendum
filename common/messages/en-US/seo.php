@@ -1,5 +1,7 @@
 <?php
 return [
+    'home_title' => 'Latest public opinion poll about everything | Referendum',
+    'home_description' => 'Polls and opinion about everything - Polls and opinion about everything - take part in polls and discussion: vote, write comments, suggest vote options or create your own polls. 📊 Dive in! 🌟',
     'main_page_text' => '
 <p>Our site offers to get answers to the one you are interested in poll and see the real picture of support for politicians, issues of tolerance, peoples mood and other things, thanks to statistics, through a sociological survey.</p>
 <p><strong>The one who owns the information owns the world. And the best information is statistics.</strong></p>

@@ -663,18 +663,27 @@ a.link_poll:hover {
 .inner_container_graph img{
     width: 100%;
 }
-a.radio_link {
+a.radio_link,
+button.radio_link {
     font-size: 14px;
     color: #565656;
     line-height: 22px;
     text-decoration: none;
 }
-a.radio_link:hover .link_text {
+a.radio_link:hover .link_text,
+button.radio_link:hover .link_text {
     text-decoration: underline;
     color: #147536;
 }
-a.radio_link:active .radio_circle{
+a.radio_link:active .radio_circle,
+button.radio_link:active .radio_circle {
     background: url(/img/layout/radio_circle_pressed.png);
+}
+button.radio_link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 .radio_circle {
     display: inline-block;
@@ -690,6 +699,10 @@ a.radio_link:active .radio_circle{
     margin-right: 12px;
 /* */
     background: url(/img/layout/radio_circle.png);
+}
+.item_chose_poll.see_results .link_text {
+    color: #147536;
+    font-style: italic;
 }
 .middle_name_poll_b {
     margin-bottom: 25px;

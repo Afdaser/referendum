@@ -117,7 +117,7 @@ body {
     color: #565656;
 }
 a {
-    color: #058f42;
+    color: #05662F;
 }
 a:hover {
     color: #3ac469;
@@ -225,7 +225,7 @@ a.inner_slide_b:hover .item_normal {
     background: #f0f4f4;
     border-radius: 3px;
     font-size: 14px;
-    color: #058f42;
+    color: #055C2B;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -361,7 +361,7 @@ a.inner_slide_b:hover .item_normal {
 .nav-tabs>li.active>a:focus {
     color: #fff;
     border: none;
-    background: #3ac469;
+    background: #226338;
     padding: 8px 0 9px 20px;
     position: relative;
 }
@@ -438,8 +438,7 @@ a.inner_slide_b:hover .item_normal {
 a.link_poll {
     display: inline-block;
     vertical-align: middle;
-    text-decoration: underline;
-    color: #83c895;
+    color: #2C633B;
     transform: translate(1px);
 /*
     margin-right: 2px;
@@ -724,10 +723,10 @@ button.radio_link {
     padding-top: 3px;
 }
 .title_poll a {
-    color: #058f42;
+    color: #05662F;
 }
 .title_poll h1 {
-    color: #058f42;
+    color: #05662F;
     font-size: 18px;
     margin-top: 6px;
 }
@@ -748,7 +747,7 @@ button.radio_link {
     line-height: 24px;
     border-right: 1px solid #dce6e4;
     font-size: 13px;
-    color: #848c8f;
+    color: #53585A;
     padding: 0 6px;
 }
 .right_poll_status {
@@ -861,7 +860,7 @@ button.radio_link {
 .title_auth {
     text-align: center;
     height: 42px;
-    background: #3ac469;
+    background: #226338;
     border-bottom: 3px solid #058f42;
     font-family: "ArimoBold", Arial, sans-serif;
     font-size: 16px;
@@ -930,7 +929,7 @@ button.radio_link {
     float: right;
     background: #f0f4f4;
     border-color: #bbc9cc;
-    color: #058f42;
+    color: #055C2B;
 }
 .btn_block a:last-child:hover {
     background: #3ac469;
@@ -1010,7 +1009,7 @@ a.item_list_poll {
     border-radius: 3px;
     padding: 10px;
     text-decoration: none;
-    color: #058f42;
+    color: #055C2B;
     font-size: 14px;
     margin-bottom: 5px;
     word-break: break-all;
@@ -1041,8 +1040,7 @@ span.item_list_poll:hover {
     background: #fff;
 }
 .bottom_item_list_poll {
-    color: #b7c8ca;
-    font-size: 11px;
+    font-size: 12px;
 }
 .bottom_item_list_poll .icon_lock {
     color: #3ac469;
@@ -1071,12 +1069,13 @@ span.item_list_poll:hover {
 }
 .copyright {
     float: right;
-    color: #acb3b2;
+    color: #0A3D20;
+    padding-right: 3%;
 }
 .foot_links a {
     float: left;
     margin-right: 25px;
-    color: #058f42;
+    color: #0A522A;
     text-decoration: underline;
 }
 .foot_links a:hover {
@@ -1187,7 +1186,7 @@ a.my_profile:hover {
     margin-left: 6%;
 }
 .count_poll {
-    padding: 0 5px;
+    padding: 1px 5px;
     height: 18px;
     line-height: 16px;
     border: 1px solid #fff;
@@ -1238,10 +1237,8 @@ a.btn_prev_var:hover {
     color: #fff;
 }
 .desc_my_chart {
-    color: #848484;
-    margin-bottom: 30px;
-    margin-left: -40px;
-    margin-right: 10px;
+    margin-left: -8%;
+    margin-right: 4%;
     margin-top: 2%;
 }
 .inner_b_chart .right_block_share_icon {

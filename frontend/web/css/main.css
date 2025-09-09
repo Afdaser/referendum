@@ -684,6 +684,9 @@ button.radio_link {
     border: none;
     padding: 0;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 .radio_circle {
     display: inline-block;
@@ -1174,7 +1177,8 @@ a.my_profile:hover {
     bottom: 0;
     width: 94%;
 }
-.with_radio_show_b a.radio_link {
+.with_radio_show_b a.radio_link,
+.with_radio_show_b button.radio_link {
     line-height: 14px;
 }
 .with_radio {

@@ -24,7 +24,7 @@ $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? 
                   <a href="<?php echo Yii::$app->createUrl('/site/sponsors');?>"><?php echo Yii::t("main", 'Допомога'); ?></a>
                   <?php /* */ ?>
             </span>
-            <span class="copyright">All Rights Reserved | 2021</span>
+            <span class="copyright">All Rights Reserved | <?= date('Y'); ?></span>
         </div>
 <?php /*                 * / ?>
         <div class="row" style="border:1px dashed red;">

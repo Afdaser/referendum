@@ -1,9 +1,20 @@
 <?php
 
 use frontend\widgets\WPollList;
+use Yii;
 
 /** @var yii\web\View $this */
+
 $qty = $dataProvider->count;
+$title = Yii::t('tag', 'Останні опитування {tag} та думка громадськості | Referendum', [
+    'tag' => $tagModel->name,
+]);
+Yii::$app->page->title = $title;
+$this->title = $title;
+Yii::$app->page->description = Yii::t('tag', 'Опитування та думки щодо {tag}: беріть участь у {count} захопливих опитуваннях, висловлюйте свої думки, коментуйте актуальні питання, спілкуйтеся з іншими та досліджуйте результати.', [
+    'count' => $tagModel->polls_count,
+    'tag' => $tagModel->name,
+]);
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">

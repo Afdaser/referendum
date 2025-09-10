@@ -734,11 +734,11 @@ button.radio_link {
     margin: 1.5%;
 }
 .info_block h2 {
-    color: #058f42;
+    color: #05662F;
     font-size: 16px;
 }
 .info_block p {
-    color: #848484;
+    color: #595959;
     font-size: 14px;
 }
 .item_bottom_poll {
@@ -764,7 +764,7 @@ button.radio_link {
     margin-bottom: 4px;
 /* */
     position: relative;
-    color: #058f42;
+    color: #055C2B;
 /*
     top: 1px;
 /* */
@@ -1365,7 +1365,7 @@ a.btn_prev_var:hover {
     vertical-align: middle;
     font-family: "ArimoBold", Arial, sans-serif;
     font-size: 15px;
-    color: #058f42;
+    color: #055C2B;
     text-decoration: none;
     margin-top: 15px;
     margin-left: 20px;
@@ -1394,7 +1394,7 @@ a.btn_prev_var:hover {
     background: url(/img/layout/clear_btn_icon.png);
 }
 .right_clear_btn a {
-    color: #3ac469;
+    color: #055C2B;
     text-decoration: none;
 }
 .right_clear_btn a span {
@@ -1546,7 +1546,7 @@ li.active>a>.count_poll {
 .comments_block_bottom .nav-tabs>li.active>a:hover,
 .comments_block_bottom .nav-tabs>li.active>a:focus {
     padding: 4px 0 4px 25px;
-    background-color: #3ac469;
+    background-color: #226338;
 }
 .comments_block_bottom .nav-tabs {
     border-color: #3ac469;
@@ -1603,7 +1603,7 @@ a.send_btn:hover {
     display: inline-block;
     vertical-align: middle;
     margin-left: 15px;
-    color: #999999;
+    color: #595959;
     font-size: 11px;
 }
 .name_link {

@@ -114,6 +114,7 @@ class SitemapController extends Controller
         $select = [
             'if(p.date_add is null, "0", p.date_add)',
             'if(p.date_update is null, "0", p.date_update)',
+            'from_unixtime(if(p.updated_at is null, "0", p.updated_at))',
             'if(pc.date_add is null, "0", pc.date_add)',
             'if(prv.date_add is null, "0", prv.date_add)',
         ];
@@ -170,11 +171,22 @@ class SitemapController extends Controller
 
     protected static function generateTag()
     {
+        $select = [
+            'if(p.date_add is null, "0", p.date_add)',
+            'if(p.date_update is null, "0", p.date_update)',
+            'from_unixtime(if(p.updated_at is null, "0", p.updated_at))',
+            'if(pc.date_add is null, "0", pc.date_add)',
+            'if(prv.date_add is null, "0", prv.date_add)',
+            'from_unixtime(if(t.updated_at is null, "0", t.updated_at))',
+        ];
+
         $list = Tag::find()
-            ->select(['t.id', 't.language_id', 't.name AS idt', 'MAX(DATE_FORMAT(p.date_update, "%Y-%m-%d")) AS poll_date'])
+            ->select(['t.id', 't.language_id', 't.name AS idt', 'MAX(GREATEST(' . implode(',', $select) . ')) AS poll_date'])
             ->from('tag t')
             ->innerJoin('poll_tag p2t', 'p2t.tag_id = t.id')
             ->innerJoin('poll p', 'p2t.poll_id = p.id')
+            ->leftJoin('poll_comment pc', 'pc.poll_id = p.id')
+            ->leftJoin('poll_rating_vote prv', 'prv.poll_id = p.id')
             ->groupBy(['t.id', 't.language_id', 't.name'])
             ->orderBy(['t.name' => SORT_ASC])
             ->asArray()->all();

@@ -7,5 +7,7 @@ return [
     'Рейтинг присвоюється користувачами сайту до кожного опитування.' => 'Ratings are assigned by site users to each poll, giving a clear picture of current political polls {tag} and other trending discussions.',
     'Останнє опитування по темі {tag} було додано {date}.' => 'The latest polls {tag} update shows that the most recent poll on this topic was added on {date}. Altogether, this forms a wide {tag} survey database where people share their views and opinions on different topics that matter to them.',
     'невідомо' => 'unknown',
+    'Досліджуйте опитування {tag} — живі результати | Referendum' => 'Explore {tag} polls — live results | Referendum',
+    'Отримайте доступ до живих результатів {count} опитувань {tag} — опитувань щодо ставлень і думок. Перевіряйте результати та голосуйте.' => 'Access live results from {count} {tag} polls — surveys on attitudes and opinions. Check results and vote.',
 ];
 

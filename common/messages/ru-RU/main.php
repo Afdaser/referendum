@@ -82,10 +82,4 @@ return array(
     'Выделенный текст' => 'The selected text',
     // переменная к title опроса
     'опрос' => 'Poll',
-    // переменная к title хэштегов
-    '{hashtag} title' => 'All polls about {hashtag}',
-    '{hashtag} title_pag' => ' page of all polls on a topic {hashtag} ',
-    // переменная к description хэштегов
-    '{hashtag} description' => 'On this link you will see all polls on the topic {hashtag}. See the survey results for {hashtag} theme, take part in them and create polls',
-    '{hashtag} description_pag' => 'Page on poll about theme {hashtag}. See the survey results for {hashtag} theme, take part in them and create polls',
 );

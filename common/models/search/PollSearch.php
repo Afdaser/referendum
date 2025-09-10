@@ -250,23 +250,6 @@ class PollSearch extends Poll
 		
         $query = Poll::find();
         // add conditions that should always apply here
-		if(isset($params['page']) and $params['page']>1){
-			$title = $params['page'].Yii::t('main', '{hashtag} title_pag', ['hashtag' => $tag]);
-			$description = $params['page'].Yii::t('main', '{hashtag} description_pag', ['hashtag' => $tag]);
-		}else{
-			$title = Yii::t('main', '{hashtag} title', ['hashtag' => $tag]);
-			$description = Yii::t('main', '{hashtag} description', ['hashtag' => $tag]);
-		}
-
-		$title = (mb_strlen($title) > 65) ? mb_substr($title, 0, 65) . '...' : $title;
-		$description = (mb_strlen($description) > 151) ? mb_substr($description, 0, 151) . '...' : $description;
-		
-		Yii::$app->page->title = $title;
-		Yii::$app->page->description = $description;
-
-/*
-
-Yii::$app->view->title = $title;*/
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

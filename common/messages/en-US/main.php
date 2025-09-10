@@ -85,11 +85,4 @@ return array(
     // переменная к title опроса
     'опрос' => 'Public opinion poll | Referendum',
 
-    // переменная к title хэштегов
-    '{hashtag} title' => 'Latest {hashtag} public opinion polls | Referendum',
-    '{hashtag} title_pag' => ' Page of latest {hashtag} public opinion polls | Referendum ',
-    // переменная к description хэштегов
-    '{hashtag} description' => 'Latest public opinion polls about {hashtag} (surveys). Explore info, data and results for theme {hashtag} opinion polls, take part in them and create your own',
-    '{hashtag} description_pag' => ' Page of latest public opinion polls about {hashtag} (surveys). Explore info, data and results for theme {hashtag} opinion polls, take part in them and create your own',
-    // переменная к h1 хэштегов
 );

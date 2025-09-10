@@ -7,5 +7,7 @@ return [
     'Рейтинг присвоюється користувачами сайту до кожного опитування.' => 'Vurderinger gis av brukerne til hver avstemning, noe som gir et klart bilde av dagens politiske {tag}-avstemninger og andre aktuelle diskusjoner.',
     'Останнє опитування по темі {tag} було додано {date}.' => 'Den siste {tag}-avstemningsoppdateringen viser at den nyeste avstemningen om dette emnet ble lagt til {date}. Til sammen danner dette en omfattende {tag}-undersøkelsesdatabase der folk deler sine synspunkter om viktige temaer.',
     'невідомо' => 'ukjent',
+    'Досліджуйте опитування {tag} — живі результати | Referendum' => 'Utforsk {tag}-avstemninger — sanntidsresultater | Referendum',
+    'Отримайте доступ до живих результатів {count} опитувань {tag} — опитувань щодо ставлень і думок. Перевіряйте результати та голосуйте.' => 'Få tilgang til sanntidsresultater fra {count} {tag}-avstemninger — undersøkelser om holdninger og meninger. Sjekk resultater og stem.',
 ];
 

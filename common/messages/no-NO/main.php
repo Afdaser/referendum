@@ -85,10 +85,4 @@ return array(
     // переменная к title опроса
     'опрос' => 'intervju',
 
-    // переменная к title хэштегов
-    '{hashtag} title' => 'Alle meningsmålingene om {hashtag}',
-    '{hashtag} title_pag' => ' side med alle meningsmålingene om et emne {hashtag}',
-    // переменная к description хэштегов
-    '{hashtag} description' => 'På denne lenken vil du se alle meningsmålingene om emnet {hashtag}. Se undersøkelsesresultatene for temaet {hashtag}, ta del i dem og lag avstemninger',
-    '{hashtag} description_pag' => 'Side i meningsmåling om tema {hashtag}. Se undersøkelsesresultatene for temaet {hashtag}, ta del i dem og lag avstemninger',
 );

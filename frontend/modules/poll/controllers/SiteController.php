@@ -277,19 +277,6 @@ class SiteController extends Controller
             }
         }
 
-        if (($category == 'search') && $searchModel->tag) {
-            $page = (int) Yii::$app->getRequest()->getParam('page');
-            if ($page > 0) {
-                $this->pageTitle = $page . ' '
-                        . Yii::t('main', '{hashtag} title_pag', array('{hashtag}' => $searchModel->tag->name));
-                $this->setPageDescription($page . ' '
-                        . Yii::t('main', '{hashtag} description_pag', array('{hashtag}' => $searchModel->tag->name)));
-            } else {
-                $this->pageTitle = Yii::t('main', '{hashtag} title', array('{hashtag}' => $searchModel->tag->name));
-                $this->setPageDescription(Yii::t('main', '{hashtag} description', array('{hashtag}' => $searchModel->tag->name)));
-            }
-        }
-
         $pollModel = new Poll;
         $pollModel->unsetAttributes();
 

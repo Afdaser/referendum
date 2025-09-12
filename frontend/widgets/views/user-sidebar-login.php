@@ -110,7 +110,7 @@ use frontend\helpers\Url;
                             <span class="right_captcha_b">
                                 <?= \yii\captcha\Captcha::widget([
                                     'name' => 'RegisterForm[verifyCode]',
-                                    'captchaAction' => '/site/captcha',
+                                    'captchaAction' => 'site/captcha',
                                     'imageOptions' => [
                                         'alt' => 'Captcha',
                                         'title' => 'Натисніть для оновлення',

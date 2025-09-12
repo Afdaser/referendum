@@ -4,10 +4,9 @@ namespace app\modules\ajax\controllers;
 
 use yii\web\Controller;
 use frontend\models\forms\RegisterForm;
-//use common\models\Poll;
 use frontend\models\forms\PollForm as Poll;
-
-//use Yii;
+use frontend\models\SignupForm;
+use Yii;
 use yii\bootstrap\Html;
 
 /**
@@ -21,25 +20,26 @@ class ModalController extends Controller
      */
     public function actionRegistrtionStepOne()
     {
-            $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-                $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
-  //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
+        $model = new RegisterForm();
+        if (Yii::$app->request->isPost) {
+            $model->load(Yii::$app->request->post());
+            if ($model->validate()) {
+                $signupForm = new SignupForm();
+                $signupForm->load(['SignupForm' => [
+                    'username' => $model->login,
+                    'email' => $model->email,
+                    'password' => $model->password,
+                ]]);
+                if (!$signupForm->signup()) {
+                    $model->addErrors($signupForm->getErrors());
                 }
-/*
-                else {
-                    $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(CHtml::errorSummary($model))));
-                }
-            } else {
-                $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model));
-/* */
             }
-            
+        }
+
         return $this->renderPartial('registrtion-step-one', [
-            'registerForm'=>$model,
-            'error'=>json_encode(Html::errorSummary($model)),
-            ]);
+            'registerForm' => $model,
+            'error' => json_encode(Html::errorSummary($model)),
+        ]);
     }
 
     /**
@@ -59,23 +59,6 @@ class ModalController extends Controller
             $pollModel->unsetAttributes();
 
  */
-/*
-            $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-                $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
-  //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
-                }
-/*
-                else {
-                    $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(CHtml::errorSummary($model))));
-                }
-            } else {
-                $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model));
-
-            }
-/* */
-
         return $this->renderPartial('create-poll-step-one', [
                     'pollModel' => $pollModel,
                     'error' => json_encode(Html::errorSummary($pollModel)),

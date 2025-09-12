@@ -64,7 +64,8 @@ class SiteController extends Controller
             ],
             'captcha' => [
                 'class' => \yii\captcha\CaptchaAction::class,
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                // генеруємо новий код щоразу, навіть у тестовому середовищі
+                'fixedVerifyCode' => null,
             ],
         ];
     }

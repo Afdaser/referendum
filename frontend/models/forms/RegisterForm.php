@@ -20,7 +20,6 @@ class RegisterForm extends Model {
     public $passwordRepeat;
     public $agreeTerms;
     public $verifyCode;
-    public $_identity;
 
     /**
      * Declares the validation rules.
@@ -87,12 +86,14 @@ class RegisterForm extends Model {
                 'agreeTerms',
                 'message' => Yii::t("main", 'Ви маєте погодитись з правилами та умовами сайту.')
             ),
-            array(
+            [
                 'verifyCode',
                 'captcha',
-                'captchaAction' => '/site/captcha',
+                'captchaAction' => 'site/captcha',
+                'caseSensitive' => true,
+                'skipOnEmpty' => false,
                 'message' => Yii::t("main", 'Введіть вірний код перевірки.')
-            ),
+            ],
         );
     }
 
@@ -150,54 +151,6 @@ class RegisterForm extends Model {
             'passwordRepeat' => 'Password Again',
             'agreeTerms' => 'Accept Terms',
         );
-    }
-
-    /**
-     * Register the user using the given email and password in the model.
-     * @return boolean whether register is successful
-     */
-    public function register() {
-        $result = false;
-        $createDate = date('Y-m-d h:i:s');
-        $user = new User;
-
-        // set main data
-        $user->username = Html::encode($this->login);
-        $user->email = Html::encode($this->email);
-        $user->password = crypt($this->password, StringHelper::blowfishSalt());
-        $user->is_active = 0;
-        $user->date_add = $createDate;
-        $user->date_update = $createDate;
-
-        if ($user->save()) {
-            /** @var Email $email */
-            /* $email = Yii::app()->email;
-              $email->from = Yii::app()->params['adminEmail'];
-              $email->to = $user->email;
-              $email->subject = Yii::t('email', 'Регистрация на сайте') . ' online-statistics.org';
-              $email->message = Yii::t('email', 'Ви успішно зареєструвались на сайті') . ' online-statistics.org';
-              $email->send(); */
-
-            $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
-            $mailer->From = Yii::app()->params['adminEmail'];
-            $mailer->AddReplyTo(Yii::app()->params['adminEmail']);
-            $mailer->AddAddress($user->email);
-            $mailer->FromName = 'Webmaster';
-            $mailer->CharSet = 'UTF-8';
-            $mailer->Subject = Yii::t('email', 'Регистрация на сайте') . ' online-statistics.org';
-            $mailer->Body = Yii::t('email', 'Ви успішно зареєструвались на сайті') . ' online-statistics.org';
-            ;
-
-            $this->_identity = new UserIdentity($this->login, $this->password);
-            $this->_identity->authenticate();
-            if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
-                $duration = 3600 * 24 * 30; // 30 days
-                Yii::app()->user->login($this->_identity, $duration);
-                return true;
-            }
-        }
-
-        return $result;
     }
 
 }

@@ -9,28 +9,32 @@
     <div class="tab-content">
         <div id="list_polls_new" class="list_polls tab-pane active">
             <?php foreach ($pollsLast as $poll): ?>
-                <a href="<?php echo $poll->url; ?>" class="item_list_poll">
-                    <?php echo $poll->title; ?>
+                <div class="item_list_poll">
+                    <a href="<?php echo $poll->url; ?>" class="item_list_poll__title">
+                        <?php echo $poll->title; ?>
+                    </a>
                     <div class="bottom_item_list_poll">
                         <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
                             <i class="fa <?php echo ($poll->isOpen() ? "fa-unlock" : "fa-lock"); ?>"></i>
                         </span>
                         <?php echo Yii::t("poll", 'голосів'); ?>:  <?= $poll->countPollOptionsVoters; ?>
                     </div>
-                </a>
+                </div>
             <?php endforeach; ?>
         </div>
         <div id="list_polls_popular" class="list_polls tab-pane">
             <?php foreach ($pollsPopular as $poll): ?>
-                <a href="<?php echo $poll->url; ?>" class="item_list_poll">
-                    <?php echo $poll->title; ?>
+                <div class="item_list_poll">
+                    <a href="<?php echo $poll->url; ?>" class="item_list_poll__title">
+                        <?php echo $poll->title; ?>
+                    </a>
                     <div class="bottom_item_list_poll">
                         <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
                             <i class="fa <?php echo ($poll->isOpen() ? "fa-unlock" : "fa-lock"); ?>"></i>
                         </span>
                         <?php echo Yii::t("poll", 'голосів'); ?>:  <?= $poll->countPollOptionsVoters; ?>
                     </div>
-                </a>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>

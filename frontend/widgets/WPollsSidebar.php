@@ -73,7 +73,11 @@ class WPollsSidebar extends Widget {
         /*         */
 //        $languageId = Language::getLanguageByName(Yii::$app->language);
 
+        $commentsCountExpression = new Expression('(SELECT COUNT(*) FROM {{%poll_comment}} pc WHERE pc.poll_id = p.id)');
+
         $this->pollsLast = Poll::find()
+                ->alias('p')
+                ->select(['p.*', 'comments_count' => $commentsCountExpression])
                 ->where(['or',
                     ['poll_language_id' => $languageId,],
                     ['show_for_all_languages' => 1]
@@ -105,7 +109,11 @@ class WPollsSidebar extends Widget {
 
         $this->pollsPopular = Poll::find()
                 ->alias('p')
-                ->select(['p.*', '(COALESCE(uv.user_votes,0) + COALESCE(gv.guest_votes,0)) AS votes'])
+                ->select([
+                    'p.*',
+                    'votes' => new Expression('(COALESCE(uv.user_votes,0) + COALESCE(gv.guest_votes,0))'),
+                    'comments_count' => $commentsCountExpression,
+                ])
                 ->leftJoin(['uv' => $userVotes], 'uv.poll_id = p.id')
                 ->leftJoin(['gv' => $guestVotes], 'gv.poll_id = p.id')
                 ->where(['or',

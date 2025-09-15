@@ -1021,6 +1021,37 @@ a.item_list_poll:hover {
     color: #058f42;
     background: #fff;
 }
+.list_polls .item_list_poll {
+    display: block;
+    background: #f0f4f4;
+    border-radius: 3px;
+    padding: 10px;
+    color: #055C2B;
+    font-size: 14px;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+.list_polls .item_list_poll:last-child {
+    margin-bottom: 0;
+}
+.list_polls .item_list_poll:hover {
+    color: #058f42;
+    background: #fff;
+}
+.list_polls .item_list_poll__title {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+.list_polls .item_list_poll__title:hover,
+.list_polls .item_list_poll__title:focus,
+.list_polls .item_list_poll__title:focus-visible {
+    color: inherit;
+    text-decoration: none;
+}
+.list_polls .item_list_poll .bottom_item_list_poll {
+    margin-top: 8px;
+}
 span.item_list_poll {
     display: block;
     background: #f0f4f4;

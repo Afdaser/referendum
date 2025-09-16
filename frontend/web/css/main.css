@@ -1071,7 +1071,29 @@ span.item_list_poll:hover {
     background: #fff;
 }
 .bottom_item_list_poll {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
     font-size: 12px;
+}
+
+.bottom_item_list_poll__meta {
+    display: flex;
+    align-items: center;
+    color: inherit;
+}
+
+.bottom_item_list_poll__comments {
+    margin-left: auto;
+}
+
+.bottom_item_list_poll__meta .fa {
+    margin-right: 5px;
+}
+
+.bottom_item_list_poll__comments .fa {
+    color: #6c757d;
 }
 .bottom_item_list_poll .icon_lock {
     color: #3ac469;

@@ -14,10 +14,16 @@
                         <?php echo $poll->title; ?>
                     </a>
                     <div class="bottom_item_list_poll">
-                        <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
-                            <i class="fa <?php echo ($poll->isOpen() ? "fa-unlock" : "fa-lock"); ?>"></i>
-                        </span>
-                        <?php echo Yii::t("poll", 'голосів'); ?>:  <?= $poll->countPollOptionsVoters; ?>
+                        <div class="bottom_item_list_poll__meta">
+                            <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
+                                <i class="fa <?php echo ($poll->isOpen() ? "fa-unlock" : "fa-lock"); ?>"></i>
+                            </span>
+                            <?php echo Yii::t("poll", 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?>
+                        </div>
+                        <div class="bottom_item_list_poll__meta bottom_item_list_poll__comments">
+                            <i class="fa fa-comments"></i>
+                            <?php echo Yii::t("poll", 'коментарів'); ?>: <?= $poll->commentsCount; ?>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -29,10 +35,16 @@
                         <?php echo $poll->title; ?>
                     </a>
                     <div class="bottom_item_list_poll">
-                        <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
-                            <i class="fa <?php echo ($poll->isOpen() ? "fa-unlock" : "fa-lock"); ?>"></i>
-                        </span>
-                        <?php echo Yii::t("poll", 'голосів'); ?>:  <?= $poll->countPollOptionsVoters; ?>
+                        <div class="bottom_item_list_poll__meta">
+                            <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
+                                <i class="fa <?php echo ($poll->isOpen() ? "fa-unlock" : "fa-lock"); ?>"></i>
+                            </span>
+                            <?php echo Yii::t("poll", 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?>
+                        </div>
+                        <div class="bottom_item_list_poll__meta bottom_item_list_poll__comments">
+                            <i class="fa fa-comments"></i>
+                            <?php echo Yii::t("poll", 'коментарів'); ?>: <?= $poll->commentsCount; ?>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>

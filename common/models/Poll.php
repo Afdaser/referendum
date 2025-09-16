@@ -69,6 +69,10 @@ class Poll extends ActiveRecord
 
     public $showResultOnMainPage = NULL;
 
+    public $comments_count;
+
+    private $_commentsCount;
+
     private $tagIds = [];
 
     /**
@@ -184,6 +188,21 @@ class Poll extends ActiveRecord
     public function getPollCommentsRootCount()
     {
         return $this->getPollCommentsRoot()->count();
+    }
+
+    public function getCommentsCount()
+    {
+        if ($this->_commentsCount !== null) {
+            return $this->_commentsCount;
+        }
+
+        if ($this->comments_count !== null) {
+            $this->_commentsCount = (int)$this->comments_count;
+        } else {
+            $this->_commentsCount = (int)$this->getPollComments()->count();
+        }
+
+        return $this->_commentsCount;
     }
 
     /**

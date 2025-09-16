@@ -153,6 +153,7 @@ class SiteController extends Controller
     public function actionUserProfile($id) {
         if($user = User::findByPk($id)){
             $this->menu = [];
+            Yii::$app->page->setRobots('noindex, follow');
             return self::renderIndex('user', $user);
         } else {
             $this->redirect('/');

@@ -97,6 +97,10 @@ class PageMetaData extends BaseObject {
         $this->data['description'] = $value;
     }
 
+    public function setRobots($value) {
+        $this->data['robots'] = $value;
+    }
+
     public function getMetaDescriptionHtml() {
         //         <meta name="description" content="Page description">
         if (!empty($this->data['description']))

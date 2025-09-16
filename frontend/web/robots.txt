@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /user/profile
 Disallow: /user/newAnswers
 Disallow: /user/newComments
 Disallow: /user/passwordRecovery

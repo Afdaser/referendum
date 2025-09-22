@@ -36,7 +36,7 @@ class ModalController extends Controller
 /* */
             }
             
-        return $this->renderPartial('registrtion-step-one', [
+        return $this->renderAjax('registrtion-step-one', [
             'registerForm'=>$model,
             'error'=>json_encode(Html::errorSummary($model)),
             ]);

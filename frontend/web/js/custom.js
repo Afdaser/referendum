@@ -466,23 +466,37 @@ function clearChartFilters(id,title){
     filterDataChart(id,title);
 }
 
-$(document).on('change','#login',function(){
+$(document).on('change','input[name="RegisterForm[login]"]', function(){
+    var $input = $(this);
     $.ajax({
         type: 'POST',
         url: '/site/checkLogin',
-        data: {login: $(this).val()},
+        data: {login: $input.val()},
         success: function (data) {
-            if(data == 1){
-                $('#login').after('<a href="#" class="del_btn active"></a>');
+            var $wrapper = $input.closest('.right_reg_label');
+            var $indicator = $wrapper.find('.del_btn.login-check');
+            if (parseInt(data, 10) === 1) {
+                if (!$indicator.length) {
+                    $indicator = $('<a/>', {
+                        href: 'javascript:void(0)',
+                        class: 'del_btn login-check active',
+                        'aria-label': 'Очистити логін'
+                    }).insertAfter($input);
+                } else {
+                    $indicator.addClass('active');
+                }
             } else {
-                $('.del_btn.active').remove();
+                $indicator.remove();
             }
         }
     });
 });
 
-$(document).on('click','.email .del_btn', function(){
-    $('#email').val('');
+$(document).on('click','.email .del_btn', function(event){
+    event.preventDefault();
+    var $container = $(this).closest('.email');
+    var $field = $container.find('input[name="RegisterForm[email]"]');
+    $field.val('').focus();
 });
 
 $(document).on('click','.clearComments',function(){
@@ -557,10 +571,12 @@ $(document).on('click','.city .del_btn',function(){
     $('#' + $(this).data('id') + ' #cityACPoll').val('');
 });
 
-$(document).on('click','#registrationCancel',function(){
-   $('#registrationBody input').val('');
-   $('#registrationBody #agreeTerms').attr("checked", false);
-    $('.del_btn.active').remove();
+$(document).on('click','.registration-cancel',function(){
+    var $modal = $(this).closest('.modal-content');
+    var $body = $modal.find('.registration-body');
+    $body.find('input[type="text"], input[type="password"], input[type="email"]').val('');
+    $body.find('input[type="checkbox"]').prop('checked', false);
+    $body.find('.del_btn.login-check').remove();
 });
 
 $(document).on('click','.newPollCancel',function(){

@@ -5,7 +5,6 @@ namespace frontend\widgets;
 use Yii;
 use yii\bootstrap4\Widget;
 use common\models\form\LoginForm;
-use frontend\models\SignupForm;
 use frontend\models\forms\RegisterForm;
 use frontend\models\forms\PollForm as Poll;
 
@@ -31,7 +30,7 @@ class WUserSidebar extends Widget
             $model = new RegisterForm;
             if(isset($_POST['RegisterForm'])){
                 $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
+                if($model->register())  {
                     $this->render('userSidebar/_sidebar',array('refresh'=>true));
         }
                 else {
@@ -45,84 +44,50 @@ class WUserSidebar extends Widget
         }
     }
 
-    public function run() {
-        if(Yii::$app->user->isGuest){
-//            $model = new LoginForm;
-            $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-//                $model->attributes = $_POST['RegisterForm'];
-                $attributes = Yii::$app->request->post('RegisterForm');
-//                $model->load(['RegisterForm' => $attributes]);
-                $model->load(['RegisterForm' => $attributes]);
-//                $model->attributes = $_POST['RegisterForm'];
+    public function run()
+    {
+        // Форма входу завжди доступна через $this->model, тому одразу готуємо модель реєстрації.
+        $registerForm = new RegisterForm();
 
-                if ($model->validate()) {
-                    $signupFormModel = new SignupForm();
-                    $signupAttributes = [
-                        'username' => $attributes['login'],
-                        'email' => $attributes['email'],
-                        'password' => $attributes['password'],
-                    ];
-//                    $signupFormModel->load(Yii::$app->request->post());
-                    $signupFormModel->load(['SignupForm' => $signupAttributes]);
-                    if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // return $this->goHome();
-                    }
+        if (Yii::$app->user->isGuest) {
+            if ($registerForm->load(Yii::$app->request->post())) {
+                if ($registerForm->register()) {
+                    // Після успішної реєстрації показуємо той самий шаблон, що й для авторизованих користувачів,
+                    // щоб спрацював існуючий сценарій оновлення сторінки.
+                    $pollModel = new Poll();
+                    $pollModel->presetAttributes();
 
-                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
-                } else {
-                   //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
+                    Yii::$app->session->setFlash('success', Yii::t('main', 'Дякуємо за реєстрацію. Перевірте пошту.'));
+
+                    return $this->render('user-sidebar', [
+                        'refresh' => true,
+                        'pollModel' => $pollModel,
+                        'error' => json_encode(Html::errorSummary($pollModel)),
+                    ]);
                 }
 
-//                die(__FILE__.'#'.__LINE__);
-
-//                    echo '<h2>Errors:</h2><pre>';
-//                    var_dump($model->getErrors());
-//                    var_dump(Html::errorSummary($model));
-//                    echo '</pre>';
-//                    die(__METHOD__ . '#' . __LINE__);
-
-/*
-                if($model->validate() && $model->register())  {
-                    return $this->render('user-sidebar',array('refresh'=>true));
-                }
-                else {
-                    return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(Html::errorSummary($model))));
-                }
-/* */
-            } else {
-                return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model));
+                // Якщо помилки валідації — повертаємо форму з повідомленнями.
+                return $this->render('user-sidebar-login', [
+                    'model' => $this->model,
+                    'registerForm' => $registerForm,
+                    'error' => json_encode(Html::errorSummary($registerForm)),
+                ]);
             }
-        } else {
-//            if(Yii::$app->request->isPost){
-//                $resultOfSaving = $this->processNewPoll();
-//                if($resultOfSaving){
-//                    Yii::$app->session->setFlash('success', 'Poll saved successfully');
-//                    return Yii::$app->response->redirect(['/poll/site/my-polls', ]);
-////                    return $this->redirect(['/poll/site/my-polls', ]);
-//                }
-//            }
-            $pollModel = new Poll;
-            $pollModel->presetAttributes();
-            
-            return $this->render('user-sidebar',[
-                'refresh'=>false,
-                    'pollModel' => $pollModel,
-                    'error' => json_encode(Html::errorSummary($pollModel)),
-//                    'forceModal' => $this->forceModal,
-                ]
-                    );
+
+            return $this->render('user-sidebar-login', [
+                'model' => $this->model,
+                'registerForm' => $registerForm,
+            ]);
         }
 
+        $pollModel = new Poll();
+        $pollModel->presetAttributes();
 
-//        return $this->render($this->view, [
-//                    'data' => $this->data,
-//                    'activePolls' => $this->activePolls,
-//
-//        ]);
+        return $this->render('user-sidebar', [
+            'refresh' => false,
+            'pollModel' => $pollModel,
+            'error' => json_encode(Html::errorSummary($pollModel)),
+        ]);
     }
 
     public function processNewPoll()

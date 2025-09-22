@@ -2,13 +2,12 @@
 
 namespace app\modules\ajax\controllers;
 
+use Yii;
+use yii\bootstrap\Html;
 use yii\web\Controller;
 use frontend\models\forms\RegisterForm;
 //use common\models\Poll;
 use frontend\models\forms\PollForm as Poll;
-
-//use Yii;
-use yii\bootstrap\Html;
 
 /**
  * Modal controller for the `ajax` module
@@ -21,25 +20,22 @@ class ModalController extends Controller
      */
     public function actionRegistrtionStepOne()
     {
-            $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-                $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
-  //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
-                }
-/*
-                else {
-                    $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(CHtml::errorSummary($model))));
-                }
+        $model = new RegisterForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->register()) {
+                // Після успішної реєстрації повертаємо порожню форму, щоб користувач бачив оновлену капчу.
+                $model = new RegisterForm();
             } else {
-                $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model));
-/* */
+                // У випадку помилок віддаємо статус 422, щоб на фронтенді можна було відрізнити валідний запит.
+                Yii::$app->response->setStatusCode(422);
             }
-            
+        }
+
         return $this->renderAjax('registrtion-step-one', [
-            'registerForm'=>$model,
-            'error'=>json_encode(Html::errorSummary($model)),
-            ]);
+            'registerForm' => $model,
+            'error' => json_encode(Html::errorSummary($model)),
+        ]);
     }
 
     /**

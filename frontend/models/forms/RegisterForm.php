@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use common\models\User;
 use yii\bootstrap\Html;
+use frontend\models\SignupForm;
 
 /**
  * RegisterForm class.
@@ -153,51 +154,59 @@ class RegisterForm extends Model {
     }
 
     /**
-     * Register the user using the given email and password in the model.
-     * @return boolean whether register is successful
+     * Виконує реєстрацію користувача на основі даних форми.
+     *
+     * Метод спочатку перевіряє коректність введених даних, а потім
+     * передає їх стандартній формі {@see SignupForm}, щоб не дублювати
+     * бізнес-логіку створення користувача.
+     *
+     * @return bool успіх операції
      */
-    public function register() {
-        $result = false;
-        $createDate = date('Y-m-d h:i:s');
-        $user = new User;
-
-        // set main data
-        $user->username = Html::encode($this->login);
-        $user->email = Html::encode($this->email);
-        $user->password = crypt($this->password, StringHelper::blowfishSalt());
-        $user->is_active = 0;
-        $user->date_add = $createDate;
-        $user->date_update = $createDate;
-
-        if ($user->save()) {
-            /** @var Email $email */
-            /* $email = Yii::app()->email;
-              $email->from = Yii::app()->params['adminEmail'];
-              $email->to = $user->email;
-              $email->subject = Yii::t('email', 'Регистрация на сайте') . ' online-statistics.org';
-              $email->message = Yii::t('email', 'Ви успішно зареєструвались на сайті') . ' online-statistics.org';
-              $email->send(); */
-
-            $mailer = Yii::createComponent('application.extensions.mailer.EMailer');
-            $mailer->From = Yii::app()->params['adminEmail'];
-            $mailer->AddReplyTo(Yii::app()->params['adminEmail']);
-            $mailer->AddAddress($user->email);
-            $mailer->FromName = 'Webmaster';
-            $mailer->CharSet = 'UTF-8';
-            $mailer->Subject = Yii::t('email', 'Регистрация на сайте') . ' online-statistics.org';
-            $mailer->Body = Yii::t('email', 'Ви успішно зареєструвались на сайті') . ' online-statistics.org';
-            ;
-
-            $this->_identity = new UserIdentity($this->login, $this->password);
-            $this->_identity->authenticate();
-            if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
-                $duration = 3600 * 24 * 30; // 30 days
-                Yii::app()->user->login($this->_identity, $duration);
-                return true;
-            }
+    public function register(): bool
+    {
+        if (!$this->validate()) {
+            return false;
         }
 
-        return $result;
+        $signupForm = new SignupForm();
+        $signupForm->load([
+            'SignupForm' => [
+                'username' => $this->login,
+                'email' => $this->email,
+                'password' => $this->password,
+            ],
+        ]);
+
+        if (!$signupForm->validate()) {
+            $this->collectSignupErrors($signupForm);
+            return false;
+        }
+
+        if ($signupForm->signup()) {
+            return true;
+        }
+
+        // Якщо зберегти не вдалося, переносимо помилки й показуємо загальне повідомлення.
+        $this->collectSignupErrors($signupForm);
+        if (!$this->hasErrors()) {
+            $this->addError('email', Yii::t('main', 'Не вдалося завершити реєстрацію. Спробуйте пізніше.'));
+        }
+
+        return false;
+    }
+
+    /**
+     * Переносить помилки з SignupForm у поточну модель.
+     */
+    private function collectSignupErrors(SignupForm $signupForm): void
+    {
+        foreach ($signupForm->getErrors() as $attribute => $messages) {
+            // У старій формі логін зберігається в полі login, тому мапимо назву атрибуту.
+            $targetAttribute = $attribute === 'username' ? 'login' : $attribute;
+            foreach ($messages as $message) {
+                $this->addError($targetAttribute, $message);
+            }
+        }
     }
 
 }

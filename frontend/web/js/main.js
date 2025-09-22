@@ -122,12 +122,14 @@ function animationForZilla() {
     }
 }
 function openCloseRulesBlock() {
-    $('#rules-block').click(function(e){
-        $('.rules_block').slideDown();
+    $(document).on('click', '.rules-block-link', function(e){
+        var $container = $(this).closest('.registration-body');
+        var $rulesBlock = $container.find('.rules_block');
+        $rulesBlock.slideDown();
         e.preventDefault();
     });
-    $('.top_title_rules a').click(function(e){
-        $('.rules_block').slideUp();
+    $(document).on('click', '.top_title_rules a', function(e){
+        $(this).closest('.rules_block').slideUp();
         e.preventDefault();
     });
 }

@@ -18,13 +18,13 @@
 * */ ?>
         <form method="post" action="/">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>">
-            <div class="modal-body" id="registrationBody" style="border:1px dashed red;">
+            <div class="modal-body registration-body" style="border:1px dashed red;">
                 <div class="item_reg clearfix">
                     <div class="left_reg_label">
 <?= Yii::t('main', 'Логін'); ?> *
                     </div>
                     <div class="right_reg_label item_param item_show">
-                        <input name="RegisterForm[login]" id="login" type="text" class="autocomplete" value="<?= $registerForm->login; ?>">
+                        <input name="RegisterForm[login]" type="text" class="autocomplete" value="<?= $registerForm->login; ?>">
                     </div>
                 </div>
                 <div class="item_reg clearfix">
@@ -32,7 +32,7 @@
 <?= Yii::t('main', 'Email'); ?> *
                     </div>
                     <div class="right_reg_label item_param item_show email">
-                        <input name="RegisterForm[email]" id="email" type="text" class="autocomplete" value="<?= $registerForm->email; ?>">
+                        <input name="RegisterForm[email]" type="email" class="autocomplete" value="<?= $registerForm->email; ?>">
                         <a href="javascript:void(0)" class="del_btn"></a>
                     </div>
                 </div>
@@ -63,10 +63,11 @@
         'name' => 'RegisterForm[verifyCode]',
         'captchaAction' => '/site/captcha',
         'imageOptions' => [
+            'id' => 'registerform-verifycode-modal-image',
             'alt' => 'Captcha',
             'title' => 'Натисніть для оновлення',
+            'class' => 'captcha-image',
             'style' => 'cursor:pointer;',
-            'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();"
         ],
         'template' => '{image}',
     ]); ?>
@@ -75,8 +76,8 @@
                     </div>
                 </div>
                 <div class="bottom_text_reg">
-                    <input name="RegisterForm[agreeTerms]" type="checkbox" id="agreeTerms">
-<?= Yii::t('main', 'Погоджуюсь з'); ?> <a href="#" id="rules-block"><?= Yii::t('main', 'Правилами та умовами'); ?></a> <?= Yii::t('main', 'сайту'); ?>.
+                    <input name="RegisterForm[agreeTerms]" type="checkbox" class="agree-terms">
+<?= Yii::t('main', 'Погоджуюсь з'); ?> <a href="#" class="rules-block-link"><?= Yii::t('main', 'Правилами та умовами'); ?></a> <?= Yii::t('main', 'сайту'); ?>.
                 </div>
                 <div class="clearfix"></div>
                 <div class="rules_block">
@@ -96,9 +97,9 @@
                 <div class="btn_b_modal">
                     <button type="submit" class="my_profile modal_add next_modal_btn"><?= Yii::t('main', 'ЗАРЕЄСТРУВАТИСЯ'); ?></button>
                 </div>
-                <a href="#" class="create_new_poll" id="registrationCancel" data-dismiss="modal"><?= Yii::t('main', 'Скасувати'); ?></a>
+                <a href="#" class="create_new_poll registration-cancel" data-dismiss="modal"><?= Yii::t('main', 'Скасувати'); ?></a>
             </div>
-        </FORM>
+        </form>
     </div>
 </div>
 

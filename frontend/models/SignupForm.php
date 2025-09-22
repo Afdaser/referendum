@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\User;
+use Throwable;
 
 /**
  * Signup form
@@ -41,14 +42,14 @@ class SignupForm extends Model
     /**
      * Signs user up.
      *
-     * @return bool whether the creating new account was successful and email was sent
+     * @return bool|null whether creating a new account was successful
      */
     public function signup()
     {
         if (!$this->validate()) {
             return null;
         }
-        
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
@@ -56,7 +57,13 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
-        return $user->save() && $this->sendEmail($user);
+        if (!$user->save()) {
+            return false;
+        }
+
+        $this->sendEmail($user);
+
+        return true;
     }
 
     /**
@@ -66,15 +73,26 @@ class SignupForm extends Model
      */
     protected function sendEmail($user)
     {
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['user' => $user]
-            )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Account registration at ' . Yii::$app->name)
-            ->send();
+        if (!Yii::$app->has('mailer')) {
+            Yii::warning('Mailer component is not configured. Verification email was not sent.', __METHOD__);
+            return false;
+        }
+
+        try {
+            return Yii::$app
+                ->mailer
+                ->compose(
+                    ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
+                    ['user' => $user]
+                )
+                ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+                ->setTo($this->email)
+                ->setSubject('Account registration at ' . Yii::$app->name)
+                ->send();
+        } catch (Throwable $exception) {
+            Yii::error('Unable to send verification email: ' . $exception->getMessage(), __METHOD__);
+        }
+
+        return false;
     }
 }

@@ -7,7 +7,11 @@ AddDefaultCharset utf-8
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    
+
+    # Дозволяємо видавати robots.txt без примусового редіректу на HTTPS,
+    # щоб пошукові роботи могли отримати файл як по http, так і по https.
+    RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
+    RewriteRule ^ - [L]
 
     RewriteRule ^xadmin/plugins/(.*)$ backend/web/plugins/$1 [L]
     RewriteRule ^data/(.*)$ frontend/web/data/$1 [L]

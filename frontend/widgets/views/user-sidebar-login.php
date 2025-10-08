@@ -156,51 +156,10 @@ use frontend\helpers\Url;
 </div>
 
 
-<div class="modal new_poll" id="registration_info" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span class="sr-only"><?php echo Yii::t("main", 'Close'); ?></span>
-                </button>
-                <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?>#DEV24-01</div>
-            </div>
-            <div class="modal-body">
-                <?php echo Yii::t("poll", 'Для того щоб прийняти участь в опитуванні, або побачити результати необхідно зареєструватись, або увійти.'); ?>
-<?php /* OLD.adsbygoogle :
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3234808971320300"
-                     crossorigin="anonymous"></script>
-<?php /* /OLD.adsbygoogle */?>
-                <!-- modal -->
-<?php if(YII_ENV == 'prod'): ?>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-3234808971320300"
-                     data-ad-slot="5767596412"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-<?php else: ?>
-                        <div <?= (YII_ENV == 'dev') ? ' style="border:2px dotted red;"' : '' ?>>
-                            <h4>adsbygoogle</h4>
-                            data-ad-client="ca-pub-3234808971320300"<br>
-                            data-ad-slot="5767596412"
-                        </div>
-<?php endif; ?>
-<?php /* OLD.adsbygoogle :
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-<?php /* /OLD.adsbygoogle */?>
-            </div>
-<!--            <div class="modal-footer">
-                <div class="sub_title_modal"></div>
-                <div class="btn_b_modal">
-                    <button type="submit" class="my_profile modal_add next_modal_btn"><?php /*echo Yii::t("main", 'ЗАРЕЄСТРУВАТИСЯ'); */?></button>
-                </div>
-                <a href="#" class="create_new_poll" id="registrationCancel" data-dismiss="modal"><?php /*echo Yii::t("main", 'Скасувати'); */?></a>
-            </div-->
-        </div>
-</div>
+<?php
+// Попередній модальний блок з інформацією про реєстрацію прибрано,
+// щоб не дублювати повідомлення та рекламу у блоці авторизації.
+?>
 <?php /* * /
 $form = ActiveForm::begin([
                         'id' => 'login-form', // Optional. I just like to keep things under control

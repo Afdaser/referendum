@@ -82,12 +82,9 @@ $locale = Yii::$app->language;
 
 <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
-    <div id="outdated">
-        <h6>Your browser is out-of-date!</h6>
-        <p>Update your browser to view this website correctly.</p>
-        <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
-    </div>
-
+    <?php
+    // Віджет шапки сайту рендериться одразу, без попереджувальних банерів про застарілий браузер.
+    ?>
     <?= $this->render('main/header'); ?>
 
             <div class="sub_header_slider_b">

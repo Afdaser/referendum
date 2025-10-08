@@ -17,7 +17,7 @@ class AppAsset extends AssetBundle
         // Referendum social
         '/css/normalize.min.css',
         '/css/bootstrap-theme.min.css',
-        '/css/outdatedBrowser.min.css',
+        // Стилі плагіна outdatedBrowser більше не підключаємо, адже банер прибрано з макету.
         '/css/jquery.bxslider.css',
         '/css/font-awesome.css',
         '/css/main.css',

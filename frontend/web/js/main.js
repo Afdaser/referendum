@@ -1,8 +1,6 @@
 var slider;
 $(document).ready(function(){
-/* #DEV:detectOutdated * /
-	detectOutdatedBrowser();
-/* */
+    // Банер застарілого браузера вимкнено, тож жодних перевірок outdatedBrowser не запускаємо.
     initSliderHomepage();
     hoverGraphBtn();
     $('.slider_next').click(function(e){
@@ -62,15 +60,6 @@ function initSliderHomepage() {
         });
     }
 }
-/* #DEV:detectOutdated * /
-function detectOutdatedBrowser(){
-	outdatedBrowser({
-        bgColor: '#f25648',
-        color: '#ffffff',
-        lowerThan: 'transform' // 'IE9'
-    });
-}
-/* */
 function hoverGraphBtn(){
     $('.chosen_graph_b').hover(function(){
         $(this).toggleClass('animated_b');

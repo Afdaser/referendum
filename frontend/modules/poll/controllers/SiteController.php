@@ -4,6 +4,7 @@ namespace frontend\modules\poll\controllers;
 
 use Yii;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 //use yii\web\Controller;
 use frontend\modules\poll\controllers\AbstractController AS Controller;
 
@@ -153,7 +154,8 @@ class SiteController extends Controller
     public function actionUserProfile($id) {
         if($user = User::findByPk($id)){
             $this->menu = [];
-            Yii::$app->page->setRobots('noindex, follow');
+            // Дозволяємо індексацію публічної сторінки профілю.
+            Yii::$app->page->setRobots('index, follow');
 
             // Формуємо правильні SEO-метадані для публічного профілю користувача.
             $langDomains = Yii::$app->params['langDomains'] ?? [];
@@ -164,9 +166,14 @@ class SiteController extends Controller
             $languageId = Language::getLanguageByName($langCode);
             $canonicalDomain = $langDomains[$languageId] ?? Yii::$app->request->hostName;
             $canonicalUrl = 'https://' . $canonicalDomain . '/';
+            // Канонічну адресу тимчасово залишаємо на головній сторінці мовного піддомену,
+            // щоб уникнути дублювання профілю з альтернативними ідентифікаторами.
+            // Нормалізуємо адресу через yii\helpers\Url::to(), щоб уникнути проблем із
+            // можливими додатковими параметрами у майбутніх змінах конфігурації URL.
+            $absoluteCanonical = Url::to($canonicalUrl);
             Yii::$app->view->registerLinkTag([
                 'rel' => 'canonical',
-                'href' => $canonicalUrl,
+                'href' => $absoluteCanonical,
             ]);
 
             $profileTitle = sprintf('%s - Referendum', $user->getFullUserName());

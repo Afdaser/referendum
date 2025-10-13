@@ -1,6 +1,7 @@
 <?php
 
 use yii\widgets\Menu;
+use yii\helpers\Html;
 use common\models\Poll;
 
 /* @var $this SiteController */
@@ -10,6 +11,10 @@ Yii::$app->params['category'] = $category;
 Yii::$app->params['model'] = isset($search) ? $search : null;
 
 $polls = $dataProvider->getModels();
+$csrfRequest = Yii::$app->request;
+// Отримуємо CSRF-параметри один раз, щоб не дублювати виклики у кожній формі голосування.
+$csrfParam = $csrfRequest->csrfParam;
+$csrfToken = $csrfRequest->getCsrfToken();
 ?>
 
 <?= (YII_ENV == 'dev') ? "<!-- #DEV24-04 \n". __FILE__."\n -->" : ''; ?>
@@ -361,14 +366,24 @@ $this->registerJs($scriptNotGuest);
                     <h3>#DEV1</h3>
                                                                                                         <div class="inner_block_chosen">
                                         <div class="item_chose_poll">
-            <a href="/poll/vote?option=1512" class="radio_link poll-option-vote"><span class="radio_circle"></span>
-                <span class="link_text">Yes</span>
-            </a>
+            <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
+                <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
+                <input type="hidden" name="option" value="1512">
+                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                    <span class="link_text">Yes</span>
+                </button>
+            </form>
         </div>
             <div class="item_chose_poll">
-            <a href="/poll/vote?option=1513" class="radio_link poll-option-vote"><span class="radio_circle"></span>
-                <span class="link_text">No</span>
-            </a>
+            <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
+                <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
+                <input type="hidden" name="option" value="1513">
+                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                    <span class="link_text">No</span>
+                </button>
+            </form>
         </div>
     
 <script>
@@ -426,14 +441,24 @@ $this->registerJs($scriptNotGuest);
                     <h3>#DEV1</h3>
                                                                                                         <div class="inner_block_chosen">
                                         <div class="item_chose_poll">
-            <a href="/poll/vote?option=1554" class="radio_link poll-option-vote"><span class="radio_circle"></span>
-                <span class="link_text">Yes</span>
-            </a>
+            <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
+                <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
+                <input type="hidden" name="option" value="1554">
+                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                    <span class="link_text">Yes</span>
+                </button>
+            </form>
         </div>
             <div class="item_chose_poll">
-            <a href="/poll/vote?option=1555" class="radio_link poll-option-vote"><span class="radio_circle"></span>
-                <span class="link_text">No</span>
-            </a>
+            <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
+                <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
+                <input type="hidden" name="option" value="1555">
+                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                    <span class="link_text">No</span>
+                </button>
+            </form>
         </div>
     
 <script>

@@ -258,12 +258,14 @@ class PollController extends \yii\web\Controller
     /*
      * Vote for poll`s option
      */
-    public function actionVote($option)
+    public function actionVote()
     {
-        if(!empty($option)){
-            $id = (int) $option;
-        }else{
-            $id = (int) Yii::$app->request->get('option');
+        $request = Yii::$app->request;
+        // Використовуємо POST, щоб не передавати ідентифікатор опції в URL.
+        $id = (int) $request->post('option');
+        if(!$id){
+            // Залишаємо читання GET лише для зворотної сумісності зі старими посиланнями.
+            $id = (int) $request->get('option');
         }
 
 //        echo '<h1>'.__METHOD__.'</h1>';
@@ -276,6 +278,11 @@ class PollController extends \yii\web\Controller
 
         if (!$option) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.').'#dev02');
+        }
+
+        if(!$request->isPost){
+            // Якщо прийшов GET-запит зі старого посилання, просто повертаємо користувача до опитування.
+            return $this->redirect(['view','id'=>$option->poll_id]);
         }
 
 /* / #TASK:3.1 Gues can vote old code

@@ -44,21 +44,32 @@ class SiteController extends Controller
         $this->limit = $limit;
         $this->category = 'hot';
 
-        $langDomains = Yii::$app->params['langDomains'] ?? [];
-        $langCode = substr(Yii::$app->language, 0, 2);
-        if ($langCode === 'uk') {
-            $langCode = 'ua';
+        // === Canonical ===
+        // Вихідна логіка: кожна мовна версія редіректила на піддомен із мапи `langDomains`.
+        // Поточна вимога — кожен домен/піддомен вважається канонічним сам для себе без редіректів.
+        $request = Yii::$app->request;
+        $currentHost = $request->hostName;
+        $pathInfo = trim($request->pathInfo, '/');
+        $queryParams = $request->getQueryParams();
+
+        // `page=1` не впливає на вміст, тому прибираємо його з canonical, щоб уникнути дубляжу.
+        if (isset($queryParams['page']) && (int) $queryParams['page'] <= 1) {
+            unset($queryParams['page']);
         }
-        $languageId = Language::getLanguageByName($langCode);
-        $canonicalDomain = $langDomains[$languageId] ?? 'en.referendum.social';
-        $canonicalUrl = 'https://' . $canonicalDomain . '/';
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
+
+        $canonicalPath = $pathInfo === '' ? '/' : '/' . $pathInfo;
+        if (!empty($queryParams)) {
+            $canonicalPath .= '?' . http_build_query($queryParams);
         }
+
+        // Канонікал завжди вказує на поточний хост — саме це зберігає сторінку для кожної мови окремо.
+        $canonicalUrl = 'https://' . $currentHost . $canonicalPath;
+
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,
         ]);
+        // === /Canonical ===
 
         if ($langCode === 'ua') {
             $title = 'Останні опитування громадської думки про все | Referendum';

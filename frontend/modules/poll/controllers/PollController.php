@@ -93,12 +93,11 @@ class PollController extends \yii\web\Controller
             $poll->showResultOnMainPage = true;
         }
 
-        $langDomains = Yii::$app->params['langDomains'] ?? [];
-        $canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
-        $canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
-        }
+        $currentHost = Yii::$app->request->hostName;
+        // Раніше canonical примусово вів на мовний піддомен з `langDomains`.
+        // Тепер залишаємо поточний хост, щоб кожна мовна версія мала власну канонічну адресу без редіректів.
+        $canonicalUrl = 'https://' . $currentHost . '/poll/' . $poll->id;
+
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,

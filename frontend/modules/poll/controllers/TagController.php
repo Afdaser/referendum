@@ -18,9 +18,10 @@ class TagController extends Controller
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-        // === Canonical та редірект на канонічний піддомен ===
-        $langDomains = Yii::$app->params['langDomains'] ?? [];
-        $canonicalDomain = $langDomains[$tagModel->language_id] ?? 'en.referendum.social';
+        // === Canonical ===
+        // Історично сторінка редіректила на мовний піддомен з `langDomains`.
+        // Відтепер кожен піддомен сам для себе є канонічним, тож редіректів не залишаємо.
+        $currentHost = Yii::$app->request->hostName;
 
         // Підтримка пагінації в canonical (якщо є /page/N)
         $page = (int) Yii::$app->request->get('page', 1);
@@ -29,16 +30,13 @@ class TagController extends Controller
             $path .= '/page/' . $page;
         }
 
-        $canonicalUrl = 'https://' . $canonicalDomain . $path;
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
-        }
+        $canonicalUrl = 'https://' . $currentHost . $path;
 
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,
         ]);
-        // === /Canonical та редірект ===
+        // === /Canonical ===
 
         $searchModel = new PollSearch();
         $searchForm = new SearchForm();

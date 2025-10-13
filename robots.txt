@@ -5,7 +5,7 @@ Disallow: /user/newComments
 Disallow: /user/passwordRecovery
 Disallow: /site/myPolls
 Disallow: /*vote?option
-Disallow: /site/userProfile/
+Disallow: /Profile/
 Disallow: /site/hotPolls
 Disallow: /*reply
 Disallow: /site/search

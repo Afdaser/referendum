@@ -154,6 +154,26 @@ class SiteController extends Controller
         if($user = User::findByPk($id)){
             $this->menu = [];
             Yii::$app->page->setRobots('noindex, follow');
+
+            // Формуємо правильні SEO-метадані для публічного профілю користувача.
+            $langDomains = Yii::$app->params['langDomains'] ?? [];
+            $langCode = substr(Yii::$app->language, 0, 2);
+            if ($langCode === 'uk') {
+                $langCode = 'ua';
+            }
+            $languageId = Language::getLanguageByName($langCode);
+            $canonicalDomain = $langDomains[$languageId] ?? Yii::$app->request->hostName;
+            $canonicalUrl = 'https://' . $canonicalDomain . '/';
+            Yii::$app->view->registerLinkTag([
+                'rel' => 'canonical',
+                'href' => $canonicalUrl,
+            ]);
+
+            $profileTitle = sprintf('%s - Referendum', $user->getFullUserName());
+            Yii::$app->page->setTitle($profileTitle);
+            Yii::$app->page->setDescription('Polls and opinion about everything - take part in polls and discussion: vote, write comments, suggest vote options or create your own polls. 📊 Dive in! 🌟');
+            $this->view->title = $profileTitle;
+
             return self::renderIndex('user', $user);
         } else {
             $this->redirect('/');

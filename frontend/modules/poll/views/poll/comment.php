@@ -6,9 +6,9 @@ use common\models\User;
 
 /*
  * Yii1:
- * Url::toRoute(['/site/userProfile', 'id'=>$comment->user_id] );
+ * Url::toRoute(['/poll/site/user-profile', 'id'=>$comment->user_id] );
  *
- * /site/userProfile
+ * /Profile
  */
 ?>
 <div class="title_comment_item_b clearfix" itemprop="author" itemtype="https://schema.org/Person" itemscope>

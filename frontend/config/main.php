@@ -126,7 +126,7 @@ return [
                 ],
                 // User profile (common/public):
                 [
-                    'pattern' => '/site/userProfile/<id:\d+>',
+                    'pattern' => '/Profile/<id:\d+>',
                     'route' => '/poll/site/user-profile',
                 ],
 

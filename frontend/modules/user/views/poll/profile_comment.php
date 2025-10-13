@@ -1,5 +1,5 @@
 <div class="title_comment_item_b clearfix">
-    <a href="<?php echo Yii::app()->createUrl('/site/userProfile',array('id'=>$comment->user_id));?>" class="name_link"><?php echo User::getUserName($comment->user_id); ?></a>
+    <a href="<?php echo Yii::app()->createUrl('/poll/site/user-profile',array('id'=>$comment->user_id));?>" class="name_link"><?php echo User::getUserName($comment->user_id); ?></a>
     <span class="date_writing"><?php echo StringHelper::relative_date($comment->date_add); ?></span>
     <?php if(isset($isNew)):?>
         <?php if(!$isNew):?>

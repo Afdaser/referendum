@@ -8,9 +8,15 @@ use yii\web\View;
 <?php if(!$poll->isShowResult()):?>
     <?php foreach($poll->pollOptions as $option): ?>
         <div class="item_chose_poll">
-            <a href="<?= Url::toRoute(['/poll/poll/vote', 'option' => $option->id ]); ?>" class="radio_link poll-option-vote"><span class="radio_circle"></span>
-                <span class="link_text"><?= $option->title; ?></span>
-            </a>
+            <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
+                <!-- Відправляємо голос POST-запитом, щоб URL не містив параметрів голосування. -->
+                <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
+                <input type="hidden" name="option" value="<?= $option->id; ?>">
+                <button type="submit" class="radio_link poll-option-vote">
+                    <span class="radio_circle"></span>
+                    <span class="link_text"><?= $option->title; ?></span>
+                </button>
+            </form>
         </div>
     <?php endforeach; ?>
     <div class="item_chose_poll see_results">

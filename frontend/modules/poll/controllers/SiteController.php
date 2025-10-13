@@ -44,17 +44,16 @@ class SiteController extends Controller
         $this->limit = $limit;
         $this->category = 'hot';
 
-        $langDomains = Yii::$app->params['langDomains'] ?? [];
         $langCode = substr(Yii::$app->language, 0, 2);
         if ($langCode === 'uk') {
             $langCode = 'ua';
         }
-        $languageId = Language::getLanguageByName($langCode);
-        $canonicalDomain = $langDomains[$languageId] ?? 'en.referendum.social';
-        $canonicalUrl = 'https://' . $canonicalDomain . '/';
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
-        }
+
+        $request = Yii::$app->request;
+
+        // Канонічне посилання завжди повторює поточний домен і шлях (з урахуванням пагінації).
+        // Це дозволяє головному домену referendum.social працювати без редіректів на en.referendum.social.
+        $canonicalUrl = $request->hostInfo . $request->url;
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,

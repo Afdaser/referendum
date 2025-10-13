@@ -94,9 +94,11 @@ class PollController extends \yii\web\Controller
         }
 
         $langDomains = Yii::$app->params['langDomains'] ?? [];
+        $hostName = Yii::$app->request->hostName;
         $canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
         $canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
+        if ($hostName !== $canonicalDomain) {
+            // Перенаправляємо на мовний піддомен, щоб головний домен лишався лише агрегатором.
             return $this->redirect($canonicalUrl, 301);
         }
         Yii::$app->view->registerLinkTag([

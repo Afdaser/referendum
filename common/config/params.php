@@ -57,5 +57,15 @@ return [
         3 => 'en.referendum.social',
         4 => 'no.referendum.social',
     ],
+    // Єдиний домен-агрегатор (без піддомену), який показує змішану головну без мовного фільтра.
+    'aggregatorHost' => 'referendum.social',
+    // Додаткові псевдоніми домену-агрегатора, які ми жорстко перенаправляємо на канонічний корінь.
+    'aggregatorHostAliases' => [
+        'www.referendum.social',
+    ],
+    // Мапа псевдонімів канонічних доменів: дозволяє враховувати альтернативні CNAME під час редіректів.
+    'canonicalDomainAliases' => [
+        'en.referendum.social' => [],
+    ],
 ];
 

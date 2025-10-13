@@ -20,8 +20,8 @@ class TagController extends Controller
 
         // === Canonical та редірект на канонічний піддомен ===
         $langDomains = Yii::$app->params['langDomains'] ?? [];
+        $hostName = Yii::$app->request->hostName;
         $canonicalDomain = $langDomains[$tagModel->language_id] ?? 'en.referendum.social';
-
         // Підтримка пагінації в canonical (якщо є /page/N)
         $page = (int) Yii::$app->request->get('page', 1);
         $path = '/tag/' . rawurlencode($tag);
@@ -30,7 +30,8 @@ class TagController extends Controller
         }
 
         $canonicalUrl = 'https://' . $canonicalDomain . $path;
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
+        if ($hostName !== $canonicalDomain) {
+            // Список тегу завжди показуємо на мовному піддомені, аби уникнути дублювання на головному домені.
             return $this->redirect($canonicalUrl, 301);
         }
 

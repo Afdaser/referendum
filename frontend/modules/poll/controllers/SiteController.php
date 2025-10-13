@@ -24,6 +24,7 @@ class SiteController extends Controller
     protected $period;
     protected $limit;
     protected $category;
+    protected $languageFilterId;
 
 
     protected $data = [
@@ -45,16 +46,33 @@ class SiteController extends Controller
         $this->category = 'hot';
 
         $langDomains = Yii::$app->params['langDomains'] ?? [];
+        $aggregatorHost = Yii::$app->params['aggregatorHost'] ?? 'referendum.social';
+        $aggregatorAliases = Yii::$app->params['aggregatorHostAliases'] ?? [];
+        $hostName = Yii::$app->request->hostName;
         $langCode = substr(Yii::$app->language, 0, 2);
         if ($langCode === 'uk') {
             $langCode = 'ua';
         }
         $languageId = Language::getLanguageByName($langCode);
         $canonicalDomain = $langDomains[$languageId] ?? 'en.referendum.social';
-        $canonicalUrl = 'https://' . $canonicalDomain . '/';
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
+        $isAggregatorHost = ($hostName === $aggregatorHost);
+        if (!$isAggregatorHost) {
+            // Псевдоніми головного домену завжди перенаправляємо на канонічний корінь.
+            if (in_array($hostName, $aggregatorAliases, true)) {
+                return $this->redirect('https://' . $aggregatorHost . '/', 301);
+            }
+            // Перевіряємо можливі CNAME псевдоніми лише для мовних піддоменів.
+            $domainAliases = Yii::$app->params['canonicalDomainAliases'][$canonicalDomain] ?? [];
+            if ($hostName !== $canonicalDomain && !in_array($hostName, $domainAliases, true)) {
+                // Для мовних піддоменів зберігаємо попередню поведінку: завжди редіректимо на канонічний домен.
+                return $this->redirect('https://' . $canonicalDomain . '/', 301);
+            }
         }
+        // На головному домені не обмежуємо вибірку мовою, щоби показати всі опитування.
+        $this->languageFilterId = $isAggregatorHost ? '' : $languageId;
+        $canonicalTarget = $isAggregatorHost ? $aggregatorHost : $canonicalDomain;
+        // Canonical має відповідати домену, на якому ми реально показуємо агреговану головну сторінку.
+        $canonicalUrl = 'https://' . $canonicalTarget . '/';
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,
@@ -229,7 +247,7 @@ class SiteController extends Controller
             'user' => !empty($user) ? $user : null,
             //$searchModel,
             'period' => $this->period,
-            'language' => $this->request->languageId ?? '',
+            'language' => $this->languageFilterId ?? ($this->request->languageId ?? ''),
 //            'limit' => $limit,
 //            'tag' => $tag,
 //            'sort' => $sort,

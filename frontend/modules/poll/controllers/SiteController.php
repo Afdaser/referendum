@@ -50,11 +50,17 @@ class SiteController extends Controller
             $langCode = 'ua';
         }
         $languageId = Language::getLanguageByName($langCode);
-        $canonicalDomain = $langDomains[$languageId] ?? 'en.referendum.social';
-        $canonicalUrl = 'https://' . $canonicalDomain . '/';
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
+        $currentHost = Yii::$app->request->hostName;
+        $canonicalDomain = $langDomains[$languageId] ?? $currentHost;
+
+        // Не перенаправляємо головний домен на англомовну версію, а будуємо канонічне
+        // посилання з урахуванням поточної адреси. Це дає можливість керувати відображенням
+        // мовних версій без зайвих редіректів та зберігає коректні SEO-теги.
+        if ($currentHost === SITE_DOMAIN || $canonicalDomain === $currentHost) {
+            $canonicalDomain = $currentHost;
         }
+
+        $canonicalUrl = 'https://' . $canonicalDomain . '/';
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,

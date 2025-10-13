@@ -120,7 +120,8 @@ class PollSearch extends Poll
             'query' => $query,
             'pagination' => [
                 'pageSize' => $params['limit'],
-				  'pageSizeParam' => false, // Запрещает `per-page` в URL
+                'pageSizeParam' => false, // Запрещает `per-page` в URL
+                'forcePageParam' => false, // Не додаємо ?page=1 для першої сторінки
             ],
             'sort' => [
                 'defaultOrder' => $sortOrder,

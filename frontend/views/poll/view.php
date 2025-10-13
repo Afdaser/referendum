@@ -144,7 +144,7 @@ if (!empty($poll->pollLanguage)) {
 						</div>
 					</div>
 					<div class="bottom_poll_b clearfix">
-                                                                <span class="item_bottom_poll"> <?php echo Yii::t("poll", 'Користувач'); ?>: <a href="<?= Url::to(['/site/userProfile', 'id' => $poll->user_id]); ?>"><?= $poll->user->getFullUserName();?></a></span>
+                                            <span class="item_bottom_poll"> <?php echo Yii::t("poll", 'Користувач'); ?>: <a href="<?= Url::to(['/poll/site/user-profile', 'id' => $poll->user_id]); ?>"><?= $poll->user->getFullUserName();?></a></span>
 						<span class="item_bottom_poll"> <?php echo Yii::t("poll", 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?></span>
 						<?php if ($poll->isOpen()): ?>
 							<div class="right_poll_status open">

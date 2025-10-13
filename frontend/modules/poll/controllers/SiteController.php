@@ -44,21 +44,12 @@ class SiteController extends Controller
         $this->limit = $limit;
         $this->category = 'hot';
 
-        $langDomains = Yii::$app->params['langDomains'] ?? [];
+        // Канонічні посилання для головної сторінки формуються глобально (наприклад, у макеті),
+        // тому тут залишаємо лише підготовку текстових метаданих без додаткової логіки редіректів.
         $langCode = substr(Yii::$app->language, 0, 2);
         if ($langCode === 'uk') {
             $langCode = 'ua';
         }
-        $languageId = Language::getLanguageByName($langCode);
-        $canonicalDomain = $langDomains[$languageId] ?? 'en.referendum.social';
-        $canonicalUrl = 'https://' . $canonicalDomain . '/';
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
-            return $this->redirect($canonicalUrl, 301);
-        }
-        Yii::$app->view->registerLinkTag([
-            'rel' => 'canonical',
-            'href' => $canonicalUrl,
-        ]);
 
         if ($langCode === 'ua') {
             $title = 'Останні опитування громадської думки про все | Referendum';

@@ -3,6 +3,7 @@
 // /var/www/vhosts_yii/referendum.social/referendum.social.local/frontend/widgets/views/filters/_sort.php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 use common\models\Country;
 use common\models\CountryRegion;
@@ -40,23 +41,68 @@ use common\models\User;
 
 <?php if ($user): ?>
 
+<?php
+    // Мікророзмітка профілю потребує підготовлених значень, тому збираємо їх один раз.
+    $profile = $user->profile;
+    $profileUrl = Url::to(['/poll/site/user-profile', 'id' => $user->id], true);
+    $dateCreated = $user->created_at ? Yii::$app->formatter->asDatetime($user->created_at, 'php:c') : null;
+    $dateModified = $user->updated_at ? Yii::$app->formatter->asDatetime($user->updated_at, 'php:c') : null;
+    $profileDescription = $profile && $profile->bio ? $profile->bio : ($profile->preferences ?? '');
+?>
+
 <?php if (YII_DEBUG || !empty($debug)) :?>
 <div style="border:2px dashed red;"><?= '#DEV03:block01 [if ($user)]'; ?></div>
 <?php endif; ?>
 
-    <div class="chart_b user_page_b">
+    <div class="chart_b user_page_b" itemscope itemtype="https://schema.org/ProfilePage">
+        <?php if ($dateCreated): ?>
+            <meta itemprop="dateCreated" content="<?= Html::encode($dateCreated); ?>">
+        <?php endif; ?>
+        <?php if ($dateModified): ?>
+            <meta itemprop="dateModified" content="<?= Html::encode($dateModified); ?>">
+        <?php endif; ?>
+        <meta itemprop="url" content="<?= Html::encode($profileUrl); ?>">
         <div class="top_b_chart">
             <a class="btn_prev_var"
-               href="<?=  Yii::$app->request->referrer; ?>"><?= Yii::t("poll", 'Назад'); ?><?= (YII_ENV == 'dev') ? '#DEV24-03' : ''; ?></a>
+               href="<?=  Yii::$app->request->referrer; ?>"><?= Yii::t("poll", 'Назад'); ?><?= (YII_ENV == 'dev') ? '#DEV24-03': ''; ?></a>
         </div>
-        <div class="my_profile_b">
-            <div class="profile_name">
-                <?= $user->getFullUserName(); ?>
+        <div class="my_profile_b" itemprop="mainEntity" itemscope itemtype="https://schema.org/Person">
+            <meta itemprop="identifier" content="<?= Html::encode((string) $user->id); ?>">
+            <?php if ($user->username): ?>
+                <meta itemprop="alternateName" content="<?= Html::encode($user->username); ?>">
+            <?php endif; ?>
+            <?php if ($profile && $profile->public_email): ?>
+                <meta itemprop="email" content="<?= Html::encode($profile->public_email); ?>">
+            <?php endif; ?>
+            <?php if ($profileDescription): ?>
+                <meta itemprop="description" content="<?= Html::encode($profileDescription); ?>">
+            <?php endif; ?>
+            <?php if ($profile && $profile->website): ?>
+                <link itemprop="sameAs" href="<?= Html::encode($profile->website); ?>">
+            <?php endif; ?>
+            <div class="profile_name" itemprop="name">
+                <?= Html::encode($user->getFullUserName()); ?>
             </div>
             <div class="text_my_profile_data">
-                <?= Yii::t("poll", 'Рейтинг користувача'); ?>:  <?= User::getUserRating($user->id);?><br>
-                <?= Yii::t("poll", 'Всього опитувань'); ?>: <?= User::getPollsCount($user->id); ?><br>
-                <?= Yii::t("poll", 'Всього коментарів'); ?>: <?= $user->commentsCount; ?>
+                <?php // Позначаємо рейтинг як LikeAction, щоб пошуковики розуміли «карму» профілю. ?>
+                <span class="profile_rating"
+                      itemprop="interactionStatistic"
+                      itemscope
+                      itemtype="https://schema.org/InteractionCounter">
+                    <meta itemprop="interactionType" content="https://schema.org/LikeAction">
+                    <?= Yii::t("poll", 'Рейтинг користувача'); ?>:
+                    <span itemprop="userInteractionCount"><?= Html::encode(User::getUserRating($user->id)); ?></span>
+                </span><br>
+                <span itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
+                    <meta itemprop="interactionType" content="https://schema.org/WriteAction">
+                    <?= Yii::t("poll", 'Всього опитувань'); ?>:
+                    <span itemprop="userInteractionCount"><?= User::getPollsCount($user->id); ?></span>
+                </span><br>
+                <span itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
+                    <meta itemprop="interactionType" content="https://schema.org/CommentAction">
+                    <?= Yii::t("poll", 'Всього коментарів'); ?>:
+                    <span itemprop="userInteractionCount"><?= $user->commentsCount; ?></span>
+                </span>
             </div>
         </div>
         <div class="sort_b clearfix">

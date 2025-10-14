@@ -84,7 +84,11 @@ use common\models\User;
                 <?= Html::encode($user->getFullUserName()); ?>
             </div>
             <div class="text_my_profile_data">
-                <?php // Позначаємо рейтинг як LikeAction, щоб пошуковики розуміли «карму» профілю. ?>
+                <?php
+                // Текстові лічильники нижче локалізуються через категорію "poll",
+                // щоб переклади профілю були доступні на всіх піддоменах.
+                // Позначаємо рейтинг як LikeAction, щоб пошуковики розуміли «карму» профілю.
+                ?>
                 <span class="profile_rating"
                       itemprop="interactionStatistic"
                       itemscope

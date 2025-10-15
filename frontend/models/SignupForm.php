@@ -56,6 +56,7 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
+        // Тимчасово вимикаємо відправку листа підтвердження, доки не налаштовано поштовий сервіс.
         return $user->save() && $this->sendEmail($user);
     }
 
@@ -66,6 +67,8 @@ class SignupForm extends Model
      */
     protected function sendEmail($user)
     {
+        // @todo Повернути надсилання, коли конфігурація пошти буде завершена.
+        /*
         return Yii::$app
             ->mailer
             ->compose(
@@ -76,5 +79,9 @@ class SignupForm extends Model
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
+        */
+
+        // Поки функціонал вимкнено, просто підтверджуємо успішне завершення виклику.
+        return true;
     }
 }

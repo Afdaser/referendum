@@ -66,14 +66,15 @@ use frontend\helpers\Url;
                 <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?></div>
             </div>
 <?php /* * / ?>
-            <FORM METHOD="POST" ACTION="/">
-                <div class="modal-body" id="registrationBody">
+            <form method="post" action="/">
+                <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken); ?>
+                <div class="modal-body registration-body">
                     <div class="item_reg clearfix">
                         <div class="left_reg_label">
                             <?php echo Yii::t("main", 'Логін'); ?> *
                         </div>
                         <div class="right_reg_label item_param item_show">
-                            <input name="RegisterForm[login]" id="login" type="text" class="autocomplete" value="<?php echo $registerForm->login;?>">
+                            <input name="RegisterForm[login]" type="text" class="autocomplete" value="<?php echo $registerForm->login;?>">
                         </div>
                     </div>
                     <div class="item_reg clearfix">
@@ -81,7 +82,7 @@ use frontend\helpers\Url;
                             <?php echo Yii::t("main", 'Email'); ?> *
                         </div>
                         <div class="right_reg_label item_param item_show email">
-                            <input name="RegisterForm[email]" id="email" type="text" class="autocomplete" value="<?php echo $registerForm->email;?>">
+                            <input name="RegisterForm[email]" type="email" class="autocomplete" value="<?php echo $registerForm->email;?>">
                             <a href="javascript:void(0)" class="del_btn"></a>
                         </div>
                     </div>
@@ -112,10 +113,11 @@ use frontend\helpers\Url;
                                     'name' => 'RegisterForm[verifyCode]',
                                     'captchaAction' => '/site/captcha',
                                     'imageOptions' => [
+                                        'id' => 'registerform-verifycode-sidebar-image',
                                         'alt' => 'Captcha',
                                         'title' => 'Натисніть для оновлення',
+                                        'class' => 'captcha-image',
                                         'style' => 'cursor:pointer;',
-                                        'onclick' => "this.src = this.src.split('?')[0] + '?' + Math.random();",
                                     ],
                                     'template' => '{image}',
                                 ]);
@@ -124,8 +126,8 @@ use frontend\helpers\Url;
                         </div>
                     </div>
                     <div class="bottom_text_reg">
-                        <input name="RegisterForm[agreeTerms]" type="checkbox" id="agreeTerms">
-                        <?php echo Yii::t("main", 'Погоджуюсь з'); ?> <a href="#" id="rules-block"><?php echo Yii::t("main", 'Правилами та умовами'); ?></a> <?php echo Yii::t("main", 'сайту'); ?>.
+                        <input name="RegisterForm[agreeTerms]" type="checkbox" class="agree-terms">
+                        <?php echo Yii::t("main", 'Погоджуюсь з'); ?> <a href="#" class="rules-block-link"><?php echo Yii::t("main", 'Правилами та умовами'); ?></a> <?php echo Yii::t("main", 'сайту'); ?>.
                     </div>
                     <div class="clearfix"></div>
                     <div class="rules_block">
@@ -145,19 +147,34 @@ use frontend\helpers\Url;
                     <div class="btn_b_modal">
                         <button type="submit" class="my_profile modal_add next_modal_btn"><?php echo Yii::t("main", 'ЗАРЕЄСТРУВАТИСЯ'); ?></button>
                     </div>
-                    <a href="#" class="create_new_poll" id="registrationCancel" data-dismiss="modal"><?php echo Yii::t("main", 'Скасувати'); ?></a>
+                    <a href="#" class="create_new_poll registration-cancel" data-dismiss="modal"><?php echo Yii::t("main", 'Скасувати'); ?></a>
                 </div>
-            </FORM>
+            </form>
 <?php /* */ ?>
         </div>
     </div>
 </div>
 
 
-<?php
-// Попередній модальний блок з інформацією про реєстрацію прибрано,
-// щоб не дублювати повідомлення та рекламу у блоці авторизації.
-?>
+<div class="modal new_poll" id="registration_info" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span class="sr-only"><?php echo Yii::t("main", 'Close'); ?></span>
+                </button>
+                <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?>#DEV24-01</div>
+            </div>
+            
+<!--            <div class="modal-footer">
+                <div class="sub_title_modal"></div>
+                <div class="btn_b_modal">
+                    <button type="submit" class="my_profile modal_add next_modal_btn"><?php /*echo Yii::t("main", 'ЗАРЕЄСТРУВАТИСЯ'); */?></button>
+                </div>
+                <a href="#" class="create_new_poll" id="registrationCancel" data-dismiss="modal"><?php /*echo Yii::t("main", 'Скасувати'); */?></a>
+            </div-->
+        </div>
+</div>
 <?php /* * /
 $form = ActiveForm::begin([
                         'id' => 'login-form', // Optional. I just like to keep things under control

@@ -163,7 +163,7 @@ use frontend\helpers\Url;
                 <button type="button" class="close" data-dismiss="modal">
                     <span class="sr-only"><?php echo Yii::t("main", 'Close'); ?></span>
                 </button>
-                <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?>#DEV24-01</div>
+                <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?></div>
             </div>
             
 <!--            <div class="modal-footer">

@@ -206,15 +206,23 @@ a.logo, div.logo {
     background: transparent;
     left: 0;
 }
-a.inner_slide_b {
+.inner_slide_b {
     text-decoration: none;
     display: block;
 }
-a.inner_slide_b:hover .item_hover {
+.inner_slide_b:hover .item_hover {
     display: block;
 }
-a.inner_slide_b:hover .item_normal {
+.inner_slide_b:hover .item_normal {
     display: none;
+}
+.poll_title_link {
+    color: #055C2B;
+    text-decoration: none;
+}
+.poll_title_link:hover,
+.poll_title_link:focus {
+    text-decoration: underline;
 }
 .slide {
     width: 310px !important;

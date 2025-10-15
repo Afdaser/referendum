@@ -9,9 +9,12 @@
             <div class="slider">
                 <?php foreach ($activePolls as $poll): ?>
                     <div class="slide">
-                        <a href="<?php echo $poll->url; ?>" class="inner_slide_b">
+                        <div class="inner_slide_b">
                             <div class="item_normal">
-                                <?php echo $poll->title; ?>
+                                <?php // Лінк лише навколо тексту опитування, решта блоку лишається статичною. ?>
+                                <a class="poll_title_link" href="<?php echo $poll->url; ?>">
+                                    <?php echo $poll->title; ?>
+                                </a>
                             </div>
                             <div class="item_hover clearfix">
                                 <div class="left_info_b">
@@ -27,7 +30,7 @@
                                     <?php echo Yii::t("poll", 'голосів'); ?>: <?php echo count($poll->pollOptionsVoters); ?>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>

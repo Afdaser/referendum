@@ -206,15 +206,27 @@ a.logo, div.logo {
     background: transparent;
     left: 0;
 }
-a.inner_slide_b {
+.inner_slide_b {
     text-decoration: none;
     display: block;
+    position: relative;
 }
-a.inner_slide_b:hover .item_hover {
-    display: block;
+/* Показуємо інформаційний шар без приховування посилання на назву опитування. */
+.inner_slide_b:hover .item_hover,
+.inner_slide_b:focus-within .item_hover {
+    opacity: 1;
 }
-a.inner_slide_b:hover .item_normal {
-    display: none;
+.inner_slide_b:hover .item_normal,
+.inner_slide_b:focus-within .item_normal {
+    opacity: 0;
+}
+.poll_title_link {
+    color: #055C2B;
+    text-decoration: none;
+}
+.poll_title_link:hover,
+.poll_title_link:focus {
+    text-decoration: underline;
 }
 .slide {
     width: 310px !important;
@@ -231,6 +243,7 @@ a.inner_slide_b:hover .item_normal {
     justify-content: center;
     text-align: center;
     padding: 4px;
+    transition: opacity 0.2s ease-in-out;
 }
 .item_hover {
     width: 310px;
@@ -240,8 +253,13 @@ a.inner_slide_b:hover .item_normal {
     font-size: 11px;
     color: #848c8f;
     padding: 10px 0 0 11px;
-    display: none;
-
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.2s ease-in-out;
 }
 .left_info_b {
     display: inline-block;

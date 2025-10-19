@@ -20,7 +20,7 @@ return [
     // maximum number of comments that can be displayed in recent comments portlet
     'recentCommentCount' => 10,
     // maximum number of pools that can be displayed in sidebar
-    'POLLS_LIMIT_SIDEBAR' => 10,
+    'POLLS_LIMIT_SIDEBAR' => 5,
     // maximum number of pools that can be displayed in main page
     'POLLS_LIMIT_MAIN_PAGE' => 10,
     // maximum number of pools that can be displayed in top slider

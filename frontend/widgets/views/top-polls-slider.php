@@ -28,7 +28,8 @@
                                 </div>
                                 <div class="middle_text_info">
                                     <?php echo Yii::t("poll", 'коментарів'); ?>: <?php echo count($poll->pollComments); ?><br>
-                                    <?php echo Yii::t("poll", 'голосів'); ?>: <?php echo count($poll->pollOptionsVoters); ?>
+                                    <?php // Виводимо сумарну кількість голосів (зареєстровані + гості), щоб відображення у хедері було коректним. ?>
+                                    <?php echo Yii::t("poll", 'голосів'); ?>: <?php echo $poll->countPollOptionsVoters; ?>
                                 </div>
                             </div>
                         </div>

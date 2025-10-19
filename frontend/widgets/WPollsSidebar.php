@@ -84,6 +84,7 @@ class WPollsSidebar extends Widget {
                 ])
                 ->andWhere(['<>', 'status', Poll::POLL_STATUS_UNPUBLISHED])
                 ->andWhere(['<>', 'id', Poll::HOLDER_PAGE_POLL_ID])
+                // Показуємо лише п'ять останніх опитувань, аби сайдбар залишався компактним.
                 ->limit(Yii::$app->params['POLLS_LIMIT_SIDEBAR'])
                 ->orderBy(['date_add' => SORT_DESC])
                 ->all();
@@ -124,6 +125,7 @@ class WPollsSidebar extends Widget {
                 ->andWhere(['<>', 'p.id', Poll::HOLDER_PAGE_POLL_ID])
                 ->groupBy('p.id')
                 ->orderBy(['votes' => SORT_DESC])
+                // Та сама межа кількості застосовується і для популярних опитувань.
                 ->limit(Yii::$app->params['POLLS_LIMIT_SIDEBAR'])
                 ->all();
     }

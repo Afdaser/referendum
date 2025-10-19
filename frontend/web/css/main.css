@@ -435,6 +435,38 @@ a.logo, div.logo {
     min-height: 270px;
     min-width: 223px;
 }
+.top_banner_b .ad-placeholder {
+    /* Порожня заглушка тримає висоту банера, поки Google Ads не ініціалізує блок */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 270px;
+    width: 100%;
+    background: repeating-linear-gradient(135deg, #dce6e4, #dce6e4 18px, #edf3f1 18px, #edf3f1 36px);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.top_banner_b .ad-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 45%, rgba(255, 255, 255, 0) 90%);
+    animation: ad-placeholder-shimmer 1.6s infinite;
+}
+.top_banner_b ins[data-adsbygoogle-status] ~ .ad-placeholder {
+    /* Після появи атрибута від Google Ads прибираємо резервний блок */
+    display: none;
+}
+
+@keyframes ad-placeholder-shimmer {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
 .right_banner_b{
     height: 268px;
     width: 100%;

@@ -92,14 +92,17 @@ $locale = Yii::$app->language;
             </div>
             <div class="container clearfix">
                 <div class="row clearfix">
-                    <div class="top_banner_b" style="min-height:270px;height:auto !important;">
+                    <div class="top_banner_b">
 <?php if(YII_ENV == 'prod'): ?>
-                            <ins class="adsbygoogle"
-                                 style="display:block"
-                                 data-ad-client="ca-pub-3234808971320300"
-                                 data-ad-slot="5179063077"
-                                 data-ad-format="auto">
-                            </ins>
+                        <ins class="adsbygoogle"
+                             data-ad-client="ca-pub-3234808971320300"
+                             data-ad-slot="5179063077"
+                             data-ad-format="auto">
+                        </ins>
+                        <?php
+                        // Порожній резервний блок зберігає висоту під рекламу в кешованих версіях.
+                        ?>
+                        <div class="ad-placeholder" aria-hidden="true"></div>
 <?php else: ?>
                         <div <?= (YII_ENV == 'dev') ? ' style="border:2px dotted red;"' : '' ?>
                             <h4>adsbygoogle</h4>

@@ -48,11 +48,19 @@ $locale = Yii::$app->language;
 
     <!-- Styles
     ================================================== -->
+    <?php
+    // AppAsset підставляє preload-лінки зі службовим атрибутом data-rel, тому після завантаження
+    // браузер одразу перемикає їх у звичайні stylesheet без HTML-екранізації у JS-виразі onload.
+    ?>
     <?php $this->head() ?>
     <noscript>
-        <?= Html::cssFile('/css/bootstrap.min.css') ?>
+        <?php
+        // Якщо JavaScript вимкнено (або зламаний), даємо браузеру стандартні stylesheet-посилання.
+        // Так Googlebot і користувачі без JS все одно отримують ідентичний вигляд сторінки.
+        ?>
+        <?= Html::cssFile('/css/bootstrap.min.css', ['rel' => 'stylesheet']) ?>
         <?php foreach ($bundle->css as $cssFile): ?>
-            <?= Html::cssFile(rtrim($bundle->baseUrl, '/') . '/' . ltrim($cssFile, '/')) ?>
+            <?= Html::cssFile(rtrim($bundle->baseUrl, '/') . '/' . ltrim($cssFile, '/'), ['rel' => 'stylesheet']) ?>
         <?php endforeach; ?>
     </noscript>
 

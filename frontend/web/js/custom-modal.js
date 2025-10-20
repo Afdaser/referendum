@@ -1,6 +1,7 @@
 console.log('~/js/custom-modal.js?ver:0.16');
 // http://en.referendum.social.local/js/custom-modal.js
 $(document).ready(function () {
+    try {
 
     /* NEW POLL: */
     // Code for modal window:
@@ -168,6 +169,9 @@ $(document).ready(function () {
 //    alert('~/js/custom-modal.js');
 //    alert($.fn.jquery);
 //    alert(jQuery.fn.jquery);
+    } catch (error) {
+        console.error('Помилка в custom-modal.js. Ініціалізація модалок призупинена, проте стилі вже активні.', error);
+    }
 });
 
 /*

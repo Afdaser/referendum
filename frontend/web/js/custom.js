@@ -1,31 +1,33 @@
 console.log('~/referendum.social.local/frontend/web/js/custom.js:v0.02');
 
-highchartColors = ['#e0923e','#f5c356','#058f42','#3ac469','#59d9c8','#63b6dd','#238dbf','#726795','#45474d','#b16262'];
+window.highchartColors = ['#e0923e','#f5c356','#058f42','#3ac469','#59d9c8','#63b6dd','#238dbf','#726795','#45474d','#b16262'];
 
 $(document).ready(function(){
-    setTimeout(function(){
-        $('#uLogin div').attr('style','');
-        arr = document.querySelectorAll( '[title="Facebook"]' );
-        $(arr).attr('style','cursor: pointer;');
-        $(arr).addClass('social_auth facebook');
-        $(arr).prepend('<i class="fa fa-facebook"></i>');
-        arr = document.querySelectorAll( '[title="VK"]' );
-        $(arr).attr('style','cursor: pointer;');
-        $(arr).addClass('social_auth vk');
-        $(arr).prepend('<i class="fa fa-vk"></i>');
-        arr = document.querySelectorAll( '[title="Twitter"]' );
-        $(arr).attr('style','cursor: pointer;');
-        $(arr).addClass('social_auth twitter');
-        $(arr).prepend('<i class="fa fa-twitter"></i>');
-        arr = document.querySelectorAll( '[title="Google"]' );
-        $(arr).attr('style','cursor: pointer;');
-        $(arr).addClass('social_auth google');
-        $(arr).prepend('<i class="fa fa-google-plus"></i>');
-    },0);
+    try {
+        // Робимо невеликий відкладений виклик, щоб нічого не блокувало рендер і preload-стилі.
+        setTimeout(function(){
+            $('#uLogin div').attr('style','');
+            var arr = document.querySelectorAll('[title="Facebook"]');
+            $(arr).attr('style','cursor: pointer;');
+            $(arr).addClass('social_auth facebook');
+            $(arr).prepend('<i class="fa fa-facebook"></i>');
+            arr = document.querySelectorAll('[title="VK"]');
+            $(arr).attr('style','cursor: pointer;');
+            $(arr).addClass('social_auth vk');
+            $(arr).prepend('<i class="fa fa-vk"></i>');
+            arr = document.querySelectorAll('[title="Twitter"]');
+            $(arr).attr('style','cursor: pointer;');
+            $(arr).addClass('social_auth twitter');
+            $(arr).prepend('<i class="fa fa-twitter"></i>');
+            arr = document.querySelectorAll('[title="Google"]');
+            $(arr).attr('style','cursor: pointer;');
+            $(arr).addClass('social_auth google');
+            $(arr).prepend('<i class="fa fa-google-plus"></i>');
+        },0);
 
-    Share = {
+        window.Share = {
         vkontakte: function(purl, ptitle, pimg, text) {
-            url  = 'http://vkontakte.ru/share.php?';
+            var url  = 'http://vkontakte.ru/share.php?';
             url += 'url='          + encodeURIComponent(purl);
             url += '&title='       + encodeURIComponent(ptitle);
             url += '&description=' + encodeURIComponent(text);
@@ -34,7 +36,7 @@ $(document).ready(function(){
             Share.popup(url);
         },
         facebook: function(purl, ptitle, pimg, text) {
-            url  = 'http://www.facebook.com/sharer.php?';
+            var url  = 'http://www.facebook.com/sharer.php?';
             //url += 't='     + encodeURIComponent(ptitle);
             //url += '&p[summary]='   + encodeURIComponent(text);
             //url += '&p[url]='       + encodeURIComponent(purl);
@@ -42,14 +44,14 @@ $(document).ready(function(){
             Share.popup(url);
         },
         twitter: function(purl, ptitle) {
-            url  = 'http://twitter.com/share?';
+            var url  = 'http://twitter.com/share?';
             url += 'text='      + encodeURIComponent(ptitle);
             url += '&url='      + encodeURIComponent(purl);
             url += '&counturl=' + encodeURIComponent(purl);
             Share.popup(url);
         },
         gg: function (purl) {
-            url  = 'https://plus.google.com/share?';
+            var url  = 'https://plus.google.com/share?';
             url += 'url='          + encodeURIComponent(purl);
             Share.popup(url)
         },
@@ -81,7 +83,7 @@ $(document).ready(function(){
     }
 
     $('a.add_answer_btn').click(function(){
-        id = $(this).data("id");
+        var id = $(this).data("id");
         $.ajax({
             type: 'POST',
             url: '/poll/UpAnswerRating',
@@ -149,7 +151,7 @@ $(document).ready(function(){
 
     $(document).on('click','.item_variants .del_btn',function(){
        $(this).parent().remove();
-        arr = document.querySelectorAll('#new_poll'+$(this).data('id')+' .item_variants span');
+        var arr = document.querySelectorAll('#new_poll'+$(this).data('id')+' .item_variants span');
         for(var i = 0; i < arr.length; ++i){
             $(arr[i]).replaceWith('<span>'+(i+1)+'</span>');
         }
@@ -174,14 +176,42 @@ $(document).ready(function(){
         e.preventDefault();
         var url = $(this).data('url');
         var $msg = $(this).closest('.right_block_share_icon').find('.copy_link_message');
+
         var showMessage = function(){
             $msg.fadeIn(200, function(){
                 var $self = $(this);
                 setTimeout(function(){ $self.fadeOut(200); }, 2000);
             });
         };
-        navigator.clipboard.writeText(url).then(showMessage, showMessage);
+
+        var fallbackCopy = function(){
+            var $tmp = $('<textarea readonly class="js-copy-fallback"></textarea>')
+                .css({position: 'absolute', left: '-9999px'})
+                .val(url)
+                .appendTo('body');
+            $tmp[0].select();
+            try {
+                document.execCommand('copy');
+            } catch (fallbackError) {
+                console.warn('Не вдалося скопіювати текст через execCommand', fallbackError);
+            }
+            $tmp.remove();
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(showMessage).catch(function(error){
+                console.warn('Clipboard API не доступний. Використовуємо запасний варіант.', error);
+                fallbackCopy();
+                showMessage();
+            });
+        } else {
+            fallbackCopy();
+            showMessage();
+        }
     });
+    } catch (error) {
+        console.error('Помилка виконання custom.js. Стилі вже застосовано через preload, але треба перевірити сценарій.', error);
+    }
 });
 
 function arrayTotal(data)

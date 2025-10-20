@@ -23,6 +23,11 @@ class AppAsset extends AssetBundle
         '/css/main.css',
         '/css/custom.css',
     ];
+    /**
+     * Використовуємо завантаження через preload із подальшим перемиканням на stylesheet.
+     * Це відповідає рекомендаціям Google PageSpeed, а також дає змогу скоротити блокування рендеру.
+     * У layout передбачено noscript-фолбек, який дублює всі CSS як звичайні стилі для випадків без JavaScript.
+     */
     public $cssOptions = [
         'rel' => 'preload',
         'as' => 'style',

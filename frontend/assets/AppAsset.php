@@ -23,10 +23,17 @@ class AppAsset extends AssetBundle
         '/css/main.css',
         '/css/custom.css',
     ];
+    /**
+     * Використовуємо завантаження через preload із подальшим перемиканням на stylesheet.
+     * Це відповідає рекомендаціям Google PageSpeed, а також дає змогу скоротити блокування рендеру.
+     * У layout передбачено noscript-фолбек, який дублює всі CSS як звичайні стилі для випадків без JavaScript.
+     */
     public $cssOptions = [
         'rel' => 'preload',
         'as' => 'style',
-        'onload' => "this.onload=null;this.rel='stylesheet'",
+        'data-rel' => 'stylesheet',
+        // Використовуємо dataset, щоб уникнути HTML-екранізації лапок у JS-рядку та виглядати зрозуміліше у фінальному HTML.
+        'onload' => 'this.onload=null;this.rel=this.dataset.rel',
     ];
     public $js = [
 //        '/js/vendor/jquery-1.10.1.min.js',

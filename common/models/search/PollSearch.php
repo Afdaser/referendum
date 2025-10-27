@@ -256,8 +256,14 @@ class PollSearch extends Poll
             'query' => $query,
             'pagination' => [
                 'pageSize' => $params['limit'],
-				  'pageSizeParam' => false, // Запрещает `per-page` в URL
-				  'forcePageParam' => false,
+                'pageSizeParam' => false, // Запрещает `per-page` в URL
+                'forcePageParam' => false,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    // Показуємо найсвіжіші опитування першими на сторінці тегу
+                    'date_add' => SORT_DESC,
+                ],
             ],
         ]);
         $this->load($params);
@@ -265,6 +271,9 @@ class PollSearch extends Poll
             return $dataProvider;
         }
         $query->innerJoinWith('tags')->andFilterWhere(['tag.name' => $tag]);
+
+        // Запасне сортування на рівні запиту, якщо `sort` у провайдері буде перевизначено ззовні
+        $query->orderBy(['date_add' => SORT_DESC]);
 
         return $dataProvider;
     }

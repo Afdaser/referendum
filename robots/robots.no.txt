@@ -14,5 +14,4 @@ Disallow: */site/actualPolls
 
 Allow:
 
-Sitemap: https://no.referendum.social/poll-sitemap.xml
-Sitemap: https://no.referendum.social/tags-sitemap.xml
+Sitemap: https://no.referendum.social/sitemap.xml

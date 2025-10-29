@@ -78,8 +78,22 @@ class SitemapController extends Controller
 
     protected static function generateIndexes()
     {
+        // Нормалізуємо піддомени, щоб уникнути несподіваних пробілів або регістру.
+        foreach (static::$subdomains as $k => $v) {
+            static::$subdomains[$k] = strtolower(trim((string) $v));
+        }
+
+        // Готуємо теку для діагностичних логів, щоб логування завжди працювало.
+        $debugDir = self::$dir . 'runtime';
+        if (!is_dir($debugDir)) {
+            mkdir($debugDir, 0777, true);
+        }
+
         foreach (static::$subdomains as $langId => $subdomain) {
-            if($langId){
+            // Фіксуємо кожну ітерацію, щоб відстежити фактичний піддомен.
+            file_put_contents(self::$dir . 'runtime/sitemap-debug.log', "IDX:$langId SUB:$subdomain\n", FILE_APPEND);
+
+            if (isset($subdomain) && $subdomain !== '') {
                 foreach (self::$types as $key) {
                     self::$data['indexes']['links'][$langId][] = [
                         'url' =>  self::$protocol."{$subdomain}.".self::$domen."/{$key}-sitemap.xml",
@@ -91,7 +105,10 @@ class SitemapController extends Controller
         self::$data['index']['dates'] = array_fill_keys(array_keys(static::$subdomains), self::$minimalDate);
         self::$data['indexes']['xml'] = [];
         foreach (static::$subdomains as $langId => $subdomain) {
-            if($langId){
+            // Логування допомагає зрозуміти, чи дійсно починається побудова XML.
+            file_put_contents(self::$dir . 'runtime/sitemap-debug.log', "IDX:$langId SUB:$subdomain\n", FILE_APPEND);
+
+            if (isset($subdomain) && $subdomain !== '') {
                 self::$data['indexes']['xml'][$langId] = '<?xml version="1.0" encoding="UTF-8"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//'.$subdomain.'.'.self::$domen.'/main-sitemap.xsl"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -108,6 +125,9 @@ class SitemapController extends Controller
                     self::$data['indexes']['xml'][$langId] .= self::$br . '</sitemap>';
                 }
                 self::$data['indexes']['xml'][$langId] .= self::$br . '</sitemapindex>';
+
+                // Фіксуємо довжину зібраного XML, щоб бачити результат побудови.
+                file_put_contents(self::$dir . 'runtime/sitemap-debug.log', 'XMLLEN:'.$langId.'='.strlen(self::$data['indexes']['xml'][$langId] ?? '')."\n", FILE_APPEND);
             }
         }
     }

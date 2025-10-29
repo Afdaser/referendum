@@ -11,22 +11,10 @@ AddDefaultCharset utf-8
     # Видаємо окремі версії robots.txt для кожного піддомену без редіректів на HTTPS,
     # щоб у пошукових систем залишалося коректне посилання на відповідний sitemap.
     # Прапор [END] завершує обробку mod_rewrite, тож Yii не перехоплює статичний robots-файл.
+    # Захоплюємо код локалі в змінну %1, щоб уникнути дублювання правил.
     RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
-    RewriteCond %{HTTP_HOST} ^en\.referendum\.social$ [NC]
-    RewriteRule ^robots\.txt$ robots/robots.en.txt [L,END]
-
-    RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
-    RewriteCond %{HTTP_HOST} ^ru\.referendum\.social$ [NC]
-    RewriteRule ^robots\.txt$ robots/robots.ru.txt [L,END]
-
-    RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
-    RewriteCond %{HTTP_HOST} ^ua\.referendum\.social$ [NC]
-    RewriteRule ^robots\.txt$ robots/robots.ua.txt [L,END]
-
-    # Додаємо норвезьку локалізацію, щоб піддомен `no` також віддавав власний robots.txt.
-    RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
-    RewriteCond %{HTTP_HOST} ^no\.referendum\.social$ [NC]
-    RewriteRule ^robots\.txt$ robots/robots.no.txt [L,END]
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteRule ^robots\.txt$ robots/robots.%1.txt [L,END]
 
     # Основний домен віддає стандартний robots.txt без примусового редіректу на HTTPS.
     RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
@@ -38,51 +26,21 @@ AddDefaultCharset utf-8
 
     #SITEMAPS:
 
-    RewriteCond %{HTTP_HOST} ^en.referendum.social$
-    RewriteRule ^poll-sitemap.xml sitemaps/en.poll.xml
+    # Схожі правила для sitemap-ів поєднуємо в одне, щоб легше було додавати нові локалі.
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteRule ^poll-sitemap\.xml$ sitemaps/%1.poll.xml [L]
 
-    RewriteCond %{HTTP_HOST} ^en.referendum.social$
-    RewriteRule ^tags-sitemap.xml sitemaps/en.tags.xml
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteRule ^tags-sitemap\.xml$ sitemaps/%1.tags.xml [L]
 
-    RewriteCond %{HTTP_HOST} ^en.referendum.social$
-    RewriteRule ^sitemap.xml sitemaps/en.index.xml
-
-
-   RewriteCond %{HTTP_HOST} ^ru.referendum.social$
-   RewriteRule ^poll-sitemap.xml sitemaps/ru.poll.xml
-
-   RewriteCond %{HTTP_HOST} ^ru.referendum.social$
-   RewriteRule ^tags-sitemap.xml sitemaps/ru.tags.xml
-
-   RewriteCond %{HTTP_HOST} ^ru.referendum.social$
-   RewriteRule ^sitemap.xml sitemaps/ru.index.xml
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteRule ^sitemap\.xml$ sitemaps/%1.index.xml [L]
 
 
-   RewriteCond %{HTTP_HOST} ^ua.referendum.social$
-   RewriteRule ^poll-sitemap.xml sitemaps/ua.poll.xml
+    RewriteCond %{HTTP_HOST} ^referendum\.social$
+    RewriteRule ^sitemap\.xml$ sitemaps/index.xml
 
-   RewriteCond %{HTTP_HOST} ^ua.referendum.social$
-   RewriteRule ^tags-sitemap.xml sitemaps/ua.tags.xml
-
-   RewriteCond %{HTTP_HOST} ^ua.referendum.social$
-   RewriteRule ^sitemap.xml sitemaps/ua.index.xml
-
-
-   RewriteCond %{HTTP_HOST} ^no.referendum.social$
-   RewriteRule ^poll-sitemap.xml sitemaps/no.poll.xml
-
-   RewriteCond %{HTTP_HOST} ^no.referendum.social$
-   RewriteRule ^tags-sitemap.xml sitemaps/no.tags.xml
-
-   RewriteCond %{HTTP_HOST} ^no.referendum.social$
-   RewriteRule ^sitemap.xml sitemaps/no.index.xml
-
-
-
-   RewriteCond %{HTTP_HOST} ^referendum.social$
-   RewriteRule ^sitemap.xml sitemaps/index.xml
-   
-   RewriteRule ^search/tag/(.*)$ /tag/$1 [R=301,L]
+    RewriteRule ^search/tag/(.*)$ /tag/$1 [R=301,L]
 
    # /SITEMAPS.
 

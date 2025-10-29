@@ -98,11 +98,14 @@ class SitemapController extends Controller
                 foreach (self::$data['indexes']['links'][$langId] as $item) {
                     self::$data['indexes']['xml'][$langId] .= self::$br . '<sitemap>';
                     self::$data['indexes']['xml'][$langId] .= self::$br . "<loc>{$item['url']}</loc>";
-                    self::$data['indexes']['xml'][$langId] .= self::$br . "<lastmod>{$item['lastmod']}</lastmod>";
-                    self::$data['indexes']['xml'][$langId] .= self::$br . '</sitemap>';
-                    if(self::$data['index']['dates'][$langId] < $item['lastmod']){
-                        self::$data['index']['dates'][$langId] = $item['lastmod'];
+                    // Виводимо lastmod лише тоді, коли реально є інформація про дату оновлення.
+                    if (!empty($item['lastmod'])) {
+                        self::$data['indexes']['xml'][$langId] .= self::$br . "<lastmod>{$item['lastmod']}</lastmod>";
+                        if(self::$data['index']['dates'][$langId] < $item['lastmod']){
+                            self::$data['index']['dates'][$langId] = $item['lastmod'];
+                        }
                     }
+                    self::$data['indexes']['xml'][$langId] .= self::$br . '</sitemap>';
                 }
                 self::$data['indexes']['xml'][$langId] .= self::$br . '</sitemapindex>';
             }
@@ -236,6 +239,12 @@ class SitemapController extends Controller
 
     public static function getUrlBlock($url, $lastmod, $changefreq = 'monthly', $priority = 0.3)
     {
-        return "<url><loc>$url</loc><lastmod>$lastmod</lastmod><changefreq>$changefreq</changefreq><priority>$priority</priority></url>";
+        // Генеруємо тег lastmod лише при наявності дати, аби не вводити Google в оману пустим значенням.
+        $lastmodTag = '';
+        if (!empty($lastmod)) {
+            $lastmodTag = "<lastmod>$lastmod</lastmod>";
+        }
+
+        return "<url><loc>$url</loc>$lastmodTag<changefreq>$changefreq</changefreq><priority>$priority</priority></url>";
     }
 }

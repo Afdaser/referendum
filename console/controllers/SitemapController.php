@@ -60,13 +60,14 @@ class SitemapController extends Controller
     public function generateIndex()
     {
         self::$data['index']['xml'] = '<?xml version="1.0" encoding="UTF-8"?>';
-        self::$data['index']['xml'] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//'.self::$domen.'/main-sitemap.xsl"?>';
+        // Виносимо побудову шляху до XSL у окремий метод, щоб уникнути помилок із зайвими крапками та порожніми піддоменами.
+        self::$data['index']['xml'] .= self::$br . '<?xml-stylesheet type="text/xsl" href="' . self::buildStylesheetHref() . '"?>';
         self::$data['index']['xml'] .= self::$br . '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
         foreach (static::$subdomains as $langId => $subdomain) {
             if ($subdomain) {
                 self::$data['index']['xml'] .= self::$br . '<sitemap>';
-                self::$data['index']['xml'] .= self::$br . '<loc>'.self::$protocol."{$subdomain}.".self::$domen."/sitemap.xml".'</loc>';
+                self::$data['index']['xml'] .= self::$br . '<loc>' . self::$protocol . self::buildHost($subdomain) . '/sitemap.xml</loc>';
                 self::$data['index']['xml'] .= self::$br . '<lastmod>'.self::$data['index']['dates'][$langId].'</lastmod>';
                 self::$data['index']['xml'] .= self::$br . '</sitemap>';
             }
@@ -82,7 +83,7 @@ class SitemapController extends Controller
             if($langId){
                 foreach (self::$types as $key) {
                     self::$data['indexes']['links'][$langId][] = [
-                        'url' =>  self::$protocol."{$subdomain}.".self::$domen."/{$key}-sitemap.xml",
+                        'url' =>  self::$protocol . self::buildHost($subdomain) . "/{$key}-sitemap.xml",
                         'lastmod' => !empty(self::$data[$key]['maxDates'][$langId]) ? self::$data[$key]['maxDates'][$langId] : self::$data[$key]['maxDate'],
                     ];
                 }
@@ -93,7 +94,7 @@ class SitemapController extends Controller
         foreach (static::$subdomains as $langId => $subdomain) {
             if($langId){
                 self::$data['indexes']['xml'][$langId] = '<?xml version="1.0" encoding="UTF-8"?>';
-                self::$data['indexes']['xml'][$langId] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//'.$subdomain.'.'.self::$domen.'/main-sitemap.xsl"?>';
+                self::$data['indexes']['xml'][$langId] .= self::$br . '<?xml-stylesheet type="text/xsl" href="' . self::buildStylesheetHref($subdomain) . '"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
                 foreach (self::$data['indexes']['links'][$langId] as $item) {
                     self::$data['indexes']['xml'][$langId] .= self::$br . '<sitemap>';
@@ -144,7 +145,7 @@ class SitemapController extends Controller
             }
             if(!empty($item['poll_language_id']) && !empty($item['id'])){
                 self::$data['poll']['links'][$item['poll_language_id']][] = [
-                    'url' => 'https://'.static::$subdomains[$item['poll_language_id']] . '.' . SITE_DOMAIN . '/poll/' . $item['id'],
+                    'url' => self::$protocol . self::buildHost(static::$subdomains[$item['poll_language_id']]) . '/poll/' . $item['id'],
                     'lastmod' => $date,
                     'changefreq' => 'weekly',
                     'priority' =>  '0.7',
@@ -155,7 +156,7 @@ class SitemapController extends Controller
         self::$data['poll']['xml'] = [];
         foreach (static::$subdomains as $id => $subdomain) {
             self::$data['poll']['xml'][$id] = '<?xml version="1.0" encoding="UTF-8"?>';
-            self::$data['poll']['xml'][$id] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//' . $subdomain . '.' . self::$domen . '/main-sitemap.xsl"?>';
+            self::$data['poll']['xml'][$id] .= self::$br . '<?xml-stylesheet type="text/xsl" href="' . self::buildStylesheetHref($subdomain) . '"?>';
             self::$data['poll']['xml'][$id] .= self::$br . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . self::$br;
         }
 
@@ -209,7 +210,7 @@ class SitemapController extends Controller
             }
             if(!empty($item['language_id']) && !empty($item['idt'])){
                 self::$data['tags']['links'][$item['language_id']][] = [
-                    'url' => 'https://'.static::$subdomains[$item['language_id']] . '.' . SITE_DOMAIN . '/tag/' . urlencode($item['idt']),
+                    'url' => self::$protocol . self::buildHost(static::$subdomains[$item['language_id']]) . '/tag/' . urlencode($item['idt']),
                     'lastmod' => $date,
                     'changefreq' => 'weekly',
                     'priority' =>  '0.7',
@@ -220,7 +221,7 @@ class SitemapController extends Controller
         self::$data['tags']['xml'] = [];
         foreach (static::$subdomains as $id => $subdomain) {
             self::$data['tags']['xml'][$id] = '<?xml version="1.0" encoding="UTF-8"?>';
-            self::$data['tags']['xml'][$id] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//' . $subdomain . '.' . self::$domen . '/main-sitemap.xsl"?>';
+            self::$data['tags']['xml'][$id] .= self::$br . '<?xml-stylesheet type="text/xsl" href="' . self::buildStylesheetHref($subdomain) . '"?>';
             self::$data['tags']['xml'][$id] .= self::$br . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . self::$br;
         }
 
@@ -246,5 +247,25 @@ class SitemapController extends Controller
         }
 
         return "<url><loc>$url</loc>$lastmodTag<changefreq>$changefreq</changefreq><priority>$priority</priority></url>";
+    }
+
+    /**
+     * Формуємо домен з урахуванням можливого порожнього піддомену.
+     * Це дозволяє уникнути рядків на кшталт `https://.referendum.social`.
+     */
+    protected static function buildHost($subdomain = '')
+    {
+        $subdomain = trim((string) $subdomain);
+
+        return ($subdomain !== '' ? $subdomain . '.' : '') . self::$domen;
+    }
+
+    /**
+     * Повертаємо абсолютний шлях до XSL-стилю для sitemap.
+     * Для всіх піддоменів використовується той самий шаблон без дублювання крапок.
+     */
+    protected static function buildStylesheetHref($subdomain = '')
+    {
+        return '//' . self::buildHost($subdomain) . '/main-sitemap.xsl';
     }
 }

@@ -33,8 +33,12 @@ AddDefaultCharset utf-8
     RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
     RewriteRule ^tags-sitemap\.xml$ sitemaps/%1.tags.xml [L]
 
-    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
-    RewriteRule ^sitemap\.xml$ sitemaps/%1.index.xml [L]
+    # Універсальне правило для sitemap.xml піддоменів, яке не потребує
+    # ручного переліку локалей. Захоплюємо ім'я піддомену як %1 і
+    # віддаємо відповідний індексний sitemap.
+    RewriteCond %{REQUEST_URI} ^/sitemap\.xml$ [NC]
+    RewriteCond %{HTTP_HOST} ^([a-z0-9-]+)\.referendum\.social$ [NC]
+    RewriteRule ^ /sitemaps/%1.index.xml [L]
 
 
     RewriteCond %{HTTP_HOST} ^referendum\.social$

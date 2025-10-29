@@ -34,10 +34,25 @@ class SitemapController extends Controller
             if ($subdomain) {
                 foreach (self::$types as $key) {
                     $filename = "sitemaps/{$subdomain}.{$key}.xml";
-                    file_put_contents(self::$dir . $filename, self::$data[$key]['xml'][$langId]);
+                    $target = self::$dir . $filename;
+                    $xml = self::$data[$key]['xml'][$langId] ?? '';
+                    // Записуємо лише непорожній XML, щоб не створювати зламані карти сайту.
+                    if ($xml !== '') {
+                        $tmp = $target . '.tmp';
+                        file_put_contents($tmp, $xml);
+                        rename($tmp, $target);
+                        @chmod($target, 0644);
+                    }
                 }
                 $filename = "sitemaps/{$subdomain}.index.xml";
-                file_put_contents(self::$dir . $filename, self::$data['indexes']['xml'][$langId]);
+                $target = self::$dir . $filename;
+                $xml = self::$data['indexes']['xml'][$langId] ?? '';
+                if ($xml !== '') {
+                    $tmp = $target . '.tmp';
+                    file_put_contents($tmp, $xml);
+                    rename($tmp, $target);
+                    @chmod($target, 0644);
+                }
 
                 self::$data['index']['links'] = [
                     self::$data['index']['dates'][$langId],
@@ -73,13 +88,20 @@ class SitemapController extends Controller
         }
         self::$data['index']['xml'] .= self::$br . '</sitemapindex>';
         $filename = "sitemaps/index.xml";
-        file_put_contents(self::$dir . $filename, self::$data['index']['xml']);
+        $target = self::$dir . $filename;
+        $xml = self::$data['index']['xml'] ?? '';
+        if ($xml !== '') {
+            $tmp = $target . '.tmp';
+            file_put_contents($tmp, $xml);
+            rename($tmp, $target);
+            @chmod($target, 0644);
+        }
     }
 
     protected static function generateIndexes()
     {
         foreach (static::$subdomains as $langId => $subdomain) {
-            if($langId){
+            if (!empty($subdomain)) {
                 foreach (self::$types as $key) {
                     self::$data['indexes']['links'][$langId][] = [
                         'url' =>  self::$protocol."{$subdomain}.".self::$domen."/{$key}-sitemap.xml",
@@ -91,7 +113,7 @@ class SitemapController extends Controller
         self::$data['index']['dates'] = array_fill_keys(array_keys(static::$subdomains), self::$minimalDate);
         self::$data['indexes']['xml'] = [];
         foreach (static::$subdomains as $langId => $subdomain) {
-            if($langId){
+            if (!empty($subdomain)) {
                 self::$data['indexes']['xml'][$langId] = '<?xml version="1.0" encoding="UTF-8"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//'.$subdomain.'.'.self::$domen.'/main-sitemap.xsl"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';

@@ -34,10 +34,18 @@ class SitemapController extends Controller
             if ($subdomain) {
                 foreach (self::$types as $key) {
                     $filename = "sitemaps/{$subdomain}.{$key}.xml";
-                    file_put_contents(self::$dir . $filename, self::$data[$key]['xml'][$langId]);
+                    $xml = self::$data[$key]['xml'][$langId] ?? '';
+                    // Щоб не створювати порожній файл, записуємо дані лише коли XML справді згенеровано.
+                    if (!empty($xml)) {
+                        file_put_contents(self::$dir . $filename, $xml);
+                    }
                 }
                 $filename = "sitemaps/{$subdomain}.index.xml";
-                file_put_contents(self::$dir . $filename, self::$data['indexes']['xml'][$langId]);
+                $xml = self::$data['indexes']['xml'][$langId] ?? '';
+                // Аналогічно перевіряємо наявність контенту перед збереженням індексного файлу sitemap.
+                if (!empty($xml)) {
+                    file_put_contents(self::$dir . $filename, $xml);
+                }
 
                 self::$data['index']['links'] = [
                     self::$data['index']['dates'][$langId],
@@ -79,7 +87,7 @@ class SitemapController extends Controller
     protected static function generateIndexes()
     {
         foreach (static::$subdomains as $langId => $subdomain) {
-            if($langId){
+            if (!empty($subdomain)) {
                 foreach (self::$types as $key) {
                     self::$data['indexes']['links'][$langId][] = [
                         'url' =>  self::$protocol."{$subdomain}.".self::$domen."/{$key}-sitemap.xml",
@@ -91,7 +99,7 @@ class SitemapController extends Controller
         self::$data['index']['dates'] = array_fill_keys(array_keys(static::$subdomains), self::$minimalDate);
         self::$data['indexes']['xml'] = [];
         foreach (static::$subdomains as $langId => $subdomain) {
-            if($langId){
+            if (!empty($subdomain)) {
                 self::$data['indexes']['xml'][$langId] = '<?xml version="1.0" encoding="UTF-8"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//'.$subdomain.'.'.self::$domen.'/main-sitemap.xsl"?>';
                 self::$data['indexes']['xml'][$langId] .= self::$br . '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';

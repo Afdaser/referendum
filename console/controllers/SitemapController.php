@@ -37,7 +37,25 @@ class SitemapController extends Controller
                     file_put_contents(self::$dir . $filename, self::$data[$key]['xml'][$langId]);
                 }
                 $filename = "sitemaps/{$subdomain}.index.xml";
-                file_put_contents(self::$dir . $filename, self::$data['indexes']['xml'][$langId]);
+                if ($subdomain === 'no') {
+                    // Діагностуємо запис sitemap для норвезького піддомену, щоб виявити можливі проблеми з правами чи кешуванням.
+                    $target = self::$dir . "sitemaps/{$subdomain}.index.xml";
+                    $xml = self::$data['indexes']['xml'][$langId] ?? '';
+                    $len = strlen($xml);
+                    file_put_contents(self::$dir . 'runtime/sitemap-write.log', "LANG:$langId SUB:$subdomain PATH:$target LEN:$len\n", FILE_APPEND);
+                    if ($len > 0) {
+                        $ok = file_put_contents($target, $xml);
+                        clearstatcache();
+                        $fs = is_file($target) ? filesize($target) : -1;
+                        file_put_contents(self::$dir . 'runtime/sitemap-write.log', "WRITE:$ok SIZE:$fs\n", FILE_APPEND);
+                        @chmod($target, 0644);
+                        clearstatcache();
+                        $fs2 = is_file($target) ? filesize($target) : -1;
+                        file_put_contents(self::$dir . 'runtime/sitemap-write.log', "AFTER_CHMOD_SIZE:$fs2\n", FILE_APPEND);
+                    }
+                } else {
+                    file_put_contents(self::$dir . $filename, self::$data['indexes']['xml'][$langId]);
+                }
 
                 self::$data['index']['links'] = [
                     self::$data['index']['dates'][$langId],

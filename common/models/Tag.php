@@ -6,6 +6,7 @@ use Yii;
 use common\components\ActiveRecord;
 use yii\bootstrap\Html;
 use common\models\Poll;
+use common\models\TagStaticText;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -160,7 +161,33 @@ class Tag extends ActiveRecord
     }
 
     /**
-     * Формує короткий текстовий опис тегу
+     * Перелік змінних, які можна використати у статичному тексті тегу.
+     *
+     * @return array
+     */
+    public static function getInfoTextTokens()
+    {
+        return [
+            '@tag' => 'Назва тегу.',
+            '@countpoll' => 'Кількість активних опитувань з цим тегом.',
+            '@firstdate' => 'Дата появи першого опитування за тегом.',
+            '@lastdate' => 'Дата додавання найновішого опитування.',
+            '@popularlink' => 'Посилання на найпопулярніше опитування.',
+            '@popularname' => 'Назва найпопулярнішого опитування без посилання.',
+            '@popularvotes' => 'Кількість голосів у найпопулярнішому опитуванні.',
+            '@ratinglink' => 'Посилання на опитування з найвищим рейтингом.',
+            '@ratingname' => 'Назва опитування з найвищим рейтингом без посилання.',
+            '@rating' => 'Рейтинг найкращого опитування.',
+            '@latestlink' => 'Посилання на останнє за часом опитування.',
+            '@latestname' => 'Назва останнього опитування без посилання.',
+            '@latestdate' => 'Дата публікації останнього опитування.',
+        ];
+    }
+
+    /**
+     * Формує короткий текстовий опис тегу.
+     * Якщо адміністратор додав шаблон, використовуємо його та підставляємо змінні.
+     * Інакше повертаємо стандартний текст.
      *
      * @return string
      */
@@ -190,6 +217,31 @@ class Tag extends ActiveRecord
             if ($topRatedPoll === null || $poll->rating > $topRatedPoll->rating) {
                 $topRatedPoll = $poll;
             }
+        }
+
+        $replacements = [
+            '@tag' => Html::encode($this->name),
+            '@countpoll' => $pollCount,
+            '@firstdate' => $created,
+            '@lastdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@popularlink' => $popularPoll ? Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()) : '',
+            '@popularname' => $popularPoll ? Html::encode($popularPoll->title) : '',
+            '@popularvotes' => $popularPoll ? $popularPoll->countPollOptionsVoters : '',
+            '@ratinglink' => $topRatedPoll ? Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()) : '',
+            '@ratingname' => $topRatedPoll ? Html::encode($topRatedPoll->title) : '',
+            '@rating' => $topRatedPoll ? $topRatedPoll->rating : '',
+            '@latestlink' => $latestPoll ? Html::a(Html::encode($latestPoll->title), $latestPoll->getUrl()) : '',
+            '@latestname' => $latestPoll ? Html::encode($latestPoll->title) : '',
+            '@latestdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+        ];
+
+        $staticText = null;
+        if ($this->language_id) {
+            $staticText = TagStaticText::find()->where(['language_id' => $this->language_id])->one();
+        }
+
+        if ($staticText && trim((string)$staticText->content) !== '') {
+            return strtr($staticText->content, $replacements);
         }
 
         $parts = [];

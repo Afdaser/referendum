@@ -39,7 +39,9 @@ Yii::$app->page->description = Yii::t('tag', 'Опитування та думк
 <?php if ($page <= 1) : ?>
         <div class="info_block">
             <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
-            <p><?= $tagModel->getInfoText(); ?></p>
+            <div class="tag-info-text">
+                <?= $tagModel->getInfoText(); ?>
+            </div>
         </div>
 <?php endif; ?>
 

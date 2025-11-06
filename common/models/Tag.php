@@ -6,6 +6,8 @@ use Yii;
 use common\components\ActiveRecord;
 use yii\bootstrap\Html;
 use common\models\Poll;
+use common\models\Language;
+use common\models\TagStaticText;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -98,6 +100,14 @@ class Tag extends ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStaticTexts()
+    {
+        return $this->hasMany(TagStaticText::class, ['tag_id' => 'id']);
+    }
+
+    /**
      * {@inheritdoc}
      * @return \common\models\query\TagQuery the active query used by this AR class.
      */
@@ -162,7 +172,7 @@ class Tag extends ActiveRecord
     /**
      * Формує короткий текстовий опис тегу
      *
-     * @return string
+     * @return string Готова HTML-розмітка для блоку інформації про тег
      */
     public function getInfoText()
     {
@@ -192,6 +202,52 @@ class Tag extends ActiveRecord
             }
         }
 
+        $latestPollDate = $latestPoll
+            ? $formatter->asDate(strtotime($latestPoll->date_add), 'long')
+            : '';
+
+        $data = [
+            '@tagname' => Html::encode($this->name),
+            '@countpoll' => (string) $pollCount,
+            '@firstdate' => $created,
+            '@latestdate' => $latestPollDate,
+            '@popularpoll' => $popularPoll
+                ? Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl())
+                : '',
+            '@popularvotes' => $popularPoll
+                ? (string) $popularPoll->countPollOptionsVoters
+                : '',
+            '@toppoll' => $topRatedPoll
+                ? Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl())
+                : '',
+            '@toprating' => $topRatedPoll
+                ? (string) $topRatedPoll->rating
+                : '',
+            '@latestpoll' => $latestPoll
+                ? Html::a(Html::encode($latestPoll->title), $latestPoll->getUrl())
+                : '',
+        ];
+
+        $languageId = Language::getIdByLocale(Yii::$app->language);
+        if ($languageId === null) {
+            $languageId = $this->language_id;
+        }
+
+        if ($languageId !== null) {
+            /**
+             * Якщо адміністратор додав власний текст у бекенді, показуємо його
+             * із підстановкою динамічних значень (кількість опитувань, посилання тощо).
+             */
+            /** @var TagStaticText|null $staticText */
+            $staticText = $this->getStaticTexts()->andWhere(['language_id' => $languageId])->one();
+            if ($staticText instanceof TagStaticText) {
+                $rendered = $staticText->render($data);
+                if ($rendered !== '') {
+                    return $rendered;
+                }
+            }
+        }
+
         $parts = [];
         $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}, і відтоді колекція думок {tag} зросла до {count} опитувань.', [
             'tag' => $this->name,
@@ -201,14 +257,14 @@ class Tag extends ActiveRecord
 
         if ($popularPoll) {
             $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}, який набрав {votes} голосів.', [
-                'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
+                'title' => $data['@popularpoll'],
                 'votes' => $popularPoll->countPollOptionsVoters,
             ]);
         }
 
         if ($topRatedPoll) {
             $parts[] = Yii::t('tag', 'Опитування з найбільшим рейтингом — {title} має рейтинг {rating}.', [
-                'title' => Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()),
+                'title' => $data['@toppoll'],
                 'rating' => $topRatedPoll->rating,
             ]);
             $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.', [
@@ -216,13 +272,17 @@ class Tag extends ActiveRecord
             ]);
         }
 
-        if ($latestPoll) {
+        if ($latestPoll && $latestPollDate) {
             $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
                 'tag' => $this->name,
-                'date' => $formatter->asDate(strtotime($latestPoll->date_add), 'long'),
+                'date' => $latestPollDate,
             ]);
         }
 
-        return implode(' ', $parts);
+        $parts = array_map(static function ($text) {
+            return Html::tag('p', $text);
+        }, $parts);
+
+        return implode("\n", $parts);
     }
 }

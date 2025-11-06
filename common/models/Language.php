@@ -26,6 +26,8 @@ use common\components\ActiveRecord;
 class Language extends ActiveRecord
 {
     public static $all = [];
+    private static $localeMap;
+    private static $nameMap;
     /**
      * {@inheritdoc}
      */
@@ -163,6 +165,37 @@ class Language extends ActiveRecord
         }
 
         return $result;
+    }
+
+    public static function getIdByLocale(string $locale): ?int
+    {
+        $normalizedLocale = str_replace('_', '-', strtolower($locale));
+
+        if (self::$localeMap === null || self::$nameMap === null) {
+            self::$localeMap = [];
+            self::$nameMap = [];
+            $languages = self::find()->all();
+            foreach ($languages as $language) {
+                $localeKey = strtolower(str_replace('_', '-', $language->locale));
+                self::$localeMap[$localeKey] = (int) $language->id;
+                self::$nameMap[strtolower($language->name)] = (int) $language->id;
+            }
+        }
+
+        if (isset(self::$localeMap[$normalizedLocale])) {
+            return self::$localeMap[$normalizedLocale];
+        }
+
+        $short = strtolower(strtok($normalizedLocale, '-'));
+        if (isset(self::$nameMap[$short])) {
+            return self::$nameMap[$short];
+        }
+
+        if ($short === 'uk' && isset(self::$nameMap['ua'])) {
+            return self::$nameMap['ua'];
+        }
+
+        return null;
     }
 
     public static function isRightLanguage($language){

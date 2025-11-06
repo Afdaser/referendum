@@ -83,4 +83,5 @@ return [
     'State' => 'State',
     'Is admin' => 'Is admin',
     'Polls' => 'Polls',
+    'Save' => 'Save',
 ];

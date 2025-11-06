@@ -53,8 +53,14 @@ use common\models\AuthItem;
                             'active' => MenuHelper::isActiveMenu(['poll', 'tag'], $this->context->route),
 //                            'visible' => Yii::$app->user->can(AuthItem::G_ADMIN) OR Yii::$app->user->can(AuthItem::G_MANAGER),
                         ],
+                        [
+                            'label' => 'Статичний текст на тегах',
+                            'icon' => 'file-text-o',
+                            'url' => Url::toRoute(['/poll/tag-static-text/index']),
+                            'active' => MenuHelper::isActiveMenu(['poll', 'tag-static-text'], $this->context->route),
+                        ],
                     ],
-                    
+
                 ],
                 [
                     'label' => Yii::t('app', 'Pages'), // 'Orders',

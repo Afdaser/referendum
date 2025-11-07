@@ -172,15 +172,21 @@ class Tag extends ActiveRecord
             '@countpoll' => 'Кількість активних опитувань з цим тегом.',
             '@firstdate' => 'Дата появи першого опитування за тегом.',
             '@lastdate' => 'Дата додавання найновішого опитування.',
+            '@averagecomments' => 'Середня кількість коментарів в одному активному опитуванні.',
+            '@totalcomments' => 'Сумарна кількість коментарів до активних опитувань.',
             '@popularlink' => 'Посилання на найпопулярніше опитування.',
             '@popularname' => 'Назва найпопулярнішого опитування без посилання.',
             '@popularvotes' => 'Кількість голосів у найпопулярнішому опитуванні.',
+            '@averagevotes' => 'Середня кількість голосів в опитуваннях за тегом.',
             '@ratinglink' => 'Посилання на опитування з найвищим рейтингом.',
             '@ratingname' => 'Назва опитування з найвищим рейтингом без посилання.',
             '@rating' => 'Рейтинг найкращого опитування.',
             '@latestlink' => 'Посилання на останнє за часом опитування.',
             '@latestname' => 'Назва останнього опитування без посилання.',
             '@latestdate' => 'Дата публікації останнього опитування.',
+            '@mostcomments' => 'Кількість коментарів у найактивнішому обговоренні.',
+            '@totalvotes' => 'Сумарна кількість голосів в усіх активних опитуваннях.',
+            '@mostcommentedlink' => 'Посилання на опитування з найбільшою кількістю коментарів.',
         ];
     }
 
@@ -207,6 +213,12 @@ class Tag extends ActiveRecord
         $popularPoll = null;
         $topRatedPoll = null;
 
+        // Підрахунок агрегованих показників, щоб зробити змінні для шаблону інформативнішими.
+        $totalVotes = 0;
+        $totalComments = 0;
+        $mostCommentedPoll = null;
+        $mostComments = 0;
+
         foreach ($polls as $poll) {
             if ($latestPoll === null || strtotime($poll->date_add) > strtotime($latestPoll->date_add)) {
                 $latestPoll = $poll;
@@ -217,22 +229,45 @@ class Tag extends ActiveRecord
             if ($topRatedPoll === null || $poll->rating > $topRatedPoll->rating) {
                 $topRatedPoll = $poll;
             }
+
+            $pollVotes = $poll->countPollOptionsVoters;
+            $totalVotes += $pollVotes;
+
+            $commentCount = $poll->getCommentsCount();
+            $totalComments += $commentCount;
+
+            if ($mostCommentedPoll === null || $commentCount > $mostComments) {
+                $mostCommentedPoll = $poll;
+                $mostComments = $commentCount;
+            }
         }
+
+        $averageVotes = $pollCount > 0 ? $totalVotes / $pollCount : 0;
+        $averageComments = $pollCount > 0 ? $totalComments / $pollCount : 0;
 
         $replacements = [
             '@tag' => Html::encode($this->name),
             '@countpoll' => $pollCount,
             '@firstdate' => $created,
             '@lastdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@averagecomments' => $formatter->asDecimal($averageComments, 1),
+            '@totalcomments' => $totalComments,
             '@popularlink' => $popularPoll ? Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()) : '',
             '@popularname' => $popularPoll ? Html::encode($popularPoll->title) : '',
             '@popularvotes' => $popularPoll ? $popularPoll->countPollOptionsVoters : '',
+            '@averagevotes' => $formatter->asDecimal($averageVotes, 1),
             '@ratinglink' => $topRatedPoll ? Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()) : '',
             '@ratingname' => $topRatedPoll ? Html::encode($topRatedPoll->title) : '',
             '@rating' => $topRatedPoll ? $topRatedPoll->rating : '',
             '@latestlink' => $latestPoll ? Html::a(Html::encode($latestPoll->title), $latestPoll->getUrl()) : '',
             '@latestname' => $latestPoll ? Html::encode($latestPoll->title) : '',
             '@latestdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@mostcomments' => $mostComments,
+            '@totalvotes' => $totalVotes,
+            '@mostcommentedlink' => $mostCommentedPoll ? Html::a(
+                Html::encode($mostCommentedPoll->title),
+                $mostCommentedPoll->getUrl()
+            ) : '',
         ];
 
         $staticText = null;

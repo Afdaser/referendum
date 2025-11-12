@@ -126,3 +126,100 @@ h1.title {
     margin-top: 13px;
     word-break: break-all;
 }
+
+/*
+ * Акордеон для FAQ на сторінці тегу: стилізуємо під зелено-піщану гаму сайту.
+ */
+.tag-faq {
+    border: 1px solid #d8decf;
+    border-radius: 6px;
+    background: #fbfcf9;
+    overflow: hidden;
+}
+
+/*
+ * Центруємо заголовок FAQ, щоб він виглядав охайно на будь-якому екрані.
+ */
+.tag-faq > h2 {
+    text-align: center;
+    margin: 0;
+    padding: 18px 20px 6px;
+}
+
+.tag-faq .faq_entry + .faq_entry {
+    border-top: 1px solid #d8decf;
+}
+
+.tag-faq .faq_question {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 16px 20px 16px 64px;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3e29;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tag-faq .faq_question:focus {
+    outline: 2px solid #058f42;
+    outline-offset: 2px;
+}
+
+.tag-faq .faq_question:hover {
+    background: rgba(5, 143, 66, 0.08);
+    color: #1d2b1c;
+}
+
+.tag-faq .faq_question::before {
+    content: "+";
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid #058f42;
+    color: #058f42;
+    font-size: 18px;
+    line-height: 18px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.tag-faq .faq_entry.is-open .faq_question::before {
+    content: "−";
+    background: #058f42;
+    color: #fff;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.tag-faq .faq_answer {
+    padding: 0 20px 20px 64px;
+    color: #3c4c38;
+    line-height: 1.6;
+}
+
+.tag-faq .faq_entry.is-open .faq_answer {
+    animation: faqFadeIn 0.2s ease;
+}
+
+@keyframes faqFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

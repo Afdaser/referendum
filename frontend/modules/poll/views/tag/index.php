@@ -47,12 +47,26 @@ $faqList = $tagModel->getFaqList();
             <div class="info_block tag-faq" itemscope itemtype="https://schema.org/FAQPage">
                 <?php // Заголовок FAQ блоку для тегу показує ключову фразу з урахуванням підстановок змінних. ?>
                 <h2><?= Yii::t('tag', 'Часті запитання про опитування на тему {tag}', ['tag' => $tagModel->name]); ?></h2>
-                <?php foreach ($faqList as $faqItem): ?>
+                <?php foreach ($faqList as $index => $faqItem): ?>
                     <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                        <div class="faq_question" itemprop="name">
-                            <?= $faqItem['question']; ?>
-                        </div>
-                        <div class="faq_answer" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
+                        <button
+                            class="faq_question"
+                            type="button"
+                            aria-expanded="false"
+                            aria-controls="faq-answer-<?= $index; ?>"
+                        >
+                            <span class="faq_question-text" itemprop="name">
+                                <?= $faqItem['question']; ?>
+                            </span>
+                        </button>
+                        <div
+                            class="faq_answer"
+                            id="faq-answer-<?= $index; ?>"
+                            itemprop="acceptedAnswer"
+                            itemscope
+                            itemtype="https://schema.org/Answer"
+                            hidden
+                        >
                             <div itemprop="text">
                                 <?= $faqItem['answer']; ?>
                             </div>
@@ -60,6 +74,36 @@ $faqList = $tagModel->getFaqList();
                     </div>
                 <?php endforeach; ?>
             </div>
+            <?php
+            // Лаконічний скрипт для перемикання FAQ: не потребує додаткових залежностей.
+            $faqToggleJs = <<<JS
+(function () {
+    var faqButtons = document.querySelectorAll('.tag-faq .faq_question');
+    if (!faqButtons.length) {
+        return;
+    }
+    faqButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var entry = button.closest('.faq_entry');
+            var answerId = button.getAttribute('aria-controls');
+            var answer = answerId ? document.getElementById(answerId) : null;
+            if (!entry || !answer) {
+                return;
+            }
+            var isOpen = entry.classList.contains('is-open');
+            entry.classList.toggle('is-open', !isOpen);
+            button.setAttribute('aria-expanded', String(!isOpen));
+            if (isOpen) {
+                answer.setAttribute('hidden', 'hidden');
+            } else {
+                answer.removeAttribute('hidden');
+            }
+        });
+    });
+})();
+JS;
+            $this->registerJs($faqToggleJs, \yii\web\View::POS_READY);
+            ?>
         <?php endif; ?>
 <?php endif; ?>
 

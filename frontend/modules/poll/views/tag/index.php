@@ -2,24 +2,34 @@
 
 use frontend\widgets\WPollList;
 use Yii;
+use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 
 $qty = $dataProvider->count;
-$title = Yii::t('tag', 'Останні опитування {tag} та думка громадськості | Referendum', [
+$defaultTitle = Yii::t('tag', 'Останні опитування {tag} та думка громадськості | Referendum', [
     'tag' => $tagModel->name,
 ]);
-Yii::$app->page->title = $title;
-$this->title = $title;
-Yii::$app->page->description = Yii::t('tag', 'Опитування та думки щодо {tag}: беріть участь у {count} захопливих опитуваннях, висловлюйте свої думки, коментуйте актуальні питання, спілкуйтеся з іншими та досліджуйте результати.', [
+$defaultDescription = Yii::t('tag', 'Опитування та думки щодо {tag}: беріть участь у {count} захопливих опитуваннях, висловлюйте свої думки, коментуйте актуальні питання, спілкуйтеся з іншими та досліджуйте результати.', [
     'count' => $tagModel->polls_count,
     'tag' => $tagModel->name,
 ]);
+$meta = $tagModel->getStaticMeta();
+
+$pageTitle = $meta['title'] ?? $defaultTitle;
+Yii::$app->page->title = $pageTitle;
+$this->title = $pageTitle;
+Yii::$app->page->description = $meta['description'] ?? $defaultDescription;
+$pageHeading = $meta['heading'] ?? null;
 $faqList = $tagModel->getFaqList();
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
-        <h1>Latest <?= $tag; ?> public opinion polls</h1>
+        <?php if ($pageHeading !== null): ?>
+            <h1><?= $pageHeading; ?></h1>
+        <?php else: ?>
+            <h1>Latest <?= Html::encode($tag); ?> public opinion polls</h1>
+        <?php endif; ?>
 <?php if ($qty) : ?>
     <?= WPollList::widget([
         'dataProvider' => $dataProvider,

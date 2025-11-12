@@ -39,6 +39,25 @@ $this->params['breadcrumbs'][] = $language->title;
         </div>
 
         <div class="panel panel-default">
+            <div class="panel-heading"><strong>Мета-теги сторінки</strong></div>
+            <div class="panel-body">
+                <p>
+                    Ці поля керують заголовком H1, тегом &lt;title&gt; та мета-описом на сторінці тегу.
+                    Дозволено використовувати ті самі змінні, що й у статичному тексті.
+                </p>
+                <?= $form->field($model, 'heading')
+                    ->textInput(['maxlength' => true])
+                    ->hint('Значення потрапляє у головний H1. Можна вставляти змінні на кшталт @tag.'); ?>
+                <?= $form->field($model, 'meta_title')
+                    ->textInput(['maxlength' => true])
+                    ->hint('Використовується у &lt;title&gt;. Якщо залишити порожнім — застосовується стандартна формула.'); ?>
+                <?= $form->field($model, 'meta_description')
+                    ->textarea(['rows' => 4, 'class' => 'form-control'])
+                    ->hint('Власний мета-опис. Порожнє значення повертає автоматичний опис.'); ?>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
             <div class="panel-heading"><strong>FAQ для сторінки тегу</strong></div>
             <div class="panel-body">
                 <p>

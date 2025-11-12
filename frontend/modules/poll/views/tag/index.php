@@ -2,6 +2,7 @@
 
 use frontend\widgets\WPollList;
 use Yii;
+use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 
@@ -41,6 +42,26 @@ Yii::$app->page->description = Yii::t('tag', 'Опитування та думк
             <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
             <p><?= $tagModel->getInfoText(); ?></p>
         </div>
+        <?php $faqItems = $tagModel->getFaqItems(); ?>
+        <?php if (!empty($faqItems)) : ?>
+            <div class="info_block faq_block" itemscope itemtype="https://schema.org/FAQPage">
+                <h2>
+                    <span itemprop="name">
+                        <?= Yii::t('tag', 'Поширені запитання про {tag}', ['tag' => Html::encode($tagModel->name)]); ?>
+                    </span>
+                </h2>
+                <?php foreach ($faqItems as $faqItem) : ?>
+                    <div class="faq_entry" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                        <h3>
+                            <span itemprop="name"><?= $faqItem['question']; ?></span>
+                        </h3>
+                        <div class="faq_answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                            <div itemprop="text"><?= $faqItem['answer']; ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 <?php endif; ?>
 
     </div>

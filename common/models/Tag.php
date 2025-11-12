@@ -7,6 +7,7 @@ use common\components\ActiveRecord;
 use yii\bootstrap\Html;
 use common\models\Poll;
 use common\models\TagStaticText;
+use common\models\TagFaq;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -28,6 +29,14 @@ use common\models\TagStaticText;
 class Tag extends ActiveRecord
 {
     public static $subdomen = null;
+
+    /**
+     * Кеш для даних, що використовуються у шаблонах статичного тексту та FAQ.
+     * Дозволяє один раз підготувати агреговану інформацію та перевикористовувати її кілька разів.
+     *
+     * @var array|null
+     */
+    private ?array $templateData = null;
     /**
      * {@inheritdoc}
      */
@@ -191,14 +200,28 @@ class Tag extends ActiveRecord
     }
 
     /**
-     * Формує короткий текстовий опис тегу.
-     * Якщо адміністратор додав шаблон, використовуємо його та підставляємо змінні.
-     * Інакше повертаємо стандартний текст.
+     * Повертає набір агрегованих даних про опитування за тегом, щоб підставляти їх у шаблони статичного тексту та FAQ.
      *
-     * @return string
+     * @return array{
+     *     pollCount:int,
+     *     createdDate:string,
+     *     latestPoll:?Poll,
+     *     popularPoll:?Poll,
+     *     topRatedPoll:?Poll,
+     *     mostCommentedPoll:?Poll,
+     *     mostComments:int,
+     *     totalVotes:int,
+     *     totalComments:int,
+     *     latestDate:string,
+     *     replacements:array<string,string|int|float>
+     * }
      */
-    public function getInfoText()
+    private function getTemplateData(): array
     {
+        if ($this->templateData !== null) {
+            return $this->templateData;
+        }
+
         $pollQuery = $this->getPolls()->where(['status' => Poll::POLL_STATUS_ACTIVE]);
         $polls = $pollQuery->all();
         $pollCount = count($polls);
@@ -213,7 +236,6 @@ class Tag extends ActiveRecord
         $popularPoll = null;
         $topRatedPoll = null;
 
-        // Підрахунок агрегованих показників, щоб зробити змінні для шаблону інформативнішими.
         $totalVotes = 0;
         $totalComments = 0;
         $mostCommentedPoll = null;
@@ -244,12 +266,13 @@ class Tag extends ActiveRecord
 
         $averageVotes = $pollCount > 0 ? $totalVotes / $pollCount : 0;
         $averageComments = $pollCount > 0 ? $totalComments / $pollCount : 0;
+        $latestDate = $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '';
 
         $replacements = [
             '@tag' => Html::encode($this->name),
             '@countpoll' => $pollCount,
             '@firstdate' => $created,
-            '@lastdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@lastdate' => $latestDate,
             '@averagecomments' => $formatter->asDecimal($averageComments, 1),
             '@totalcomments' => $totalComments,
             '@popularlink' => $popularPoll ? Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()) : '',
@@ -261,7 +284,7 @@ class Tag extends ActiveRecord
             '@rating' => $topRatedPoll ? $topRatedPoll->rating : '',
             '@latestlink' => $latestPoll ? Html::a(Html::encode($latestPoll->title), $latestPoll->getUrl()) : '',
             '@latestname' => $latestPoll ? Html::encode($latestPoll->title) : '',
-            '@latestdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@latestdate' => $latestDate,
             '@mostcomments' => $mostComments,
             '@totalvotes' => $totalVotes,
             '@mostcommentedlink' => $mostCommentedPoll ? Html::a(
@@ -269,6 +292,39 @@ class Tag extends ActiveRecord
                 $mostCommentedPoll->getUrl()
             ) : '',
         ];
+
+        return $this->templateData = [
+            'pollCount' => $pollCount,
+            'createdDate' => $created,
+            'latestPoll' => $latestPoll,
+            'popularPoll' => $popularPoll,
+            'topRatedPoll' => $topRatedPoll,
+            'mostCommentedPoll' => $mostCommentedPoll,
+            'mostComments' => $mostComments,
+            'totalVotes' => $totalVotes,
+            'totalComments' => $totalComments,
+            'latestDate' => $latestDate,
+            'replacements' => $replacements,
+        ];
+    }
+
+    /**
+     * Формує короткий текстовий опис тегу.
+     * Якщо адміністратор додав шаблон, використовуємо його та підставляємо змінні.
+     * Інакше повертаємо стандартний текст.
+     *
+     * @return string
+     */
+    public function getInfoText()
+    {
+        $data = $this->getTemplateData();
+        $replacements = $data['replacements'];
+        $pollCount = $data['pollCount'];
+        $created = $data['createdDate'];
+        $popularPoll = $data['popularPoll'];
+        $topRatedPoll = $data['topRatedPoll'];
+        $latestPoll = $data['latestPoll'];
+        $latestDate = $data['latestDate'];
 
         $staticText = null;
         if ($this->language_id) {
@@ -306,10 +362,47 @@ class Tag extends ActiveRecord
         if ($latestPoll) {
             $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
                 'tag' => $this->name,
-                'date' => $formatter->asDate(strtotime($latestPoll->date_add), 'long'),
+                'date' => $latestDate,
             ]);
         }
 
         return implode(' ', $parts);
+    }
+
+    /**
+     * Повертає перелік FAQ для тегу з підставленими змінними.
+     *
+     * @return array<int, array{question:string, answer:string}>
+     */
+    public function getFaqItems(): array
+    {
+        if (!$this->language_id) {
+            return [];
+        }
+
+        $faqRecords = TagFaq::find()
+            ->where(['language_id' => $this->language_id])
+            ->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
+
+        if (empty($faqRecords)) {
+            return [];
+        }
+
+        $replacements = $this->getTemplateData()['replacements'];
+        $items = [];
+
+        foreach ($faqRecords as $faq) {
+            if ($faq->isEmpty()) {
+                continue;
+            }
+
+            $items[] = [
+                'question' => strtr((string) $faq->question, $replacements),
+                'answer' => strtr((string) $faq->answer, $replacements),
+            ];
+        }
+
+        return $items;
     }
 }

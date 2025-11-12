@@ -55,7 +55,11 @@ class TagStaticTextController extends Controller
         $faqFormModels = $faqItems;
 
         if ($model->load(Yii::$app->request->post())) {
+            // Нормалізуємо введення, щоб порожні значення не зберігались як пробіли.
             $model->content = trim((string) $model->content);
+            $model->heading = trim((string) $model->heading);
+            $model->meta_title = trim((string) $model->meta_title);
+            $model->meta_description = trim((string) $model->meta_description);
 
             $faqPost = Yii::$app->request->post('TagStaticFaq', []);
             $faqFormModels = [];
@@ -105,7 +109,7 @@ class TagStaticTextController extends Controller
             } else {
                 $transaction = TagStaticText::getDb()->beginTransaction();
                 try {
-                    if ($model->content === '') {
+                    if ($model->isEmpty()) {
                         if (!$model->isNewRecord) {
                             $model->delete();
                         }

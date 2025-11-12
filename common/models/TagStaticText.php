@@ -12,7 +12,10 @@ use common\models\TagStaticFaq;
  *
  * @property int $id
  * @property int $language_id
- * @property string $content
+ * @property string|null $content
+ * @property string|null $heading
+ * @property string|null $meta_title
+ * @property string|null $meta_description
  * @property int|null $created_at
  * @property int|null $updated_at
  *
@@ -46,7 +49,8 @@ class TagStaticText extends ActiveRecord
         return [
             [['language_id'], 'required'],
             [['language_id', 'created_at', 'updated_at'], 'integer'],
-            [['content'], 'string'],
+            [['content', 'meta_description'], 'string'],
+            [['heading', 'meta_title'], 'string', 'max' => 255],
             [['language_id'], 'unique'],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
@@ -61,9 +65,24 @@ class TagStaticText extends ActiveRecord
             'id' => 'ID',
             'language_id' => 'Мова',
             'content' => 'Статичний текст',
+            'heading' => 'Заголовок H1',
+            'meta_title' => 'Meta title',
+            'meta_description' => 'Meta description',
             'created_at' => 'Створено',
             'updated_at' => 'Оновлено',
         ];
+    }
+
+    /**
+     * Перевіряє, чи всі текстові поля порожні.
+     * Використовується в контролері, щоб видаляти зайві записи.
+     */
+    public function isEmpty(): bool
+    {
+        return trim((string) $this->content) === ''
+            && trim((string) $this->heading) === ''
+            && trim((string) $this->meta_title) === ''
+            && trim((string) $this->meta_description) === '';
     }
 
     /**

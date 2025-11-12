@@ -44,6 +44,14 @@ class Tag extends ActiveRecord
      * @var array|null
      */
     private $_faqList;
+
+    /**
+     * Кешує повʼязаний запис зі статичними налаштуваннями для тегу.
+     * Використовуємо прапорець, щоб відрізняти «ще не завантажено» від «немає запису».
+     */
+    private ?TagStaticText $_staticTextRecord = null;
+
+    private bool $_staticTextRecordLoaded = false;
     /**
      * {@inheritdoc}
      */
@@ -316,10 +324,7 @@ class Tag extends ActiveRecord
     {
         $data = $this->getStaticContentData();
 
-        $staticText = null;
-        if ($this->language_id) {
-            $staticText = TagStaticText::find()->where(['language_id' => $this->language_id])->one();
-        }
+        $staticText = $this->getStaticTextRecord();
 
         if ($staticText && trim((string)$staticText->content) !== '') {
             return strtr($staticText->content, $data['replacements']);
@@ -357,6 +362,60 @@ class Tag extends ActiveRecord
         }
 
         return implode(' ', $parts);
+    }
+
+    /**
+     * Повертає користувацькі мета-налаштування (title, description, H1) для сторінки тегу.
+     * Значення одразу проходять через підстановку змінних.
+     */
+    public function getStaticMeta(): array
+    {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText) {
+            return [
+                'heading' => null,
+                'title' => null,
+                'description' => null,
+            ];
+        }
+
+        $data = $this->getStaticContentData();
+        $replacements = $data['replacements'];
+
+        return [
+            'heading' => $this->replaceTokens($staticText->heading, $replacements),
+            'title' => $this->replaceTokens($staticText->meta_title, $replacements),
+            'description' => $this->replaceTokens($staticText->meta_description, $replacements),
+        ];
+    }
+
+    /**
+     * Завантажує повʼязаний запис TagStaticText лише один раз за запит.
+     */
+    private function getStaticTextRecord(): ?TagStaticText
+    {
+        if (!$this->_staticTextRecordLoaded) {
+            $this->_staticTextRecord = $this->language_id
+                ? TagStaticText::find()->where(['language_id' => $this->language_id])->one()
+                : null;
+            $this->_staticTextRecordLoaded = true;
+        }
+
+        return $this->_staticTextRecord;
+    }
+
+    /**
+     * Акуратно підставляє змінні у вказане значення.
+     * Якщо значення після тримінгу порожнє — повертаємо null.
+     */
+    private function replaceTokens(?string $value, array $replacements): ?string
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        return strtr($value, $replacements);
     }
 
     /**

@@ -15,6 +15,7 @@ Yii::$app->page->description = Yii::t('tag', 'Опитування та думк
     'count' => $tagModel->polls_count,
     'tag' => $tagModel->name,
 ]);
+$faqList = $tagModel->getFaqList();
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
@@ -41,6 +42,25 @@ Yii::$app->page->description = Yii::t('tag', 'Опитування та думк
             <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
             <p><?= $tagModel->getInfoText(); ?></p>
         </div>
+        <?php if (!empty($faqList)) : ?>
+            <?php // Додатковий блок Schema.org FAQPage для тегу. ?>
+            <div class="info_block tag-faq" itemscope itemtype="https://schema.org/FAQPage">
+                <?php // Заголовок FAQ блоку для тегу показує ключову фразу з урахуванням підстановок змінних. ?>
+                <h2><?= Yii::t('tag', 'Часті запитання про опитування на тему {tag}', ['tag' => $tagModel->name]); ?></h2>
+                <?php foreach ($faqList as $faqItem): ?>
+                    <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+                        <div class="faq_question" itemprop="name">
+                            <?= $faqItem['question']; ?>
+                        </div>
+                        <div class="faq_answer" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
+                            <div itemprop="text">
+                                <?= $faqItem['answer']; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 <?php endif; ?>
 
     </div>

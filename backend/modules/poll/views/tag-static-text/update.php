@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 /** @var common\models\Language $language */
 /** @var common\models\TagStaticText $model */
 /** @var array $tokens */
+/** @var common\models\TagStaticFaq[] $faqModels */
 
 $this->title = 'Статичний текст для: ' . $language->title;
 $this->params['breadcrumbs'][] = ['label' => 'Статичний текст на тегах', 'url' => ['index']];
@@ -28,9 +29,62 @@ $this->params['breadcrumbs'][] = $language->title;
     </p>
 
     <?php $form = ActiveForm::begin(); ?>
-        <?= $form->field($model, 'content')
-            ->textarea(['rows' => 10, 'class' => 'form-control'])
-            ->hint('Можна використовувати HTML і змінні з переліку вище.'); ?>
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Основний статичний текст</strong></div>
+            <div class="panel-body">
+                <?= $form->field($model, 'content')
+                    ->textarea(['rows' => 10, 'class' => 'form-control'])
+                    ->hint('Можна використовувати HTML і змінні з переліку вище.'); ?>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>FAQ для сторінки тегу</strong></div>
+            <div class="panel-body">
+                <p>
+                    У кожному блоці нижче введіть запитання та відповідь. Змінні працюють так само, як і в основному тексті.
+                    Щоб видалити пункт, очистіть обидва поля та натисніть «Зберегти».
+                </p>
+                <div class="faq-items">
+                    <?php foreach ($faqModels as $index => $faqModel): ?>
+                        <div class="faq-item well">
+                            <?= Html::hiddenInput("TagStaticFaq[$index][id]", $faqModel->id); ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= Html::label('Питання', "faq-question-$index"); ?>
+                                    <?= Html::textarea(
+                                        "TagStaticFaq[$index][question]",
+                                        $faqModel->question,
+                                        [
+                                            'class' => 'form-control',
+                                            'rows' => 3,
+                                            'id' => "faq-question-$index",
+                                            'placeholder' => 'Наприклад: Які опитування по @tag найпопулярніші?',
+                                        ]
+                                    ); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= Html::label('Відповідь', "faq-answer-$index"); ?>
+                                    <?= Html::textarea(
+                                        "TagStaticFaq[$index][answer]",
+                                        $faqModel->answer,
+                                        [
+                                            'class' => 'form-control',
+                                            'rows' => 3,
+                                            'id' => "faq-answer-$index",
+                                            'placeholder' => 'Відповідь можна форматувати HTML та змінними (@latestlink тощо).',
+                                        ]
+                                    ); ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <p class="help-block">
+                    Порожні блоки можна залишати — система автоматично їх пропустить, але завжди показуємо мінімум два, щоб зручно додавати нові.
+                </p>
+            </div>
+        </div>
 
         <div class="form-group">
             <?= Html::submitButton('Зберегти', ['class' => 'btn btn-success']); ?>

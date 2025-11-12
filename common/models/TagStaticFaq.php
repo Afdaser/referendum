@@ -5,27 +5,27 @@ namespace common\models;
 use common\components\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
-use common\models\TagStaticFaq;
-
 /**
- * Модель для зберігання статичного тексту на сторінці тегів.
+ * Модель для зберігання FAQ на сторінках тегів.
  *
  * @property int $id
  * @property int $language_id
- * @property string $content
+ * @property string $question
+ * @property string $answer
+ * @property int $position
  * @property int|null $created_at
  * @property int|null $updated_at
  *
  * @property Language $language
  */
-class TagStaticText extends ActiveRecord
+class TagStaticFaq extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%tag_static_text}}';
+        return '{{%tag_static_faq}}';
     }
 
     /**
@@ -45,9 +45,9 @@ class TagStaticText extends ActiveRecord
     {
         return [
             [['language_id'], 'required'],
-            [['language_id', 'created_at', 'updated_at'], 'integer'],
-            [['content'], 'string'],
-            [['language_id'], 'unique'],
+            [['language_id', 'position', 'created_at', 'updated_at'], 'integer'],
+            [['question', 'answer'], 'string'],
+            [['question', 'answer'], 'required'],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
     }
@@ -60,31 +60,21 @@ class TagStaticText extends ActiveRecord
         return [
             'id' => 'ID',
             'language_id' => 'Мова',
-            'content' => 'Статичний текст',
+            'question' => 'Питання',
+            'answer' => 'Відповідь',
+            'position' => 'Порядок',
             'created_at' => 'Створено',
             'updated_at' => 'Оновлено',
         ];
     }
 
     /**
-     * Звʼязок з мовою, для якої налаштовано текст.
+     * Звʼязок із мовою, для якої налаштований пункт FAQ.
      *
      * @return \yii\db\ActiveQuery
      */
     public function getLanguage()
     {
         return $this->hasOne(Language::class, ['id' => 'language_id']);
-    }
-
-    /**
-     * Повертає повʼязані елементи FAQ для поточної мови.
-     * FAQ зберігаються окремо, але редагуються разом із статичним текстом.
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFaqItems()
-    {
-        return $this->hasMany(TagStaticFaq::class, ['language_id' => 'language_id'])
-            ->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC]);
     }
 }

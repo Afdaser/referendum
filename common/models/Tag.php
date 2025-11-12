@@ -7,6 +7,7 @@ use common\components\ActiveRecord;
 use yii\bootstrap\Html;
 use common\models\Poll;
 use common\models\TagStaticText;
+use common\models\TagStaticFaq;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -28,6 +29,21 @@ use common\models\TagStaticText;
 class Tag extends ActiveRecord
 {
     public static $subdomen = null;
+
+    /**
+     * Кеш для вже порахованих статистичних даних тегу.
+     * Використовуємо як для статичного тексту, так і для FAQ.
+     *
+     * @var array|null
+     */
+    private $_staticContentData;
+
+    /**
+     * Кеш сформованих елементів FAQ, щоб не перевантажувати базу.
+     *
+     * @var array|null
+     */
+    private $_faqList;
     /**
      * {@inheritdoc}
      */
@@ -191,14 +207,17 @@ class Tag extends ActiveRecord
     }
 
     /**
-     * Формує короткий текстовий опис тегу.
-     * Якщо адміністратор додав шаблон, використовуємо його та підставляємо змінні.
-     * Інакше повертаємо стандартний текст.
+     * Збирає статистику за тегом, щоб підставляти змінні у шаблони.
+     * Робимо це один раз за запит, а потім перевикористовуємо і для FAQ.
      *
-     * @return string
+     * @return array
      */
-    public function getInfoText()
+    private function getStaticContentData(): array
     {
+        if ($this->_staticContentData !== null) {
+            return $this->_staticContentData;
+        }
+
         $pollQuery = $this->getPolls()->where(['status' => Poll::POLL_STATUS_ACTIVE]);
         $polls = $pollQuery->all();
         $pollCount = count($polls);
@@ -213,7 +232,6 @@ class Tag extends ActiveRecord
         $popularPoll = null;
         $topRatedPoll = null;
 
-        // Підрахунок агрегованих показників, щоб зробити змінні для шаблону інформативнішими.
         $totalVotes = 0;
         $totalComments = 0;
         $mostCommentedPoll = null;
@@ -244,12 +262,13 @@ class Tag extends ActiveRecord
 
         $averageVotes = $pollCount > 0 ? $totalVotes / $pollCount : 0;
         $averageComments = $pollCount > 0 ? $totalComments / $pollCount : 0;
+        $latestDate = $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '';
 
         $replacements = [
             '@tag' => Html::encode($this->name),
             '@countpoll' => $pollCount,
             '@firstdate' => $created,
-            '@lastdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@lastdate' => $latestDate,
             '@averagecomments' => $formatter->asDecimal($averageComments, 1),
             '@totalcomments' => $totalComments,
             '@popularlink' => $popularPoll ? Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()) : '',
@@ -261,7 +280,7 @@ class Tag extends ActiveRecord
             '@rating' => $topRatedPoll ? $topRatedPoll->rating : '',
             '@latestlink' => $latestPoll ? Html::a(Html::encode($latestPoll->title), $latestPoll->getUrl()) : '',
             '@latestname' => $latestPoll ? Html::encode($latestPoll->title) : '',
-            '@latestdate' => $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '',
+            '@latestdate' => $latestDate,
             '@mostcomments' => $mostComments,
             '@totalvotes' => $totalVotes,
             '@mostcommentedlink' => $mostCommentedPoll ? Html::a(
@@ -270,46 +289,113 @@ class Tag extends ActiveRecord
             ) : '',
         ];
 
+        return $this->_staticContentData = [
+            'polls' => $polls,
+            'pollCount' => $pollCount,
+            'created' => $created,
+            'latestPoll' => $latestPoll,
+            'popularPoll' => $popularPoll,
+            'topRatedPoll' => $topRatedPoll,
+            'mostCommentedPoll' => $mostCommentedPoll,
+            'mostComments' => $mostComments,
+            'totalVotes' => $totalVotes,
+            'totalComments' => $totalComments,
+            'latestDate' => $latestDate,
+            'replacements' => $replacements,
+        ];
+    }
+
+    /**
+     * Формує короткий текстовий опис тегу.
+     * Якщо адміністратор додав шаблон, використовуємо його та підставляємо змінні.
+     * Інакше повертаємо стандартний текст.
+     *
+     * @return string
+     */
+    public function getInfoText()
+    {
+        $data = $this->getStaticContentData();
+
         $staticText = null;
         if ($this->language_id) {
             $staticText = TagStaticText::find()->where(['language_id' => $this->language_id])->one();
         }
 
         if ($staticText && trim((string)$staticText->content) !== '') {
-            return strtr($staticText->content, $replacements);
+            return strtr($staticText->content, $data['replacements']);
         }
 
         $parts = [];
         $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}, і відтоді колекція думок {tag} зросла до {count} опитувань.', [
             'tag' => $this->name,
-            'date' => $created,
-            'count' => $pollCount,
+            'date' => $data['created'],
+            'count' => $data['pollCount'],
         ]);
 
-        if ($popularPoll) {
+        if ($data['popularPoll']) {
             $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}, який набрав {votes} голосів.', [
-                'title' => Html::a(Html::encode($popularPoll->title), $popularPoll->getUrl()),
-                'votes' => $popularPoll->countPollOptionsVoters,
+                'title' => Html::a(Html::encode($data['popularPoll']->title), $data['popularPoll']->getUrl()),
+                'votes' => $data['popularPoll']->countPollOptionsVoters,
             ]);
         }
 
-        if ($topRatedPoll) {
+        if ($data['topRatedPoll']) {
             $parts[] = Yii::t('tag', 'Опитування з найбільшим рейтингом — {title} має рейтинг {rating}.', [
-                'title' => Html::a(Html::encode($topRatedPoll->title), $topRatedPoll->getUrl()),
-                'rating' => $topRatedPoll->rating,
+                'title' => Html::a(Html::encode($data['topRatedPoll']->title), $data['topRatedPoll']->getUrl()),
+                'rating' => $data['topRatedPoll']->rating,
             ]);
             $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.', [
                 'tag' => $this->name,
             ]);
         }
 
-        if ($latestPoll) {
+        if ($data['latestPoll']) {
             $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
                 'tag' => $this->name,
-                'date' => $formatter->asDate(strtotime($latestPoll->date_add), 'long'),
+                'date' => $data['latestDate'],
             ]);
         }
 
         return implode(' ', $parts);
+    }
+
+    /**
+     * Формує перелік FAQ зі вже підставленими змінними.
+     *
+     * @return array[] Кожен елемент містить ключі question та answer.
+     */
+    public function getFaqList(): array
+    {
+        if ($this->_faqList !== null) {
+            return $this->_faqList;
+        }
+
+        if (!$this->language_id) {
+            return $this->_faqList = [];
+        }
+
+        $data = $this->getStaticContentData();
+
+        $faqRecords = TagStaticFaq::find()
+            ->where(['language_id' => $this->language_id])
+            ->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
+
+        $items = [];
+        foreach ($faqRecords as $faqRecord) {
+            $question = strtr((string) $faqRecord->question, $data['replacements']);
+            $answer = strtr((string) $faqRecord->answer, $data['replacements']);
+
+            if (trim(strip_tags($question)) === '' || trim(strip_tags($answer)) === '') {
+                continue;
+            }
+
+            $items[] = [
+                'question' => $question,
+                'answer' => $answer,
+            ];
+        }
+
+        return $this->_faqList = $items;
     }
 }

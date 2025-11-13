@@ -1230,14 +1230,19 @@ class Poll extends ActiveRecord
      * Return user polls that has new comments
      */
     public static function getPollsWithNewComments(){
-        $query = self::find()->joinWith('pollComments')
-                ->where(['poll_comment.is_new' => 1]);
+        $query = self::find()->alias('p')
+            // Обираємо лише стовпці опитування, щоби DISTINCT працював коректно і не виникали помилки ONLY_FULL_GROUP_BY
+            ->select(['p.*'])
+            ->distinct()
+            ->joinWith(['pollComments' => function($commentsQuery) {
+                // Використовуємо власний псевдонім, аби уникнути звернень до неіснуючої таблиці poll_comment
+                $commentsQuery->alias('pc');
+            }])
+            ->where(['pc.is_new' => PollComment::NEW_COMMENT]);
         if (!Yii::$app->user->isGuest) {
-            $query->andWhere(['poll.user_id' => Yii::$app->user->identity->id]);
+            $query->andWhere(['p.user_id' => Yii::$app->user->identity->id]);
         }
-        $query->groupBy(['poll.id',]);
-        $polls = $query->all();
-        return $polls;
+        return $query->all();
     }
 
     /*
@@ -1246,9 +1251,16 @@ class Poll extends ActiveRecord
      */
     public static function getNewCommentsCount($userId)
     {
-        $query = self::find()->joinWith('pollComments')
-                ->where(['poll_comment.is_new' => 1])
-                ->andWhere(['poll.user_id' => $userId]);
+        $query = self::find()->alias('p')
+            ->select(['p.id'])
+            ->distinct()
+            ->joinWith(['pollComments' => function($commentsQuery) {
+                $commentsQuery->alias('pc');
+            }])
+            ->where(['pc.is_new' => PollComment::NEW_COMMENT])
+            ->andWhere(['p.user_id' => $userId]);
+
+        // COUNT(*) рахує результати підзапиту з DISTINCT, тому отримаємо кількість унікальних опитувань із новими коментарями
         return $query->count();
     }
 

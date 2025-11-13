@@ -31,7 +31,7 @@ use common\models\Poll;
  */
 ?>
         <?php echo Yii::t("user", 'Мій рейтинг'); ?>: <?= User::getUserRating(Yii::$app->user->identity->id);?><br>
-        <?php echo Yii::t("user", 'Мої опитування'); ?>: <a href="<?= Url::toRoute('/poll/site/myPolls/')?>"><?= User::getPollsCount(Yii::$app->user->identity->id);?></a><br>
+        <?php echo Yii::t("user", 'Мої опитування'); ?>: <a href="<?= Url::toRoute('/site/myPolls/')?>"><?= User::getPollsCount(Yii::$app->user->identity->id);?></a><br>
         <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="<?= Url::toRoute('/user/new/new-comments/')?>"><?= Poll::getNewCommentsCount(Yii::$app->user->identity->id);?></a>
     </div>
     <a href="<?= Url::toRoute('/user/profile');?>" class="my_profile" role="tablist">

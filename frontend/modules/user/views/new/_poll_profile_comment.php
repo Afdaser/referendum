@@ -35,7 +35,16 @@ use common\models\User;
     <?php if ($isNew): ?>
         <?php if (count($comment->commentChilds(['has_new' => 1]))): ?>
             <div class="review_comment">
-                <?php $this->renderPartial('/poll/comments', array('comments' => $comment->commentChilds(['has_new' => 1]), 'isNew' => isset($isNew) ? true : false)); ?>
+                <?php
+                // У Yii2 уявлення рендеряться через render(), тому використовуємо його замість застарілого renderPartial().
+                echo $this->render(
+                    '@frontend/modules/poll/views/poll/comments',
+                    [
+                        'comments' => $comment->commentChilds(['has_new' => 1]),
+                        'isNew' => isset($isNew) ? true : false,
+                    ]
+                );
+                ?>
             </div>
         <?php endif; ?>
     <?php endif; ?>

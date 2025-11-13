@@ -5,44 +5,26 @@ namespace frontend\widgets;
 use Yii;
 use yii\widgets\BaseListView AS BaseWidget;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use app\models\User;
 
 /**
  * Description of WPollList
  *
  * @author alex
  */
-class WPollList extends BaseWidget {
-
+class WPollList extends BaseWidget
+{
+    /** @var string название view, яку використовуємо для відмальовування списку */
     protected $view = 'poll-list';
 
-//    const CSS_OPERATION_BASE = 'unit-operation-base';
-//    const CSS_OPERATION_DONE = 'unit-operation-done';
-//    const CSS_OPERATION_WORK = 'unit-operation-work';
-//    const CSS_OPERATION_START = 'unit-operation-start';
-//    const CSS_OPERATION_ERROR = 'unit-operation-error';
-//    const CSS_BOTTLENECK = 'unit-operation-error';
-//
-//    const CSS_TEXT_ORDER_DONE = 'text-order-done';
-//    const CSS_TEXT_ORDER_WORK = 'text-order-work';
-//    const CSS_TEXT_ORDER_START = 'text-order-start';
-//    const CSS_TEXT_ORDER_ERROR = 'text-order-error';
-//    const SEPARATOR = '&nbsp;|&nbsp;';
-//    const SEPARATOR_TH = ' | ';
-//
-//    protected $users;
-//    protected $operations;
-//
-//    public $params;
-
+    /** @var array перелік пунктів меню для виджета */
     public $menu = [];
-    public $data;
+    /** @var array додаткові дані, які приходять від контролера */
+    public $data = [];
+    /** @var \yii\data\DataProviderInterface джерело даних для списку */
     public $dataProvider;
     public $searchModel;
+    /** @var object|null форма пошуку опитувань */
     public $searchForm;
-//    public $itemOptions;
-//    public $batches;
     public $count;
     public $totalCount;
     public $pages;
@@ -57,13 +39,6 @@ class WPollList extends BaseWidget {
      * - `{pager}`: the pager. See [[renderPager()]].
      */
 //    public $layout = "{summary}\n{items}\n{pager}";
-/*
-\n
-<div style="border:2px dashed blue; width:90%;">
-{debug}
-</div>\n
- */
-
     /**
      * Initializes the view.
      */
@@ -80,38 +55,6 @@ class WPollList extends BaseWidget {
 </div>
 
 LAYOUT;
-/*
-
-<ul class="pagination" id="yw1">
-<li class="first hidden"><a href="/"></a></li>
-<li class="previous hidden"><a href="/">‹</a></li>
-<li class="page selected"><a href="/">1</a></li>
-<li class="page"><a href="?page=2">2</a></li>
-<li class="next"><a href="?page=2">›</a></li>
-<li class="last"><a href="?page=2"></a></li>
-</ul>
-<div class="right_count_select">
-Polls on the page:
-<select class="count_article" onchange="document.location.href = &quot;/site/hotPolls/desc/month/&quot;+$(this).val()">
-<option value="10" selected="">10</option>
-<option value="5">5</option>
-<option value="2">2</option>
-</select>
-</div>
-</div>
- */
-        /* /var/www/vhosts_yii/referendum.social/referendum.social.local/vendor/yiisoft/yii2/widgets/BaseListView.php
-        if ($this->dataProvider === null) {
-            throw new InvalidConfigException('The "dataProvider" property must be set.');
-        }
-        if ($this->emptyText === null) {
-            $this->emptyText = Yii::t('yii', 'No results found.');
-        }
-        if (!isset($this->options['id'])) {
-            $this->options['id'] = $this->getId();
-        }
-
-        /* */
         $this->emptyText = Yii::t('yii', 'No results found.');
         $this->emptyTextOptions = ['class' => 'empty', 'style' => 'border:1px dotted green;'];
         $this->showOnEmpty = true;
@@ -121,85 +64,23 @@ Polls on the page:
         return $initResult;
     }
 
-    public function renderItems() {
-        if (isset($this->data['user'])) {
-            $user = $this->data['user'];
-        }else{
-            // $user = Yii::$app->user->isGuest ? null : Yii::$app->user->identity;
-            $user = null;
-        }
-        if (empty($this->data['language'])) {
-            $this->data['language'] = substr(Yii::$app->language, 0 ,2 );
-        }
-        if (empty($this->data['category'])) {
-            $this->data['category'] = 'search';
-        }
-        //filter by poll`s tag
-        if (empty($this->data['tag'])) {
-            $this->data['tag'] = Html::encode(Yii::$app->request->get('tag', false));
-        }
-        //limit for page: 2,5,10
-//        if (empty($this->data['limit'])) {
-//            if (!$this->data['limit'] = intval(Yii::$app->request->get('limit', false))) {
-//                $this->data['limit'] = Yii::$app->params['POLLS_LIMIT_MAIN_PAGE'];
-//            }
-//        }
+    public function renderItems()
+    {
+        $user = $this->resolveUser();
+        $this->applyDefaultFilters();
 
-        //sort polls at page: asc,desc
-//        if (empty($this->data['sort'])) {
-//            if (!$this->data['sort'] = Html::encode(Yii::$app->request->get('sort', false))) {
-//                if ($this->data['category'] == 'own') {
-//                    $this->data['sort'] = 'default';
-//                } else {
-//                    $this->data['sort'] = 'desc';
-//                }
-//            }
-//        }
-
-
-
-        //sort period
-
-        if (!$this->data['period'] = Html::encode(Yii::$app->request->get('period', false))) {
-//                $this->data['period'] = 'day';
-//                $this->data['period'] = 'week';
-            $this->data['period'] = 'halfyear';
-//                $this->data['period'] = 'year';
-        }
-
-//        $this->dataProvider =  $this->searchForm->publishedPolls($this->data);
-
-        $qty = $this->dataProvider->count;
-
-        if($qty == 0) {
-//            $this->view = 'poll-empty';
-        }
-//die(__FILE__.'#'.__LINE__);
         return $this->render($this->view, [
-                    'data' => $this->data,
-//            'dataUnits' => $this->dataUnits,
-                    'dataProvider' => $this->dataProvider,
-                    'search' => $this->searchForm,
-//                    'searchForm' => $this->searchForm,
-
-//            'batches' => $this->batches,
-//            'pages' => $this->pages,
-//            'operations' => $this->operations,
-//                    'polls' => $items['polls'],
-//                    'pages' => $items['pages'],
-//                    'totalItems' => $items['pages']->itemCount,
-                    'sort' => $this->data['sort'] ?? '',
-                    'limit' => $this->data['limit'] ?? Yii::$app->params['POLLS_LIMIT_MAIN_PAGE'],
-                    'category' => $this->data['category'],
-                    'tag' => $this->data['tag'],
-                    'period' => $this->data['period'],
-                    'language' => $this->data['language'],
-
-//                    'pollModel' => $this->data['pollModel'],
-                    'user' => $user,
-
-                    'pollsCount' => $this->dataProvider->getTotalCount(),
-//                    'pollsCount' => $items['pollsCount'],
+            'data' => $this->data,
+            'dataProvider' => $this->dataProvider,
+            'search' => $this->searchForm,
+            'sort' => $this->data['sort'],
+            'limit' => $this->data['limit'],
+            'category' => $this->data['category'],
+            'tag' => $this->data['tag'],
+            'period' => $this->data['period'],
+            'language' => $this->data['language'],
+            'user' => $user,
+            'pollsCount' => $this->dataProvider->getTotalCount(),
         ]);
     }
 
@@ -227,26 +108,28 @@ Polls on the page:
         }
     }
 
-    public function renderDebug(){
-        return '';
-        $yiiLanguage = Yii::$app->language;
-        $yiiLanguageId = Yii::$app->request->languageId;
+    public function renderDebug()
+    {
+        if (!YII_DEBUG) {
+            return '';
+        }
 
-        $outHtml = <<<SORTER
+        $yiiLanguage = Yii::$app->language;
+        $yiiLanguageId = Yii::$app->request->languageId ?? 'n/a';
+
+        return <<<HTML
 <div style="padding:4px; margin:2px; border:1px dashed red;">
 Polls debug:
 <br>sort => [{$this->data['sort']}]
 <br>limit => [{$this->data['limit']}]
 <br>category => [{$this->data['category']}]
 <br>tag => [{$this->data['tag']}]
-<br>period => => [{$this->data['period']}]
+<br>period => [{$this->data['period']}]
 <br>language => [{$this->data['language']}]
-<br>Yii::app - > language => [{$yiiLanguage}]
-<br>Yii::app - > request - > languageId  => [{$yiiLanguageId}]
-
+<br>Yii::app -> language => [{$yiiLanguage}]
+<br>Yii::app -> request -> languageId => [{$yiiLanguageId}]
 </div>
-SORTER;
-        return $outHtml;
+HTML;
     }
 
     /**
@@ -256,27 +139,54 @@ SORTER;
     public function renderSorter()
     {
         return $this->render('poll-list-soter', $this->data);
+    }
 
-        $outHtml = <<<SORTER
-<div class="right_count_select">
-Polls on the page:
-<select class="count_article" onchange="document.location.href = &quot;/site/hotPolls/desc/month/&quot;+$(this).val()">
-<option value="10" selected="">10</option>
-<option value="5">5</option>
-<option value="2">2</option>
-</select>
-</div>
-SORTER;
-//        $sort = $this->dataProvider->getSort();
-//        if ($sort === false || empty($sort->attributes) || $this->dataProvider->getCount() <= 0) {
-//            return '';
-//        }
-//        /* @var $class LinkSorter */
-//        $sorter = $this->sorter;
-//        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::className());
-//        $sorter['sort'] = $sort;
-//        $sorter['view'] = $this->getView();
+    /**
+     * Шукаємо користувача лише за потреби, аби не тягнути зайві об'єкти.
+     */
+    protected function resolveUser()
+    {
+        if (isset($this->data['user'])) {
+            return $this->data['user'];
+        }
 
-//        return $outHtml;
+        return Yii::$app->user->isGuest ? null : Yii::$app->user->identity;
+    }
+
+    /**
+     * Проставляємо дефолтні значення фільтрів уніфіковано, щоб не дублювати перевірки.
+     */
+    protected function applyDefaultFilters(): void
+    {
+        $this->data['language'] = $this->data['language'] ?? substr(Yii::$app->language, 0, 2);
+        $this->data['category'] = $this->data['category'] ?? 'search';
+        $this->data['tag'] = $this->data['tag'] ?? $this->getRequestString('tag');
+        $this->data['period'] = $this->data['period'] ?? $this->getRequestString('period', 'halfyear');
+        $this->data['limit'] = (int)($this->data['limit'] ?? $this->getRequestInt('limit', Yii::$app->params['POLLS_LIMIT_MAIN_PAGE']));
+        $this->data['sort'] = $this->data['sort']
+            ?? $this->getRequestString('sort')
+            ?? ($this->data['category'] === 'own' ? 'default' : 'desc');
+    }
+
+    protected function getRequestString(string $name, ?string $default = null): ?string
+    {
+        $value = Yii::$app->request->get($name);
+        if ($value === null || $value === '') {
+            return $default;
+        }
+
+        return Html::encode($value);
+    }
+
+    protected function getRequestInt(string $name, int $default): int
+    {
+        $value = Yii::$app->request->get($name);
+        if ($value === null || $value === '') {
+            return $default;
+        }
+
+        $value = (int)$value;
+
+        return $value > 0 ? $value : $default;
     }
 }

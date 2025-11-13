@@ -1229,15 +1229,23 @@ class Poll extends ActiveRecord
     /*
      * Return user polls that has new comments
      */
-    public static function getPollsWithNewComments(){
-        $query = self::find()->joinWith('pollComments')
-                ->where(['poll_comment.is_new' => 1]);
+    public static function getPollsWithNewComments()
+    {
+        $query = self::find()
+            ->alias('p')
+            ->innerJoinWith([
+                'pollComments' => static function ($commentQuery) {
+                    // Вказуємо псевдонім `pc`, щоб безпечно звертатись до колонок коментарів.
+                    $commentQuery->alias('pc');
+                },
+            ])
+            ->andWhere(['pc.is_new' => PollComment::NEW_COMMENT]);
+
         if (!Yii::$app->user->isGuest) {
-            $query->andWhere(['poll.user_id' => Yii::$app->user->identity->id]);
+            $query->andWhere(['p.user_id' => Yii::$app->user->identity->id]);
         }
-        $query->groupBy(['poll.id',]);
-        $polls = $query->all();
-        return $polls;
+
+        return $query->groupBy(['p.id'])->all();
     }
 
     /*
@@ -1246,9 +1254,18 @@ class Poll extends ActiveRecord
      */
     public static function getNewCommentsCount($userId)
     {
-        $query = self::find()->joinWith('pollComments')
-                ->where(['poll_comment.is_new' => 1])
-                ->andWhere(['poll.user_id' => $userId]);
+        $query = self::find()
+            ->alias('p')
+            ->innerJoinWith([
+                'pollComments' => static function ($commentQuery) {
+                    $commentQuery->alias('pc');
+                },
+            ])
+            ->andWhere([
+                'pc.is_new' => PollComment::NEW_COMMENT,
+                'p.user_id' => $userId,
+            ]);
+
         return $query->count();
     }
 

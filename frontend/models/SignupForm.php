@@ -56,7 +56,14 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
-        return $user->save() && $this->sendEmail($user);
+        // Ми тимчасово не враховуємо результат відправлення листа,
+        // щоб реєстрація не зривалася через проблеми з поштовим сервісом.
+        if ($user->save()) {
+            $this->sendEmail($user);
+            return true;
+        }
+
+        return false;
     }
 
     /**

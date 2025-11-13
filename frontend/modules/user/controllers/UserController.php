@@ -49,18 +49,19 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Публічні URL /user/newAnswers і /user/newComments все ще можуть приходити зі старих
+     * посилань, тому замість фатального die() виконуємо редірект на актуальні екшени
+     * контролера NewController. Так ми не ламаємо старі закладки користувачів.
+     */
     public function actionNewAnswers()
     {
-        die(__METHOD__);
-//        return $this->render('index-dev');
-        return $this->render('index-new-answers');
+        return $this->redirect(['/user/new/new-answers']);
     }
 
     public function actionNewComments()
     {
-        die(__METHOD__);
-//        return $this->render('index-dev');
-        return $this->render('index-new-comments');
+        return $this->redirect(['/user/new/new-comments']);
     }
 
     /*

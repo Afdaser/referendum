@@ -28,6 +28,8 @@ class WPollList extends BaseWidget
     public $count;
     public $totalCount;
     public $pages;
+    /** @var bool чи потрібно показувати службовий відладочний блок */
+    public $showDebug = false;
 
     /**
      * @var string the layout that determines how different sections of the list view should be organized.
@@ -44,11 +46,13 @@ class WPollList extends BaseWidget
      */
     public function init()
     {
+        // Відладочний блок показуємо лише у разі явного запиту, щоб не засмічувати UI звичайним користувачам.
+        $debugSection = $this->showDebug && YII_DEBUG
+            ? "<div style=\"border:0px dashed blue; width:96%;\">\n{debug}\n</div>\n"
+            : '';
+
         $this->layout = <<<LAYOUT
-<div style="border:0px dashed blue; width:96%;">
-{debug}
-</div>
-{summary}\n{items}\n
+{$debugSection}{summary}\n{items}\n
 <div class="bottom_pagination_b clearfix">
 {sorter}\n
 {pager}
@@ -110,7 +114,7 @@ LAYOUT;
 
     public function renderDebug()
     {
-        if (!YII_DEBUG) {
+        if (!$this->showDebug || !YII_DEBUG) {
             return '';
         }
 
@@ -146,11 +150,14 @@ HTML;
      */
     protected function resolveUser()
     {
-        if (isset($this->data['user'])) {
+        // Профіль конкретного користувача передається контролерами явно,
+        // тому не підтягуємо поточну сесію автоматично: це викликає показ
+        // блоку мікророзмітки на головній, у тегах та в пошуку.
+        if (array_key_exists('user', $this->data)) {
             return $this->data['user'];
         }
 
-        return Yii::$app->user->isGuest ? null : Yii::$app->user->identity;
+        return null;
     }
 
     /**

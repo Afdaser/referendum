@@ -33,9 +33,16 @@ use common\models\User;
     <?php endif; ?>
 
     <?php if ($isNew): ?>
-        <?php if (count($comment->commentChilds(['has_new' => 1]))): ?>
+        <?php
+        // Відображаємо лише дочірні коментарі, що позначені як нові.
+        $newChildComments = $comment->commentChilds(['has_new' => 1]);
+        ?>
+        <?php if (count($newChildComments)): ?>
             <div class="review_comment">
-                <?php $this->renderPartial('/poll/comments', array('comments' => $comment->commentChilds(['has_new' => 1]), 'isNew' => isset($isNew) ? true : false)); ?>
+                <?= $this->render('/poll/comments', [
+                    'comments' => $newChildComments,
+                    'isNew' => isset($isNew) ? (bool)$isNew : false,
+                ]); ?>
             </div>
         <?php endif; ?>
     <?php endif; ?>

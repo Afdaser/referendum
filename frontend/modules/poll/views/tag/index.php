@@ -32,11 +32,6 @@ $faqList = $tagModel->getFaqList();
         <?php endif; ?>
 <?php if ($qty) : ?>
     <?= WPollList::widget([
-        'data' => [
-            // Передаємо категорію "tag", щоб віджети знали про спрощений режим без полів пошуку.
-            'category' => 'tag',
-            'tag' => $tag,
-        ],
         'dataProvider' => $dataProvider,
         'searchModel' => $searchModel,
         'searchForm' => $searchForm,

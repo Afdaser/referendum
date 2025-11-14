@@ -125,52 +125,40 @@ use common\models\User;
         </span>
         </div>
     </div>
-<?php elseif (in_array($category, ['search', 'tag'], true)): ?>
+<?php elseif ($category == 'search'): ?>
 
     <?php if (empty($sort)) :
         $sort = 'desc';
      endif; ?>
-<?php if (YII_DEBUG || !empty($debug)) :?>
+    <?php if (YII_DEBUG || !empty($debug)) :?>
     <div style="border:2px dashed red;"><?= '#DEV03:block02 [category == search]'; ?></div>
     <?php endif; ?>
 <?php /* * / ?>
     <FORM METHOD="POST" ACTION="/site/search/<?php echo $limit?>/<?php echo $sort?>" name="Search">
 <?php /* */ ?>
-    <?php
-    $isTagPage = ($category === 'tag');
-    $tagBackUrl = $isTagPage ? (Yii::$app->request->referrer ?: Url::base(true)) : Url::base(true);
-    $backLabel = $isTagPage ? Yii::t('poll', 'Назад') : Yii::t('filter', 'Головна');
-    $searchHeading = $isTagPage
-        ? Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => Html::encode($tag)])
-        : Yii::t('filter', 'Пошук');
-    ?>
     <form method="post" action="<?= Url::toRoute(['/poll/search/search', 'limit' => $limit, 'sorting' => $sort]); ?>" name="SearchForm">
         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
 
         <div class="top_b_chart search_prefix">
-            <a class="btn_prev_var go_to_main_btn" href="<?= Html::encode($tagBackUrl); ?>"><?= $backLabel; ?></a>
-            <span class="search_text"><?= $searchHeading; ?></span>
+            <a class="btn_prev_var go_to_main_btn" href="<?= Url::base(true) ?>"><?= Yii::t("filter", 'Головна'); ?></a>
+            <span class="search_text"><?= Yii::t("filter", 'Пошук'); ?></span>
         </div>
         <div class="bottom_content_tabs marg_bot">
-            <?php if (!$isTagPage): ?>
-                <div class="top_input_b item_param item_show">
-                    <input type="text" class="autocomplete" value="<?php echo $search->text ?>" name="SearchForm[text]"
-                           placeholder="<?= Yii::t("filter", 'Пошук'); ?>...">
-                    <a href="javascript:void(0)" class="search_btn_inner" onclick="document.forms['SearchForm'].submit()"><?= Yii::t("filter", 'Пошук'); ?></a>
-                </div>
-                <div class="checkbox_search_block">
-                    <label>
-                        <input type="checkbox" name="SearchForm[search_in_title]" <?php if($search->searchInTitle): ?>checked<?php endif;?> value="1">
-                        <?= Yii::t("filter", 'Пошук по назві опитування'); ?>
-                    </label>
-                    <label>
-                        <input type="checkbox" name="SearchForm[search_in_tags]" <?php if($search->searchInTags): ?>checked<?php endif;?> value="1">
-                        <?= Yii::t("filter", 'Пошук по тегах'); ?>
-                    </label>
-                </div>
-            <?php else: ?>
-                <?php // На сторінках тегів не показуємо текстове поле пошуку та чекбокси, залишаючи лише керування сортуванням. ?>
-            <?php endif; ?>
+            <div class="top_input_b item_param item_show">
+                <input type="text" class="autocomplete" value="<?php echo $search->text ?>" name="SearchForm[text]"
+                       placeholder="<?= Yii::t("filter", 'Пошук'); ?>...">
+                <a href="javascript:void(0)" class="search_btn_inner" onclick="document.forms['SearchForm'].submit()"><?= Yii::t("filter", 'Пошук'); ?></a>
+            </div>
+            <div class="checkbox_search_block">
+                <label>
+                    <input type="checkbox" name="SearchForm[search_in_title]" <?php if($search->searchInTitle): ?>checked<?php endif;?> value="1">
+                    <?= Yii::t("filter", 'Пошук по назві опитування'); ?>
+                </label>
+                <label>
+                    <input type="checkbox" name="SearchForm[search_in_tags]" <?php if($search->searchInTags): ?>checked<?php endif;?> value="1">
+                    <?= Yii::t("filter", 'Пошук по тегах'); ?>
+                </label>
+            </div>
             <div class="search_form_bottom bottom_select_b_search clearfix" style="top: 0">
                 <?= Yii::t("filter", 'Знайдено результатів'); ?>: <?= $pollsCount; ?>
                 <span class="right_select_sort">

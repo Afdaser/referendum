@@ -15,6 +15,8 @@ $csrfRequest = Yii::$app->request;
 // Отримуємо CSRF-параметри один раз, щоб не дублювати виклики у кожній формі голосування.
 $csrfParam = $csrfRequest->csrfParam;
 $csrfToken = $csrfRequest->getCsrfToken();
+// Для сторінок тегів потрібно приховати пошук, але залишити сортування.
+$isTagPage = $this->data['isTagPage'] ?? false;
 ?>
 
 <?= (YII_ENV == 'dev') ? "<!-- #DEV24-04 \n". __FILE__."\n -->" : ''; ?>
@@ -84,7 +86,8 @@ Menu::widget([
                     'user' => $user,
                     'pollsCount' => $pollsCount,
                     'search' => $search,
-                    'period' => $period
+                    'period' => $period,
+                    'isTagPage' => $isTagPage,
                 ));
                 ?>
                 <?= $this->render('polls/_mainPolls', array('polls' => $polls, 'limit' => $limit, 'sort' => $sort)); ?>

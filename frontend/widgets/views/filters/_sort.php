@@ -15,6 +15,7 @@ use common\models\User;
  */
 
 ?>
+<?php $isTagPage = !empty($isTagPage); ?>
 <?php if (YII_ENV == 'dev') : ?>
 <div style="border:3px dotted blueviolet; padding:5px;">
     <?php if (isset($user)) : ?>
@@ -133,21 +134,27 @@ use common\models\User;
     <?php if (YII_DEBUG || !empty($debug)) :?>
     <div style="border:2px dashed red;"><?= '#DEV03:block02 [category == search]'; ?></div>
     <?php endif; ?>
+
 <?php /* * / ?>
     <FORM METHOD="POST" ACTION="/site/search/<?php echo $limit?>/<?php echo $sort?>" name="Search">
 <?php /* */ ?>
     <form method="post" action="<?= Url::toRoute(['/poll/search/search', 'limit' => $limit, 'sorting' => $sort]); ?>" name="SearchForm">
         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
 
+        <?php if (!$isTagPage): ?>
         <div class="top_b_chart search_prefix">
             <a class="btn_prev_var go_to_main_btn" href="<?= Url::base(true) ?>"><?= Yii::t("filter", 'Головна'); ?></a>
             <span class="search_text"><?= Yii::t("filter", 'Пошук'); ?></span>
         </div>
+        <?php endif; ?>
         <div class="bottom_content_tabs marg_bot">
+            <?php if (!$isTagPage): ?>
+            <?php // Для сторінок тегів приховуємо поля пошуку, щоб залишити лише сортування. ?>
             <div class="top_input_b item_param item_show">
                 <input type="text" class="autocomplete" value="<?php echo $search->text ?>" name="SearchForm[text]"
                        placeholder="<?= Yii::t("filter", 'Пошук'); ?>...">
-                <a href="javascript:void(0)" class="search_btn_inner" onclick="document.forms['SearchForm'].submit()"><?= Yii::t("filter", 'Пошук'); ?></a>
+                <a href="javascript:void(0)" class="search_btn_inner" onclick="document.forms['SearchForm'].submit()">
+                    <?= Yii::t("filter", 'Пошук'); ?></a>
             </div>
             <div class="checkbox_search_block">
                 <label>
@@ -159,6 +166,7 @@ use common\models\User;
                     <?= Yii::t("filter", 'Пошук по тегах'); ?>
                 </label>
             </div>
+            <?php endif; ?>
             <div class="search_form_bottom bottom_select_b_search clearfix" style="top: 0">
                 <?= Yii::t("filter", 'Знайдено результатів'); ?>: <?= $pollsCount; ?>
                 <span class="right_select_sort">

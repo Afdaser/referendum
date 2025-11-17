@@ -248,7 +248,7 @@ class PollSearch extends Poll
         if(!isset($params['limit'])){
             $params['limit'] = Yii::$app->params['POLLS_LIMIT_MAIN_PAGE'];
         }
-		
+
         $query = Poll::find();
         // add conditions that should always apply here
 

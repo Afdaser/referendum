@@ -85,6 +85,7 @@ LAYOUT;
             'language' => $this->data['language'],
             'user' => $user,
             'pollsCount' => $this->dataProvider->getTotalCount(),
+            'isTagPage' => $this->data['isTagPage'] ?? false,
         ]);
     }
 

@@ -3,10 +3,15 @@
 use frontend\widgets\WPollList;
 use Yii;
 use yii\helpers\Html;
+use yii\data\Pagination;
 
 /** @var yii\web\View $this */
 
 $qty = $dataProvider->count;
+$pagination = $dataProvider->getPagination();
+$perPage = $pagination instanceof Pagination
+    ? $pagination->getPageSize()
+    : (int)Yii::$app->params['POLLS_LIMIT_MAIN_PAGE'];
 $defaultTitle = Yii::t('tag', 'Останні опитування {tag} та думка громадськості | Referendum', [
     'tag' => $tagModel->name,
 ]);
@@ -35,6 +40,14 @@ $faqList = $tagModel->getFaqList();
         'dataProvider' => $dataProvider,
         'searchModel' => $searchModel,
         'searchForm' => $searchForm,
+        // Короткий підсумок лише для сторінок тегів.
+        'summary' => Yii::t('tag', 'Showing {begin}-{end} of {totalCount} polls.'),
+        'data' => [
+            'category' => 'search',
+            'tag' => $tag,
+            'limit' => $perPage,
+            'isTagPage' => true,
+        ],
     ]) ?>
 <?php else: ?>
         <div class="chart_b" style="margin-bottom: 5px;">

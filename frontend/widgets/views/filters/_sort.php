@@ -133,6 +133,11 @@ use common\models\User;
     <?php if (YII_DEBUG || !empty($debug)) :?>
     <div style="border:2px dashed red;"><?= '#DEV03:block02 [category == search]'; ?></div>
     <?php endif; ?>
+    <?php
+    $isTagPage = Yii::$app->controller->id === 'tag';
+    // На сторінках тегів не дублюємо пошукову форму, адже поруч уже є статистика та FAQ.
+    if (!$isTagPage):
+    ?>
 <?php /* * / ?>
     <FORM METHOD="POST" ACTION="/site/search/<?php echo $limit?>/<?php echo $sort?>" name="Search">
 <?php /* */ ?>
@@ -211,6 +216,7 @@ use common\models\User;
         })
     </script>
 <?php /* */ ?>
+    <?php endif; ?>
 <?php elseif ($category != 'profile'): ?>
 
 <?php if (YII_DEBUG || !empty($debug)) :?>

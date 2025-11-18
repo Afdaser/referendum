@@ -21,6 +21,20 @@ class StringHelper {
     const PARTNERS = 'про партнерів';
     const SPONSORS = 'про спонсорів';
 
+    /**
+     * Нормалізує стандартну пару «варіант-значення» для подальшого використання у графіках.
+     * Єдине місце перевірки значень спрощує форматери та мінімізує дублювання коду.
+     *
+     * @param array $item
+     * @return array{option:string,value:int}
+     */
+    private static function prepareChartItem(array $item): array {
+        return [
+            'option' => $item['option'] ?? ' ',
+            'value' => isset($item['value']) ? (int) $item['value'] : 0,
+        ];
+    }
+
     //Relative Date Function
     public static function relative_date($date) {
         $result = '';
@@ -44,25 +58,15 @@ class StringHelper {
      */
 
     public static function formatForBar($data) {
-        $result = array();
-        $result['series'] = '';
+        $seriesParts = [];
 
-        foreach ($data as $item) {
-            $option = ' ';
-            $value = 0;
-
-            if (isset($item['option'])) {
-                $option = $item['option'];
-            }
-
-            if (isset($item['value'])) {
-                $value = $item['value'];
-            }
-
-            $result['series'] .= "{name: '" . $option . "',data: [" . $value . "]},";
+        foreach ((array) $data as $item) {
+            $parsed = self::prepareChartItem((array) $item);
+            // Шаблонізуємо рядок лише один раз, уникаючи повторної конкатенації змінних у циклі.
+            $seriesParts[] = "{name: '" . $parsed['option'] . "',data: [" . $parsed['value'] . "]},";
         }
 
-        return $result;
+        return ['series' => implode('', $seriesParts)];
     }
 
     /*
@@ -70,12 +74,14 @@ class StringHelper {
      */
 
     public static function formatForBarAjax($data) {
-        $result = array();
-        foreach ($data as $i => $item) {
-            $result['series'][$i] = ['name' => $item['option'], 'data' => [0 => $item['value']]];
+        // Формуємо масив серій через map-підхід, щоб зменшити кількість допоміжного коду.
+        $series = [];
+        foreach ((array) $data as $item) {
+            $parsed = self::prepareChartItem((array) $item);
+            $series[] = ['name' => $parsed['option'], 'data' => [$parsed['value']]];
         }
 
-        return $result;
+        return ['series' => $series];
     }
 
     /*
@@ -84,22 +90,12 @@ class StringHelper {
 
     public static function formatForPie($data) {
         $result = '';
-        foreach ($data as $item) {
-            $option = ' ';
-            $value = 0;
-
-            if (isset($item['option'])) {
-                $option = $item['option'];
-            }
-
-            if (isset($item['value'])) {
-                $value = $item['value'];
-            }
-
+        foreach ((array) $data as $item) {
+            $parsed = self::prepareChartItem((array) $item);
             if (isset($item['isMax'])) {
-                $result .= "{name:'" . $option . "',y:" . $value . ", sliced: true, selected: true },";
+                $result .= "{name:'" . $parsed['option'] . "',y:" . $parsed['value'] . ", sliced: true, selected: true },";
             } else {
-                $result .= "['" . $option . "'," . $value . "],";
+                $result .= "['" . $parsed['option'] . "'," . $parsed['value'] . "],";
             }
         }
 
@@ -111,15 +107,19 @@ class StringHelper {
      */
 
     public static function formatForPieAjax($data) {
-        $result = array();
-        foreach ($data as $i => $item) {
+        $result = [];
+        foreach ((array) $data as $i => $item) {
+            $parsed = self::prepareChartItem((array) $item);
             if (isset($item['isMax'])) {
-                $result[$i]['name'] = $item['option'];
-                $result[$i]['y'] = intval($item['value']);
-                $result[$i]['sliced'] = true;
-                $result[$i]['selected'] = true;
+                // Найбільше значення одразу отримує усі необхідні прапорці Highcharts.
+                $result[$i] = [
+                    'name' => $parsed['option'],
+                    'y' => $parsed['value'],
+                    'sliced' => true,
+                    'selected' => true,
+                ];
             } else {
-                $result[$i] = [$item['option'], intval($item['value'])];
+                $result[$i] = [$parsed['option'], $parsed['value']];
             }
         }
 
@@ -131,21 +131,13 @@ class StringHelper {
      */
 
     public static function getMonthList() {
-        $result = array();
-        $result[1] = Yii::t("user", 'Січень');
-        $result[2] = Yii::t("user", 'Лютий');
-        $result[3] = Yii::t("user", 'Березень');
-        $result[4] = Yii::t("user", 'Квітень');
-        $result[5] = Yii::t("user", 'Травень');
-        $result[6] = Yii::t("user", 'Червень');
-        $result[7] = Yii::t("user", 'Липень');
-        $result[8] = Yii::t("user", 'Серпень');
-        $result[9] = Yii::t("user", 'Вересень');
-        $result[10] = Yii::t("user", 'Жовтень');
-        $result[11] = Yii::t("user", 'Листопад');
-        $result[12] = Yii::t("user", 'Грудень');
+        $months = ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'];
+        // Переклад здійснюємо в одному місці за допомогою array_map, щоб уникнути 12 однакових викликів.
+        $translated = array_map(function ($month) {
+            return Yii::t('user', $month);
+        }, $months);
 
-        return $result;
+        return array_combine(range(1, 12), $translated);
     }
 
     /*
@@ -202,17 +194,16 @@ class StringHelper {
      */
 
     public static function tagsToString($tags) {
-        $result = '';
-        if (count($tags) > 0) {
-            foreach ($tags as $index => $tag) {
-                $result .= $tag->name;
-                if ($index < count($tags) - 1) {
-                    $result .= ', ';
-                }
-            }
+        if (empty($tags)) {
+            return '';
         }
 
-        return $result;
+        // Збираємо імена тегів через map + implode, щоб позбутися ручних лічильників у циклі.
+        $names = array_map(function ($tag) {
+            return $tag->name;
+        }, $tags);
+
+        return implode(', ', $names);
     }
 
     /**
@@ -245,9 +236,12 @@ class StringHelper {
     public static function generatePassword($length = 8) {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $count = mb_strlen($chars);
+        $length = max(1, (int) $length);
+        $result = '';
 
-        for ($i = 0, $result = ''; $i < $length; $i++) {
-            $index = rand(0, $count - 1);
+        for ($i = 0; $i < $length; $i++) {
+            // random_int забезпечує криптостійкість та однаковий розподіл символів.
+            $index = random_int(0, $count - 1);
             $result .= mb_substr($chars, $index, 1);
         }
 

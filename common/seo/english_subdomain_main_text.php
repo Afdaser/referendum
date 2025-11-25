@@ -1,8 +1,6 @@
 <?php
-return [
-    'home_title' => 'Latest public opinion poll about everything | Referendum',
-    'home_description' => 'Polls and opinion about everything - Polls and opinion about everything - take part in polls and discussion: vote, write comments, suggest vote options or create your own polls. 📊 Dive in! 🌟',
-    'main_page_text' => '
+// Окремий SEO-текст для англійського піддомену головної сторінки.
+return <<<'HTML'
 <p>Our site offers to get answers to the one you are interested in poll and see the real picture of support for politicians, issues of tolerance, peoples mood and other things, thanks to statistics, through a sociological survey.</p>
 <p><strong>The one who owns the information owns the world. And the best information is statistics.</strong></p>
 <p>Anonymous survey on the Internet is considered the most effective,
@@ -16,5 +14,4 @@ various interesting facts while browsing the news feed. Which poll is important 
 <p>Also, polls will be shown to you, referring to the hashtags that you have chosen for yourself. They also need to be filled out in the profile, through whom. They will be available through the button Topics relevant to you</p>
 <h2>Supplement the sociological survey with your answer</h2>
 <p>Have you seen a survey, but none of the answer options suits you? We foresaw this and made it possible for users to offer their own options for answering polls. At the same time, they are also taken into account, like the main ones, you can also vote for them. And if one of the variants of the proposed answer by users is gaining popularity, then it gets as an answer to the main poll.</p>
-    ',
-];
+HTML;

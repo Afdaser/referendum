@@ -7,6 +7,7 @@ use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
+use common\models\Language;
 
 //use yii\bootstrap4\Breadcrumbs;
 use yii\widgets\Breadcrumbs;
@@ -165,7 +166,28 @@ if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id ==
         <?php
         // Якщо категорія 'hot' — показуємо головний SEO-текст (з common/messages/.../seo.php)
         if (Yii::$app->params['category'] == 'hot') {
-            echo Yii::t('seo', 'main_page_text');
+            $mainPageTextKey = 'main_page_text';
+            $mainPageText = Yii::t('seo', $mainPageTextKey);
+
+            // Для англійського піддомену підключаємо окремий файл із SEO-текстом, щоб не плутати переклади.
+            $langDomains = Yii::$app->params['langDomains'] ?? [];
+            $englishLanguageId = Language::getLanguageByName('en');
+            $englishSubdomain = $langDomains[$englishLanguageId] ?? null;
+            $englishSubdomainTextFile = Yii::getAlias('@common/seo/english_subdomain_main_text.php');
+
+            if (
+                $englishSubdomain
+                && strcasecmp(Yii::$app->request->hostName, $englishSubdomain) === 0
+                && is_file($englishSubdomainTextFile)
+            ) {
+                // Не нашкодити: використовуємо вміст файлу лише якщо він повертає рядок.
+                $subdomainText = include $englishSubdomainTextFile;
+                if (is_string($subdomainText) && $subdomainText !== '') {
+                    $mainPageText = $subdomainText;
+                }
+            }
+
+            echo $mainPageText;
         }
 
         // Якщо категорія 'search' і є опис тега, показуємо його (але тільки якщо це перша сторінка)

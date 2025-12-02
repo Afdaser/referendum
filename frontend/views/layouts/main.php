@@ -190,52 +190,9 @@ if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id ==
 
             echo $mainPageText;
         }
-
-        // Якщо категорія 'search' і є опис тега, показуємо його (але тільки якщо це перша сторінка)
-        $getPage = isset($_GET['page']) ? $_GET['page'] : null;
-        if (Yii::$app->params['category'] == 'search' && isset(Yii::$app->params['model']->tag->description) && !$getPage) {
-            echo Yii::$app->params['model']->tag->description;
-        }
         ?>
     </div>
 <?php endif; ?>
-<?php
-use common\models\Tag;
-
-/*
- * Вивід опису тега (якщо такий є).
- * Показується:
- *  - лише на сторінках тегів (шлях містить 'tag/<name>' або є GET параметр 'tag')
- *  - лише на першій сторінці пагінації (без ?page або page==1)
- * Опис виводиться всередині класу top_banner_b (щоб підхопились існуючі стилі).
- */
-
-$getPage = Yii::$app->request->get('page', null);
-
-// 1) Першочергово беремо GET-параметр ?tag=
-$tagName = Yii::$app->request->get('tag', null);
-
-// 2) Якщо його немає — шукаємо в URL-сегментах (наприклад: /tag/USA)
-if (!$tagName) {
-    $path = trim(Yii::$app->request->pathInfo, '/'); // наприклад "tag/USA"
-    if ($path !== '') {
-        $segments = explode('/', $path);
-        $pos = array_search('tag', $segments, true);
-        if ($pos !== false && isset($segments[$pos + 1]) && $segments[$pos + 1] !== '') {
-            $tagName = urldecode($segments[$pos + 1]);
-        }
-    }
-}
-
-// 3) Якщо назва тега знайдена і ми на першій сторінці — підтягуємо опис з БД і виводимо
-if ($tagName && ($getPage === null || (int)$getPage === 1)) {
-    // Знаходимо тег за назвою (поле name). Якщо у вас теги зберігаються іншим полі — заміни тут.
-    $tag = Tag::find()->where(['name' => $tagName])->one();
-    if ($tag && !empty($tag->description)) {
-        echo '<div class="top_banner_b">' . $tag->description . '</div>';
-    }
-}
-?>
 
                 </div>
             </div>

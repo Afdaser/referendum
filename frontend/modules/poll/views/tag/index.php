@@ -22,6 +22,7 @@ $this->title = $pageTitle;
 Yii::$app->page->description = $meta['description'] ?? $defaultDescription;
 $pageHeading = $meta['heading'] ?? null;
 $faqList = $tagModel->getFaqList();
+$tagDescription = trim((string) $tagModel->description);
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
@@ -48,6 +49,12 @@ $faqList = $tagModel->getFaqList();
 <?php endif; ?>
 
 <?php if ($page <= 1) : ?>
+        <?php if ($tagDescription !== '') : ?>
+            <?php // Власноручний опис тега показуємо першим із додаткових блоків. ?>
+            <div class="info_block tag-description">
+                <?= $tagDescription; ?>
+            </div>
+        <?php endif; ?>
         <div class="info_block">
             <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
             <p><?= $tagModel->getInfoText(); ?></p>

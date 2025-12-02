@@ -26,10 +26,11 @@ $tagDescription = trim((string) $tagModel->description);
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
+        <?php // Виділяємо головний заголовок, щоб він одразу відрізнявся від рекламних блоків. ?>
         <?php if ($pageHeading !== null): ?>
-            <h1><?= $pageHeading; ?></h1>
+            <h1 class="tag-page__title"><?= $pageHeading; ?></h1>
         <?php else: ?>
-            <h1>Latest <?= Html::encode($tag); ?> public opinion polls</h1>
+            <h1 class="tag-page__title">Latest <?= Html::encode($tag); ?> public opinion polls</h1>
         <?php endif; ?>
 <?php if ($qty) : ?>
     <?= WPollList::widget([

@@ -119,6 +119,45 @@ button.next_modal_btn {
     margin-top: 0;
     margin-bottom: 15px;
 }
+
+/*
+ * Підсилюємо видимість h1 на сторінках тегів, щоб його не плутали з рекламними блоками.
+ * Додаємо власну піктограму опитувань, аби відразу було зрозуміло, що це список голосувань.
+ * Оновлюємо значок на «картку» з графіком, щоб він не виглядав як сходинка і візуально пасував сайту.
+ */
+.tag-page__title {
+    position: relative;
+    margin: 0 0 18px;
+    padding: 16px 18px 16px 64px;
+    font-size: 28px;
+    line-height: 1.25;
+    color: #16311f;
+    background: linear-gradient(90deg, #f3f8f1 0%, #ffffff 100%);
+    border-radius: 8px;
+    border: 2px solid #a2c19c;
+    box-shadow: 0 6px 16px rgba(22, 49, 31, 0.08);
+}
+
+.tag-page__title::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background-color: #f5faf4;
+    background-image: url("data:image/svg+xml,%3Csvg%20width='26'%20height='26'%20viewBox='0%200%2026%2026'%20xmlns='http://www.w3.org/2000/svg'%20fill='none'%3E%3Crect%20x='2'%20y='2'%20width='22'%20height='22'%20rx='5'%20fill='%23f6fbf6'%20stroke='%23058f42'%20stroke-width='1.6'/%3E%3Crect%20x='6.2'%20y='12.9'%20width='3'%20height='7.3'%20rx='1.2'%20fill='%232d3e29'/%3E%3Crect%20x='11.5'%20y='6.9'%20width='3'%20height='13.3'%20rx='1.2'%20fill='%23058f42'/%3E%3Crect%20x='16.8'%20y='10.6'%20width='3'%20height='9.6'%20rx='1.2'%20fill='%23365044'/%3E%3Cpath%20d='M6%2020.8h14'%20stroke='%23058f42'%20stroke-width='1.2'%20stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 22px 22px;
+    box-shadow: 0 2px 6px rgba(5, 143, 66, 0.16);
+}
+
 h1.title {
     display: inline-block;
     vertical-align: middle;

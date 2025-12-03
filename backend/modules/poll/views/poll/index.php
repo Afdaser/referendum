@@ -16,6 +16,18 @@ use common\models\User;
 
 $this->title = Yii::t('app', 'Polls');
 $this->params['breadcrumbs'][] = $this->title;
+
+// Додаємо стилі, щоб кнопки дій були компактними й акуратно вирівняними.
+$this->registerCss(<<<CSS
+.poll-index .action-buttons-cell .btn-group {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.poll-index .action-buttons-cell .btn {
+    padding: 4px 8px;
+}
+CSS);
 ?>
 <div class="poll-index">
 
@@ -90,10 +102,52 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_at:datetime',
             //'updated_at:datetime',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
+                'header' => Yii::t('app', 'Actions'),
+                // Оновлюємо шаблон, щоб додати кнопку відкриття опитування на сайті та зберегти компактний вигляд.
+                'template' => '<div class="btn-group btn-group-xs" role="group">{view}{update}{delete}{public}</div>',
+                'contentOptions' => ['class' => 'action-buttons-cell text-center'],
                 'urlCreator' => function ($action, Poll $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                 },
+                'buttons' => [
+                    'view' => function ($url, Poll $model) {
+                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                            'class' => 'btn btn-default',
+                            'title' => Yii::t('yii', 'View'),
+                            'aria-label' => Yii::t('yii', 'View'),
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                    'update' => function ($url, Poll $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                            'class' => 'btn btn-default',
+                            'title' => Yii::t('yii', 'Update'),
+                            'aria-label' => Yii::t('yii', 'Update'),
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                    'delete' => function ($url, Poll $model) {
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                            'class' => 'btn btn-default',
+                            'title' => Yii::t('yii', 'Delete'),
+                            'aria-label' => Yii::t('yii', 'Delete'),
+                            'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                    'public' => function ($url, Poll $model) {
+                        return Html::a('<span class="glyphicon glyphicon-new-window"></span>', $model->url, [
+                            'class' => 'btn btn-default',
+                            'title' => Yii::t('app', 'Перехід на опитування'),
+                            'aria-label' => Yii::t('app', 'Перехід на опитування'),
+                            'data-pjax' => '0',
+                            'target' => '_blank',
+                            'rel' => 'noopener noreferrer',
+                        ]);
+                    },
+                ],
             ],
         ],
     ]); ?>

@@ -41,6 +41,9 @@ class PollController extends Controller
         $searchModel = new PollSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        // Гарантуємо, що в адмінці нові опитування показуються першими за замовчуванням.
+        $dataProvider->getSort()->defaultOrder = ['date_add' => SORT_DESC];
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

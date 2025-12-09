@@ -348,20 +348,9 @@ class SiteController extends Controller
     }
 
 /* */
-    public function actionAuthors()
-    {
-        return $this->render('authors');
-    }
-
-
     public function actionSearch()
     {
         return $this->render('search');
-    }
-
-    public function actionSponsors()
-    {
-        return $this->render('sponsors');
     }
 
     protected function processCreatePoll()

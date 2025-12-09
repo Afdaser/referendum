@@ -49,7 +49,6 @@ class PageMetaData extends BaseObject {
       <meta property="og:title" content='Statistics - Site'>
       <meta property="og:description" content="Statistics - Authors Site">
       //        <meta property="og:site_name" content="referendum.social">
-      //        <meta property="og:url" content="http://en.referendum.social/site/authors">
       //        <meta property="og:image" content="http://referendum.social/img/layout/logo_social.png">
       //       <meta property="og:type" content="website">
      */

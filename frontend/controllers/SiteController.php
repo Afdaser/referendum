@@ -258,41 +258,5 @@ class SiteController extends Controller
         ]);
     }
     
-    public function actionAuthors(){
-//        $this->menu = array();
-        return $this->render('pages/authors');
-    }
-
-/* * /
-    public function actionPartners(){
-        $this->menu = array();
-        return $this->render('pages/partners');
-    }
-/* */
-
-    public function actionSponsors(){
-//        $this->menu = array();
-        return $this->render('pages/sponsors');
-    }
-
-    public function actionAuthorsTwo(){
-        /* dev LoginForm : */
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-        $model->password = '';
-//        return $this->render('login', [
-//            'model' => $model,
-//        ]);
-         /* */
-//        $this->menu = array();
-        return $this->render('pages/authors', [
-            'model' => $model,
-        ]);
-    }
+    // Додаткові статичні сторінки видалені, щоб уникнути доступу до неактуальних маршрутів.
 }

@@ -212,7 +212,8 @@ if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id ==
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'About', 'url' => ['/site/about']],
+        // Ссилкуємося на слаг "about", щоб меню вказувало на чисту адресу без /site.
+        ['label' => 'About', 'url' => ['/page/view', 'page' => 'about']],
         ['label' => 'Contact', 'url' => ['/site/contact']],
     ];
     if (Yii::$app->user->isGuest) {

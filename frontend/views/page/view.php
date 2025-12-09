@@ -1,3 +1,9 @@
+<?php
+// Реєструємо індивідуальні скрипти сторінки, якщо вони задані в адмінці.
+if (!empty($pageData['scripts'])) {
+    $this->registerJs($pageData['scripts']);
+}
+?>
 <div class="col-md-8">
     <div class="row right_cut_row">
         <?php if (count($this->context->menu)): ?>

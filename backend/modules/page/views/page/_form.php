@@ -33,6 +33,9 @@ use common\models\Language;
 
     <?= $form->field($model, 'describe')->textarea(['rows' => 6]) ?>
 
+    <?php // Окремий блок для власних скриптів сторінки. ?>
+    <?= $form->field($model, 'scripts')->textarea(['rows' => 6]) ?>
+
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

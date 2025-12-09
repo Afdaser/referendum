@@ -60,6 +60,8 @@ return array(
         'Автори'=>'Forfattere',
         'Партнери'=>'Partnere',
         'Допомога'=>'Hjelp',
+        'Оновлення'=>'Oppdateringer',
+        'Про нас'=>'Om oss',
         'кожен голос важливий'=>'Hver stemme er viktig',
     'Правила та умови сайту'=>'Vilkår og betingelser for nettstedet',
     'Сховати'=>'Gjemme seg',

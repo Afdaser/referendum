@@ -60,6 +60,8 @@ return array(
         'Автори'=>'Authors',
         'Партнери'=>'Partners',
         'Допомога'=>'Donation',
+        'Оновлення'=>'Updates',
+        'Про нас'=>'About us',
         'кожен голос важливий'=>'Every vote is important',
     'Правила та умови сайту'=>'Terms and Conditions of the website',
     'Сховати'=>'Hide',

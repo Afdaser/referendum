@@ -15,14 +15,10 @@ $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? 
     <div class="container">
         <div class="row">
             <span class="foot_links">
-                <a href="<?= Url::toRoute('/site/authors'); ?>"><?= Yii::t("main", 'Автори'); ?></a>
+                <?php // Навігаційні посилання футера залишаємо лише для актуальних сторінок. ?>
                 <a href="<?= Url::toRoute('/updates'); ?>"><?= Yii::t("main", 'Оновлення'); ?></a>
-                <a href="<?= Url::toRoute('/site/sponsors'); ?>"><?= Yii::t("main", 'Допомога'); ?></a>
-                <?php /*                 * / ?>
-                  <a href="<?php echo Yii::$app->createUrl('/site/authors');?>"><?php echo Yii::t("main", 'Автори'); ?></a>
-                  <a href="<?php echo $prefix.Yii::$app->createUrl('/updates');?>"><?php echo Yii::t("main", 'Оновлення'); ?></a>
-                  <a href="<?php echo Yii::$app->createUrl('/site/sponsors');?>"><?php echo Yii::t("main", 'Допомога'); ?></a>
-                  <?php /* */ ?>
+                <?php // Використовуємо слаг /about, щоб відповідати кінцевій URL-адресі без /site. ?>
+                <a href="<?= Url::to(['/page/view', 'page' => 'about']); ?>"><?= Yii::t("main", 'Про нас'); ?></a>
             </span>
             <span class="copyright">All Rights Reserved | <?= date('Y'); ?></span>
         </div>

@@ -1,3 +1,9 @@
+<?php
+// Реєструємо індивідуальні скрипти сторінки в <head>, якщо вони задані в адмінці.
+if (!empty($pageData['scripts'])) {
+    $this->registerJs($pageData['scripts'], \yii\web\View::POS_HEAD);
+}
+?>
 <div class="col-md-8">
     <div class="row right_cut_row">
         <?php if (count($this->context->menu)): ?>

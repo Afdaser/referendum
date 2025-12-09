@@ -16,6 +16,7 @@ use yii\helpers\Inflector;
  * @property string $title Title
  * @property string|null $content Content
  * @property string|null $describe Describe
+ * @property string|null $scripts Scripts
  * @property string $date_add Date add
  * @property string $date_update Date update
  * @property int|null $created_by Created by:
@@ -59,7 +60,7 @@ class Page extends ActiveRecord
         return [
             [['slug', 'name', 'title'], 'required'],
             [['language_id', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
-            [['content', 'describe'], 'string'],
+            [['content', 'describe', 'scripts'], 'string'],
             [['date_add', 'date_update'], 'safe'],
             [['slug'], 'string', 'max' => 128],
             [['name', 'title'], 'string', 'max' => 255],
@@ -81,6 +82,7 @@ class Page extends ActiveRecord
             'title' => Yii::t('app', 'Title'),
             'content' => Yii::t('app', 'Content'),
             'describe' => Yii::t('app', 'Describe'),
+            'scripts' => Yii::t('app', 'Scripts'),
             'date_add' => Yii::t('app', 'Date add'),
             'date_update' => Yii::t('app', 'Date update'),
             'created_by' => Yii::t('app', 'Created by:'),

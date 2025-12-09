@@ -1,3 +1,10 @@
+<?php
+// Реєструємо індивідуальні скрипти сторінки в <head>, якщо вони задані в адмінці.
+// Щоб уникнути вкладених <script>-тегів, передаємо підготовлений HTML у макет через параметр.
+if (!empty($pageData['scripts'])) {
+    $this->params['pageCustomScripts'] = $pageData['scripts'];
+}
+?>
 <div class="col-md-8">
     <div class="row right_cut_row">
         <?php if (count($this->context->menu)): ?>

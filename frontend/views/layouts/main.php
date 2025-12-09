@@ -68,6 +68,13 @@ $locale = Yii::$app->language;
     <?= Yii::$app->page->faviconHtml ?>
 
     <?= $this->render('main/meta'); ?>
+    <?php
+    // Вставляємо індивідуальні скрипти конкретної сторінки без додаткового обгортання,
+    // щоб уникнути вкладених <script>-тегів (напр. для JSON-LD).
+    if (!empty($this->params['pageCustomScripts'])) {
+        echo $this->params['pageCustomScripts'];
+    }
+    ?>
     <script>
         window.rfrndm = <?=
     json_encode([

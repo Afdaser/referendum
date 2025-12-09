@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 //use frontend\models\ResendVerificationEmailForm;
 //use frontend\models\VerifyEmailForm;
 //use yii\base\InvalidArgumentException;
@@ -31,6 +32,7 @@ class PageController extends Controller {
      */
     public function actionView($language = null, $page = 'x') {
         $pageData = $this->loadPage($language, $page);
+        $this->prepareMeta($pageData);
 
         return $this->render('view', array(
                     'pageData' => $pageData,
@@ -41,16 +43,15 @@ class PageController extends Controller {
      * {@inheritdoc}
      */
     public function actionUpdates($language = null, $page = 'updates') {
-        if (empty($language)) {
-            $language = 'en';
-        }
         $pageData = $this->loadPage($language, $page);
+        $this->prepareMeta($pageData);
         return $this->render('view', array(
             'pageData' => $pageData,
         ));
     }
 
     protected function loadPage($language, $page) {
+        $language = $this->resolveLanguage($language);
         $pageData = Page::find()->select('p.*')
                 ->from('page p')
                 ->innerJoin('language l', 'l.id=p.language_id')
@@ -58,9 +59,30 @@ class PageController extends Controller {
                 ->one();
 
         if (empty($pageData)) {
-            throw new CHttpException(404, 'The requested page does not exist.');
+            throw new NotFoundHttpException('The requested page does not exist.');
         }
         return $pageData;
+    }
+
+    protected function resolveLanguage($language): string {
+        if (empty($language)) {
+            $language = Yii::$app->language;
+        }
+
+        $language = strtolower(substr($language, 0, 2));
+        if ($language === 'uk') {
+            $language = 'ua';
+        }
+
+        return $language ?: 'en';
+    }
+
+    protected function prepareMeta(Page $page): void {
+        // Налаштовуємо метадані сторінки з назви та опису.
+        $pageTitle = !empty($page->title) ? $page->title : $page->name;
+        Yii::$app->page->setTitle($pageTitle);
+        Yii::$app->page->setDescription($page->describe ?? '');
+        Yii::$app->page->setKeywords($page->name ?? '');
     }
 
 }

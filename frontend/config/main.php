@@ -170,6 +170,10 @@ return [
 
                 'updates' => 'page/updates',
                 [
+                    'pattern' => '<page:[\w-]+>',
+                    'route' => 'page/view',
+                ],
+                [
                     'pattern' => 'poll/<id:\d+>',
                     'route' => 'poll/poll/view',
                 ],

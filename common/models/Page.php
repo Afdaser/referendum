@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use common\components\ActiveRecord;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "{{%page}}".
@@ -26,6 +27,22 @@ use common\components\ActiveRecord;
  */
 class Page extends ActiveRecord
 {
+    /**
+     * Готуємо обробку слагу перед валідацією.
+     */
+    public function beforeValidate()
+    {
+        if (parent::beforeValidate()) {
+            // Автоматично створюємо ЧПУ з назви, якщо поле порожнє.
+            if (empty($this->slug) && !empty($this->name)) {
+                $this->slug = Inflector::slug($this->name);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
     /**
      * {@inheritdoc}
      */

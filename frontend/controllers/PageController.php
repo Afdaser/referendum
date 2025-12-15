@@ -83,6 +83,24 @@ class PageController extends Controller {
         Yii::$app->page->setTitle($pageTitle);
         Yii::$app->page->setDescription($page->describe ?? '');
         Yii::$app->page->setKeywords($page->name ?? '');
+        $this->registerCanonicalLink($page);
+    }
+
+    protected function registerCanonicalLink(Page $page): void {
+        $langDomains = Yii::$app->params['langDomains'] ?? [];
+        $canonicalDomain = $langDomains[$page->language_id] ?? Yii::$app->request->hostName;
+        $slug = trim($page->slug ?? '', '/');
+
+        // Не нашкодити: додаємо canonical лише коли є валідний слаг.
+        if ($slug === '') {
+            return;
+        }
+
+        $canonicalUrl = 'https://' . $canonicalDomain . '/' . $slug;
+        Yii::$app->view->registerLinkTag([
+            'rel' => 'canonical',
+            'href' => $canonicalUrl,
+        ]);
     }
 
 }

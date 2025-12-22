@@ -74,6 +74,8 @@ class PollController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
+                $model->syncTags($model->tagNames);
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -97,6 +99,8 @@ class PollController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
+            $model->syncTags($model->tagNames);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

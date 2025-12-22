@@ -1,5 +1,7 @@
 <?php
 /* @var $this PollsSidebar */
+
+use yii\helpers\Html;
 ?>
 <div class="list_poll_b">
     <ul class="nav nav-tabs" role="tablist">
@@ -13,6 +15,19 @@
                     <a href="<?php echo $poll->url; ?>" class="item_list_poll__title">
                         <?php echo $poll->title; ?>
                     </a>
+                    <?php $tags = $poll->tags; // Відображаємо теми опитування у вигляді тегів. ?>
+                    <?php if (!empty($tags)): ?>
+                        <div class="item_list_poll__tags">
+                            <span class="item_list_poll__tags-label" aria-hidden="true">
+                                <i class="fa fa-tags"></i>
+                            </span>
+                            <?php foreach ($tags as $tag): ?>
+                                <a href="<?php echo $tag->url; ?>" class="item_list_poll__tag">
+                                    <?php echo Html::encode($tag->name); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="bottom_item_list_poll">
                         <div class="bottom_item_list_poll__meta">
                             <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">
@@ -34,6 +49,19 @@
                     <a href="<?php echo $poll->url; ?>" class="item_list_poll__title">
                         <?php echo $poll->title; ?>
                     </a>
+                    <?php $tags = $poll->tags; // Відображаємо теми опитування у вигляді тегів. ?>
+                    <?php if (!empty($tags)): ?>
+                        <div class="item_list_poll__tags">
+                            <span class="item_list_poll__tags-label" aria-hidden="true">
+                                <i class="fa fa-tags"></i>
+                            </span>
+                            <?php foreach ($tags as $tag): ?>
+                                <a href="<?php echo $tag->url; ?>" class="item_list_poll__tag">
+                                    <?php echo Html::encode($tag->name); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="bottom_item_list_poll">
                         <div class="bottom_item_list_poll__meta">
                             <span class="icon_lock <?php echo ($poll->isOpen() ? "" : "closed"); ?>">

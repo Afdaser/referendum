@@ -1070,6 +1070,37 @@ a.item_list_poll:hover {
 .list_polls .item_list_poll .bottom_item_list_poll {
     margin-top: 8px;
 }
+.list_polls .item_list_poll__tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+.list_polls .item_list_poll__tags-label {
+    color: #3ac469;
+    display: inline-flex;
+    align-items: center;
+}
+.list_polls .item_list_poll__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 12px;
+    background: #e5f6eb;
+    color: #055C2B;
+    text-decoration: none;
+    max-width: 100%;
+    word-break: break-word;
+}
+.list_polls .item_list_poll__tag:hover,
+.list_polls .item_list_poll__tag:focus,
+.list_polls .item_list_poll__tag:focus-visible {
+    color: #058f42;
+    text-decoration: none;
+}
 span.item_list_poll {
     display: block;
     background: #f0f4f4;

@@ -76,6 +76,16 @@ class Poll extends ActiveRecord
     private $tagIds = [];
 
     /**
+     * Список назв тегів для керування зв'язками в адмінці.
+     *
+     * Додаємо окремий масив, щоб спростити роботу віджету Select2 у формі
+     * та коректно обробляти нові й наявні теги.
+     *
+     * @var array
+     */
+    public array $tagNames = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -93,6 +103,8 @@ class Poll extends ActiveRecord
             [['describe'], 'string'],
             [['user_id', 'rating', 'status', 'views', 'result_type', 'poll_language_id', 'show_for_all_languages', 'poll_sex', 'poll_country_id', 'poll_region_id', 'poll_city_id', 'poll_min_age', 'poll_max_age', 'votes_count_close', 'show_on_slider', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add', 'date_update'], 'safe'],
+            // Дозволяємо масове присвоєння тегів як масиву назв.
+            [['tagNames'], 'safe'],
             [['title'], 'string', 'max' => 255],
             [['poll_language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['poll_language_id' => 'id']],
         ];
@@ -130,6 +142,7 @@ class Poll extends ActiveRecord
             'updated_by' => Yii::t('app', 'Updated by:'),
             'created_at' => Yii::t('app', 'Created at:'),
             'updated_at' => Yii::t('app', 'Updated at:'),
+            'tagNames' => Yii::t('app', 'Tags'),
         ];
     }
 
@@ -1224,6 +1237,64 @@ class Poll extends ActiveRecord
         if (!empty($this->tagIds)) {
             Tag::updateAllCounters(['polls_count' => -1], ['id' => $this->tagIds]);
         }
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        // Підтягуємо поточні теги, щоб показати їх у формі редагування.
+        $this->tagNames = $this->getTags()->select('name')->column();
+    }
+
+    /**
+     * Оновлює зв'язок тегів опитування на основі введеного списку назв.
+     *
+     * @param array $tagNames Список назв тегів із форми.
+     */
+    public function syncTags(array $tagNames): void
+    {
+        // Нормалізуємо список, щоб уникнути дублікатів та порожніх значень.
+        $normalizedNames = array_unique(array_filter(array_map(static function ($tagName) {
+            return trim((string)$tagName);
+        }, $tagNames)));
+
+        if (empty($normalizedNames)) {
+            $normalizedNames = [];
+        }
+
+        $existingPollTags = PollTag::find()->where(['poll_id' => $this->id])->indexBy('tag_id')->all();
+
+        $newTagIds = [];
+
+        foreach ($normalizedNames as $tagName) {
+            $tagId = Tag::getTagId($tagName);
+            if (!$tagId) {
+                $tagId = Tag::createNewTag($tagName, $this->poll_language_id);
+            }
+
+            if ($tagId && !isset($existingPollTags[$tagId])) {
+                // Створюємо зв'язок і даємо коментар, чому робимо це тут.
+                $pollTag = new PollTag();
+                $pollTag->poll_id = $this->id;
+                $pollTag->tag_id = $tagId;
+                $pollTag->save();
+            }
+
+            if ($tagId) {
+                $newTagIds[$tagId] = true;
+            }
+        }
+
+        $tagIdsToDelete = array_diff(array_keys($existingPollTags), array_keys($newTagIds));
+        if (!empty($tagIdsToDelete)) {
+            foreach ($tagIdsToDelete as $tagId) {
+                // Видаляємо через ActiveRecord, щоб спрацювали лічильники тегів.
+                $existingPollTags[$tagId]->delete();
+            }
+        }
+
+        $this->tagNames = array_values($normalizedNames);
     }
 
     /*

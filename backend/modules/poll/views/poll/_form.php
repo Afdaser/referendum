@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 use common\models\Language;
 use common\models\User;
+use common\models\Tag;
 
 /** @var yii\web\View $this */
 /** @var common\models\Poll $model */
@@ -39,6 +40,22 @@ use common\models\User;
                 'language' => Yii::$app->language,
                 'options' => ['placeholder' => Yii::t('app', 'Select user...')],
                 'pluginOptions' => ['allowClear' => true,],
+            ]);
+            ?>
+
+    <?= $form->field($model, 'tagNames')->widget(Select2::classname(), [
+                'data' => Tag::find()->select(['name'])->indexBy('name')->orderBy(['name' => SORT_ASC])->column(),
+                'language' => Yii::$app->language,
+                'options' => [
+                    'multiple' => true,
+                    'placeholder' => Yii::t('app', 'Tags'),
+                ],
+                'pluginOptions' => [
+                    // Вмикаємо режим «тегів», щоб можна було додавати нові значення вручну.
+                    'tags' => true,
+                    'tokenSeparators' => [','],
+                    'allowClear' => true,
+                ],
             ]);
             ?>
 

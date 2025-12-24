@@ -65,6 +65,7 @@ return array(
         'до'=>'til',
         'Закрите до кількості голосів'=>'Stengt til antall stemmer:',
         'Посилання скопійовано' => 'Lenke kopiert',
+        'Опитування:' => 'Meningsmåling:',
         'ЗБЕРЕГТИ'=>'LAGRE',
     'Рейтинг користувача' => 'Brukervurdering',
     'Всього опитувань' => 'Totalt antall avstemninger',

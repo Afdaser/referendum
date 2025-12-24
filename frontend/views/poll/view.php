@@ -31,7 +31,9 @@ if (!empty($poll->pollLanguage)) {
 						</div>
                         <div class="middle_title_b">
                             <div class="title_poll">
-                                <h1><?php echo $poll->title; ?></h1>
+                                <?php // Додаємо локалізований префікс перед заголовком опитування. ?>
+                                <?php $pollTitlePrefix = Yii::t('poll', 'Опитування:'); ?>
+                                <h1><?php echo $pollTitlePrefix . ' ' . $poll->title; ?></h1>
                             </div>
                             <div class="desc_my_chart">
                                 <?php echo $poll->getClearedDescribe() ?>

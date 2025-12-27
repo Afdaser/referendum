@@ -11,6 +11,7 @@ Registration on the site is required not only to see the results of surveys, but
     'Це опитування вам не підходить, тому ви бачите одразу результати.' => 'This poll does not suit you, so you can immediately see the results.',
     'Відповісти' => 'Reply',
     'Назад' => 'Back',
+    'Опитування: {title}' => 'Poll: {title}',
     'Побачити результати' => 'Посмотреть результаты',
     'Показати голоси' => 'Show votes',
     'Очистити' => 'Clear',

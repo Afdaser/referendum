@@ -10,6 +10,7 @@ return array(
 		'Це опитування вам не підходить, тому ви бачите одразу результати.'=>'Denne avstemningen passer ikke for deg, så du kan umiddelbart se resultatene.',
         'Відповісти'=>'Svare',
         'Назад'=>'Tilbake',
+        'Опитування: {title}' => 'Poll: {title}',
         'Побачити результати' => 'Se resultater',
         'Показати голоси'=>'Vis stemmer',
         'Очистити'=>'Klar',

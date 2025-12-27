@@ -59,6 +59,12 @@ use common\models\AuthItem;
                             'url' => Url::toRoute(['/poll/tag-static-text/index']),
                             'active' => MenuHelper::isActiveMenu(['poll', 'tag-static-text'], $this->context->route),
                         ],
+                        [
+                            'label' => 'Статичний текст на опитуваннях',
+                            'icon' => 'file-text',
+                            'url' => Url::toRoute(['/poll/poll-static-text/index']),
+                            'active' => MenuHelper::isActiveMenu(['poll', 'poll-static-text'], $this->context->route),
+                        ],
                     ],
 
                 ],

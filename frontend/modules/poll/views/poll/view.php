@@ -3,6 +3,8 @@
 use yii\web\View;
 use frontend\helpers\Url;
 use common\helpers\StringHelper;
+use common\models\Language;
+use common\models\PollStaticText;
 use common\models\User;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -237,7 +239,7 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
     </div>
 <div class="info_block">
     <h2 itemprop="alternativeHeadline">
-        <?= Yii::t('poll', 'Коротка статистика та результати опитування "{title}"', ['title' => $poll->title]); ?>
+        <?= $headingText; ?>
     </h2>
 
     <?php
@@ -262,32 +264,76 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
     }
 
     $commentsCount = count($poll->pollComments);
+
+    // Готуємо дані для статичного тексту, який редагується через адмінку.
+    // Витягуємо короткий код мови, щоб коректно знайти налаштування шаблону.
+    $languageName = Yii::$app->language;
+    if (strpos($languageName, '-') !== false) {
+        $languageName = explode('-', $languageName)[0];
+    }
+    $languageId = $poll->poll_language_id ?: Language::getLanguageByName($languageName);
+    $staticText = $languageId ? PollStaticText::find()->where(['language_id' => $languageId])->one() : null;
+    $tagLinks = [];
+
+    if (!empty($poll->tags)) {
+        foreach ($poll->tags as $tag) {
+            $tagLinks[] = Html::a(Html::encode($tag->name), $tag->url);
+        }
+    }
+
+    $replacements = [
+        '@title' => Html::encode($poll->title),
+        '@date' => date('d.m.Y', strtotime($poll->date_add)),
+        '@votes' => (int) $poll->countPollOptionsVoters,
+        '@reg' => $registeredVotes,
+        '@guest' => $guestVotes,
+        '@comments' => $commentsCount,
+        '@tags' => !empty($tagLinks) ? implode(', ', $tagLinks) : '',
+        '@mostanswer' => $mostPopular ? Html::encode($mostPopular['title']) : '',
+        '@mostvotes' => $mostPopular ? $mostPopular['votes'] : '',
+        '@mostpercent' => $mostPopular ? number_format($mostPopular['percent'], 1) : '',
+    ];
+
+    $customHeading = $staticText ? trim((string) $staticText->heading) : '';
+    $customSummary = $staticText ? trim((string) $staticText->summary) : '';
+    $customOptionsIntro = $staticText ? trim((string) $staticText->options_intro) : '';
+    $customMostPopular = $staticText ? trim((string) $staticText->most_popular) : '';
+
+    $headingText = $customHeading !== ''
+        ? strtr($customHeading, $replacements)
+        : Yii::t('poll', 'Коротка статистика та результати опитування "{title}"', ['title' => $poll->title]);
+
+    $defaultSummary = Yii::t('poll',
+        'Це онлайн-опитування було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.',
+        [
+            'title' => $poll->title,
+            'date' => date('d.m.Y', strtotime($poll->date_add)),
+            'votes' => (int) $poll->countPollOptionsVoters,
+            'reg' => $registeredVotes,
+            'guest' => $guestVotes,
+            'comments' => $commentsCount,
+        ]
+    );
+
+    if (!empty($tagLinks)) {
+        $defaultSummary .= ' ' . Yii::t('poll', 'Це опитування стосується таких тем: {tags}', [
+            'tags' => implode(', ', $tagLinks),
+        ]) . '.';
+    }
+
+    $summaryText = $customSummary !== '' ? strtr($customSummary, $replacements) : $defaultSummary;
+    $optionsIntroText = $customOptionsIntro !== ''
+        ? strtr($customOptionsIntro, $replacements)
+        : Yii::t('poll', 'В цьому публічному опитуванні та опитуванні громадської думки представлені такі варіанти відповідей:');
+    $mostPopularText = $customMostPopular !== '' ? strtr($customMostPopular, $replacements) : null;
     ?>
 
     <p itemprop="text">
-        <?= Yii::t('poll',
-            'Це онлайн-опитування було створено {date}. Наразі воно зібрало {votes} голосів, серед яких {reg} зареєстрованих користувачів і {guest} незареєстрованих, та {comments} коментарів, відображаючи поточну громадську думку та результати голосування.',
-            [
-                'title' => $poll->title,
-                'date' => date('d.m.Y', strtotime($poll->date_add)),
-                'votes' => (int)$poll->countPollOptionsVoters,
-                'reg' => $registeredVotes,
-                'guest' => $guestVotes,
-                'comments' => $commentsCount,
-            ]
-        ); ?>
-
-        <?php if (!empty($poll->tags)): ?>
-            <?= Yii::t('poll', 'Це опитування стосується таких тем: {tags}', [
-                'tags' => implode(', ', array_map(function ($tag) {
-                    return Html::a(Html::encode($tag->name), $tag->url);
-                }, $poll->tags))
-            ]); ?>.
-        <?php endif; ?>
+        <?= $summaryText; ?>
     </p>
 
     <?php if (!empty($stats)): ?>
-        <p><?= Yii::t('poll', 'В цьому публічному опитуванні та опитуванні громадської думки представлені такі варіанти відповідей:') ?></p>
+        <p><?= $optionsIntroText; ?></p>
         <ul class="poll-options-stats">
             <?php foreach ($stats as $s): ?>
                 <li itemprop="suggestedAnswer" itemscope itemtype="https://schema.org/Answer">
@@ -301,7 +347,7 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
 
         <?php if ($mostPopular): ?>
             <p>
-                <?= Yii::t('poll',
+                <?= $mostPopularText !== null ? $mostPopularText : Yii::t('poll',
                     'Як видно з опитування «{title}» найбільше вибрали варіант «{answer}». За нього проголосували {votes} голосів і це {percent}% від всього голосування.',
                     [
                         'title' => $poll->title,

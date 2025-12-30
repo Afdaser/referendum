@@ -10,6 +10,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property int $id
  * @property int $language_id
+ * @property string|null $content
  * @property string|null $heading
  * @property string|null $meta_title
  * @property string|null $meta_description
@@ -46,7 +47,7 @@ class PollStaticText extends ActiveRecord
         return [
             [['language_id'], 'required'],
             [['language_id', 'created_at', 'updated_at'], 'integer'],
-            [['meta_description'], 'string'],
+            [['meta_description', 'content'], 'string'],
             [['heading', 'meta_title'], 'string', 'max' => 255],
             [['language_id'], 'unique'],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
@@ -61,6 +62,7 @@ class PollStaticText extends ActiveRecord
         return [
             'id' => 'ID',
             'language_id' => 'Мова',
+            'content' => 'Статичний HTML-блок',
             'heading' => 'Заголовок H1',
             'meta_title' => 'Meta title',
             'meta_description' => 'Meta description',
@@ -74,7 +76,8 @@ class PollStaticText extends ActiveRecord
      */
     public function isEmpty(): bool
     {
-        return trim((string) $this->heading) === ''
+        return trim((string) $this->content) === ''
+            && trim((string) $this->heading) === ''
             && trim((string) $this->meta_title) === ''
             && trim((string) $this->meta_description) === '';
     }

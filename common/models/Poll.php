@@ -35,6 +35,9 @@ use yii\db\Expression;
  * @property int|null $updated_by Updated by:
  * @property int|null $created_at Created at:
  * @property int|null $updated_at Updated at:
+ * @property string|null $heading H1
+ * @property string|null $meta_title Meta title
+ * @property string|null $meta_description Meta description
  *
  * @property PollAnswer[] $pollAnswers
  * @property PollComment[] $pollComments
@@ -75,6 +78,7 @@ class Poll extends ActiveRecord
 
     private $tagIds = [];
 
+
     /**
      * Список назв тегів для керування зв'язками в адмінці.
      *
@@ -103,9 +107,12 @@ class Poll extends ActiveRecord
             [['describe'], 'string'],
             [['user_id', 'rating', 'status', 'views', 'result_type', 'poll_language_id', 'show_for_all_languages', 'poll_sex', 'poll_country_id', 'poll_region_id', 'poll_city_id', 'poll_min_age', 'poll_max_age', 'votes_count_close', 'show_on_slider', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add', 'date_update'], 'safe'],
+            // Очищаємо мета-поля від зайвих пробілів, щоб не зберігати порожні значення.
+            [['heading', 'meta_title', 'meta_description'], 'filter', 'filter' => 'trim'],
             // Дозволяємо масове присвоєння тегів як масиву назв.
             [['tagNames'], 'safe'],
-            [['title'], 'string', 'max' => 255],
+            [['title', 'heading', 'meta_title'], 'string', 'max' => 255],
+            [['meta_description'], 'string'],
             [['poll_language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['poll_language_id' => 'id']],
         ];
     }
@@ -143,7 +150,31 @@ class Poll extends ActiveRecord
             'created_at' => Yii::t('app', 'Created at:'),
             'updated_at' => Yii::t('app', 'Updated at:'),
             'tagNames' => Yii::t('app', 'Tags'),
+            'heading' => 'Заголовок H1',
+            'meta_title' => 'Meta title',
+            'meta_description' => 'Meta description',
         ];
+    }
+
+    /**
+     * Повертає мета-дані опитування, якщо вони задані.
+     */
+    public function getMetaData(): array
+    {
+        return [
+            'heading' => $this->normalizeMetaValue($this->heading),
+            'title' => $this->normalizeMetaValue($this->meta_title),
+            'description' => $this->normalizeMetaValue($this->meta_description),
+        ];
+    }
+
+    /**
+     * Нормалізує мета-значення: повертає null, якщо рядок порожній.
+     */
+    private function normalizeMetaValue(?string $value): ?string
+    {
+        $value = trim((string) $value);
+        return $value === '' ? null : $value;
     }
 
     /**

@@ -124,6 +124,29 @@ class PollController extends Controller
     }
 
     /**
+     * Редагує мета-теги сторінки опитування.
+     *
+     * @param int $id ID
+     *
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionMeta($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Мета-теги опитування оновлено.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('meta', [
+            'model' => $model,
+        ]);
+    }
+
+
+    /**
      * Finds the Poll model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID

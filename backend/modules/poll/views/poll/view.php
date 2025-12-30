@@ -17,6 +17,7 @@ $qtyOptions = count($model->pollOptions);
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Мета-теги', ['meta', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Poll options'). ($qtyOptions ? ' ['.$qtyOptions.']' : ''),
                 ['/poll/poll-option/index', 'PollOptionSearch' => ['poll_id' =>  $model->id]], ['class' => 'btn btn-primary']
                 ) ?>

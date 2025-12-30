@@ -9,6 +9,7 @@ use yii\helpers\Json;
 
 /** @var yii\web\View $this */
 /* @var Poll $poll */
+/* @var string|null $metaHeading */
 
 if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
@@ -41,8 +42,11 @@ if (!empty($poll->pollLanguage)) {
                         </div>
                         <div class="middle_title_b">
                             <div class="title_poll" itemprop="headline">
-                                <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
-                                <h1><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                                <?php
+                                // Використовуємо H1 з адмінки, якщо він заданий, інакше показуємо стандартний заголовок.
+                                $pageHeading = $metaHeading ?: Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]);
+                                ?>
+                                <h1><?= $pageHeading; ?></h1>
                             </div>
                             <div class="desc_my_chart" itemprop="articleBody">
                                 <?= $poll->getClearedDescribe() ?>

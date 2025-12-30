@@ -108,8 +108,12 @@ class PollController extends \yii\web\Controller
                         $tags[] = $pollTag->name;
                 }
 
+                // Підтягуємо кастомні мета-дані опитування, якщо вони задані.
+                $metaData = $poll->getMetaData();
+
 //		$this->pageTitle = $poll->title . ' ' . Yii::t('main', 'опрос');
-                Yii::$app->page->setTitle($poll->title . ' ' . Yii::t('main', 'опрос'));
+                $defaultTitle = $poll->title . ' ' . Yii::t('main', 'опрос');
+                Yii::$app->page->setTitle($metaData['title'] ?? $defaultTitle);
 
 //		$this->pageKeywords = implode(',', $tags);
                 Yii::$app->page->setKeywords(implode(',', $tags));
@@ -118,16 +122,21 @@ class PollController extends \yii\web\Controller
 
                 $locale = Yii::$app->urlManager->getCurrentLocale();
 
-                $suffix = empty( Yii::$app->params['descriptionSuffix'][$locale] ) ? (' #' . Yii::t('main', 'опрос')) : Yii::$app->params['descriptionSuffix'][$locale];
-                $prefix = empty( Yii::$app->params['descriptionPrefix'][$locale] ) ? '' : Yii::$app->params['descriptionPrefix'][$locale];
-                $suffixLimit = !empty(Yii::$app->params['descriptionMaxLenth']) ? Yii::$app->params['descriptionMaxLenth'] : 156;
-		$pageDescription = $prefix . $poll->title . $suffix;
-                if(mb_strlen($pageDescription) > $suffixLimit){
+                if (!empty($metaData['description'])) {
+                    // Якщо опис заданий, використовуємо його без додаткових суфіксів.
+                    Yii::$app->page->setDescription($metaData['description']);
+                } else {
+                    $suffix = empty(Yii::$app->params['descriptionSuffix'][$locale]) ? (' #' . Yii::t('main', 'опрос')) : Yii::$app->params['descriptionSuffix'][$locale];
+                    $prefix = empty(Yii::$app->params['descriptionPrefix'][$locale]) ? '' : Yii::$app->params['descriptionPrefix'][$locale];
+                    $suffixLimit = !empty(Yii::$app->params['descriptionMaxLenth']) ? Yii::$app->params['descriptionMaxLenth'] : 156;
+                    $pageDescription = $prefix . $poll->title . $suffix;
+                    if (mb_strlen($pageDescription) > $suffixLimit) {
 //                    $this->pageDescription = mb_substr($pageDescription, 0 , ($suffixLimit-3)).'...';
-                    Yii::$app->page->setDescription(mb_substr($pageDescription, 0 , ($suffixLimit-3)).'...');
-                }else{
+                        Yii::$app->page->setDescription(mb_substr($pageDescription, 0 , ($suffixLimit-3)).'...');
+                    } else {
 //                    $this->pageDescription = $pageDescription;
-                    Yii::$app->page->setDescription($pageDescription);
+                        Yii::$app->page->setDescription($pageDescription);
+                    }
                 }
 
         $error = null;
@@ -161,6 +170,8 @@ class PollController extends \yii\web\Controller
             'commentModel'=>$comment,
             'answerModel'=>$answer,
             'error'=>$error,
+            // Передаємо H1 з адмінки, якщо він заданий.
+            'metaHeading' => $metaData['heading'] ?? null,
         ]);
     }
 

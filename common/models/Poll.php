@@ -76,6 +76,16 @@ class Poll extends ActiveRecord
     private $tagIds = [];
 
     /**
+     * Закешований запис статичних мета-даних для опитувань.
+     */
+    private ?PollStaticText $_staticTextRecord = null;
+
+    /**
+     * Ознака, що запис уже завантажено.
+     */
+    private bool $_staticTextRecordLoaded = false;
+
+    /**
      * Список назв тегів для керування зв'язками в адмінці.
      *
      * Додаємо окремий масив, щоб спростити роботу віджету Select2 у формі
@@ -1321,6 +1331,85 @@ class Poll extends ActiveRecord
                 ->where(['poll_comment.is_new' => 1])
                 ->andWhere(['poll.user_id' => $userId]);
         return $query->count();
+    }
+
+    /**
+     * Повертає користувацькі мета-налаштування (title, description, H1) для сторінки опитування.
+     */
+    public function getStaticMeta(): array
+    {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText) {
+            return [
+                'heading' => null,
+                'title' => null,
+                'description' => null,
+            ];
+        }
+
+        $replacements = $this->getStaticMetaReplacements();
+
+        return [
+            'heading' => $this->replaceStaticMetaTokens($staticText->heading, $replacements),
+            'title' => $this->replaceStaticMetaTokens($staticText->meta_title, $replacements),
+            'description' => $this->replaceStaticMetaTokens($staticText->meta_description, $replacements),
+        ];
+    }
+
+    /**
+     * Перелік доступних змінних для мета-даних сторінок опитувань.
+     */
+    public static function getStaticMetaTokens(): array
+    {
+        return [
+            '@title' => 'Назва опитування.',
+            '@id' => 'ID опитування.',
+            '@tags' => 'Перелік тегів опитування через кому.',
+        ];
+    }
+
+    /**
+     * Завантажує повʼязаний запис PollStaticText лише один раз за запит.
+     */
+    private function getStaticTextRecord(): ?PollStaticText
+    {
+        if (!$this->_staticTextRecordLoaded) {
+            $this->_staticTextRecord = $this->poll_language_id
+                ? PollStaticText::find()->where(['language_id' => $this->poll_language_id])->one()
+                : null;
+            $this->_staticTextRecordLoaded = true;
+        }
+
+        return $this->_staticTextRecord;
+    }
+
+    /**
+     * Формує підстановки для шаблонів мета-тегів опитувань.
+     */
+    private function getStaticMetaReplacements(): array
+    {
+        $tagNames = array_map(static function (Tag $tag) {
+            return $tag->name;
+        }, $this->tags);
+
+        return [
+            '@title' => $this->title,
+            '@id' => (string) $this->id,
+            '@tags' => implode(', ', $tagNames),
+        ];
+    }
+
+    /**
+     * Акуратно підставляє змінні у вказане значення.
+     */
+    private function replaceStaticMetaTokens(?string $value, array $replacements): ?string
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        return strtr($value, $replacements);
     }
 
 }

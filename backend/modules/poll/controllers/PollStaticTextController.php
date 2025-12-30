@@ -49,6 +49,8 @@ class PollStaticTextController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             // Нормалізуємо введення, щоб порожні значення не зберігались як пробіли.
+            // Додаємо підтримку HTML-блоку для опису статистики опитування.
+            $model->content = trim((string) $model->content);
             $model->heading = trim((string) $model->heading);
             $model->meta_title = trim((string) $model->meta_title);
             $model->meta_description = trim((string) $model->meta_description);
@@ -65,11 +67,12 @@ class PollStaticTextController extends Controller
                     return $this->render('update', [
                         'language' => $language,
                         'model' => $model,
-                        'tokens' => Poll::getStaticMetaTokens(),
+                        'metaTokens' => Poll::getStaticMetaTokens(),
+                        'infoTokens' => Poll::getStaticInfoTokens(),
                     ]);
                 }
 
-                Yii::$app->session->setFlash('success', 'Мета-теги для опитувань оновлено.');
+                Yii::$app->session->setFlash('success', 'Статичний текст та мета-теги для опитувань оновлено.');
                 return $this->redirect(['index']);
             }
         }
@@ -77,7 +80,8 @@ class PollStaticTextController extends Controller
         return $this->render('update', [
             'language' => $language,
             'model' => $model,
-            'tokens' => Poll::getStaticMetaTokens(),
+            'metaTokens' => Poll::getStaticMetaTokens(),
+            'infoTokens' => Poll::getStaticInfoTokens(),
         ]);
     }
 

@@ -6,9 +6,10 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var common\models\Language $language */
 /** @var common\models\PollStaticText $model */
-/** @var array $tokens */
+/** @var array $metaTokens */
+/** @var array $infoTokens */
 
-$this->title = 'Мета-теги для опитувань: ' . $language->title;
+$this->title = 'Статичний текст для опитувань: ' . $language->title;
 $this->params['breadcrumbs'][] = ['label' => 'Статичний текст для опитувань', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $language->title;
 ?>
@@ -16,22 +17,40 @@ $this->params['breadcrumbs'][] = $language->title;
     <h1><?= Html::encode($this->title); ?></h1>
 
     <p>
-        Тут можна задати H1, &lt;title&gt; та meta description для сторінок опитувань.
-        Нижче наведено змінні, які можна використовувати у цих полях:
+        Тут можна налаштувати статичний HTML-блок зі статистикою та мета-теги сторінок опитувань.
+        Нижче наведено змінні, які можна використовувати у статичному тексті:
     </p>
     <ul>
-        <?php foreach ($tokens as $token => $description): ?>
+        <?php foreach ($infoTokens as $token => $description): ?>
             <li><code><?= Html::encode($token); ?></code> — <?= Html::encode($description); ?></li>
         <?php endforeach; ?>
     </ul>
     <p>
-        Порожні поля видалять збережені значення та повернуть стандартну логіку формування мета-тегів.
+        Порожні поля видалять збережені значення та повернуть стандартну логіку формування текстів.
     </p>
 
     <?php $form = ActiveForm::begin(); ?>
         <div class="panel panel-default">
+            <div class="panel-heading"><strong>Статичний HTML-блок зі статистикою</strong></div>
+            <div class="panel-body">
+                <?php // Дозволяємо редагувати весь HTML-блок через змінні. ?>
+                <?= $form->field($model, 'content')
+                    ->textarea(['rows' => 12, 'class' => 'form-control'])
+                    ->hint('Можна використовувати HTML і змінні з переліку вище.'); ?>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
             <div class="panel-heading"><strong>Мета-теги сторінки опитування</strong></div>
             <div class="panel-body">
+                <p>
+                    Доступні змінні для цих полів:
+                </p>
+                <ul>
+                    <?php foreach ($metaTokens as $token => $description): ?>
+                        <li><code><?= Html::encode($token); ?></code> — <?= Html::encode($description); ?></li>
+                    <?php endforeach; ?>
+                </ul>
                 <?= $form->field($model, 'heading')
                     ->textInput(['maxlength' => true])
                     ->hint('Значення потрапляє у головний H1. Можна вставляти змінні на кшталт @title.'); ?>

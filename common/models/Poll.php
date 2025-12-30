@@ -35,6 +35,7 @@ use yii\db\Expression;
  * @property int|null $updated_by Updated by:
  * @property int|null $created_at Created at:
  * @property int|null $updated_at Updated at:
+ * @property PollStaticText $staticText
  *
  * @property PollAnswer[] $pollAnswers
  * @property PollComment[] $pollComments
@@ -74,6 +75,13 @@ class Poll extends ActiveRecord
     private $_commentsCount;
 
     private $tagIds = [];
+
+    /**
+     * Кеш повʼязаного статичного тексту для опитування.
+     */
+    private ?PollStaticText $_staticTextRecord = null;
+
+    private bool $_staticTextRecordLoaded = false;
 
     /**
      * Список назв тегів для керування зв'язками в адмінці.
@@ -144,6 +152,74 @@ class Poll extends ActiveRecord
             'updated_at' => Yii::t('app', 'Updated at:'),
             'tagNames' => Yii::t('app', 'Tags'),
         ];
+    }
+
+    /**
+     * Звʼязок зі статичним текстом опитування.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStaticText()
+    {
+        return $this->hasOne(PollStaticText::class, ['poll_id' => 'id']);
+    }
+
+    /**
+     * Повертає мета-дані опитування, якщо вони задані в статичному тексті.
+     */
+    public function getStaticMeta(): array
+    {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText) {
+            return [
+                'heading' => null,
+                'title' => null,
+                'description' => null,
+            ];
+        }
+
+        return [
+            'heading' => $this->normalizeMetaValue($staticText->heading),
+            'title' => $this->normalizeMetaValue($staticText->meta_title),
+            'description' => $this->normalizeMetaValue($staticText->meta_description),
+        ];
+    }
+
+    /**
+     * Повертає статичний контент опитування або null, якщо його немає.
+     */
+    public function getStaticContent(): ?string
+    {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText) {
+            return null;
+        }
+
+        return $this->normalizeMetaValue($staticText->content);
+    }
+
+    /**
+     * Завантажує статичний текст опитування один раз за запит.
+     */
+    private function getStaticTextRecord(): ?PollStaticText
+    {
+        if (!$this->_staticTextRecordLoaded) {
+            $this->_staticTextRecord = $this->id
+                ? PollStaticText::find()->where(['poll_id' => $this->id])->one()
+                : null;
+            $this->_staticTextRecordLoaded = true;
+        }
+
+        return $this->_staticTextRecord;
+    }
+
+    /**
+     * Нормалізує мета-значення: повертає null, якщо рядок порожній.
+     */
+    private function normalizeMetaValue(?string $value): ?string
+    {
+        $value = trim((string) $value);
+        return $value === '' ? null : $value;
     }
 
     /**

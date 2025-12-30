@@ -108,8 +108,11 @@ class PollController extends \yii\web\Controller
                         $tags[] = $pollTag->name;
                 }
 
-//		$this->pageTitle = $poll->title . ' ' . Yii::t('main', 'опрос');
-                Yii::$app->page->setTitle($poll->title . ' ' . Yii::t('main', 'опрос'));
+                // Отримуємо статичні мета-налаштування для сторінки опитування.
+                $staticMeta = $poll->getStaticMeta();
+                $defaultTitle = $poll->title . ' ' . Yii::t('main', 'опрос');
+                $pageTitle = $staticMeta['title'] ?? $defaultTitle;
+                Yii::$app->page->setTitle($pageTitle);
 
 //		$this->pageKeywords = implode(',', $tags);
                 Yii::$app->page->setKeywords(implode(',', $tags));
@@ -122,7 +125,10 @@ class PollController extends \yii\web\Controller
                 $prefix = empty( Yii::$app->params['descriptionPrefix'][$locale] ) ? '' : Yii::$app->params['descriptionPrefix'][$locale];
                 $suffixLimit = !empty(Yii::$app->params['descriptionMaxLenth']) ? Yii::$app->params['descriptionMaxLenth'] : 156;
 		$pageDescription = $prefix . $poll->title . $suffix;
-                if(mb_strlen($pageDescription) > $suffixLimit){
+                if (!empty($staticMeta['description'])) {
+                    // Статичний опис має пріоритет над автоматичним.
+                    Yii::$app->page->setDescription($staticMeta['description']);
+                } elseif(mb_strlen($pageDescription) > $suffixLimit){
 //                    $this->pageDescription = mb_substr($pageDescription, 0 , ($suffixLimit-3)).'...';
                     Yii::$app->page->setDescription(mb_substr($pageDescription, 0 , ($suffixLimit-3)).'...');
                 }else{
@@ -160,6 +166,8 @@ class PollController extends \yii\web\Controller
             'poll'=>$poll,
             'commentModel'=>$comment,
             'answerModel'=>$answer,
+            // Передаємо кастомний H1, якщо його налаштовано в адмінці.
+            'pageHeading' => $staticMeta['heading'] ?? null,
             'error'=>$error,
         ]);
     }

@@ -1369,6 +1369,117 @@ class Poll extends ActiveRecord
     }
 
     /**
+     * Перелік доступних змінних для HTML-блоку зі статистикою опитування.
+     */
+    public static function getStaticInfoTokens(): array
+    {
+        return [
+            '@title' => 'Назва опитування.',
+            '@id' => 'ID опитування.',
+            '@date' => 'Дата створення опитування (дд.мм.рррр).',
+            '@votes_total' => 'Загальна кількість голосів.',
+            '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
+            '@votes_guest' => 'Кількість голосів від гостей.',
+            '@comments' => 'Кількість коментарів.',
+            '@tags' => 'Список тегів із посиланнями.',
+            '@tags_plain' => 'Список тегів без посилань.',
+            '@options_count' => 'Кількість варіантів відповіді.',
+            '@options_list' => 'HTML-список варіантів з голосами та відсотками.',
+            '@most_popular_title' => 'Назва найпопулярнішого варіанта відповіді.',
+            '@most_popular_votes' => 'Кількість голосів за найпопулярніший варіант.',
+            '@most_popular_percent' => 'Відсоток голосів за найпопулярніший варіант.',
+        ];
+    }
+
+    /**
+     * Повертає підготовлений HTML-блок зі статистикою, якщо адміністратор його задав.
+     *
+     * @param array|null $infoBlockData Попередньо обраховані дані, щоб уникнути дублювання.
+     */
+    public function getStaticInfoBlock(?array $infoBlockData = null): ?string
+    {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText || trim((string) $staticText->content) === '') {
+            return null;
+        }
+
+        $infoBlockData = $infoBlockData ?? $this->getStaticInfoBlockData();
+        $replacements = $this->getStaticInfoReplacements($infoBlockData);
+
+        return $this->replaceStaticMetaTokens($staticText->content, $replacements);
+    }
+
+    /**
+     * Повертає обчислені дані для блоку статистики опитування.
+     */
+    public function getStaticInfoBlockData(): array
+    {
+        $options = $this->pollOptions;
+        $stats = [];
+        $registeredVotes = 0;
+        $guestVotes = 0;
+        $mostPopular = null;
+
+        foreach ($options as $opt) {
+            $optionVotes = (int) $opt->optionVotesCount;
+            $optionGuestVotes = (int) $opt->optionGuestVotesCount;
+            $votes = $optionVotes + $optionGuestVotes;
+            $percent = PollOption::getPercentRating($this->countPollOptionsVoters, $votes);
+
+            $stats[] = ['title' => $opt->title, 'votes' => $votes, 'percent' => $percent];
+            $registeredVotes += $optionVotes;
+            $guestVotes += $optionGuestVotes;
+
+            if ($mostPopular === null || $votes > $mostPopular['votes']) {
+                $mostPopular = ['title' => $opt->title, 'votes' => $votes, 'percent' => $percent];
+            }
+        }
+
+        $commentsCount = count($this->pollComments);
+
+        // Формуємо HTML-список варіантів з голосами, щоб можна було вставляти у шаблон.
+        $optionsListHtml = '';
+        if (!empty($stats)) {
+            $items = [];
+            foreach ($stats as $stat) {
+                $items[] = '<li itemprop="suggestedAnswer" itemscope itemtype="https://schema.org/Answer">'
+                    . '<span itemprop="text">' . Html::encode($stat['title']) . '</span>'
+                    . '<span class="dash">—</span>'
+                    . '<strong itemprop="upvoteCount">' . $stat['votes'] . '</strong> ' . Yii::t('poll', 'голосів')
+                    . ' (<span itemprop="percentage">' . number_format($stat['percent'], 1) . '%</span>)'
+                    . '</li>';
+            }
+            $optionsListHtml = '<ul class="poll-options-stats">' . implode('', $items) . '</ul>';
+        }
+
+        // Формуємо список тегів двома форматами: з посиланнями та без них.
+        $tagsPlain = '';
+        $tagsHtml = '';
+        if (!empty($this->tags)) {
+            $tagsPlain = implode(', ', array_map(static function (Tag $tag) {
+                return $tag->name;
+            }, $this->tags));
+            $tagsHtml = implode(', ', array_map(static function (Tag $tag) {
+                return Html::a(Html::encode($tag->name), $tag->url);
+            }, $this->tags));
+        }
+
+        return [
+            'stats' => $stats,
+            'registeredVotes' => $registeredVotes,
+            'guestVotes' => $guestVotes,
+            'commentsCount' => $commentsCount,
+            'mostPopular' => $mostPopular,
+            'optionsListHtml' => $optionsListHtml,
+            'tagsHtml' => $tagsHtml,
+            'tagsPlain' => $tagsPlain,
+            'votesTotal' => (int) $this->countPollOptionsVoters,
+            'optionsCount' => count($stats),
+            'date' => date('d.m.Y', strtotime($this->date_add)),
+        ];
+    }
+
+    /**
      * Завантажує повʼязаний запис PollStaticText лише один раз за запит.
      */
     private function getStaticTextRecord(): ?PollStaticText
@@ -1396,6 +1507,33 @@ class Poll extends ActiveRecord
             '@title' => $this->title,
             '@id' => (string) $this->id,
             '@tags' => implode(', ', $tagNames),
+        ];
+    }
+
+    /**
+     * Формує підстановки для шаблону HTML-блоку зі статистикою опитування.
+     *
+     * @param array $data Дані, які повертає getStaticInfoBlockData().
+     */
+    private function getStaticInfoReplacements(array $data): array
+    {
+        $mostPopular = $data['mostPopular'];
+
+        return [
+            '@title' => $this->title,
+            '@id' => (string) $this->id,
+            '@date' => $data['date'],
+            '@votes_total' => (string) $data['votesTotal'],
+            '@votes_registered' => (string) $data['registeredVotes'],
+            '@votes_guest' => (string) $data['guestVotes'],
+            '@comments' => (string) $data['commentsCount'],
+            '@tags' => $data['tagsHtml'],
+            '@tags_plain' => $data['tagsPlain'],
+            '@options_count' => (string) $data['optionsCount'],
+            '@options_list' => $data['optionsListHtml'],
+            '@most_popular_title' => $mostPopular ? Html::encode($mostPopular['title']) : '',
+            '@most_popular_votes' => $mostPopular ? (string) $mostPopular['votes'] : '',
+            '@most_popular_percent' => $mostPopular ? number_format($mostPopular['percent'], 1) : '',
         ];
     }
 

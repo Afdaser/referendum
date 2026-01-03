@@ -1365,6 +1365,24 @@ class Poll extends ActiveRecord
             '@title' => 'Назва опитування.',
             '@id' => 'ID опитування.',
             '@tags' => 'Перелік тегів опитування через кому.',
+            '@tags_plain' => 'Перелік тегів без HTML.',
+            '@tags_count' => 'Кількість тегів.',
+            '@url' => 'URL сторінки опитування.',
+            '@absolute_url' => 'Абсолютний URL сторінки опитування.',
+            '@language' => 'Назва мови опитування.',
+            '@language_code' => 'Код мови опитування.',
+            '@language_id' => 'ID мови опитування.',
+            '@author_name' => 'Імʼя автора опитування.',
+            '@author_id' => 'ID автора опитування.',
+            '@date' => 'Дата створення опитування (дд.мм.рррр).',
+            '@date_iso' => 'Дата створення опитування у форматі ISO (YYYY-MM-DD).',
+            '@date_day' => 'День створення опитування (DD).',
+            '@date_month' => 'Місяць створення опитування (MM).',
+            '@date_year' => 'Рік створення опитування (YYYY).',
+            '@votes_total' => 'Загальна кількість голосів.',
+            '@comments' => 'Кількість коментарів.',
+            '@options_count' => 'Кількість варіантів відповіді.',
+            '@options_titles' => 'Перелік варіантів відповіді через кому.',
         ];
     }
 
@@ -1377,13 +1395,26 @@ class Poll extends ActiveRecord
             '@title' => 'Назва опитування.',
             '@id' => 'ID опитування.',
             '@date' => 'Дата створення опитування (дд.мм.рррр).',
+            '@date_iso' => 'Дата створення опитування у форматі ISO (YYYY-MM-DD).',
+            '@date_day' => 'День створення опитування (DD).',
+            '@date_month' => 'Місяць створення опитування (MM).',
+            '@date_year' => 'Рік створення опитування (YYYY).',
+            '@url' => 'URL сторінки опитування.',
+            '@absolute_url' => 'Абсолютний URL сторінки опитування.',
+            '@language' => 'Назва мови опитування.',
+            '@language_code' => 'Код мови опитування.',
+            '@language_id' => 'ID мови опитування.',
+            '@author_name' => 'Імʼя автора опитування.',
+            '@author_id' => 'ID автора опитування.',
             '@votes_total' => 'Загальна кількість голосів.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
             '@votes_guest' => 'Кількість голосів від гостей.',
             '@comments' => 'Кількість коментарів.',
             '@tags' => 'Список тегів із посиланнями.',
             '@tags_plain' => 'Список тегів без посилань.',
+            '@tags_count' => 'Кількість тегів.',
             '@options_count' => 'Кількість варіантів відповіді.',
+            '@options_titles' => 'Перелік варіантів відповіді через кому.',
             '@options_list' => 'HTML-список варіантів з голосами та відсотками.',
             '@most_popular_title' => 'Назва найпопулярнішого варіанта відповіді.',
             '@most_popular_votes' => 'Кількість голосів за найпопулярніший варіант.',
@@ -1419,6 +1450,7 @@ class Poll extends ActiveRecord
         $registeredVotes = 0;
         $guestVotes = 0;
         $mostPopular = null;
+        $optionsTitles = [];
 
         foreach ($options as $opt) {
             $optionVotes = (int) $opt->optionVotesCount;
@@ -1427,6 +1459,7 @@ class Poll extends ActiveRecord
             $percent = PollOption::getPercentRating($this->countPollOptionsVoters, $votes);
 
             $stats[] = ['title' => $opt->title, 'votes' => $votes, 'percent' => $percent];
+            $optionsTitles[] = $opt->title;
             $registeredVotes += $optionVotes;
             $guestVotes += $optionGuestVotes;
 
@@ -1455,6 +1488,7 @@ class Poll extends ActiveRecord
         // Формуємо список тегів двома форматами: з посиланнями та без них.
         $tagsPlain = '';
         $tagsHtml = '';
+        $tagsCount = 0;
         if (!empty($this->tags)) {
             $tagsPlain = implode(', ', array_map(static function (Tag $tag) {
                 return $tag->name;
@@ -1462,7 +1496,21 @@ class Poll extends ActiveRecord
             $tagsHtml = implode(', ', array_map(static function (Tag $tag) {
                 return Html::a(Html::encode($tag->name), $tag->url);
             }, $this->tags));
+            $tagsCount = count($this->tags);
         }
+
+        // Готуємо форматування дати, щоб її можна було підставляти в шаблони.
+        $dateTimestamp = $this->date_add ? strtotime($this->date_add) : null;
+        $dateParts = [
+            'date' => $dateTimestamp ? date('d.m.Y', $dateTimestamp) : '',
+            'dateIso' => $dateTimestamp ? date('Y-m-d', $dateTimestamp) : '',
+            'dateDay' => $dateTimestamp ? date('d', $dateTimestamp) : '',
+            'dateMonth' => $dateTimestamp ? date('m', $dateTimestamp) : '',
+            'dateYear' => $dateTimestamp ? date('Y', $dateTimestamp) : '',
+        ];
+
+        // Збираємо допоміжні дані про автора, щоб не дублювати запити в шаблонах.
+        $authorName = $this->user_id ? User::getUserName($this->user_id) : '';
 
         return [
             'stats' => $stats,
@@ -1471,11 +1519,24 @@ class Poll extends ActiveRecord
             'commentsCount' => $commentsCount,
             'mostPopular' => $mostPopular,
             'optionsListHtml' => $optionsListHtml,
+            'optionsTitles' => implode(', ', $optionsTitles),
             'tagsHtml' => $tagsHtml,
             'tagsPlain' => $tagsPlain,
+            'tagsCount' => $tagsCount,
             'votesTotal' => (int) $this->countPollOptionsVoters,
             'optionsCount' => count($stats),
-            'date' => date('d.m.Y', strtotime($this->date_add)),
+            'date' => $dateParts['date'],
+            'dateIso' => $dateParts['dateIso'],
+            'dateDay' => $dateParts['dateDay'],
+            'dateMonth' => $dateParts['dateMonth'],
+            'dateYear' => $dateParts['dateYear'],
+            'pollUrl' => $this->url,
+            'pollAbsoluteUrl' => $this->getAbsoluteUrl(),
+            'languageName' => $this->language ? $this->language->name : '',
+            'languageCode' => $this->language ? $this->language->name : '',
+            'languageId' => (string) $this->poll_language_id,
+            'authorName' => $authorName,
+            'authorId' => (string) $this->user_id,
         ];
     }
 
@@ -1503,10 +1564,43 @@ class Poll extends ActiveRecord
             return $tag->name;
         }, $this->tags);
 
+        // Формуємо частини дати, щоб їх можна було підставляти в мета-теги.
+        $dateTimestamp = $this->date_add ? strtotime($this->date_add) : null;
+        $date = $dateTimestamp ? date('d.m.Y', $dateTimestamp) : '';
+        $dateIso = $dateTimestamp ? date('Y-m-d', $dateTimestamp) : '';
+        $dateDay = $dateTimestamp ? date('d', $dateTimestamp) : '';
+        $dateMonth = $dateTimestamp ? date('m', $dateTimestamp) : '';
+        $dateYear = $dateTimestamp ? date('Y', $dateTimestamp) : '';
+
+        // Готуємо текстові підстановки, щоб токени залишались читабельними у шаблонах.
+        $optionsTitles = array_map(static function (PollOption $option) {
+            return $option->title;
+        }, $this->pollOptions);
+        $authorName = $this->user_id ? User::getUserName($this->user_id) : '';
+        $commentsCount = count($this->pollComments);
+
         return [
             '@title' => $this->title,
             '@id' => (string) $this->id,
             '@tags' => implode(', ', $tagNames),
+            '@tags_plain' => implode(', ', $tagNames),
+            '@tags_count' => (string) count($tagNames),
+            '@url' => $this->url,
+            '@absolute_url' => $this->getAbsoluteUrl(),
+            '@language' => $this->language ? $this->language->name : '',
+            '@language_code' => $this->language ? $this->language->name : '',
+            '@language_id' => (string) $this->poll_language_id,
+            '@author_name' => $authorName,
+            '@author_id' => (string) $this->user_id,
+            '@date' => $date,
+            '@date_iso' => $dateIso,
+            '@date_day' => $dateDay,
+            '@date_month' => $dateMonth,
+            '@date_year' => $dateYear,
+            '@votes_total' => (string) $this->countPollOptionsVoters,
+            '@comments' => (string) $commentsCount,
+            '@options_count' => (string) count($this->pollOptions),
+            '@options_titles' => implode(', ', $optionsTitles),
         ];
     }
 
@@ -1523,13 +1617,26 @@ class Poll extends ActiveRecord
             '@title' => $this->title,
             '@id' => (string) $this->id,
             '@date' => $data['date'],
+            '@date_iso' => $data['dateIso'],
+            '@date_day' => $data['dateDay'],
+            '@date_month' => $data['dateMonth'],
+            '@date_year' => $data['dateYear'],
+            '@url' => $data['pollUrl'],
+            '@absolute_url' => $data['pollAbsoluteUrl'],
+            '@language' => $data['languageName'],
+            '@language_code' => $data['languageCode'],
+            '@language_id' => $data['languageId'],
+            '@author_name' => $data['authorName'],
+            '@author_id' => $data['authorId'],
             '@votes_total' => (string) $data['votesTotal'],
             '@votes_registered' => (string) $data['registeredVotes'],
             '@votes_guest' => (string) $data['guestVotes'],
             '@comments' => (string) $data['commentsCount'],
             '@tags' => $data['tagsHtml'],
             '@tags_plain' => $data['tagsPlain'],
+            '@tags_count' => (string) $data['tagsCount'],
             '@options_count' => (string) $data['optionsCount'],
+            '@options_titles' => $data['optionsTitles'],
             '@options_list' => $data['optionsListHtml'],
             '@most_popular_title' => $mostPopular ? Html::encode($mostPopular['title']) : '',
             '@most_popular_votes' => $mostPopular ? (string) $mostPopular['votes'] : '',

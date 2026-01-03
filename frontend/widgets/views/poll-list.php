@@ -15,6 +15,8 @@ $csrfRequest = Yii::$app->request;
 // Отримуємо CSRF-параметри один раз, щоб не дублювати виклики у кожній формі голосування.
 $csrfParam = $csrfRequest->csrfParam;
 $csrfToken = $csrfRequest->getCsrfToken();
+// Підставляємо актуальний домен/субдомен для логотипа соцмереж.
+$socialLogoUrl = Yii::$app->request->hostInfo . '/img/layout/logo_social.png';
 ?>
 
 <?= (YII_ENV == 'dev') ? "<!-- #DEV24-04 \n". __FILE__."\n -->" : ''; ?>
@@ -289,7 +291,7 @@ $this->registerJs($scriptNotGuest);
 </span>
 <span class="links_share">
     <span class="inner_b_share">
-        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ','http://online-statistic.com/img/layout/logo_social.png','Варіанти відповіді: Yes No I doubt ')">
+        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No I doubt ')">
             <i class="fa fa-facebook"></i>
         </a>
         <a href="javascript:void(0)" class="twitter icon_share" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ')">
@@ -343,7 +345,7 @@ $this->registerJs($scriptNotGuest);
 </span>
 <span class="links_share">
     <span class="inner_b_share">
-        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?','http://online-statistic.com/img/layout/logo_social.png','Варіанти відповіді: Yes No ')">
+        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No ')">
             <i class="fa fa-facebook"></i>
         </a>
         <a href="javascript:void(0)" class="twitter icon_share" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?')">
@@ -418,7 +420,7 @@ $this->registerJs($scriptNotGuest);
 </span>
 <span class="links_share">
     <span class="inner_b_share">
-        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ','http://online-statistic.com/img/layout/logo_social.png','Варіанти відповіді: Yes No ')">
+        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No ')">
             <i class="fa fa-facebook"></i>
         </a>
         <a href="javascript:void(0)" class="twitter icon_share" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ')">

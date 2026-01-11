@@ -67,7 +67,8 @@ class WUserSidebar extends Widget
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
                         Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // return $this->goHome();
+                        // Завершуємо виконання після успішної реєстрації, щоб уникнути дублювання.
+                        return $this->render('user-sidebar', array('refresh' => true));
                     }
 
                     //$this->render('userSidebar/_sidebar', array('refresh' => true));

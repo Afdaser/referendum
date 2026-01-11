@@ -50,7 +50,7 @@ if (!empty($poll->pollLanguage)) {
                                     <h1><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
                                 <?php endif; ?>
                             </div>
-                            <div class="desc_my_chart" itemprop="articleBody">
+                            <div class="desc_my_chart" itemprop="text">
                                 <?= $poll->getClearedDescribe() ?>
                             </div>
                             <?php $chartData = $poll->getChartData();?>

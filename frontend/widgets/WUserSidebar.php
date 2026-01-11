@@ -67,7 +67,14 @@ class WUserSidebar extends Widget
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
                         Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // return $this->goHome();
+                        // Після успішної реєстрації формуємо модель опитування для сайдбару.
+                        $pollModel = new Poll;
+                        $pollModel->presetAttributes();
+                        // Завершуємо виконання після успішної реєстрації, щоб уникнути дублювання.
+                        return $this->render('user-sidebar', array(
+                            'refresh' => true,
+                            'pollModel' => $pollModel,
+                        ));
                     }
 
                     //$this->render('userSidebar/_sidebar', array('refresh' => true));
@@ -85,14 +92,6 @@ class WUserSidebar extends Widget
 //                    echo '</pre>';
 //                    die(__METHOD__ . '#' . __LINE__);
 
-/*
-                if($model->validate() && $model->register())  {
-                    return $this->render('user-sidebar',array('refresh'=>true));
-                }
-                else {
-                    return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(Html::errorSummary($model))));
-                }
-/* */
             } else {
                 return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model));
             }

@@ -47,19 +47,6 @@ use common\models\AuthItem;
 //                            'visible' => Yii::$app->user->can(AuthItem::G_ADMIN) OR Yii::$app->user->can(AuthItem::G_MANAGER),
                         ],
                         [
-                            'label' => Yii::t('app', 'Tags'),
-                            'icon' => 'test',
-                            'url' => Url::toRoute(['/poll/tag/index']),
-                            'active' => MenuHelper::isActiveMenu(['poll', 'tag'], $this->context->route),
-//                            'visible' => Yii::$app->user->can(AuthItem::G_ADMIN) OR Yii::$app->user->can(AuthItem::G_MANAGER),
-                        ],
-                        [
-                            'label' => 'Статичний текст на тегах',
-                            'icon' => 'file-text',
-                            'url' => Url::toRoute(['/poll/tag-static-text/index']),
-                            'active' => MenuHelper::isActiveMenu(['poll', 'tag-static-text'], $this->context->route),
-                        ],
-                        [
                             'label' => 'Статичний текст для опитувань',
                             'icon' => 'file-text',
                             'url' => Url::toRoute(['/poll/poll-static-text/index']),
@@ -75,6 +62,27 @@ use common\models\AuthItem;
                     'active' => MenuHelper::isActiveMenu(['page'], $this->context->route),
 //                    'visible' => Yii::$app->user->can(AuthItem::P_CONTRACT_ENTER),
                     'items' => [],
+                ],
+                [
+                    'label' => Yii::t('app', 'Tags'),
+                    'icon' => 'tags',
+                    'url' => Url::toRoute(['/poll/tag/index']),
+                    'active' => MenuHelper::isActiveMenu(['poll', 'tag', 'tag-static-text'], $this->context->route),
+                    // Перенесено зі списку опитувань, щоб теги мали окремий розділ меню.
+                    'items' => [
+                        [
+                            'label' => Yii::t('app', 'Tags'),
+                            'icon' => 'tag',
+                            'url' => Url::toRoute(['/poll/tag/index']),
+                            'active' => MenuHelper::isActiveMenu(['poll', 'tag'], $this->context->route),
+                        ],
+                        [
+                            'label' => 'Статичний текст на тегах',
+                            'icon' => 'file-text',
+                            'url' => Url::toRoute(['/poll/tag-static-text/index']),
+                            'active' => MenuHelper::isActiveMenu(['poll', 'tag-static-text'], $this->context->route),
+                        ],
+                    ],
                 ],
                 [
                     'label' => Yii::t('app', 'Geo'),

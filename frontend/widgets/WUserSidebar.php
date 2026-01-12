@@ -46,10 +46,14 @@ class WUserSidebar extends Widget
     }
 
     public function run() {
+        // Створюємо модель опитування один раз для всіх гілок рендера.
+        $pollModel = new Poll;
+        $pollModel->presetAttributes();
+
         if(Yii::$app->user->isGuest){
 //            $model = new LoginForm;
             $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
+            if (Yii::$app->request->isPost && isset($_POST['RegisterForm'])) {
 //                $model->attributes = $_POST['RegisterForm'];
                 $attributes = Yii::$app->request->post('RegisterForm');
 //                $model->load(['RegisterForm' => $attributes]);
@@ -71,10 +75,20 @@ class WUserSidebar extends Widget
                     }
 
                     //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
+                    // Після обробки POST завершуємо виконання, щоб не було повторної валідації.
+                    return $this->render('user-sidebar', [
+                        'refresh' => true,
+                        'pollModel' => $pollModel,
+                        'error' => json_encode(Html::errorSummary($pollModel)),
+                    ]);
                 } else {
                    //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
+                    // Після помилки валідації також одразу завершуємо виконання.
+                    return $this->render('user-sidebar-login', [
+                        'model' => $this->model,
+                        'registerForm' => $model,
+                        'errorSummary' => Html::errorSummary($model),
+                    ]);
                 }
 
 //                die(__FILE__.'#'.__LINE__);
@@ -94,7 +108,10 @@ class WUserSidebar extends Widget
                 }
 /* */
             } else {
-                return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model));
+                return $this->render('user-sidebar-login', [
+                    'model' => $this->model,
+                    'registerForm' => $model,
+                ]);
             }
         } else {
 //            if(Yii::$app->request->isPost){
@@ -105,9 +122,6 @@ class WUserSidebar extends Widget
 ////                    return $this->redirect(['/poll/site/my-polls', ]);
 //                }
 //            }
-            $pollModel = new Poll;
-            $pollModel->presetAttributes();
-            
             return $this->render('user-sidebar',[
                 'refresh'=>false,
                     'pollModel' => $pollModel,

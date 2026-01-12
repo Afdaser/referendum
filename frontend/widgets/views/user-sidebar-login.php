@@ -10,6 +10,12 @@ use frontend\helpers\Url;
     <?= Yii::t("main", 'Авторизація'); ?>
 </div>
 <div class="inner_auth_b">
+    <?php if (!empty($errorSummary)): ?>
+        <!-- Виводимо помилки реєстрації інлайн без дебаг-алертів. -->
+        <div class="alert alert-danger">
+            <?= Html::decode($errorSummary); ?>
+        </div>
+    <?php endif; ?>
 
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
@@ -252,19 +258,6 @@ $js = <<<JS_SUBMIT
 JS_SUBMIT;
 
 $this->registerJs($js);
-
-if(isset($error)) {
-    $errorMessage = strip_tags($error);
-    $scriptLogin .= <<<JS_LOGIN
-    $(function() {
-alert('#registrtion_step_1');
-/*
-//        $('#registrtion_step_1').modal('show'); //DEV.R#03
-/* */
-        alert({$errorMessage});
-    });
-JS_LOGIN;
-}
 /*
 if(Yii::$app->user->hasFlash('error')){
     $errorMessage = Yii::$app->user->getFlash('error');

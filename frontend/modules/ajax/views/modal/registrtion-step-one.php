@@ -1,8 +1,8 @@
 <?php
-//use yii\helpers\Html;
+use yii\helpers\Html;
 //use yii\widgets\ActiveForm;
 //use yii\web\View;
-//use frontend\helpers\Url;
+use frontend\helpers\Url;
 ?>
 <?= (YII_ENV != 'dev') ? '' : "<!-- #DEV24-02 \n". __FILE__."\n -->"; ?>
 <div class="modal-dialog">
@@ -13,10 +13,17 @@
             </button>
             <div class="modal_title"><?= Yii::t('main', 'Реєстрація'); ?> <?= (YII_ENV != 'dev') ? '' : '#DEV24-02'; ?></div>
         </div>
+        <?php if (!empty($errorSummary)): ?>
+            <!-- Показуємо помилки реєстрації інлайн у модалці. -->
+            <div class="alert alert-danger">
+                <?= Html::decode($errorSummary); ?>
+            </div>
+        <?php endif; ?>
 <?php /*
         <FORM METHOD="POST" ACTION="/">
 * */ ?>
-        <form method="post" action="/">
+        <!-- Форма має сабмітитися у той самий контролер, що й рендерить модалку. -->
+        <form method="post" action="<?= Url::toRoute(['/ajax/modal/registrtion-step-one']); ?>">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>">
             <div class="modal-body" id="registrationBody" style="border:1px dashed red;">
                 <div class="item_reg clearfix">

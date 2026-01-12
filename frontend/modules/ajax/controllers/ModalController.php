@@ -37,9 +37,10 @@ class ModalController extends Controller
             }
             
         return $this->renderPartial('registrtion-step-one', [
-            'registerForm'=>$model,
-            'error'=>json_encode(Html::errorSummary($model)),
-            ]);
+            'registerForm' => $model,
+            // Передаємо summary напряму для інлайн-показу без дебаг-алертів.
+            'errorSummary' => Html::errorSummary($model),
+        ]);
     }
 
     /**

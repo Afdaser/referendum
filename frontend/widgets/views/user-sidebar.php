@@ -5,6 +5,7 @@ use frontend\helpers\Url;
 //use common\helpers\StringHelper;
 use common\models\User;
 use common\models\Poll;
+use frontend\models\forms\PollForm as PollFormModel;
 //use common\models\Country;
 //use common\models\Language;
 
@@ -14,6 +15,12 @@ use common\models\Poll;
     <a href="<?php echo Yii::app()->createUrl('/Ulogin/logout/');?>" class="right_leave_btn">
     </a> 
  */
+
+// Страхувальний сценарій: якщо pollModel не передали, створюємо його локально.
+if (!isset($pollModel)) {
+    $pollModel = new PollFormModel();
+    $pollModel->presetAttributes();
+}
 
 ?>
 <div class="title_auth">

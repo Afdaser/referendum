@@ -5,7 +5,6 @@ namespace frontend\widgets;
 use Yii;
 use yii\bootstrap4\Widget;
 use common\models\form\LoginForm;
-use frontend\models\SignupForm;
 use frontend\models\forms\RegisterForm;
 use frontend\models\forms\PollForm as Poll;
 
@@ -50,32 +49,26 @@ class WUserSidebar extends Widget
 //            $model = new LoginForm;
             $model = new RegisterForm;
             if(isset($_POST['RegisterForm'])){
-//                $model->attributes = $_POST['RegisterForm'];
-                $attributes = Yii::$app->request->post('RegisterForm');
-//                $model->load(['RegisterForm' => $attributes]);
-                $model->load(['RegisterForm' => $attributes]);
-//                $model->attributes = $_POST['RegisterForm'];
+                // Єдиний детермінований флоу реєстрації через RegisterForm з коректною капчею.
+                $model->setAttributes(Yii::$app->request->post('RegisterForm', []));
 
-                if ($model->validate()) {
-                    $signupFormModel = new SignupForm();
-                    $signupAttributes = [
-                        'username' => $attributes['login'],
-                        'email' => $attributes['email'],
-                        'password' => $attributes['password'],
-                    ];
-//                    $signupFormModel->load(Yii::$app->request->post());
-                    $signupFormModel->load(['SignupForm' => $signupAttributes]);
-                    if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // return $this->goHome();
-                    }
+                if ($model->validate() && $model->register()) {
+                    // Після успішної реєстрації передаємо pollModel, як у гілці не гостя.
+                    $pollModel = new Poll;
+                    $pollModel->presetAttributes();
 
-                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
-                } else {
-                   //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
+                    return $this->render('user-sidebar', [
+                        'refresh' => true,
+                        'pollModel' => $pollModel,
+                        'error' => json_encode(Html::errorSummary($pollModel)),
+                    ]);
                 }
+
+                return $this->render('user-sidebar-login', [
+                    "model" => $this->model,
+                    'registerForm' => $model,
+                    'error' => json_encode(Html::errorSummary($model)),
+                ]);
 
 //                die(__FILE__.'#'.__LINE__);
 

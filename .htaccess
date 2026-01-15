@@ -13,7 +13,8 @@ AddDefaultCharset utf-8
     # Прапор [END] завершує обробку mod_rewrite, тож Yii не перехоплює статичний robots-файл.
     # Захоплюємо код локалі в змінну %1, щоб уникнути дублювання правил.
     RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
-    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    # Новий піддомен NZ має окремий robots.txt із забороною індексації.
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
     RewriteRule ^robots\.txt$ robots/robots.%1.txt [L,END]
 
     # Основний домен віддає стандартний robots.txt без примусового редіректу на HTTPS.

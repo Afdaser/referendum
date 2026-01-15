@@ -2004,7 +2004,7 @@ CREATE TABLE IF NOT EXISTS `language` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `locale` (`locale`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Дамп даних таблиці `language`
@@ -2014,7 +2014,8 @@ INSERT INTO `language` (`id`, `name`, `locale`, `title`, `created_by`, `updated_
 (1, 'ua', 'uk-UA', 'Українська', 1, 1, 1555555555, 1716153406),
 (2, 'ru', 'ru-RU', 'Русский', 1, 1, 1555555555, 1716153406),
 (3, 'en', 'en-US', 'English', 1, 1, 1555555555, 1716153406),
-(4, 'no', 'no-NO', 'Norsk', 1, 1, 1555555555, 1716153406);
+(4, 'no', 'no-NO', 'Norsk', 1, 1, 1555555555, 1716153406),
+(5, 'nz', 'en-NZ', 'English (New Zealand)', 1, 1, 1555555555, 1716153406);
 
 -- --------------------------------------------------------
 

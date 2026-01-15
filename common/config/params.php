@@ -36,18 +36,24 @@ return [
         'uk' => 'uk-UA',
         'ru' => 'ru-RU',
         'en' => 'en-US',
+        // Нова Зеландія: окрема локаль для піддомену nz.
+        'nz' => 'en-NZ',
         'no' => 'nb-NO',
     ],
     'descriptionPrefix' => [
         'uk-UA' => 'Опитування по темі ',
         'ru-RU' => 'Опрос по теме ',
         'en-US' => 'Poll on the topic ',
+        // Нова Зеландія: англомовний префікс для локалі en-NZ.
+        'en-NZ' => 'Poll on the topic ',
         'nb-NO' => 'Avstemning om emnet ',
     ],
     'descriptionSuffix' => [
         'uk-UA' => '. Натисніть, щоб взяти участь в опитуванні, побачити результати та обговорити його',
         'ru-RU' => '. Нажмите, чтобы принять участие в опросе, увидеть результаты и обсудить их',
         'en-US' => '. Click to particippate in poll, see results and discuss it',
+        // Нова Зеландія: англомовний суфікс для локалі en-NZ.
+        'en-NZ' => '. Click to particippate in poll, see results and discuss it',
         'nb-NO' => '. Klikk for å delta i avstemningen, se resultater og diskutere det',
     ],
     'descriptionMaxLenth' => 156,
@@ -56,6 +62,7 @@ return [
         2 => 'ru.referendum.social',
         3 => 'en.referendum.social',
         4 => 'no.referendum.social',
+        // NZ — окрема мовна версія.
+        5 => 'nz.referendum.social',
     ],
 ];
-

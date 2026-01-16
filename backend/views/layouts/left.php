@@ -63,6 +63,14 @@ use common\models\AuthItem;
 //                    'visible' => Yii::$app->user->can(AuthItem::P_CONTRACT_ENTER),
                     'items' => [],
                 ],
+                // Додаємо простий розділ для керування редіректами.
+                [
+                    'label' => 'Редіректи',
+                    'icon' => 'exchange',
+                    'url' => Url::toRoute(['/redirect/index']),
+                    'active' => MenuHelper::isActiveMenu(['redirect'], $this->context->route),
+                    'items' => [],
+                ],
                 [
                     'label' => Yii::t('app', 'Tags'),
                     'icon' => 'tags',

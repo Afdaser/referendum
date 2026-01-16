@@ -166,8 +166,15 @@ $locale = Yii::$app->language;
             <div class="container">
                 <div class="row">
 <?php
-// Перевіряємо, чи користувач на головній сторінці (site/index) або на головній сторінці піддомену
-if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id === 'index') :
+// Перевіряємо, чи користувач на головній сторінці (site/index) або на головній сторінці піддомену.
+// Додаємо умову, щоб SEO-текст показувався лише на першій сторінці пагінації.
+$pageNumber = (int) Yii::$app->request->get('page', 1);
+$isFirstPage = $pageNumber <= 1;
+if (
+    Yii::$app->controller->id === 'site'
+    && Yii::$app->controller->action->id === 'index'
+    && $isFirstPage
+) :
 ?>
     <div class="top_banner_b">
         <?php

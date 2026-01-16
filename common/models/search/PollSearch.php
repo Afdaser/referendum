@@ -270,7 +270,19 @@ class PollSearch extends Poll
         if (!$this->validate()) {
             return $dataProvider;
         }
-        $query->innerJoinWith('tags')->andFilterWhere(['tag.name' => $tag]);
+        // Працюємо з конкретним тегом, якщо передано tagId, щоб не змішувати мови.
+        if (!empty($params['tagId'])) {
+            $query->innerJoinWith('tags')->andFilterWhere(['tag.id' => (int) $params['tagId']]);
+        } else {
+            $query->innerJoinWith('tags')->andFilterWhere(['tag.name' => $tag]);
+        }
+
+        // Для піддомену nz обмежуємо опитування лише його мовою.
+        $restrictLanguage = $params['restrictLanguage'] ?? false;
+        $languageId = $params['languageId'] ?? (Yii::$app->request->languageId ?? null);
+        if ($restrictLanguage && $languageId) {
+            $query->andWhere(['poll_language_id' => $languageId]);
+        }
 
         // Запасне сортування на рівні запиту, якщо `sort` у провайдері буде перевизначено ззовні
         $query->orderBy(['date_add' => SORT_DESC]);

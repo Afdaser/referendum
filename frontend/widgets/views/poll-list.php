@@ -616,10 +616,11 @@ $this->registerJs($scriptNotGuest);
                                 Language poll                            </span>
                             <span class="right_select_b">
                                 <select name="Poll[language]" class="lang_select">
-                                                                                                                <option value="1">Українська</option>
-                                                                            <option value="2">Русский</option>
-                                                                            <option value="3">English</option>
-                                                                            <option value="4">Norsk</option>
+                                                                                                                <?php // Назви країн у відповідній мові для перемикача. ?>
+                                                                            <?php $languages = \common\models\Language::getLanguagesList(); ?>
+                                                                            <?php foreach ($languages as $index => $language): ?>
+                                                                                <option value="<?= $index; ?>"><?= $language; ?></option>
+                                                                            <?php endforeach; ?>
                                                                     </select>
                                 <!--label class="for_all_check">
                                     <input name="Poll[all_language]" type="checkbox" value="1" >

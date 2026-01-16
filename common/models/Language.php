@@ -119,10 +119,28 @@ class Language extends ActiveRecord
         $result = [];
         $languages = Language::find()->all();
         foreach($languages as $language){
-            $result[$language->id] = $language->title;
+            // Відображаємо назви країн замість назв мов у списках.
+            $result[$language->id] = self::getCountryTitle($language);
         }
 
         return $result;
+    }
+
+    /**
+     * Повертає назву країни відповідною мовою для мовного перемикача.
+     */
+    public static function getCountryTitle(self $language): string
+    {
+        $countryTitles = [
+            'uk-UA' => 'Україна',
+            'ru-RU' => 'Россия',
+            'en-US' => 'United States',
+            'no-NO' => 'Норвегія',
+            'en-NZ' => 'New Zealand',
+        ];
+        $locale = $language->locale;
+
+        return $countryTitles[$locale] ?? $language->title;
     }
 
     /*

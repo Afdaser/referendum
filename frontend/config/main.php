@@ -17,6 +17,27 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    // Перевіряємо базові редіректи перед обробкою запиту.
+    'on beforeRequest' => function () {
+        $request = Yii::$app->request;
+        $hostName = (string) $request->hostName;
+        $path = '/' . ltrim((string) $request->pathInfo, '/');
+        $hostParts = explode('.', $hostName);
+        $subdomain = count($hostParts) > 2 ? $hostParts[0] : '';
+
+        $redirect = \common\models\Redirect::find()
+            ->where([
+                'subdomain' => $subdomain,
+                'from_path' => $path,
+            ])
+            ->one();
+
+        if ($redirect !== null) {
+            // Робимо 301 редірект, якщо знайдений збіг.
+            Yii::$app->response->redirect($redirect->to_url, 301)->send();
+            Yii::$app->end();
+        }
+    },
     'components' => [
         'request' => [
             'class' => 'frontend\components\LanguageRequest',

@@ -5,6 +5,7 @@ namespace frontend\widgets;
 use Yii;
 use yii\bootstrap4\Widget;
 use common\models\Poll;
+use common\models\Language;
 
 /**
  * Description of WTopPollsSlider
@@ -16,6 +17,30 @@ class WTopPollsSlider extends Widget {
     public $data;
     protected $view = 'top-polls-slider';
     public $activePolls;
+
+    /**
+     * Визначає ідентифікатор мови для поточного піддомену.
+     *
+     * @return int
+     */
+    private function resolveLanguageId(): int
+    {
+        // Спершу беремо вже визначений ідентифікатор із LanguageRequest.
+        $languageId = Yii::$app->request->languageId ?? null;
+        if ($languageId) {
+            return (int) $languageId;
+        }
+
+        // Якщо піддомен не визначено, намагаємося визначити мову за поточною локаллю.
+        $langCode = substr(Yii::$app->language, 0, 2);
+        if ($langCode === 'uk') {
+            $langCode = 'ua';
+        }
+        $languageId = Language::getLanguageByName($langCode);
+
+        // Повертаємо запасне значення, щоб не ламати існуючу поведінку.
+        return $languageId ? (int) $languageId : 3;
+    }
 
     public function initYiiOne() {
         $criteria = new CDbCriteria;
@@ -47,29 +72,13 @@ class WTopPollsSlider extends Widget {
     }
 
     public function init() {
-        $SERVER = explode('.', $_SERVER['SERVER_NAME']);
-        switch ($SERVER[0]) {
-            case 'en':
-                $languageId = '3';
-                break;
-            case 'ru':
-                $languageId = '2';
-                break;
-            case 'ua':
-                $languageId = '1';
-                break;
-				case 'no':
-                $languageId = '4';
-                break;
-            default:
-                $languageId = '3';
-                break;
-        }
+        // Використовуємо визначену мову, щоб піддомен nz мав власні «вибрані» опитування.
+        $languageId = $this->resolveLanguageId();
         
 
 
         $this->activePolls = Poll::find()
-                ->where(['poll_language_id' => $languageId, 'show_on_slider' => 1 ])
+                ->where(['poll_language_id' => $languageId, 'show_on_slider' => 1])
                 ->andWhere(['<>','id', Poll::HOLDER_PAGE_POLL_ID])
                 ->limit(Yii::$app->params['POLLS_LIMIT_TOP_SLIDER'])
                 ->orderBy(['date_add' => SORT_DESC])

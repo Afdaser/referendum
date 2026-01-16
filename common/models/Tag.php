@@ -170,7 +170,8 @@ class Tag extends ActiveRecord
     {
         if (is_null(self::$subdomen)) {
             $host = explode('.', $_SERVER['SERVER_NAME']);
-            if (in_array($host[0], ['en', 'uk', 'ua', 'ru', 'no'])) {
+            // Додаємо nz до переліку підтримуваних піддоменів тегів.
+            if (in_array($host[0], ['en', 'uk', 'ua', 'ru', 'no', 'nz'])) {
                 self::$subdomen = $host[0];
             } else {
                 self::$subdomen = '';

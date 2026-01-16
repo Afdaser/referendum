@@ -13,7 +13,18 @@ class TagController extends Controller
 {
     public function actionIndex($tag)
     {
-        $tagModel = Tag::find()->where(['name' => $tag])->one();
+        $hostParts = explode('.', Yii::$app->request->hostName);
+        $subdomain = strtolower($hostParts[0] ?? '');
+        $languageId = Yii::$app->request->languageId ?? null;
+        $isNzSubdomain = ($subdomain === 'nz');
+
+        // Для nz піддомена підтягуємо лише теги відповідної мови.
+        $tagQuery = Tag::find()->where(['name' => $tag]);
+        if ($isNzSubdomain && $languageId) {
+            $tagQuery->andWhere(['language_id' => $languageId]);
+        }
+
+        $tagModel = $tagQuery->one();
         if (empty($tagModel)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
@@ -44,8 +55,14 @@ class TagController extends Controller
         $searchForm = new SearchForm();
         $searchForm->load($this->request->queryParams);
 
+        // Передаємо у пошук контекст мови, щоб nz показував лише свої опитування.
+        $queryParams = $this->request->queryParams;
+        $queryParams['languageId'] = $languageId;
+        $queryParams['restrictLanguage'] = $isNzSubdomain;
+        $queryParams['tagId'] = $tagModel->id;
+
         $dataProvider = $searchModel->searchTag(
-            $this->request->queryParams,
+            $queryParams,
             $searchForm,
             $tag
         );

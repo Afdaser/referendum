@@ -46,7 +46,7 @@ use dektrium\user\models\User AS BaseModelUser;
  * @property-read Mailer $mailer
  */
 //class User extends ActiveRecord implements IdentityInterface
-class User extends BaseModelUser
+class User extends BaseModelUser implements IdentityInterface // Потрібно для коректного логіну через IdentityInterface.
 {
     #User`s sex
 

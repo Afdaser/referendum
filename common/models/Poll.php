@@ -115,6 +115,8 @@ class Poll extends ActiveRecord
             [['date_add', 'date_update'], 'safe'],
             // Дозволяємо масове присвоєння тегів як масиву назв.
             [['tagNames'], 'safe'],
+            // Перевіряємо, що є хоча б один тег для коректного оновлення опитування.
+            [['tagNames'], 'validateTagNames'],
             [['title'], 'string', 'max' => 255],
             [['poll_language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['poll_language_id' => 'id']],
         ];
@@ -1255,6 +1257,27 @@ class Poll extends ActiveRecord
 
         // Підтягуємо поточні теги, щоб показати їх у формі редагування.
         $this->tagNames = $this->getTags()->select('name')->column();
+    }
+
+    /**
+     * Валідатор для списку тегів.
+     *
+     * @param string $attribute Назва атрибуту для перевірки.
+     * @param array $params Додаткові параметри валідатора.
+     */
+    public function validateTagNames(string $attribute, array $params = []): void
+    {
+        // Нормалізуємо введені теги, щоб не враховувати порожні значення.
+        $normalizedNames = array_filter(array_map(static function ($tagName) {
+            return trim((string) $tagName);
+        }, (array) $this->$attribute));
+
+        if (empty($normalizedNames)) {
+            $this->addError(
+                $attribute,
+                Yii::t('app', 'Додайте щонайменше один тег, інакше опитування не оновиться.')
+            );
+        }
     }
 
     /**

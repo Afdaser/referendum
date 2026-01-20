@@ -4,6 +4,7 @@ namespace backend\modules\poll\controllers;
 
 use common\models\Poll;
 use common\models\search\PollSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -73,10 +74,15 @@ class PollController extends Controller
         $model = new Poll();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
-                $model->syncTags($model->tagNames);
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                if ($model->save()) {
+                    // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
+                    $model->syncTags($model->tagNames);
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+
+                // Показуємо повідомлення про помилку, щоб не залишати користувача без пояснень.
+                $this->addSaveErrorFlash($model);
             }
         } else {
             $model->loadDefaultValues();
@@ -98,10 +104,15 @@ class PollController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
-            $model->syncTags($model->tagNames);
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if ($model->save()) {
+                // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
+                $model->syncTags($model->tagNames);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
+            // Показуємо повідомлення про помилку, щоб не залишати користувача без пояснень.
+            $this->addSaveErrorFlash($model);
         }
 
         return $this->render('update', [
@@ -137,5 +148,26 @@ class PollController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Додає повідомлення про помилки збереження опитування в адмінці.
+     *
+     * @param Poll $model Поточна модель опитування.
+     */
+    private function addSaveErrorFlash(Poll $model): void
+    {
+        // Якщо є помилки валідації, показуємо першу з них.
+        if ($model->hasErrors()) {
+            $errors = $model->getFirstErrors();
+            $message = Yii::t('app', 'Не вдалося зберегти опитування: {error}', [
+                'error' => reset($errors),
+            ]);
+        } else {
+            // Якщо модель не має помилок, повідомляємо про внутрішню помилку сервера.
+            $message = Yii::t('app', 'Внутрішня помилка сервера під час збереження опитування. Спробуйте ще раз.');
+        }
+
+        Yii::$app->session->setFlash('error', $message);
     }
 }

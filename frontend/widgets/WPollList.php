@@ -168,7 +168,8 @@ HTML;
         $this->data['language'] = $this->data['language'] ?? substr(Yii::$app->language, 0, 2);
         $this->data['category'] = $this->data['category'] ?? 'search';
         $this->data['tag'] = $this->data['tag'] ?? $this->getRequestString('tag');
-        $this->data['period'] = $this->data['period'] ?? $this->getRequestString('period', 'halfyear');
+        // За замовчуванням беремо всі опитування без обмеження по даті.
+        $this->data['period'] = $this->data['period'] ?? $this->getRequestString('period', 'all');
         $this->data['limit'] = (int)($this->data['limit'] ?? $this->getRequestInt('limit', Yii::$app->params['POLLS_LIMIT_MAIN_PAGE']));
         $this->data['sort'] = $this->data['sort']
             ?? $this->getRequestString('sort')

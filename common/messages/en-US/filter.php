@@ -13,6 +13,7 @@ return array(
 	'Країна'=>'Country',
 	'Регіон'=>'Region',
 	'Знайдено результатів'=>'Results found',
+	'за весь час'=>'all time',
 	'за день'=>'daily',
         'за неділю'=>'weekly',
         'за місяць'=>'monthly',

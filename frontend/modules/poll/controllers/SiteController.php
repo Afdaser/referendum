@@ -38,8 +38,8 @@ class SiteController extends Controller
      * Main page - category HotPolls
      */
 // sorting:(desc|asc)>/<period:\w+>/<perPage
-    // За замовчуванням показуємо опитування за рік, щоб не обрізати історію.
-    public function actionIndex($language = null, $sorting = 'desc', $period = 'year', $limit = 10) {
+    // За замовчуванням показуємо всі опитування, щоб на головній не було обмежень по даті.
+    public function actionIndex($language = null, $sorting = 'desc', $period = 'all', $limit = 10) {
         $this->sorting = $sorting;
         $this->period = $period;
         $this->limit = $limit;

@@ -253,6 +253,9 @@ use common\models\User;
  */ ?>
                 <select
                     onchange='document.location.href = "<?= "{$uriPrefix}/{$sort}/"; ?>" + $(this).val() + "<?= "/{$limit}?click=true"; ?>"'>
+                    <?php /* Опція "за весь час" потрібна для показу всіх опитувань за замовчуванням. */ ?>
+                    <option value="all"
+                            <?php if ($period == 'all'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за весь час'); ?></option>
                     <option value="day"
                             <?php if ($period == 'day'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за день'); ?></option>
                     <option value="week"
@@ -290,4 +293,3 @@ use common\models\User;
 <h4>// END of FILE! </h4>
 </div>
 <?php endif; ?>
-

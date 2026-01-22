@@ -81,22 +81,22 @@ class PollSearch extends Poll
             //filter by date_add
 			
             if($params['category'] == 'actual' || $params['category'] == 'hot'){
+                // Для "весь час" не підставляємо межу по даті, щоб не обрізати результати.
+                $applyDateFilter = !empty($params['period']) && $params['period'] !== 'all';
                 // $criteria->addCondition('date_add >= :dateFrom');
-                if($params['period'] == 'day') {
+                if ($applyDateFilter && $params['period'] == 'day') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today 00:00'));
-                } elseif($params['period'] == 'week') {
+                } elseif ($applyDateFilter && $params['period'] == 'week') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -7 day 00:00'));
-                } elseif($params['period'] == 'month') {
+                } elseif ($applyDateFilter && $params['period'] == 'month') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -1 month 00:00'));
-                } elseif($params['period'] == 'halfyear') {
+                } elseif ($applyDateFilter && $params['period'] == 'halfyear') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -6 month 00:00'));
-                } elseif($params['period'] == 'year') {
+                } elseif ($applyDateFilter && $params['period'] == 'year') {
                     $dateFrom = date('Y-m-d H:i:s',strtotime('today -1 year 00:00'));
                 }
-                if(empty($dateFrom)){
-                    if($params['category'] == 'actual'){
-                        $dateFrom = date('Y-m-d H:i:s',strtotime('today 00:00'));
-                    }
+                if (empty($dateFrom) && $params['category'] == 'actual' && $applyDateFilter) {
+                    $dateFrom = date('Y-m-d H:i:s',strtotime('today 00:00'));
                 }
             }
         }

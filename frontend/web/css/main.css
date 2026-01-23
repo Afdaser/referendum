@@ -453,6 +453,8 @@ a.logo, div.logo {
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(5, 92, 43, 0.08);
     padding: 10px 0 6px;
+    /* Тримаємо вирівнювання заголовка та списку опцій відносно блоку рейтингу. */
+    --poll-rating-offset: 72px;
 }
 .top_poll_b {
     /* Вирівнюємо елементи заголовка блоку. */
@@ -460,7 +462,8 @@ a.logo, div.logo {
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px 6px;
+    /* Зсуваємо теги та кнопку поширення правіше, щоб вони йшли в ряд з назвою. */
+    padding: 10px 16px 6px calc(16px + var(--poll-rating-offset));
 }
 a.link_poll {
     display: inline-block;
@@ -667,7 +670,8 @@ a.link_poll:hover {
     display: flex;
     align-items: flex-start;
     gap: 16px;
-    margin: 8px 16px 16px 1%;
+    /* Вирівнюємо відступ зліва з верхнім блоком. */
+    margin: 8px 16px 16px 16px;
 }
 .title_poll {
     display: block;

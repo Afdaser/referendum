@@ -446,12 +446,22 @@ a.logo, div.logo {
     background: #f0f4f4;
 }
 .poll_block {
+    /* Робимо блок опитування більш цілісним та "органічним". */
     background: #fff;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #e4ebe9;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(17, 64, 38, 0.08);
+    padding: 6px 0 8px;
 }
 .top_poll_b {
-    padding-left: 10px;
-    padding-top: 7px;
+    /* Вирівнюємо теги й кнопки та додаємо повітря. */
+    padding: 14px 16px 6px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-bottom: 1px solid #eef2f1;
 }
 a.link_poll {
     display: inline-block;
@@ -462,6 +472,10 @@ a.link_poll {
     margin-right: 2px;
 /* */
     word-break: break-all;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f2f8f4;
 }
 a.link_poll:hover {
     color: #147536;
@@ -476,6 +490,7 @@ a.link_poll:hover {
 /* */
     text-align: center;
     position: relative;
+    margin-left: auto;
 }
 .share_icon {
     display: inline-block;
@@ -645,14 +660,15 @@ a.link_poll:hover {
     background: url(/img/layout/arrow_down_rating_hover.png);
 }
 .middle_name_poll_b {
-    margin-left: 15px;
-    margin-top: 10px;
+    /* Підкреслюємо структуру блоку заголовка та варіантів відповіді. */
+    margin: 8px 16px 20px;
 }
 .title_poll {
     display: inline-block;
     vertical-align: middle;
-    font-size: 16px;
-    transform: translateY(12px);
+    font-size: 22px;
+    line-height: 28px;
+    transform: translateY(0);
 /*
     word-break: break-all;
     margin-top: 13px;
@@ -662,7 +678,7 @@ a.link_poll:hover {
 
 }
 .inner_block_chosen {
-    margin-top: 15px;
+    margin-top: 16px;
 }
 .middle_title_b {
     margin-left: 40px;
@@ -684,15 +700,30 @@ a.link_poll:hover {
 }
 a.radio_link,
 button.radio_link {
-    font-size: 14px;
+    /* Збільшуємо розмір варіантів відповідей для зручності. */
+    font-size: 16px;
     color: #565656;
-    line-height: 22px;
+    line-height: 24px;
     text-decoration: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    width: 100%;
+    text-align: left;
+    background: #f7faf8;
+    border: 1px solid transparent;
 }
 a.radio_link:hover .link_text,
 button.radio_link:hover .link_text {
     text-decoration: underline;
     color: #147536;
+}
+a.radio_link:hover,
+button.radio_link:hover {
+    border-color: #d6e6df;
+    background: #f1f7f3;
 }
 a.radio_link:active .radio_circle,
 button.radio_link:active .radio_circle {
@@ -716,24 +747,28 @@ button.radio_link {
 /* */
     transform: translateX(-4px);
 /* */
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     margin-right: 12px;
 /* */
     background: url(/img/layout/radio_circle.png);
+}
+.item_chose_poll {
+    margin-bottom: 10px;
 }
 .item_chose_poll.see_results .link_text {
     color: #147536;
     font-style: italic;
 }
-.middle_name_poll_b {
-    margin-bottom: 25px;
-}
 .bottom_poll_b {
     min-height: 31px;
     border-top: 1px solid #e5eceb;
-    padding-top: 3px;
-    transform: translate(-2px);
+    padding: 8px 16px 10px;
+    transform: translate(0);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
 .top_poll_b_answers {
     min-height: 31px;
@@ -745,7 +780,7 @@ button.radio_link {
 }
 .title_poll h1 {
     color: #05662F;
-    font-size: 18px;
+    font-size: 24px;
     margin-top: 6px;
 }
 .info_block {
@@ -769,7 +804,7 @@ button.radio_link {
     padding: 0 6px;
 }
 .right_poll_status {
-    float: right;
+    float: none;
 /*
     height: 22px;
 /* */
@@ -786,6 +821,7 @@ button.radio_link {
 /*
     top: 1px;
 /* */
+    margin-left: auto;
 }
 .right_poll_status span {
     position: absolute;

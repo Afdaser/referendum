@@ -454,6 +454,29 @@ a.logo, div.logo {
     box-shadow: 0 6px 18px rgba(5, 92, 43, 0.08);
     padding: 10px 0 6px;
 }
+.poll_block__layout {
+    /* Виносимо рейтинг в окрему колонку, щоб підняти його до рівня тегів і заголовка. */
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 6px 16px 0;
+}
+.poll_block__content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.poll_block__content .top_poll_b {
+    /* Прибираємо зайві відступи всередині контентної колонки. */
+    padding-left: 0;
+    padding-right: 0;
+}
+.poll_block__content .middle_name_poll_b {
+    margin: 8px 0 16px;
+}
+.poll_block__content .bottom_poll_b {
+    padding-left: 0;
+    padding-right: 0;
+}
 .top_poll_b {
     /* Вирівнюємо елементи заголовка блоку. */
     display: flex;
@@ -641,6 +664,11 @@ a.link_poll:hover {
     min-width: 40px;
     /* Зсуваємо рейтинг максимально вліво, залишаючи мінімальний відступ. */
     margin-left: 0;
+}
+.poll_block__layout .left_rating_b {
+    /* Вимикаємо float для коректного флексового вирівнювання. */
+    float: none;
+    flex: 0 0 auto;
 }
 .arrow_rating_top {
     display: inline-block;

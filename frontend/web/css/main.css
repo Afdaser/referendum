@@ -667,6 +667,8 @@ a.link_poll:hover {
     display: flex;
     align-items: flex-start;
     gap: 16px;
+    /* Дозволяємо переносити блоки, щоб графік ставав під заголовком. */
+    flex-wrap: wrap;
     margin: 8px 16px 16px 1%;
 }
 .title_poll {
@@ -688,6 +690,15 @@ a.link_poll:hover {
 .middle_title_b {
     margin-left: 0;
     flex: 1 1 auto;
+}
+.middle_name_poll_b .container_graph {
+    /* Показуємо результати під заголовком на всю ширину блоку. */
+    flex: 1 1 100%;
+    order: 3;
+}
+.middle_name_poll_b .clearfix {
+    /* Прибираємо зайвий відступ від clearfix усередині flex-контейнера. */
+    display: none;
 }
 .container_graph {
     position: relative;

@@ -448,10 +448,18 @@ a.logo, div.logo {
 .poll_block {
     background: #fff;
     margin-bottom: 20px;
+    /* Оновлюємо вигляд блоку опитування для більш органічної композиції. */
+    border: 1px solid #e2ece9;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(5, 92, 43, 0.08);
 }
 .top_poll_b {
     padding-left: 10px;
     padding-top: 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 10px;
 }
 a.link_poll {
     display: inline-block;
@@ -468,7 +476,7 @@ a.link_poll:hover {
 }
 .right_block_share_icon {
     font-size: 0;
-    float: right;
+    float: none;
     width: 28px;
     transform: translateX(-2px);
 /*
@@ -476,6 +484,7 @@ a.link_poll:hover {
 /* */
     text-align: center;
     position: relative;
+    margin-left: auto;
 }
 .share_icon {
     display: inline-block;
@@ -620,9 +629,10 @@ a.link_poll:hover {
     z-index: 20;
 }
 .left_rating_b {
-    float: left;
+    float: none;
     color: #058f42;
     text-align: center;
+    min-width: 44px;
 }
 .arrow_rating_top {
     display: inline-block;
@@ -645,27 +655,34 @@ a.link_poll:hover {
     background: url(/img/layout/arrow_down_rating_hover.png);
 }
 .middle_name_poll_b {
-    margin-left: 15px;
+    margin-left: 0;
     margin-top: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0 10px;
 }
 .title_poll {
     display: inline-block;
     vertical-align: middle;
-    font-size: 16px;
-    transform: translateY(12px);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.35;
+    transform: translateY(6px);
 /*
     word-break: break-all;
     margin-top: 13px;
 /* */
     padding-right:2px;
-    margin-right:50px;
+    margin-right: 12px;
 
 }
 .inner_block_chosen {
-    margin-top: 15px;
+    margin-top: 12px;
 }
 .middle_title_b {
-    margin-left: 40px;
+    margin-left: 0;
+    flex: 1;
 }
 .container_graph {
     position: relative;
@@ -688,6 +705,7 @@ button.radio_link {
     color: #565656;
     line-height: 22px;
     text-decoration: none;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 a.radio_link:hover .link_text,
 button.radio_link:hover .link_text {
@@ -706,6 +724,12 @@ button.radio_link {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    padding: 6px 10px;
+    border-radius: 8px;
 }
 .radio_circle {
     display: inline-block;
@@ -722,6 +746,17 @@ button.radio_link {
 /* */
     background: url(/img/layout/radio_circle.png);
 }
+.item_chose_poll {
+    margin-bottom: 6px;
+}
+.poll-option-form {
+    margin: 0;
+}
+a.radio_link:hover,
+button.radio_link:hover {
+    background: #f3f7f6;
+    color: #147536;
+}
 .item_chose_poll.see_results .link_text {
     color: #147536;
     font-style: italic;
@@ -733,7 +768,14 @@ button.radio_link {
     min-height: 31px;
     border-top: 1px solid #e5eceb;
     padding-top: 3px;
-    transform: translate(-2px);
+    transform: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .top_poll_b_answers {
     min-height: 31px;
@@ -769,7 +811,7 @@ button.radio_link {
     padding: 0 6px;
 }
 .right_poll_status {
-    float: right;
+    float: none;
 /*
     height: 22px;
 /* */
@@ -783,6 +825,7 @@ button.radio_link {
 /* */
     position: relative;
     color: #055C2B;
+    margin-left: auto;
 /*
     top: 1px;
 /* */

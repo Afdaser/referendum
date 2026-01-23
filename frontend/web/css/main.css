@@ -460,7 +460,8 @@ a.logo, div.logo {
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px 6px;
+    /* Зсуваємо теги й шарінг праворуч, щоб вони вирівнювались з назвою. */
+    padding: 10px 16px 6px calc(1% + 72px);
 }
 a.link_poll {
     display: inline-block;

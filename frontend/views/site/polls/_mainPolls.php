@@ -40,7 +40,7 @@
                     <?php endif;?>
                 </div>
                 <?php if($poll->isShowResult()):?>
-                    <div class="clearfix"></div>
+                    <?php // Розміщуємо графік результатів під назвою опитування. ?>
                     <div class="container_graph">
                         <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie)); ?>
                     </div>

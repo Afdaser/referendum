@@ -47,7 +47,7 @@ if (!empty($poll->pollLanguage)) {
                             <?php endif;?>
                         </div>
                         <?php if($poll->isShowResult()):?>
-                            <div class="clearfix"></div>
+                            <?php // Результати мають відображатися під заголовком у тій самій колонці. ?>
                             <div class="container_graph">
                                 <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie)); ?>
                             </div>

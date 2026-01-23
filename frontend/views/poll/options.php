@@ -13,7 +13,8 @@ use yii\web\View;
                 <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
                 <input type="hidden" name="option" value="<?= $option->id; ?>">
                 <button type="submit" class="radio_link poll-option-vote">
-                    <span class="radio_circle"></span>
+                    <!-- Окремий маркер вибору для кращої видимості. -->
+                    <span class="poll_option_marker" aria-hidden="true"></span>
                     <span class="link_text"><?= $option->title; ?></span>
                 </button>
             </form>
@@ -23,7 +24,9 @@ use yii\web\View;
         <form method="post" action="<?= Url::toRoute(['/poll/poll/view', 'id' => $poll->id]); ?>">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
             <input type="hidden" name="result" value="1">
-            <button type="submit" class="radio_link poll-see-results"><span class="radio_circle"></span>
+            <button type="submit" class="radio_link poll-see-results">
+                <!-- Окремий маркер вибору для кнопки перегляду результатів. -->
+                <span class="poll_option_marker" aria-hidden="true"></span>
                 <span class="link_text"><?= Yii::t('poll', 'Побачити результати'); ?></span>
             </button>
         </form>

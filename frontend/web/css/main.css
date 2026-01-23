@@ -462,6 +462,10 @@ a.logo, div.logo {
     gap: 8px;
     padding: 10px 16px 6px;
 }
+.middle_title_b .top_poll_b {
+    /* Узгоджуємо відступи, коли теги знаходяться у правій колонці з заголовком. */
+    padding: 0 0 6px;
+}
 a.link_poll {
     display: inline-block;
     vertical-align: middle;

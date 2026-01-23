@@ -13,19 +13,6 @@ use common\models\User;
             </div>
         <?php endif;?>
         <div class="poll_block">
-            <div class="top_poll_b clearfix">
-                <?php foreach($poll->tags as $pollTag) :?>
-                    <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
-                <?php endforeach; ?>
-
-                <span class="right_block_share_icon">
-                    <?= $this->render('//site/polls/_shareSocial',array('poll'=>$poll));?>
-                </span>
-
-                <?php if($poll->editable):?>
-                    <a data-target="#new_poll<?= $poll->id?>" data-toggle="modal" class="update_btn" href="#"></a>
-                <?php endif;?>
-            </div>
             <div class="middle_name_poll_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
@@ -33,6 +20,20 @@ use common\models\User;
                     <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?= $poll->id; ?>"></a>
                 </div>
                 <div class="middle_title_b">
+                    <?php // Переміщуємо теги та кнопки дій у праву колонку, щоб вирівняти їх із заголовком. ?>
+                    <div class="top_poll_b clearfix">
+                        <?php foreach($poll->tags as $pollTag) :?>
+                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
+                        <?php endforeach; ?>
+
+                        <span class="right_block_share_icon">
+                            <?= $this->render('//site/polls/_shareSocial',array('poll'=>$poll));?>
+                        </span>
+
+                        <?php if($poll->editable):?>
+                            <a data-target="#new_poll<?= $poll->id?>" data-toggle="modal" class="update_btn" href="#"></a>
+                        <?php endif;?>
+                    </div>
                     <div class="title_poll">
                         <a href="<?= $poll->url ?>"><?= $poll->title; ?></a>
                     </div>

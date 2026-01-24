@@ -455,15 +455,16 @@ a.logo, div.logo {
     padding: 12px 16px 8px;
 }
 .top_poll_b {
-    padding-left: 10px;
-    padding-top: 7px;
+    /* Масштабуємо контейнер під збільшені теги та іконки. */
+    padding-left: 15px;
+    padding-top: 10.5px;
     /* Структуруємо верхню частину блоку опитування. */
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px 6px;
+    gap: 12px 9px;
     border-bottom: 1px solid #eef4f3;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 a.link_poll {
     display: inline-block;
@@ -474,8 +475,9 @@ a.link_poll {
     background: #f3faf6;
     border: 1px solid #e0efe6;
     border-radius: 999px;
-    padding: 3px 8px;
-    font-size: 12px;
+    /* Збільшуємо теги на 50% для блоку опитувань. */
+    padding: 4.5px 12px;
+    font-size: 18px;
 /*
     margin-right: 2px;
 /* */
@@ -487,8 +489,9 @@ a.link_poll:hover {
 .right_block_share_icon {
     font-size: 0;
     float: none;
-    width: 28px;
-    transform: translateX(-2px);
+    /* Збільшуємо зону іконки шерингу на 50%. */
+    width: 42px;
+    transform: translateX(-3px);
 /*
     margin-right: 4px;
 /* */
@@ -500,15 +503,16 @@ a.link_poll:hover {
 .share_icon {
     display: inline-block;
     vertical-align: middle;
-    width: 22px;
-    height: 22px;
+    /* Масштабуємо кнопку шарінгу. */
+    width: 33px;
+    height: 33px;
     -webkit-border-radius: 11px;
     -moz-border-radius: 11px;
-    border-radius: 11px;
+    border-radius: 16.5px;
     background: #3ac469;
     position: relative;
-    top: -3px;
-    font-size: 12px;
+    top: -4.5px;
+    font-size: 18px;
     color: #fff;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
@@ -517,7 +521,7 @@ a.link_poll:hover {
 }
 .share_icon i.fa {
     position: relative;
-    top: 3px;
+    top: 4.5px;
     left: 0;
 }
 .share_icon:hover {
@@ -540,12 +544,13 @@ a.link_poll:hover {
 .share_icon.active + .links_share {
     opacity: 1;
     visibility: visible;
-    height: 112px;
+    height: 168px;
 }
 .inner_b_share {
     display: block;
     position: relative;
-    top: -112px;
+    /* Підлаштовуємо висоту під збільшене меню шарінгу. */
+    top: -168px;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
@@ -558,12 +563,12 @@ a.link_poll:hover {
     opacity: 0;
     visibility: hidden;
     left: 0;
-    top: 21px;
+    top: 31.5px;
     vertical-align: middle;
-    width: 28px;
+    width: 42px;
     height: 0px;
     background: #f0f4f4;
-    margin-top: 5px;
+    margin-top: 7.5px;
     z-index: 10;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
@@ -573,21 +578,23 @@ a.link_poll:hover {
 .share_icon.active:before {
     content: "";
     position: absolute;
-    width: 10px;
-    height: 5px;
+    /* Збільшуємо стрілку під розмір кнопки. */
+    width: 15px;
+    height: 7.5px;
     background: url(/img/layout/arrow_top_share.png);
     left: 50%;
-    margin-left: -5px;
-    top: 24px;
+    margin-left: -7.5px;
+    top: 36px;
 }
 .icon_share {
     display: inline-block;
     vertical-align: middle;
     width: 100%;
-    height: 28px;
-    font-size: 14px;
+    /* Масштабуємо іконки всередині списку. */
+    height: 42px;
+    font-size: 21px;
     color: #000;
-    padding-top: 5px;
+    padding-top: 7.5px;
 }
 .icon_share.facebook {
     color: #3b5998;

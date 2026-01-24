@@ -469,6 +469,10 @@ a.logo, div.logo {
     /* Фіксуємо кнопку поширення праворуч від заголовка. */
     margin-left: auto;
 }
+.poll_view_page .desc_my_chart {
+    /* Розтягуємо опис на всю ширину під заголовком і рейтингом. */
+    flex: 0 0 100%;
+}
 .poll_view_page .desc_my_chart::before {
     /* Створюємо "відступ" для перших рядків, щоб текст не перекривав рейтинг. */
     content: "";
@@ -1473,6 +1477,27 @@ a.btn_prev_var:hover {
     margin-left: -8%;
     margin-right: 4%;
     margin-top: 2%;
+    /* Збільшуємо розмір тексту опису опитування приблизно на 10% для читабельності. */
+    font-size: 110%;
+    line-height: 1.6;
+}
+@media (max-width: 768px) {
+    .desc_my_chart {
+        /* На мобільних прибираємо надлишкові бічні відступи, щоб текст не "плив". */
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .poll_view_page .left_rating_b {
+        /* Зсуваємо рейтинг лівіше, щоб зліва і справа залишився симетричний відступ. */
+        margin-left: -8px;
+    }
+    .poll_view_page .desc_my_chart::before {
+        /* На мобільних прибираємо лівий "відступ" від псевдоелемента. */
+        content: none;
+        float: none;
+        width: 0;
+        height: 0;
+    }
 }
 .inner_b_chart .right_block_share_icon {
     top: 16px;

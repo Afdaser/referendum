@@ -49,18 +49,19 @@ if (!empty($poll->pollLanguage)) {
                                    <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
                                 </span>
                             </div>
-                            <div class="desc_my_chart" itemprop="text">
-                                <?= $poll->getClearedDescribe() ?>
-                            </div>
-                            <?php $chartData = $poll->getChartData();?>
-                            <?php $bar = StringHelper::formatForBar($chartData); ?>
-                            <?php $pie = StringHelper::formatForPie($chartData); ?>
-                            <?php if(!$poll->isShowResult()):?>
-                                <div class="inner_block_chosen">
-                                    <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
-                                </div>
-                            <?php endif;?>
                         </div>
+                        <?php // Виносимо опис опитування в окремий блок для точнішого керування відступами. ?>
+                        <div class="desc_my_chart" itemprop="text">
+                            <?= $poll->getClearedDescribe() ?>
+                        </div>
+                        <?php $chartData = $poll->getChartData();?>
+                        <?php $bar = StringHelper::formatForBar($chartData); ?>
+                        <?php $pie = StringHelper::formatForPie($chartData); ?>
+                        <?php if(!$poll->isShowResult()):?>
+                            <div class="inner_block_chosen">
+                                <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
+                            </div>
+                        <?php endif;?>
                         <?php if($poll->isShowResult()):?>
                             <div class="clearfix"></div>
                             <div class="container_graph">

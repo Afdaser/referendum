@@ -24,15 +24,11 @@ if (!empty($poll->pollLanguage)) {
             </div>
             <div class="inner_b_chart">
                 <!-- Додаємо мікророзмітку для DiscussionForumPosting -->
-                <div class="poll_block" itemscope itemtype="https://schema.org/DiscussionForumPosting">
+                <!-- Додаємо маркер для стилізації сторінки опитування. -->
+                <div class="poll_block poll_block--view" itemscope itemtype="https://schema.org/DiscussionForumPosting">
                     <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
                     <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
 
-                    <div class="top_poll_b clearfix">
-                        <span class="right_block_share_icon">
-                           <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
-                        </span>
-                    </div>
                     <div class="middle_name_poll_b clearfix">
                         <div class="left_rating_b" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
@@ -51,6 +47,8 @@ if (!empty($poll->pollLanguage)) {
                                 <?php endif; ?>
                             </div>
                             <div class="desc_my_chart" itemprop="text">
+                                <!-- Формуємо відступ для перших рядків, щоб текст не заходив на блок рейтингу. -->
+                                <span class="desc_intro_indent" aria-hidden="true"></span>
                                 <?= $poll->getClearedDescribe() ?>
                             </div>
                             <?php $chartData = $poll->getChartData();?>
@@ -69,30 +67,39 @@ if (!empty($poll->pollLanguage)) {
                             </div>
                         <?php endif;?>
                     </div>
-                    <div class="top_poll_b clearfix bottom_space_for_chart">
-                        <?php foreach ($poll->tags as $pollTag) : ?>
-                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
-                        <?php endforeach; ?>
-
-                        <span class="chosen_graph_b animated_b">
-                            <span class="inner_chosen_graph">
-                                <a href="javascript:void(0)" class="pie_chart" data-id="pie">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                                <a href="javascript:void(0)" class="horizontal_b_chart active" data-id="bar">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                                <a href="javascript:void(0)" class="vertical_b_chart" data-id="column">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                            </span>
-                        </span>
+                    <div class="top_poll_b poll_view_tags clearfix bottom_space_for_chart">
+                        <div class="poll_view_tags_row">
+                            <div class="poll_view_tags">
+                                <?php foreach ($poll->tags as $pollTag) : ?>
+                                    <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="poll_view_controls">
+                                <!-- Виносимо перемикач графіків поруч із тегами для зручнішої навігації. -->
+                                <span class="chosen_graph_b animated_b">
+                                    <span class="inner_chosen_graph">
+                                        <a href="javascript:void(0)" class="pie_chart" data-id="pie">
+                                            <span class="pie_chart_img"></span>
+                                            <span class="vertical_chart_img"></span>
+                                            <span class="horizontal_chart_img"></span>
+                                        </a>
+                                        <a href="javascript:void(0)" class="horizontal_b_chart active" data-id="bar">
+                                            <span class="pie_chart_img"></span>
+                                            <span class="vertical_chart_img"></span>
+                                            <span class="horizontal_chart_img"></span>
+                                        </a>
+                                        <a href="javascript:void(0)" class="vertical_b_chart" data-id="column">
+                                            <span class="pie_chart_img"></span>
+                                            <span class="vertical_chart_img"></span>
+                                            <span class="horizontal_chart_img"></span>
+                                        </a>
+                                    </span>
+                                </span>
+                                <span class="right_block_share_icon poll_view_share">
+                                    <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <div class="show_voices_b">
                         <div class="title_show_voice clearfix">

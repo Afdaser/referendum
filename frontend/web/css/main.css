@@ -737,6 +737,17 @@ a.link_poll:hover {
     /* Дозволяємо займати весь доступний простір поруч з рейтингом. */
     flex: 1 1 0;
 }
+.poll_block--view .desc_intro_indent {
+    /* Імітуємо відступ для перших трьох рядків опису. */
+    float: left;
+    width: 58px;
+    height: calc(1.5em * 3);
+    margin-right: 10px;
+}
+.poll_block--view .desc_my_chart {
+    /* Фіксуємо міжрядковий інтервал для стабільного відступу. */
+    line-height: 1.5;
+}
 .desc_my_chart {
     /* Надаємо опису опитування органічний відступ під заголовком. */
     margin-top: 10px;
@@ -823,6 +834,47 @@ button.radio_link:active .radio_indicator {
     border-top: 1px solid #e5eceb;
     padding: 8px 4px 6px;
     transform: translate(0);
+}
+.poll_block--view .poll_view_tags {
+    /* Тримаємо теги в нижній частині картки. */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.poll_block--view .poll_view_tags_row {
+    /* Формуємо рядок тегів, перемикача графіків і шерингу. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+.poll_block--view .poll_view_controls {
+    /* Групуємо перемикач графіків та кнопку шерингу. */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+.poll_block--view .chosen_graph_b {
+    /* Робимо перемикач графіків помітнішим біля тегів. */
+    background: #f3faf6;
+    border: 1px solid #e0efe6;
+    border-radius: 999px;
+    padding: 4px 6px;
+    box-shadow: 0 4px 12px rgba(6, 94, 49, 0.08);
+}
+.poll_block--view .chosen_graph_b a {
+    /* Трохи збільшуємо зону кліку для перемикача. */
+    padding: 6px 8px;
+}
+.poll_block--view .poll_view_share {
+    /* Вирівнюємо шерінг поруч із перемикачем. */
+    margin-left: 0;
+}
+.poll_block--view .poll_view_tags .link_poll {
+    /* Повертаємо стандартний розмір тегів у перегляді опитування. */
+    font-size: 14px;
 }
 .top_poll_b_answers {
     min-height: 31px;

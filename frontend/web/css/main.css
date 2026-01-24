@@ -1435,6 +1435,34 @@ a.btn_prev_var:hover {
     margin-right: 4%;
     margin-top: 2%;
 }
+/* Підлаштовуємо блок опису на сторінці перегляду опитування. */
+.poll_view_block .desc_my_chart {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 12px;
+    position: relative;
+}
+/* Створюємо "відступ" для перших трьох рядків опису, щоб текст не перекривав рейтинг. */
+.poll_view_block .desc_my_chart::before {
+    content: "";
+    float: left;
+    width: 70px;
+    height: calc(3 * 1.35em);
+    margin-right: 12px;
+}
+.poll_view_block .middle_title_b {
+    position: relative;
+}
+/* Резервуємо місце під кнопку шерінгу. */
+.poll_view_block .title_poll {
+    padding-right: 48px;
+}
+/* Нове розміщення кнопки шерінгу біля заголовка. */
+.poll_view_block .poll_share_inline {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 .inner_b_chart .right_block_share_icon {
     top: 16px;
     margin-right: 20px;
@@ -1448,6 +1476,38 @@ a.btn_prev_var:hover {
 }
 .bottom_space_for_chart {
     margin-bottom: 20px;
+}
+/* Покращуємо вигляд нижнього блоку з тегами та перемикачем графіків. */
+.poll_meta_footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.poll_meta_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.poll_meta_graph {
+    position: relative;
+}
+.poll_meta_footer .chosen_graph_b {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.poll_meta_footer .inner_chosen_graph {
+    padding-bottom: 32px;
+}
+.poll_meta_footer .chosen_graph_b a,
+.poll_meta_footer .chosen_graph_b a.active {
+    height: 32px;
 }
 .chosen_graph_b {
     position: absolute;

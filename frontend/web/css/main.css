@@ -763,11 +763,13 @@ button.radio_link {
     text-decoration: none;
     /* Підсилюємо зону кліку для юзер-френдлі взаємодії. */
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     padding: 8px 10px;
     border-radius: 10px;
     transition: background 0.2s ease, color 0.2s ease;
+    min-height: 44px;
+    width: 100%;
 }
 a.radio_link:hover .link_text,
 button.radio_link:hover .link_text {
@@ -778,34 +780,35 @@ a.radio_link:hover,
 button.radio_link:hover {
     background: #f3faf6;
 }
-a.radio_link:active .radio_circle,
-button.radio_link:active .radio_circle {
-    background: url(/img/layout/radio_circle_pressed.png);
-}
 button.radio_link {
     background: none;
     border: none;
-    padding: 0;
+    /* Зберігаємо збільшену зону кліку для кнопок. */
+    padding: 8px 10px;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    text-align: left;
 }
-.radio_circle {
-    display: inline-block;
-    vertical-align: middle;
-/*
-    width: 16.7px;
-    height: 16.7px;
-/* */
-    transform: translateX(-4px);
-/* */
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
-/* */
-    background: url(/img/layout/radio_circle.png);
-    background-size: 16px 16px;
+.radio_indicator {
+    /* Чіткий індикатор без зображень, зручний для мобільних і десктопів. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #147536;
+    background: #ffffff;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+a.radio_link:active .radio_indicator,
+button.radio_link:active .radio_indicator {
+    /* Підсвічуємо натиснутий стан без графічних файлів. */
+    background: #147536;
+    box-shadow: inset 0 0 0 3px #ffffff;
 }
 .item_chose_poll.see_results .link_text {
     color: #147536;

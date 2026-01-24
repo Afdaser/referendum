@@ -1490,7 +1490,7 @@ a.btn_prev_var:hover {
 }
 .chosen_graph_b {
     position: absolute;
-    bottom: 0;
+    bottom: 20%;
     right: 20px;
     width: 26px;
     height: 26px;

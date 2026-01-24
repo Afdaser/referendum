@@ -763,11 +763,14 @@ button.radio_link {
     text-decoration: none;
     /* Підсилюємо зону кліку для юзер-френдлі взаємодії. */
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     padding: 8px 10px;
+    min-height: 44px;
     border-radius: 10px;
+    border: 1px solid transparent;
     transition: background 0.2s ease, color 0.2s ease;
+    touch-action: manipulation;
 }
 a.radio_link:hover .link_text,
 button.radio_link:hover .link_text {
@@ -778,34 +781,49 @@ a.radio_link:hover,
 button.radio_link:hover {
     background: #f3faf6;
 }
-a.radio_link:active .radio_circle,
-button.radio_link:active .radio_circle {
-    background: url(/img/layout/radio_circle_pressed.png);
-}
 button.radio_link {
     background: none;
     border: none;
-    padding: 0;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-.radio_circle {
-    display: inline-block;
-    vertical-align: middle;
-/*
-    width: 16.7px;
-    height: 16.7px;
-/* */
-    transform: translateX(-4px);
-/* */
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
-/* */
-    background: url(/img/layout/radio_circle.png);
-    background-size: 16px 16px;
+/* Чіткий індикатор вибору без зображень. */
+.radio_indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #1b8b3f;
+    background: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 0 rgba(27, 139, 63, 0.2);
+    transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.radio_indicator::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+a.radio_link:active .radio_indicator,
+button.radio_link:active .radio_indicator {
+    border-color: #137536;
+    box-shadow: 0 0 0 4px rgba(27, 139, 63, 0.15);
+}
+a.radio_link:active .radio_indicator::after,
+button.radio_link:active .radio_indicator::after {
+    background: #137536;
+}
+a.radio_link:focus-visible,
+button.radio_link:focus-visible {
+    outline: 2px solid #1b8b3f;
+    outline-offset: 2px;
 }
 .item_chose_poll.see_results .link_text {
     color: #147536;

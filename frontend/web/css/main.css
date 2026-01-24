@@ -473,13 +473,6 @@ a.logo, div.logo {
     /* Розтягуємо опис на всю ширину під заголовком і рейтингом. */
     flex: 0 0 100%;
 }
-.poll_view_page .desc_my_chart::before {
-    /* Створюємо "відступ" для перших рядків, щоб текст не перекривав рейтинг. */
-    content: "";
-    float: left;
-    width: 56px;
-    height: 2.8em;
-}
 .poll_view_page .poll_view_footer {
     /* Вирівнюємо теги та перемикач діаграм на одній лінії. */
     display: flex;
@@ -1474,9 +1467,6 @@ a.btn_prev_var:hover {
     color: #fff;
 }
 .desc_my_chart {
-    margin-left: -8%;
-    margin-right: 4%;
-    margin-top: 2%;
     /* Збільшуємо розмір тексту опису опитування приблизно на 10% для читабельності. */
     font-size: 110%;
     line-height: 1.6;

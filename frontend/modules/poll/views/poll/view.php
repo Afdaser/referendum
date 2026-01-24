@@ -24,15 +24,10 @@ if (!empty($poll->pollLanguage)) {
             </div>
             <div class="inner_b_chart">
                 <!-- Додаємо мікророзмітку для DiscussionForumPosting -->
-                <div class="poll_block" itemscope itemtype="https://schema.org/DiscussionForumPosting">
+                <div class="poll_block poll_block--detail" itemscope itemtype="https://schema.org/DiscussionForumPosting">
                     <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
                     <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
 
-                    <div class="top_poll_b clearfix">
-                        <span class="right_block_share_icon">
-                           <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
-                        </span>
-                    </div>
                     <div class="middle_name_poll_b clearfix">
                         <div class="left_rating_b" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
@@ -69,30 +64,35 @@ if (!empty($poll->pollLanguage)) {
                             </div>
                         <?php endif;?>
                     </div>
-                    <div class="top_poll_b clearfix bottom_space_for_chart">
-                        <?php foreach ($poll->tags as $pollTag) : ?>
-                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
-                        <?php endforeach; ?>
-
-                        <span class="chosen_graph_b animated_b">
-                            <span class="inner_chosen_graph">
-                                <a href="javascript:void(0)" class="pie_chart" data-id="pie">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                                <a href="javascript:void(0)" class="horizontal_b_chart active" data-id="bar">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                                <a href="javascript:void(0)" class="vertical_b_chart" data-id="column">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
+                    <div class="poll_meta_row poll_meta_row--detail">
+                        <div class="poll_tags">
+                            <?php // Теги залишаємо внизу, щоб блок виглядав як на головній сторінці. ?>
+                            <?php foreach ($poll->tags as $pollTag) : ?>
+                                <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="poll_meta_actions">
+                            <?php // Підсилюємо селектор типу графіка поруч із тегами. ?>
+                            <span class="chosen_graph_b animated_b">
+                                <span class="inner_chosen_graph">
+                                    <a href="javascript:void(0)" class="pie_chart" data-id="pie">
+                                        <span class="pie_chart_img"></span>
+                                        <span class="vertical_chart_img"></span>
+                                        <span class="horizontal_chart_img"></span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="horizontal_b_chart active" data-id="bar">
+                                        <span class="pie_chart_img"></span>
+                                        <span class="vertical_chart_img"></span>
+                                        <span class="horizontal_chart_img"></span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="vertical_b_chart" data-id="column">
+                                        <span class="pie_chart_img"></span>
+                                        <span class="vertical_chart_img"></span>
+                                        <span class="horizontal_chart_img"></span>
+                                    </a>
+                                </span>
                             </span>
-                        </span>
+                        </div>
                     </div>
                     <div class="show_voices_b">
                         <div class="title_show_voice clearfix">
@@ -185,6 +185,12 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                                 <span><i class="fa fa-lock"></i></span>
                             </div>
                         <?php endif; ?>
+                        <span class="poll_share_detail">
+                            <?php // Переносимо кнопку шерингу ближче до інформаційного рядка. ?>
+                            <span class="right_block_share_icon">
+                                <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
+                            </span>
+                        </span>
                     </div>
                     <div class="comments_add-answer_b">
     <ul class="nav nav-tabs" role="tablist">

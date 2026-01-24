@@ -454,6 +454,16 @@ a.logo, div.logo {
     box-shadow: 0 6px 18px rgba(6, 94, 49, 0.08);
     padding: 12px 16px 8px;
 }
+.poll_block--detail .desc_my_chart {
+    position: relative;
+}
+.poll_block--detail .desc_my_chart::before {
+    /* Робимо відступ для перших трьох рядків, щоб текст не перекривав рейтинг. */
+    content: "";
+    float: left;
+    width: 56px;
+    height: 4.6em;
+}
 .top_poll_b {
     /* Масштабуємо контейнер під збільшені теги та іконки на 25%. */
     padding-left: 12.5px;
@@ -465,6 +475,45 @@ a.logo, div.logo {
     gap: 10px 7.5px;
     border-bottom: 1px solid #eef4f3;
     padding-bottom: 12.5px;
+}
+.poll_meta_row--detail {
+    /* Візуально зближуємо теги та перемикач графіка як на головній сторінці. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 4px 12px;
+    border-top: 1px solid #eef4f3;
+}
+.poll_block--detail .poll_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.poll_block--detail .poll_meta_actions {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+.poll_block--detail .chosen_graph_b {
+    /* Робимо перемикач графіка виразнішим та зручнішим. */
+    background: #f3faf6;
+    border: 1px solid #e0efe6;
+    border-radius: 10px;
+    padding: 4px 6px;
+    box-shadow: 0 3px 10px rgba(6, 94, 49, 0.08);
+}
+.poll_block--detail .poll_share_detail {
+    /* Виносимо шерінг у нижній інформаційний рядок. */
+    float: right;
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+}
+.poll_block--detail .poll_share_detail .right_block_share_icon {
+    margin-left: 0;
+    width: auto;
 }
 a.link_poll {
     display: inline-block;

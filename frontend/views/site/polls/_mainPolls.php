@@ -7,10 +7,6 @@
         <?php endif;?>
         <div class="poll_block">
             <div class="top_poll_b clearfix">
-                <?php foreach($poll->Tags as $pollTag) :?>
-                    <a href="<?= $pollTag->url ?>" class="link_poll">#<?php echo $pollTag->name; ?></a>
-                <?php endforeach; ?>
-
                 <span class="right_block_share_icon">
                     <?php $this->renderPartial('polls/_shareSocial',array('poll'=>$poll));?>
                 </span>
@@ -26,6 +22,12 @@
                     <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?php echo $poll->id; ?>"></a>
                 </div>
                 <div class="middle_title_b">
+                    <?php // Теги мають бути над заголовком опитування. ?>
+                    <div class="poll_tags">
+                        <?php foreach($poll->Tags as $pollTag) :?>
+                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?php echo $pollTag->name; ?></a>
+                        <?php endforeach; ?>
+                    </div>
                     <div class="title_poll">
                         <a href="<?= $poll->url ?>"><?= $poll->title; ?></a>
                     </div>

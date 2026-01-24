@@ -22,14 +22,21 @@ if (!empty($poll->pollLanguage)) {
                 <span class="right_block_share_icon">
                    <?php $this->renderPartial('//site/polls/_shareSocial', array('poll' => $poll)); ?>
                 </span>
-					</div>
-					<div class="middle_name_poll_b clearfix">
-						<div class="left_rating_b">
-							<a href="javascript:void(0)" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>"></a><br>
-							<span class="poll_rating" data-id="<?php echo $poll->id; ?>"><?php echo $poll->rating; ?></span><br>
-							<a href="javascript:void(0)" class="arrow_rating_down" data-id="<?php echo $poll->id; ?>"></a>
-						</div>
+                    </div>
+                    <div class="middle_name_poll_b clearfix">
+                        <div class="left_rating_b">
+                            <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>"></a><br>
+                            <span class="poll_rating" data-id="<?php echo $poll->id; ?>"><?php echo $poll->rating; ?></span><br>
+                            <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?php echo $poll->id; ?>"></a>
+                        </div>
                         <div class="middle_title_b">
+                            <?php // Теги мають бути над заголовком опитування. ?>
+                            <div class="poll_tags">
+                                <?php foreach ($poll->Tags as $pollTag) : ?>
+                                    <a href="<?= Url::to(['/site/search', 'tag' => $pollTag->name]) ?>"
+                                       class="link_poll">#<?= $pollTag->name; ?></a>
+                                <?php endforeach; ?>
+                            </div>
                             <div class="title_poll">
                                 <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
                                 <h1><?php echo Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
@@ -52,13 +59,8 @@ if (!empty($poll->pollLanguage)) {
                                 <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie)); ?>
                             </div>
                         <?php endif;?>
-					</div>
-					<div class="top_poll_b clearfix bottom_space_for_chart">
-						<?php foreach ($poll->Tags as $pollTag) : ?>
-                                                        <a href="<?= Url::to(['/site/search', 'tag' => $pollTag->name]) ?>"
-                                                           class="link_poll">#<?= $pollTag->name; ?></a>
-						<?php endforeach; ?>
-
+                    </div>
+                    <div class="top_poll_b clearfix bottom_space_for_chart">
                         <span class="chosen_graph_b animated_b">
                             <span class="inner_chosen_graph">
                                 <a href="javascript:void(0)" class="pie_chart" data-id="pie">

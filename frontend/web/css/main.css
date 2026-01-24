@@ -620,9 +620,11 @@ a.link_poll:hover {
     z-index: 20;
 }
 .left_rating_b {
-    float: left;
+    /* Вирівнюємо блок рейтингу у верхньому лівому куті з відступами. */
+    float: none;
     color: #058f42;
     text-align: center;
+    padding: 6px 10px;
 }
 .arrow_rating_top {
     display: inline-block;
@@ -645,14 +647,17 @@ a.link_poll:hover {
     background: url(/img/layout/arrow_down_rating_hover.png);
 }
 .middle_name_poll_b {
+    /* Вирівнюємо заголовок по центру відносно рейтингу. */
+    display: flex;
+    align-items: center;
     margin-left: 15px;
     margin-top: 10px;
 }
 .title_poll {
-    display: inline-block;
-    vertical-align: middle;
+    display: block;
     font-size: 16px;
-    transform: translateY(12px);
+    /* Забираємо зміщення, щоб заголовок центрувався флексом. */
+    transform: none;
 /*
     word-break: break-all;
     margin-top: 13px;
@@ -661,11 +666,18 @@ a.link_poll:hover {
     margin-right:50px;
 
 }
-.inner_block_chosen {
-    margin-top: 15px;
+.poll_tags {
+    /* Теги мають бути над заголовком опитування. */
+    margin-bottom: 6px;
 }
 .middle_title_b {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     margin-left: 40px;
+}
+.inner_block_chosen {
+    margin-top: 15px;
 }
 .container_graph {
     position: relative;
@@ -727,6 +739,9 @@ button.radio_link {
     font-style: italic;
 }
 .middle_name_poll_b {
+    /* Зберігаємо відступи та флекс-вирівнювання. */
+    display: flex;
+    align-items: center;
     margin-bottom: 25px;
 }
 .bottom_poll_b {

@@ -41,6 +41,12 @@ if (!empty($poll->pollLanguage)) {
                             <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?= $poll->id; ?>"></a>
                         </div>
                         <div class="middle_title_b">
+                            <?php // Теги відображаємо над заголовком опитування. ?>
+                            <div class="poll_tags">
+                                <?php foreach ($poll->tags as $pollTag) : ?>
+                                    <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
+                                <?php endforeach; ?>
+                            </div>
                             <div class="title_poll" itemprop="headline">
                                 <?php // Якщо налаштовано H1 у статичних мета-тегах — використовуємо його. ?>
                                 <?php if (!empty($pageHeading)): ?>
@@ -70,10 +76,6 @@ if (!empty($poll->pollLanguage)) {
                         <?php endif;?>
                     </div>
                     <div class="top_poll_b clearfix bottom_space_for_chart">
-                        <?php foreach ($poll->tags as $pollTag) : ?>
-                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
-                        <?php endforeach; ?>
-
                         <span class="chosen_graph_b animated_b">
                             <span class="inner_chosen_graph">
                                 <a href="javascript:void(0)" class="pie_chart" data-id="pie">

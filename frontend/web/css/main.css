@@ -1473,6 +1473,17 @@ a.btn_prev_var:hover {
     margin-left: -8%;
     margin-right: 4%;
     margin-top: 2%;
+    /* Збільшуємо розмір тексту опису опитування приблизно на 10% для читабельності. */
+    font-size: 110%;
+    line-height: 1.6;
+}
+@media (max-width: 768px) {
+    .desc_my_chart {
+        /* На мобільних прибираємо надлишкові відступи, щоб текст не "плив". */
+        margin-left: 0;
+        margin-right: 0;
+        margin-top: 4%;
+    }
 }
 .inner_b_chart .right_block_share_icon {
     top: 16px;

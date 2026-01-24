@@ -761,12 +761,13 @@ button.radio_link {
     color: #565656;
     line-height: 26px;
     text-decoration: none;
-    /* Підсилюємо зону кліку для юзер-френдлі взаємодії. */
+    /* Підсилюємо зону кліку та робимо вибір зручним на мобільних і десктопі. */
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 10px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    min-height: 44px;
+    border-radius: 12px;
     transition: background 0.2s ease, color 0.2s ease;
 }
 a.radio_link:hover .link_text,
@@ -778,34 +779,37 @@ a.radio_link:hover,
 button.radio_link:hover {
     background: #f3faf6;
 }
-a.radio_link:active .radio_circle,
-button.radio_link:active .radio_circle {
-    background: url(/img/layout/radio_circle_pressed.png);
-}
 button.radio_link {
     background: none;
     border: none;
-    padding: 0;
+    padding: 10px 12px;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-.radio_circle {
-    display: inline-block;
-    vertical-align: middle;
-/*
-    width: 16.7px;
-    height: 16.7px;
-/* */
-    transform: translateX(-4px);
-/* */
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
-/* */
-    background: url(/img/layout/radio_circle.png);
-    background-size: 16px 16px;
+.poll_choice_indicator {
+    /* Новий індикатор вибору без зображень — чіткий і контрастний. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #147536;
+    background: #ffffff;
+    flex: 0 0 auto;
+    box-shadow: inset 0 0 0 2px #ffffff;
+}
+.radio_link:active .poll_choice_indicator,
+.radio_link:focus-visible .poll_choice_indicator {
+    /* Підсвічуємо активний стан для відчуття кліку. */
+    box-shadow: inset 0 0 0 4px #147536;
+}
+.radio_link:focus-visible {
+    /* Видимий фокус для клавіатурної навігації. */
+    outline: 2px solid #9cd7b3;
+    outline-offset: 2px;
 }
 .item_chose_poll.see_results .link_text {
     color: #147536;

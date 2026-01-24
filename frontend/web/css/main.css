@@ -727,7 +727,8 @@ a.link_poll:hover {
     /* Формуємо чітку структуру основного контенту. */
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    /* Центруємо заголовок відносно рейтингу лише стилями. */
+    align-items: center;
     gap: 16px;
     /* Уніфікуємо розташування заголовка і опису на всіх сторінках. */
     align-content: flex-start;
@@ -742,6 +743,11 @@ a.link_poll:hover {
     /* Графіки переносяться на новий рядок без зсувів. */
     flex: 0 0 100%;
 }
+.middle_name_poll_b .desc_my_chart,
+.middle_name_poll_b .inner_block_chosen {
+    /* Опускаємо опис і варіанти відповідей нижче рядка рейтингу та заголовка. */
+    flex: 0 0 100%;
+}
 .title_poll {
     display: block;
     vertical-align: middle;
@@ -752,6 +758,8 @@ a.link_poll:hover {
     /* Фіксуємо вихід довгих заголовків за межі блоку. */
     overflow-wrap: anywhere;
     word-break: break-word;
+    /* Вирівнюємо заголовок по центру відносно рейтингу. */
+    align-self: center;
 /*
     word-break: break-all;
     margin-top: 13px;
@@ -768,17 +776,12 @@ a.link_poll:hover {
     margin-left: 40px;
     /* Розтягуємо контент для зручного читання і кліку. */
     margin-left: 0;
-    flex: 1 1 auto;
-    /* Дозволяємо заголовкам коректно переноситися у flex-розкладці. */
-    min-width: 0;
+    /* Розгортаємо дітей у flex-контейнер .middle_name_poll_b без змін HTML. */
+    display: contents;
 }
 .middle_name_poll_b .left_rating_b {
     /* Фіксуємо ширину рейтингу, щоб заголовок не "налазив". */
     flex: 0 0 auto;
-}
-.middle_name_poll_b .middle_title_b {
-    /* Дозволяємо займати весь доступний простір поруч з рейтингом. */
-    flex: 1 1 0;
 }
 .desc_my_chart {
     /* Надаємо опису опитування органічний відступ під заголовком. */

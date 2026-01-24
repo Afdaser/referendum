@@ -454,6 +454,84 @@ a.logo, div.logo {
     box-shadow: 0 6px 18px rgba(6, 94, 49, 0.08);
     padding: 12px 16px 8px;
 }
+.poll_view_page .poll_view_title_row {
+    /* Робимо заголовок і кнопку поширення єдиним рядком на сторінці опитування. */
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.poll_view_page .poll_view_title_row h1 {
+    /* Дозволяємо заголовку займати весь простір і переноситись. */
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.poll_view_page .poll_view_share {
+    /* Фіксуємо кнопку поширення праворуч від заголовка. */
+    margin-left: auto;
+}
+.poll_view_page .desc_my_chart::before {
+    /* Створюємо "відступ" для перших рядків, щоб текст не перекривав рейтинг. */
+    content: "";
+    float: left;
+    width: 56px;
+    height: 2.8em;
+}
+.poll_view_page .poll_view_footer {
+    /* Вирівнюємо теги та перемикач діаграм на одній лінії. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.poll_view_page .poll_view_tags {
+    /* Тримаємо теги внизу з гнучким переносом. */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+.poll_view_page .poll_view_chart_toggle {
+    /* Відсуваємо перемикач діаграм вправо. */
+    margin-left: auto;
+}
+.poll_view_page .poll_view_chart_toggle .chosen_graph_b {
+    /* Вирівнюємо перемикач діаграм із тегами в одному рівні. */
+    position: relative;
+    display: inline-flex;
+    align-items: flex-end;
+    /* Підсилюємо вигляд перемикача діаграм біля тегів. */
+    background: #f3faf6;
+    border: 1px solid #e0efe6;
+    border-radius: 14px;
+    padding: 4px;
+    box-shadow: 0 4px 10px rgba(6, 94, 49, 0.08);
+    /* Збільшуємо габарити, щоб відповідати висоті тегів. */
+    width: 34px;
+    height: 34px;
+    overflow: hidden;
+}
+.poll_view_page .poll_view_chart_toggle .chosen_graph_b:hover {
+    /* Даємо місце для трьох варіантів діаграм. */
+    height: 102px;
+}
+.poll_view_page .poll_view_chart_toggle .inner_chosen_graph {
+    /* Фіксуємо випадаючий блок у межах перемикача, без "зсувів". */
+    position: static;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+}
+.poll_view_page .poll_view_chart_toggle .chosen_graph_b a {
+    /* Збільшуємо клікабельну область до рівня тегів. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+}
+.poll_view_page .poll_view_chart_toggle .chosen_graph_b a.active {
+    /* Забираємо абсолютне позиціювання, щоб блок не "плавав". */
+    position: static;
+    height: 34px;
+}
 .top_poll_b {
     /* Масштабуємо контейнер під збільшені теги та іконки на 25%. */
     padding-left: 12.5px;

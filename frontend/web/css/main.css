@@ -448,10 +448,20 @@ a.logo, div.logo {
 .poll_block {
     background: #fff;
     margin-bottom: 20px;
+    /* Оновлений вигляд блоку опитування для більш органічної композиції. */
+    border: 1px solid #dfe7e6;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(5, 102, 47, 0.08);
+    padding: 16px 18px;
 }
 .top_poll_b {
     padding-left: 10px;
     padding-top: 7px;
+    /* Робимо верхній рядок компактним і більш читабельним. */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
 a.link_poll {
     display: inline-block;
@@ -462,6 +472,12 @@ a.link_poll {
     margin-right: 2px;
 /* */
     word-break: break-all;
+    /* Підкреслюємо теги як "чіпси". */
+    background: #f0f7f3;
+    border: 1px solid #d7e8de;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 13px;
 }
 a.link_poll:hover {
     color: #147536;
@@ -476,6 +492,8 @@ a.link_poll:hover {
 /* */
     text-align: center;
     position: relative;
+    /* Вирівнюємо кнопку шарингу в рядку тегів. */
+    margin-left: auto;
 }
 .share_icon {
     display: inline-block;
@@ -623,6 +641,12 @@ a.link_poll:hover {
     float: left;
     color: #058f42;
     text-align: center;
+    /* Стилізуємо рейтинг як окремий компактний блок. */
+    background: #f0f7f3;
+    border: 1px solid #d7e8de;
+    border-radius: 12px;
+    padding: 8px 6px;
+    float: none;
 }
 .arrow_rating_top {
     display: inline-block;
@@ -647,6 +671,12 @@ a.link_poll:hover {
 .middle_name_poll_b {
     margin-left: 15px;
     margin-top: 10px;
+    /* Вирівнюємо блок голосування та заголовок в логічну структуру. */
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    column-gap: 16px;
+    row-gap: 12px;
+    align-items: start;
 }
 .title_poll {
     display: inline-block;
@@ -659,6 +689,9 @@ a.link_poll:hover {
 /* */
     padding-right:2px;
     margin-right:50px;
+    /* Підсилюємо фокус на заголовку. */
+    line-height: 1.3;
+    margin-top: 2px;
 
 }
 .inner_block_chosen {
@@ -666,6 +699,8 @@ a.link_poll:hover {
 }
 .middle_title_b {
     margin-left: 40px;
+    /* Даємо простір для контенту опитування. */
+    max-width: 620px;
 }
 .container_graph {
     position: relative;
@@ -673,6 +708,8 @@ a.link_poll:hover {
     height: 400px;
     margin: 0 auto;
     margin-bottom: 10px;
+    /* Результати розміщуємо на всю ширину блоку. */
+    grid-column: 1 / -1;
 }
 .inner_container_graph {
     position: absolute;
@@ -684,10 +721,19 @@ a.link_poll:hover {
 }
 a.radio_link,
 button.radio_link {
-    font-size: 14px;
+    /* Збільшуємо варіанти відповіді для кращої читабельності. */
+    font-size: 17px;
     color: #565656;
-    line-height: 22px;
+    line-height: 24px;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid #e1ece7;
+    background: #f7fbf8;
+    width: 100%;
 }
 a.radio_link:hover .link_text,
 button.radio_link:hover .link_text {
@@ -699,9 +745,10 @@ button.radio_link:active .radio_circle {
     background: url(/img/layout/radio_circle_pressed.png);
 }
 button.radio_link {
-    background: none;
-    border: none;
-    padding: 0;
+    /* Зберігаємо стиль кнопок-варіантів, прибираючи дефолтні стилі. */
+    background: #f7fbf8;
+    border: 1px solid #e1ece7;
+    padding: 10px 12px;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
@@ -716,11 +763,19 @@ button.radio_link {
 /* */
     transform: translateX(-4px);
 /* */
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     margin-right: 12px;
 /* */
     background: url(/img/layout/radio_circle.png);
+    background-size: 16px 16px;
+}
+.item_chose_poll {
+    /* Групуємо варіанти відповіді та додаємо вертикальний ритм. */
+    margin-bottom: 10px;
+}
+.item_chose_poll .link_text {
+    font-weight: 500;
 }
 .item_chose_poll.see_results .link_text {
     color: #147536;
@@ -732,8 +787,13 @@ button.radio_link {
 .bottom_poll_b {
     min-height: 31px;
     border-top: 1px solid #e5eceb;
-    padding-top: 3px;
+    padding-top: 10px;
     transform: translate(-2px);
+    /* Робимо низ блоку зручнішим для перегляду. */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
 .top_poll_b_answers {
     min-height: 31px;
@@ -742,11 +802,16 @@ button.radio_link {
 }
 .title_poll a {
     color: #05662F;
+    /* Збільшуємо заголовок опитування для більшого акценту. */
+    font-size: 22px;
+    font-weight: 600;
 }
 .title_poll h1 {
     color: #05662F;
-    font-size: 18px;
-    margin-top: 6px;
+    font-size: 26px;
+    margin-top: 4px;
+    margin-bottom: 6px;
+    line-height: 1.3;
 }
 .info_block {
     margin: 1.5%;
@@ -764,17 +829,18 @@ button.radio_link {
     vertical-align: middle;
     line-height: 24px;
     border-right: 1px solid #dce6e4;
-    font-size: 13px;
+    font-size: 14px;
     color: #53585A;
     padding: 0 6px;
 }
 .right_poll_status {
-    float: right;
+    /* Вирівнюємо статус у правій частині футера. */
+    margin-left: auto;
 /*
     height: 22px;
 /* */
     background: #f0f4f4;
-    padding: 3px 25px 3px 3px;
+    padding: 4px 26px 4px 6px;
 /*
     padding: 3px 10px;
     padding-right: 35px;

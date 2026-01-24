@@ -24,15 +24,10 @@ if (!empty($poll->pollLanguage)) {
             </div>
             <div class="inner_b_chart">
                 <!-- Додаємо мікророзмітку для DiscussionForumPosting -->
-                <div class="poll_block" itemscope itemtype="https://schema.org/DiscussionForumPosting">
+                <div class="poll_block poll_view_page" itemscope itemtype="https://schema.org/DiscussionForumPosting">
                     <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
                     <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
 
-                    <div class="top_poll_b clearfix">
-                        <span class="right_block_share_icon">
-                           <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
-                        </span>
-                    </div>
                     <div class="middle_name_poll_b clearfix">
                         <div class="left_rating_b" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
@@ -41,7 +36,7 @@ if (!empty($poll->pollLanguage)) {
                             <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?= $poll->id; ?>"></a>
                         </div>
                         <div class="middle_title_b">
-                            <div class="title_poll" itemprop="headline">
+                            <div class="title_poll poll_view_title_row" itemprop="headline">
                                 <?php // Якщо налаштовано H1 у статичних мета-тегах — використовуємо його. ?>
                                 <?php if (!empty($pageHeading)): ?>
                                     <h1><?= $pageHeading; ?></h1>
@@ -49,6 +44,10 @@ if (!empty($poll->pollLanguage)) {
                                     <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
                                     <h1><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
                                 <?php endif; ?>
+                                <span class="right_block_share_icon poll_view_share">
+                                   <?php // Переміщаємо кнопку поширення ближче до заголовка для кращої читабельності. ?>
+                                   <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
+                                </span>
                             </div>
                             <div class="desc_my_chart" itemprop="text">
                                 <?= $poll->getClearedDescribe() ?>
@@ -69,30 +68,33 @@ if (!empty($poll->pollLanguage)) {
                             </div>
                         <?php endif;?>
                     </div>
-                    <div class="top_poll_b clearfix bottom_space_for_chart">
-                        <?php foreach ($poll->tags as $pollTag) : ?>
-                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
-                        <?php endforeach; ?>
-
-                        <span class="chosen_graph_b animated_b">
-                            <span class="inner_chosen_graph">
-                                <a href="javascript:void(0)" class="pie_chart" data-id="pie">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                                <a href="javascript:void(0)" class="horizontal_b_chart active" data-id="bar">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
-                                <a href="javascript:void(0)" class="vertical_b_chart" data-id="column">
-                                    <span class="pie_chart_img"></span>
-                                    <span class="vertical_chart_img"></span>
-                                    <span class="horizontal_chart_img"></span>
-                                </a>
+                    <div class="top_poll_b clearfix bottom_space_for_chart poll_view_footer">
+                        <div class="poll_view_tags">
+                            <?php foreach ($poll->tags as $pollTag) : ?>
+                                <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="poll_view_chart_toggle">
+                            <span class="chosen_graph_b animated_b">
+                                <span class="inner_chosen_graph">
+                                    <a href="javascript:void(0)" class="pie_chart" data-id="pie">
+                                        <span class="pie_chart_img"></span>
+                                        <span class="vertical_chart_img"></span>
+                                        <span class="horizontal_chart_img"></span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="horizontal_b_chart active" data-id="bar">
+                                        <span class="pie_chart_img"></span>
+                                        <span class="vertical_chart_img"></span>
+                                        <span class="horizontal_chart_img"></span>
+                                    </a>
+                                    <a href="javascript:void(0)" class="vertical_b_chart" data-id="column">
+                                        <span class="pie_chart_img"></span>
+                                        <span class="vertical_chart_img"></span>
+                                        <span class="horizontal_chart_img"></span>
+                                    </a>
+                                </span>
                             </span>
-                        </span>
+                        </div>
                     </div>
                     <div class="show_voices_b">
                         <div class="title_show_voice clearfix">

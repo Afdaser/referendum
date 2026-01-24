@@ -761,12 +761,14 @@ button.radio_link {
     color: #565656;
     line-height: 26px;
     text-decoration: none;
-    /* Підсилюємо зону кліку для юзер-френдлі взаємодії. */
+    /* Підсилюємо зону кліку для зручної взаємодії на мобільних і десктопі. */
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 10px;
+    gap: 12px;
+    min-height: 44px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
     transition: background 0.2s ease, color 0.2s ease;
 }
 a.radio_link:hover .link_text,
@@ -778,34 +780,52 @@ a.radio_link:hover,
 button.radio_link:hover {
     background: #f3faf6;
 }
-a.radio_link:active .radio_circle,
-button.radio_link:active .radio_circle {
-    background: url(/img/layout/radio_circle_pressed.png);
+a.radio_link:active .poll_option_indicator,
+button.radio_link:active .poll_option_indicator {
+    border-color: #0f5d2b;
+}
+a.radio_link:active .poll_option_indicator::after,
+button.radio_link:active .poll_option_indicator::after {
+    transform: scale(1);
+}
+a.radio_link:focus-visible,
+button.radio_link:focus-visible {
+    /* Підсвічуємо фокус, щоб клавіатурна навігація була помітною. */
+    outline: 2px solid #147536;
+    outline-offset: 2px;
 }
 button.radio_link {
     background: none;
     border: none;
-    padding: 0;
     cursor: pointer;
+    text-align: left;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-.radio_circle {
-    display: inline-block;
-    vertical-align: middle;
-/*
-    width: 16.7px;
-    height: 16.7px;
-/* */
-    transform: translateX(-4px);
-/* */
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
-/* */
-    background: url(/img/layout/radio_circle.png);
-    background-size: 16px 16px;
+.poll_option_indicator {
+    /* Новий індикатор вибору без зображень. */
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #147536;
+    background: #ffffff;
+    box-shadow: inset 0 0 0 2px #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.poll_option_indicator::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #147536;
+    transform: scale(0);
+    transition: transform 0.2s ease;
 }
 .item_chose_poll.see_results .link_text {
     color: #147536;

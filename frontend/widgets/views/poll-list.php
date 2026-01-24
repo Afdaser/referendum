@@ -372,7 +372,9 @@ $this->registerJs($scriptNotGuest);
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
                 <input type="hidden" name="option" value="1512">
-                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                <button type="submit" class="radio_link poll-option-vote">
+                    <!-- Індикатор вибору без зображень для чіткого тапу. -->
+                    <span class="poll_option_indicator"></span>
                     <span class="link_text">Yes</span>
                 </button>
             </form>
@@ -382,7 +384,9 @@ $this->registerJs($scriptNotGuest);
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
                 <input type="hidden" name="option" value="1513">
-                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                <button type="submit" class="radio_link poll-option-vote">
+                    <!-- Індикатор вибору без зображень для чіткого тапу. -->
+                    <span class="poll_option_indicator"></span>
                     <span class="link_text">No</span>
                 </button>
             </form>
@@ -447,7 +451,9 @@ $this->registerJs($scriptNotGuest);
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
                 <input type="hidden" name="option" value="1554">
-                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                <button type="submit" class="radio_link poll-option-vote">
+                    <!-- Індикатор вибору без зображень для чіткого тапу. -->
+                    <span class="poll_option_indicator"></span>
                     <span class="link_text">Yes</span>
                 </button>
             </form>
@@ -457,7 +463,9 @@ $this->registerJs($scriptNotGuest);
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
                 <input type="hidden" name="option" value="1555">
-                <button type="submit" class="radio_link poll-option-vote"><span class="radio_circle"></span>
+                <button type="submit" class="radio_link poll-option-vote">
+                    <!-- Індикатор вибору без зображень для чіткого тапу. -->
+                    <span class="poll_option_indicator"></span>
                     <span class="link_text">No</span>
                 </button>
             </form>

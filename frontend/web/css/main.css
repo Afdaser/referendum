@@ -647,12 +647,15 @@ a.link_poll:hover {
 .middle_name_poll_b {
     margin-left: 15px;
     margin-top: 10px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
 }
 .title_poll {
     display: inline-block;
     vertical-align: middle;
     font-size: 16px;
-    transform: translateY(12px);
+    transform: none;
 /*
     word-break: break-all;
     margin-top: 13px;
@@ -665,7 +668,19 @@ a.link_poll:hover {
     margin-top: 15px;
 }
 .middle_title_b {
-    margin-left: 40px;
+    margin-left: 0;
+    flex: 1;
+}
+/* Блок тегів над заголовком опитування. */
+.poll_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    justify-content: center;
+    margin-bottom: 6px;
+}
+.poll_tags .link_poll {
+    display: inline-block;
 }
 .container_graph {
     position: relative;
@@ -745,8 +760,10 @@ button.radio_link {
 }
 .title_poll h1 {
     color: #05662F;
-    font-size: 18px;
+    font-size: 26px;
     margin-top: 6px;
+    margin-bottom: 0;
+    text-align: center;
 }
 .info_block {
     margin: 1.5%;

@@ -718,7 +718,8 @@ a.link_poll:hover {
 
 }
 .inner_block_chosen {
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-left: -2%;
 }
 .middle_title_b {
     margin-left: 40px;

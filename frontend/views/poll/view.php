@@ -17,12 +17,9 @@ if (!empty($poll->pollLanguage)) {
                                 <a class="btn_prev_var" href="<?= Yii::$app->request->referrer; ?>"><?= Yii::t("poll", 'Назад'); ?></a>
 			</div>
 			<div class="inner_b_chart">
-				<div class="poll_block">
-					<div class="top_poll_b clearfix">
-                <span class="right_block_share_icon">
-                   <?php $this->renderPartial('//site/polls/_shareSocial', array('poll' => $poll)); ?>
-                </span>
-					</div>
+				<div class="poll_block poll_block--single">
+					<?php // Ховаємо старий верхній рядок, щоб не дублювати відступи. ?>
+					<div class="top_poll_b clearfix poll_header_row"></div>
 					<div class="middle_name_poll_b clearfix">
 						<div class="left_rating_b">
 							<a href="javascript:void(0)" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>"></a><br>
@@ -30,9 +27,15 @@ if (!empty($poll->pollLanguage)) {
 							<a href="javascript:void(0)" class="arrow_rating_down" data-id="<?php echo $poll->id; ?>"></a>
 						</div>
                         <div class="middle_title_b">
-                            <div class="title_poll">
-                                <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
-                                <h1><?php echo Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                            <div class="poll_title_row">
+                                <div class="title_poll">
+                                    <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
+                                    <h1><?php echo Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                                </div>
+                                <span class="right_block_share_icon share_in_title">
+                                    <?php // Переносимо кнопку шерінгу ближче до заголовка. ?>
+                                    <?php $this->renderPartial('//site/polls/_shareSocial', array('poll' => $poll)); ?>
+                                </span>
                             </div>
                             <div class="desc_my_chart">
                                 <?php echo $poll->getClearedDescribe() ?>
@@ -53,7 +56,8 @@ if (!empty($poll->pollLanguage)) {
                             </div>
                         <?php endif;?>
 					</div>
-					<div class="top_poll_b clearfix bottom_space_for_chart">
+					<?php // Теги та перемикач графіків залишаємо знизу, як на головній сторінці. ?>
+					<div class="top_poll_b clearfix bottom_space_for_chart poll_tags_row">
 						<?php foreach ($poll->Tags as $pollTag) : ?>
                                                         <a href="<?= Url::to(['/site/search', 'tag' => $pollTag->name]) ?>"
                                                            class="link_poll">#<?= $pollTag->name; ?></a>

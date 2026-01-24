@@ -741,6 +741,42 @@ a.link_poll:hover {
     /* Надаємо опису опитування органічний відступ під заголовком. */
     margin-top: 10px;
 }
+.poll_block--single .poll_title_row {
+    /* Робимо заголовок і шерінг одним рядком для сторінки опитування. */
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.poll_block--single .poll_header_row {
+    /* Прибираємо зайвий верхній рядок на сторінці опитування. */
+    display: none;
+}
+.poll_block--single .poll_title_row .title_poll {
+    /* Дозволяємо заголовку займати основну ширину. */
+    flex: 1 1 auto;
+}
+.poll_block--single .right_block_share_icon.share_in_title {
+    /* Фіксуємо іконку шерінгу у правій частині рядка заголовка. */
+    margin-left: auto;
+    position: static;
+}
+.poll_block--single .desc_my_chart {
+    /* Вирівнюємо опис під заголовком без зміщення вліво. */
+    margin: 10px 0 0;
+}
+.poll_block--single .desc_my_chart::before {
+    /* Створюємо "відступ" для перших трьох рядків опису біля рейтингу. */
+    content: "";
+    float: left;
+    width: 56px;
+    height: 4.5em;
+}
+.poll_block--single .desc_my_chart::after {
+    /* Повертаємо нормальний потік після псевдоелемента. */
+    content: "";
+    display: block;
+    clear: both;
+}
 .container_graph {
     position: relative;
     width: 400px;
@@ -1439,12 +1475,52 @@ a.btn_prev_var:hover {
     top: 16px;
     margin-right: 20px;
 }
+.poll_block--single .right_block_share_icon {
+    /* Скидаємо позиціювання, яке актуальне для старого розміщення. */
+    top: auto;
+    margin-right: 0;
+}
 .inner_b_chart .middle_name_poll_b {
     margin-top: -5px;
 }
 .inner_b_chart .top_poll_b {
     padding-left: 20px;
     position: relative;
+}
+.poll_block--single .poll_tags_row {
+    /* Формуємо нижній рядок тегів і перемикача графіків. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding-right: 12px;
+    border-bottom: 0;
+    border-top: 1px solid #eef4f3;
+    margin-top: 6px;
+}
+.poll_block--single .poll_tags_row .chosen_graph_b {
+    /* Оформлюємо перемикач графіків як компактну кнопку поруч із тегами. */
+    position: relative;
+    margin-left: auto;
+    width: auto;
+    height: auto;
+    padding: 4px 6px;
+    border-radius: 999px;
+    background: #f3faf6;
+    border-color: #e0efe6;
+}
+.poll_block--single .poll_tags_row .inner_chosen_graph {
+    /* Вирівнюємо іконки перемикача всередині кнопки. */
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    position: static;
+    padding-bottom: 0;
+}
+.poll_block--single .poll_tags_row .chosen_graph_b a {
+    /* Вирівнюємо висоту кнопок у компактному режимі. */
+    height: 22px;
+    border-bottom: 0;
 }
 .bottom_space_for_chart {
     margin-bottom: 20px;

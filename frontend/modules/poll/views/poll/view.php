@@ -24,15 +24,12 @@ if (!empty($poll->pollLanguage)) {
             </div>
             <div class="inner_b_chart">
                 <!-- Додаємо мікророзмітку для DiscussionForumPosting -->
-                <div class="poll_block" itemscope itemtype="https://schema.org/DiscussionForumPosting">
+                <div class="poll_block poll_block--single" itemscope itemtype="https://schema.org/DiscussionForumPosting">
                     <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
                     <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
 
-                    <div class="top_poll_b clearfix">
-                        <span class="right_block_share_icon">
-                           <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
-                        </span>
-                    </div>
+                    <?php // Ховаємо старий верхній рядок, щоб не дублювати відступи. ?>
+                    <div class="top_poll_b clearfix poll_header_row"></div>
                     <div class="middle_name_poll_b clearfix">
                         <div class="left_rating_b" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
@@ -41,14 +38,20 @@ if (!empty($poll->pollLanguage)) {
                             <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?= $poll->id; ?>"></a>
                         </div>
                         <div class="middle_title_b">
-                            <div class="title_poll" itemprop="headline">
-                                <?php // Якщо налаштовано H1 у статичних мета-тегах — використовуємо його. ?>
-                                <?php if (!empty($pageHeading)): ?>
-                                    <h1><?= $pageHeading; ?></h1>
-                                <?php else: ?>
-                                    <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
-                                    <h1><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
-                                <?php endif; ?>
+                            <div class="poll_title_row">
+                                <div class="title_poll" itemprop="headline">
+                                    <?php // Якщо налаштовано H1 у статичних мета-тегах — використовуємо його. ?>
+                                    <?php if (!empty($pageHeading)): ?>
+                                        <h1><?= $pageHeading; ?></h1>
+                                    <?php else: ?>
+                                        <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
+                                        <h1><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                                    <?php endif; ?>
+                                </div>
+                                <span class="right_block_share_icon share_in_title">
+                                    <?php // Переносимо кнопку шерінгу ближче до заголовка. ?>
+                                    <?= $this->render('//site/polls/_shareSocial', ['poll' => $poll]); ?>
+                                </span>
                             </div>
                             <div class="desc_my_chart" itemprop="text">
                                 <?= $poll->getClearedDescribe() ?>
@@ -69,7 +72,8 @@ if (!empty($poll->pollLanguage)) {
                             </div>
                         <?php endif;?>
                     </div>
-                    <div class="top_poll_b clearfix bottom_space_for_chart">
+                    <?php // Теги та перемикач графіків залишаємо внизу. ?>
+                    <div class="top_poll_b clearfix bottom_space_for_chart poll_tags_row">
                         <?php foreach ($poll->tags as $pollTag) : ?>
                             <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
                         <?php endforeach; ?>

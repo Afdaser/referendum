@@ -720,12 +720,14 @@ a.link_poll:hover {
     /* Формуємо чітку структуру основного контенту. */
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    /* Центруємо заголовок відносно рейтингу незалежно від кількості рядків. */
+    align-items: center;
     gap: 16px;
     /* Уніфікуємо розташування заголовка і опису на всіх сторінках. */
     align-content: flex-start;
     margin-left: 0;
-    padding: 12px 4px 10px;
+    /* Зсуваємо блок максимально вліво, але залишаємо 2% відступ. */
+    padding: 12px 4px 10px 2%;
 }
 .middle_name_poll_b .clearfix {
     /* Прибираємо зайвий блок очищення у flex-розкладці. */

@@ -154,10 +154,13 @@ if (!empty($poll->pollLanguage)) {
                                             <span class="item_bottom_poll"> <?php echo Yii::t("poll", 'Користувач'); ?>: <a href="<?= Url::to(['/poll/site/user-profile', 'id' => $poll->user_id]); ?>"><?= $poll->user->getFullUserName();?></a></span>
 						<span class="item_bottom_poll"> <?php echo Yii::t("poll", 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?></span>
 						<?php if ($poll->isOpen()): ?>
+							<?php /* Коментар: приховано статус відкритого опитування на сторінці. */ ?>
+							<?php /*
 							<div class="right_poll_status open">
-                                <?php echo Yii::t("poll", 'Відкрите голосування'); ?>
+								<?php echo Yii::t("poll", 'Відкрите голосування'); ?>
 								<span><i class="fa fa-unlock"></i></span>
 							</div>
+							*/ ?>
 						<?php else: ?>
 							<div class="right_poll_status closed"  title="<?= $poll->countPollOptionsVoters; ?>/<?php echo $poll->votes_count_close;?>">
                                 <?php echo Yii::t("poll", 'Закрите голосування'); ?>

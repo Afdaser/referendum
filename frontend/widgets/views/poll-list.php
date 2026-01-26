@@ -301,7 +301,8 @@ $this->registerJs($scriptNotGuest);
 </span>                </span>
 
                             </div>
-            <div class="middle_name_poll_b clearfix">
+            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
+            <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="382"></a><br>
                     <span class="poll_rating" data-id="382">0</span><br>
@@ -312,7 +313,9 @@ $this->registerJs($scriptNotGuest);
                         <a href="#P#/poll/382">Do you think that Trump is Traitor? </a>
                     </div>
                     <h3>#DEV1</h3>
-                                                                                                </div>
+                </div>
+            </div>
+            <div class="middle_name_poll_b clearfix">
                                     <div class="clearfix"></div>
                     <div class="container_graph">
                             <div class="inner_container_graph pie" id="container382" data-highcharts-chart="0"><div class="highcharts-container" id="highcharts-0" style="position: relative; overflow: hidden; width: 400px; height: 400px; text-align: left; line-height: normal; z-index: 0; left: 0.666672px; top: 0.899994px;"><svg version="1.1" style="font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;" xmlns="http://www.w3.org/2000/svg" width="400" height="400"><desc>Created with Highcharts 4.0.4</desc><defs><clipPath id="highcharts-1"><rect x="0" y="0" width="380" height="338"></rect></clipPath></defs><rect x="0" y="0" width="400" height="400" strokeWidth="0" fill="#FFFFFF" class=" highcharts-background"></rect><path fill="rgba(5,143,66,0.25)" d="M 0 0"></path><g class="highcharts-series-group" zIndex="3"><g class="highcharts-series highcharts-tracker" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)" style="cursor:pointer;"><path fill="#e0923e" d="M 188.4766794181769 63.00000237488884 A 114.5 114.5 0 1 1 175.90720518034377 291.30541076165946 L 188.5 177.5 A 0 0 0 1 0 188.5 177.5 Z" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round" transform="translate(10,1)"></path><path fill="#f5c356" d="M 175.79340608494658 291.292761066238 A 114.5 114.5 0 0 1 131.76737741799212 78.04317753433176 L 188.5 177.5 A 0 0 0 0 0 188.5 177.5 Z" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round" transform="translate(0,0)"></path><path fill="#058f42" d="M 131.86686259019064 77.98649464961227 A 114.5 114.5 0 0 1 188.3409617970908 63.000110450489885 L 188.5 177.5 A 0 0 0 0 0 188.5 177.5 Z" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round" transform="translate(0,0)"></path></g><g class="highcharts-markers" visibility="visible" zIndex="0.1" transform="translate(10,10) scale(1 1)"></g></g><g class="highcharts-data-labels highcharts-tracker" visibility="visible" zIndex="6" transform="translate(10,10) scale(1 1)" opacity="1" style="cursor:pointer;"><path fill="none" d="M 337.77799077329416 185.50695812535767 C 332.77799077329416 185.50695812535767 324.7902819415547 185.0636663260299 313.80718229791296 184.45414010195424 L 302.8240826542712 183.84461387787857" stroke="#e0923e" stroke-width="1"></path><path fill="none" d="M 41.975288581602626 206.67200812318794 C 46.975288581602626 206.67200812318794 54.810566722413526 205.05694884993187 65.58407416602856 202.83624234920475 L 76.35758160964359 200.61553584847763" stroke="#f5c356" stroke-width="1"></path><path fill="none" d="M 146.53071863760414 37.80919058310238 C 151.53071863760414 37.80919058310238 153.57746085835961 45.542937817255876 156.3917314118984 56.17684026421694 L 159.2060019654372 66.81074271117801" stroke="#058f42" stroke-width="1"></path><g zIndex="1" style="cursor:pointer;" transform="translate(343,176)"><text x="3" zIndex="1" style="font-size:11px;color:black;fill:black;" y="15"><tspan style="font-weight:bold">51.8%</tspan><tspan x="3" dy="15">44</tspan></text></g><g zIndex="1" style="cursor:pointer;" transform="translate(3,197)"><text x="0" zIndex="1" style="font-size:11px;color:black;fill:black;" y="15"><tspan style="font-weight:bold">40.0%</tspan><tspan x="0" dy="15">34</tspan></text></g><g zIndex="1" style="cursor:pointer;" transform="translate(113,28)"><text x="0" zIndex="1" style="font-size:11px;color:black;fill:black;" y="15"><tspan style="font-weight:bold">8.2%</tspan><tspan x="0" dy="15">7</tspan></text></g></g><g class="highcharts-legend" zIndex="7" transform="translate(106,368)"><g zIndex="1"><g><g class="highcharts-legend-item" zIndex="1" transform="translate(8,3)"><text x="21" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2" y="15">Yes</text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#e0923e"></rect></g><g class="highcharts-legend-item" zIndex="1" transform="translate(69.6833324432373,3)"><text x="21" y="15" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2">No</text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#f5c356"></rect></g><g class="highcharts-legend-item" zIndex="1" transform="translate(126.6833324432373,3)"><text x="21" y="15" style="color:#333333;font-size:12px;font-weight:bold;cursor:pointer;fill:#333333;" text-anchor="start" zIndex="2"><tspan>I doubt</tspan></text><rect x="0" y="4" width="16" height="12" zIndex="3" fill="#058f42"></rect></g></g></g></g><g class="highcharts-tooltip" zIndex="8" style="cursor:default;padding:0;white-space:nowrap;" transform="translate(214,-9999)" opacity="0" visibility="visible"><path fill="none" d="M 3.5 0.5 L 47.5 0.5 C 50.5 0.5 50.5 0.5 50.5 3.5 L 50.5 42.5 C 50.5 45.5 50.5 45.5 47.5 45.5 L 3.5 45.5 C 0.5 45.5 0.5 45.5 0.5 42.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5" isShadow="true" stroke="black" stroke-opacity="0.049999999999999996" stroke-width="5" transform="translate(1, 1)" width="50" height="45"></path><path fill="none" d="M 3.5 0.5 L 47.5 0.5 C 50.5 0.5 50.5 0.5 50.5 3.5 L 50.5 42.5 C 50.5 45.5 50.5 45.5 47.5 45.5 L 3.5 45.5 C 0.5 45.5 0.5 45.5 0.5 42.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5" isShadow="true" stroke="black" stroke-opacity="0.09999999999999999" stroke-width="3" transform="translate(1, 1)" width="50" height="45"></path><path fill="none" d="M 3.5 0.5 L 47.5 0.5 C 50.5 0.5 50.5 0.5 50.5 3.5 L 50.5 42.5 C 50.5 45.5 50.5 45.5 47.5 45.5 L 3.5 45.5 C 0.5 45.5 0.5 45.5 0.5 42.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5" isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1" transform="translate(1, 1)" width="50" height="45"></path><path fill="rgba(249, 249, 249, .85)" d="M 3.5 0.5 L 47.5 0.5 C 50.5 0.5 50.5 0.5 50.5 3.5 L 50.5 42.5 C 50.5 45.5 50.5 45.5 47.5 45.5 L 3.5 45.5 C 0.5 45.5 0.5 45.5 0.5 42.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5" stroke="#e0923e" stroke-width="1"></path><text x="8" zIndex="1" style="font-size:12px;color:#333333;fill:#333333;" y="21"><tspan style="font-size: 10px">Yes</tspan><tspan x="8" dy="16">51.8%</tspan></text></g></svg></div></div>
@@ -355,7 +358,8 @@ $this->registerJs($scriptNotGuest);
 </span>                </span>
 
                             </div>
-            <div class="middle_name_poll_b clearfix">
+            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
+            <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="383"></a><br>
                     <span class="poll_rating" data-id="383">0</span><br>
@@ -366,6 +370,9 @@ $this->registerJs($scriptNotGuest);
                         <a href="#P#/poll/383">Do you think, that Trump Will go to Prison?</a>
                     </div>
                     <h3>#DEV1</h3>
+                </div>
+            </div>
+            <div class="middle_name_poll_b clearfix">
                                                                                                         <div class="inner_block_chosen">
                                         <div class="item_chose_poll">
             <form method="post" action="/poll/poll/vote" class="poll-option-form">
@@ -434,7 +441,8 @@ $this->registerJs($scriptNotGuest);
 </span>                </span>
 
                             </div>
-            <div class="middle_name_poll_b clearfix">
+            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
+            <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="401"></a><br>
                     <span class="poll_rating" data-id="401">0</span><br>
@@ -445,6 +453,9 @@ $this->registerJs($scriptNotGuest);
                         <a href="#P#/poll/401">Do you stand with Steve Bannon? </a>
                     </div>
                     <h3>#DEV1</h3>
+                </div>
+            </div>
+            <div class="middle_name_poll_b clearfix">
                                                                                                         <div class="inner_block_chosen">
                                         <div class="item_chose_poll">
             <form method="post" action="/poll/poll/vote" class="poll-option-form">

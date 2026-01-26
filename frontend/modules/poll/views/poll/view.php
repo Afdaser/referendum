@@ -28,7 +28,8 @@ if (!empty($poll->pollLanguage)) {
                     <meta itemprop="mainEntityOfPage" content="<?= Yii::$app->request->absoluteUrl;?>" />
                     <meta itemprop="url" content="<?= Yii::$app->request->absoluteUrl;?>" />
 
-                    <div class="middle_name_poll_b clearfix">
+                    <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
+                    <div class="poll_heading_b clearfix">
                         <div class="left_rating_b" itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
                             <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
                             <span class="poll_rating" itemprop="userInteractionCount" data-id="<?= $poll->id; ?>"><?= $poll->rating; ?></span><br>
@@ -50,6 +51,8 @@ if (!empty($poll->pollLanguage)) {
                                 </span>
                             </div>
                         </div>
+                    </div>
+                    <div class="middle_name_poll_b clearfix">
                         <?php // Виносимо опис опитування в окремий блок для точнішого керування відступами. ?>
                         <div class="desc_my_chart" itemprop="text">
                             <?= $poll->getClearedDescribe() ?>

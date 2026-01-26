@@ -714,18 +714,27 @@ a.link_poll:hover {
 .arrow_rating_down:hover {
     background: url(/img/layout/arrow_down_rating_hover.png);
 }
-.middle_name_poll_b {
-    margin-left: 15px;
+.poll_heading_b {
+    /* Окремий контейнер для рейтингу та заголовка опитування. */
     margin-top: 10px;
-    /* Формуємо чітку структуру основного контенту. */
+    padding: 12px 4px 0;
+    /* Переміщаємо рейтинг максимально вліво з відступом у 2%. */
+    padding-left: 2%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+.middle_name_poll_b {
+    /* Формуємо чітку структуру основного контенту під заголовком. */
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     gap: 16px;
-    /* Уніфікуємо розташування заголовка і опису на всіх сторінках. */
+    /* Уніфікуємо розташування опису і графіка на всіх сторінках. */
     align-content: flex-start;
-    margin-left: 0;
-    padding: 12px 4px 10px;
+    margin-top: 0;
+    padding: 0 4px 10px;
 }
 .middle_name_poll_b .clearfix {
     /* Прибираємо зайвий блок очищення у flex-розкладці. */
@@ -765,11 +774,11 @@ a.link_poll:hover {
     /* Дозволяємо заголовкам коректно переноситися у flex-розкладці. */
     min-width: 0;
 }
-.middle_name_poll_b .left_rating_b {
+.poll_heading_b .left_rating_b {
     /* Фіксуємо ширину рейтингу, щоб заголовок не "налазив". */
     flex: 0 0 auto;
 }
-.middle_name_poll_b .middle_title_b {
+.poll_heading_b .middle_title_b {
     /* Дозволяємо займати весь доступний простір поруч з рейтингом. */
     flex: 1 1 0;
 }
@@ -1477,9 +1486,9 @@ a.btn_prev_var:hover {
         margin-left: 0;
         margin-right: 0;
     }
-    .poll_view_page .left_rating_b {
-        /* Зсуваємо рейтинг лівіше, щоб зліва і справа залишився симетричний відступ. */
-        margin-left: -8px;
+    .poll_view_page .poll_heading_b {
+        /* Тримаємо рейтинг з 2% відступом зліва навіть на мобільних. */
+        padding-left: 2%;
     }
     .poll_view_page .desc_my_chart::before {
         /* На мобільних прибираємо лівий "відступ" від псевдоелемента. */
@@ -1493,7 +1502,8 @@ a.btn_prev_var:hover {
     top: 16px;
     margin-right: 20px;
 }
-.inner_b_chart .middle_name_poll_b {
+.inner_b_chart .poll_heading_b {
+    /* Підтягуємо заголовок ближче до верхньої частини блоку. */
     margin-top: -5px;
 }
 .inner_b_chart .top_poll_b {

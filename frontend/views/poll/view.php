@@ -18,7 +18,12 @@ if (!empty($poll->pollLanguage)) {
 			</div>
 			<div class="inner_b_chart">
 				<div class="poll_block poll_view_page">
-					<div class="middle_name_poll_b clearfix">
+                    <?php // Готуємо дані для рендеру графіків і варіантів відповідей. ?>
+                    <?php $chartData = $poll->getChartData();?>
+                    <?php $bar = StringHelper::formatForBar($chartData); ?>
+                    <?php $pie = StringHelper::formatForPie($chartData); ?>
+                    <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
+                    <div class="poll_heading_b clearfix">
 						<div class="left_rating_b">
 							<a href="javascript:void(0)" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>"></a><br>
 							<span class="poll_rating" data-id="<?php echo $poll->id; ?>"><?php echo $poll->rating; ?></span><br>
@@ -33,18 +38,17 @@ if (!empty($poll->pollLanguage)) {
                                     <?php $this->renderPartial('//site/polls/_shareSocial', array('poll' => $poll)); ?>
                                 </span>
                             </div>
-                            <div class="desc_my_chart">
-                                <?php echo $poll->getClearedDescribe() ?>
-                            </div>
-                            <?php $chartData = $poll->getChartData();?>
-                            <?php $bar = StringHelper::formatForBar($chartData); ?>
-                            <?php $pie = StringHelper::formatForPie($chartData); ?>
-                            <?php if(!$poll->isShowResult()):?>
-                                <div class="inner_block_chosen">
-                                    <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie)); ?>
-                                </div>
-                            <?php endif;?>
                         </div>
+                    </div>
+					<div class="middle_name_poll_b clearfix">
+                        <div class="desc_my_chart">
+                            <?php echo $poll->getClearedDescribe() ?>
+                        </div>
+                        <?php if(!$poll->isShowResult()):?>
+                            <div class="inner_block_chosen">
+                                <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie)); ?>
+                            </div>
+                        <?php endif;?>
                         <?php if($poll->isShowResult()):?>
                             <div class="clearfix"></div>
                             <div class="container_graph">

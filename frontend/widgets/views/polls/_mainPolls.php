@@ -26,7 +26,12 @@ use common\models\User;
                     <a data-target="#new_poll<?= $poll->id?>" data-toggle="modal" class="update_btn" href="#"></a>
                 <?php endif;?>
             </div>
-            <div class="middle_name_poll_b clearfix">
+            <?php // Готуємо дані для графіків, щоб їх можна було використати нижче. ?>
+            <?php $chartData = $poll->getChartData();?>
+            <?php $bar = StringHelper::formatForBar($chartData); ?>
+            <?php $pie = StringHelper::formatForPie($chartData); ?>
+            <!-- Виносимо рейтинг і заголовок в окремий контейнер для центрування. -->
+            <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
                     <span class="poll_rating" data-id="<?= $poll->id; ?>"><?= $poll->rating; ?></span><br>
@@ -37,21 +42,20 @@ use common\models\User;
                         <a href="<?= $poll->url ?>"><?= $poll->title; ?></a>
                     </div>
                     <!-- h3>#DEV1</h3 -->
-                    <?php $chartData = $poll->getChartData();?>
-                    <?php $bar = StringHelper::formatForBar($chartData); ?>
-                    <?php $pie = StringHelper::formatForPie($chartData); ?>
-                    <?php if(!$poll->isShowResult()):?>
-                        <div class="inner_block_chosen">
-                            <?= $this->render('//poll/options', ['poll' => $poll, 'chartData'=>$chartData, 'bar'=>$bar, 'pie'=>$pie]); ?>
-                        </div>
-                    <?php /* TODO REmove debug * / else: ?>
-                        <div class="inner_block_chosen">
-                            $poll->isShowResult():
-                            <?= $poll->isShowResult(); ?>
-                        </div>
-                    <?php /* */ ?>
-                    <?php endif; ?>
                 </div>
+            </div>
+            <div class="middle_name_poll_b clearfix">
+                <?php if(!$poll->isShowResult()):?>
+                    <div class="inner_block_chosen">
+                        <?= $this->render('//poll/options', ['poll' => $poll, 'chartData'=>$chartData, 'bar'=>$bar, 'pie'=>$pie]); ?>
+                    </div>
+                <?php /* TODO REmove debug * / else: ?>
+                    <div class="inner_block_chosen">
+                        $poll->isShowResult():
+                        <?= $poll->isShowResult(); ?>
+                    </div>
+                <?php /* */ ?>
+                <?php endif; ?>
                 <?php if($poll->isShowResult()):?>
                     <div class="clearfix"></div>
                     <div class="container_graph">

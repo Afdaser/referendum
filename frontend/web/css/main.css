@@ -452,7 +452,7 @@ a.logo, div.logo {
     border: 1px solid #e3ece9;
     border-radius: 14px;
     box-shadow: 0 6px 18px rgba(6, 94, 49, 0.08);
-    padding: 12px 16px 8px;
+    padding: 12px 1% 8px;
 }
 .poll_view_page .poll_view_title_row {
     /* Робимо заголовок і кнопку поширення єдиним рядком на сторінці опитування. */
@@ -492,8 +492,7 @@ a.logo, div.logo {
 }
 .top_poll_b {
     /* Масштабуємо контейнер під збільшені теги та іконки на 25%. */
-    padding-left: 12.5px;
-    padding-top: 8.75px;
+    padding-left: 3.5px;
     /* Структуруємо верхню частину блоку опитування. */
     display: flex;
     flex-wrap: wrap;
@@ -527,7 +526,6 @@ a.link_poll:hover {
     float: none;
     /* Збільшуємо зону іконки шерингу на 25%. */
     width: 35px;
-    transform: translateX(-2.5px);
 /*
     margin-right: 4px;
 /* */
@@ -547,7 +545,6 @@ a.link_poll:hover {
     border-radius: 13.75px;
     background: #3ac469;
     position: relative;
-    top: -3.75px;
     font-size: 15px;
     color: #fff;
     -webkit-transition: all 0.5s;
@@ -716,14 +713,12 @@ a.link_poll:hover {
 }
 .poll_heading_b {
     /* Окремий контейнер для рейтингу та заголовка опитування. */
-    margin-top: 10px;
-    padding: 12px 4px 0;
+    padding: 10px 0px 0px;
     /* Переміщаємо рейтинг максимально вліво з відступом у 2%. */
-    padding-left: 2%;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
+    gap: 10px;
 }
 .middle_name_poll_b {
     /* Формуємо чітку структуру основного контенту під заголовком. */
@@ -781,10 +776,6 @@ a.link_poll:hover {
 .poll_heading_b .middle_title_b {
     /* Дозволяємо займати весь доступний простір поруч з рейтингом. */
     flex: 1 1 0;
-}
-.desc_my_chart {
-    /* Надаємо опису опитування органічний відступ під заголовком. */
-    margin-top: 10px;
 }
 .container_graph {
     position: relative;
@@ -879,11 +870,11 @@ button.radio_link:active .radio_indicator {
 }
 .title_poll h1 {
     color: #05662F;
-    font-size: 24px;
-    margin-top: 6px;
+    font-size: 22px;
     /* Утримуємо H1 в межах контентного блоку. */
     overflow-wrap: anywhere;
     word-break: break-word;
+    font-weight: 600;
 }
 .info_block {
     margin: 1.5%;
@@ -903,7 +894,7 @@ button.radio_link:active .radio_indicator {
     border-right: 1px solid #dce6e4;
     font-size: 14px;
     color: #53585A;
-    padding: 0 10px;
+    padding: 0 8px;
 }
 .right_poll_status {
     float: right;
@@ -1483,12 +1474,8 @@ a.btn_prev_var:hover {
 @media (max-width: 768px) {
     .desc_my_chart {
         /* На мобільних прибираємо надлишкові бічні відступи, щоб текст не "плив". */
-        margin-left: 0;
+        margin-left: 1%;
         margin-right: 0;
-    }
-    .poll_view_page .poll_heading_b {
-        /* Тримаємо рейтинг з 2% відступом зліва навіть на мобільних. */
-        padding-left: 2%;
     }
     .poll_view_page .desc_my_chart::before {
         /* На мобільних прибираємо лівий "відступ" від псевдоелемента. */
@@ -1501,10 +1488,6 @@ a.btn_prev_var:hover {
 .inner_b_chart .right_block_share_icon {
     top: 16px;
     margin-right: 20px;
-}
-.inner_b_chart .poll_heading_b {
-    /* Підтягуємо заголовок ближче до верхньої частини блоку. */
-    margin-top: -5px;
 }
 .inner_b_chart .top_poll_b {
     padding-left: 20px;

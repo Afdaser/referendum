@@ -177,7 +177,8 @@ $date = new DateTime($poll->date_add, new DateTimeZone('UTC')); // якщо да
 $date->setTimezone(new DateTimeZone('America/New_York'));
 ?>
 <span class="item_bottom_poll" itemprop="datePublished" content="<?= $date->format('c'); ?>">
-    <?= $poll->date_add; ?>
+    <?php // Виводимо лише дату без часу для сторінки тегів. ?>
+    <?= $date->format('Y-m-d'); ?>
 </span>
 
                         <?php if ($poll->isOpen()): ?>

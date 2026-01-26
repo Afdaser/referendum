@@ -181,10 +181,13 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
 </span>
 
                         <?php if ($poll->isOpen()): ?>
+                            <?php /* Коментар: приховано статус відкритого опитування на сторінці перегляду. */ ?>
+                            <?php /*
                             <div class="right_poll_status open">
                                 <?= Yii::t('poll', 'Відкрите голосування'); ?>
                                 <span><i class="fa fa-unlock"></i></span>
                             </div>
+                            */ ?>
                         <?php else: ?>
                             <div class="right_poll_status closed" title="<?= $poll->countPollOptionsVoters; ?>/<?= $poll->votes_count_close;?>">
                                 <?= Yii::t('poll', 'Закрите голосування'); ?>

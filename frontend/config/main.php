@@ -25,6 +25,12 @@ return [
         $hostParts = explode('.', $hostName);
         $subdomain = count($hostParts) > 2 ? $hostParts[0] : '';
 
+        if ($hostName === 'no.referendum.social' && $path === '/') {
+            // Редіректимо лише головну сторінку піддомену no на англомовну версію.
+            Yii::$app->response->redirect('https://en.referendum.social/', 301)->send();
+            Yii::$app->end();
+        }
+
         $redirect = \common\models\Redirect::find()
             ->where([
                 'subdomain' => $subdomain,

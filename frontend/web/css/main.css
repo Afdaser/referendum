@@ -3603,6 +3603,26 @@ a.pass_on_main_page {
     .for_close_radio input {
         width: 100%;
     }
+    /* Вирівнюємо блок сортування на мобільних, щоб підпис і селект були в одному рядку. */
+    .bottom_select_b_search {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+    }
+    .bottom_select_b_search .right_select_sort {
+        float: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: auto;
+    }
+    .bottom_select_b_search .right_select_sort select {
+        margin-left: 0;
+    }
+    .bottom_select_b_search .right_select_sort.left_option_period {
+        margin-left: 0;
+    }
     .select_search_b  .right_reg_label {
         width: 100%;
     }

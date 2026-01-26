@@ -330,9 +330,12 @@ $this->registerJs($scriptNotGuest);
                 <span class="item_bottom_poll">User: Sebades</span>
                 <span class="item_bottom_poll">Comments: 0</span>
                 <span class="item_bottom_poll">Voted: 85</span>
+                                    <?php /* Коментар: приховано статус відкритого опитування у списку. */ ?>
+                                    <?php /*
                                     <div class="right_poll_status open">
                         Open poll                        <span><i class="fa fa-unlock"></i></span>
                     </div>
+                                    */ ?>
                             </div>
         </div>
                     <div class="poll_block">
@@ -410,9 +413,12 @@ $this->registerJs($scriptNotGuest);
                 <span class="item_bottom_poll">User: Sebades</span>
                 <span class="item_bottom_poll">Comments: 0</span>
                 <span class="item_bottom_poll">Voted: 40</span>
+                                    <?php /* Коментар: приховано статус відкритого опитування у списку. */ ?>
+                                    <?php /*
                                     <div class="right_poll_status open">
                         Open poll                        <span><i class="fa fa-unlock"></i></span>
                     </div>
+                                    */ ?>
                             </div>
         </div>
                         <div class="inner_banner_b">
@@ -493,9 +499,12 @@ $this->registerJs($scriptNotGuest);
                 <span class="item_bottom_poll">User: Sebades</span>
                 <span class="item_bottom_poll">Comments: 0</span>
                 <span class="item_bottom_poll">Voted: 13</span>
+                                    <?php /* Коментар: приховано статус відкритого опитування у списку. */ ?>
+                                    <?php /*
                                     <div class="right_poll_status open">
                         Open poll                        <span><i class="fa fa-unlock"></i></span>
                     </div>
+                                    */ ?>
                             </div>
         </div>
     </div>

@@ -693,6 +693,8 @@ a.link_poll:hover {
     border-radius: 10px;
     padding: 6px 8px;
     min-width: 44px;
+    /* Зсуваємо рейтинг максимально вліво, залишаючи 2% відступу. */
+    margin-left: 2%;
 }
 .arrow_rating_top {
     display: inline-block;
@@ -720,7 +722,8 @@ a.link_poll:hover {
     /* Формуємо чітку структуру основного контенту. */
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    /* Центруємо заголовок відносно рейтингу по вертикалі. */
+    align-items: center;
     gap: 16px;
     /* Уніфікуємо розташування заголовка і опису на всіх сторінках. */
     align-content: flex-start;

@@ -37,13 +37,15 @@ if (!empty($poll->pollLanguage)) {
                             <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?= $poll->id; ?>"></a>
                         </div>
                         <div class="middle_title_b">
-                            <div class="title_poll poll_view_title_row" itemprop="headline">
+                            <div class="title_poll poll_view_title_row">
                                 <?php // Якщо налаштовано H1 у статичних мета-тегах — використовуємо його. ?>
                                 <?php if (!empty($pageHeading)): ?>
-                                    <h1><?= $pageHeading; ?></h1>
+                                    <?php // Переносимо itemprop="headline" безпосередньо на h1. ?>
+                                    <h1 itemprop="headline"><?= $pageHeading; ?></h1>
                                 <?php else: ?>
                                     <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
-                                    <h1><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                                    <?php // Переносимо itemprop="headline" безпосередньо на h1. ?>
+                                    <h1 itemprop="headline"><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
                                 <?php endif; ?>
                                 <span class="right_block_share_icon poll_view_share">
                                    <?php // Переміщаємо кнопку поширення ближче до заголовка для кращої читабельності. ?>

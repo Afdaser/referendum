@@ -10,20 +10,20 @@ use yii\web\View;
 
 ?>
 <?php if(!$poll->isShowResult()):?>
-    <?php foreach($poll->pollOptions as $option):?>
-        <div class="item_chose_poll">
-            <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
-                <!-- Відправляємо голос POST-запитом, щоб не показувати ідентифікатор опції в адресному рядку. -->
-                <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
-                <input type="hidden" name="option" value="<?= $option->id; ?>">
-                <button type="submit" class="radio_link poll-option-vote">
+    <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
+        <!-- Відправляємо голос POST-запитом, щоб не показувати ідентифікатор опції в адресному рядку. -->
+        <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
+        <!-- Одна форма для всіх варіантів, щоб зберегти вигляд без змін обгорток. -->
+        <?php foreach($poll->pollOptions as $option):?>
+            <div class="item_chose_poll">
+                <button type="submit" class="radio_link poll-option-vote" name="option" value="<?= $option->id; ?>">
                     <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text"><?= (YII_ENV != 'dev') ? '' : "[{$option->id}]:"; ?><?= $option->title; ?></span>
                 </button>
-            </form>
-        </div>
-    <?php endforeach;?>
+            </div>
+        <?php endforeach;?>
+    </form>
     <div class="item_chose_poll see_results">
         <form method="post" action="<?= Url::toRoute(['/poll/poll/view', 'id' => $poll->id]); ?>">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">

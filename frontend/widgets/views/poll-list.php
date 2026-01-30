@@ -374,30 +374,25 @@ $this->registerJs($scriptNotGuest);
             </div>
             <div class="middle_name_poll_b clearfix">
                                                                                                         <div class="inner_block_chosen">
-                                        <div class="item_chose_poll">
-            <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                                        <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                <?php // Один POST-формат на блок опитування, щоб уникнути дублювання форм. ?>
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
-                <input type="hidden" name="option" value="1512">
-                <button type="submit" class="radio_link poll-option-vote">
+                <div class="item_chose_poll">
+                <button type="submit" class="radio_link poll-option-vote" name="option" value="1512">
                     <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">Yes</span>
                 </button>
-            </form>
-        </div>
-            <div class="item_chose_poll">
-            <form method="post" action="/poll/poll/vote" class="poll-option-form">
-                <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
-                <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
-                <input type="hidden" name="option" value="1513">
-                <button type="submit" class="radio_link poll-option-vote">
+                </div>
+                <div class="item_chose_poll">
+                <button type="submit" class="radio_link poll-option-vote" name="option" value="1513">
                     <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">No</span>
                 </button>
-            </form>
-        </div>
+                </div>
+                </form>
     
 <script>
 	    $(function () {
@@ -457,30 +452,25 @@ $this->registerJs($scriptNotGuest);
             </div>
             <div class="middle_name_poll_b clearfix">
                                                                                                         <div class="inner_block_chosen">
-                                        <div class="item_chose_poll">
-            <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                                        <form method="post" action="/poll/poll/vote" class="poll-option-form">
+                <?php // Один POST-формат на блок опитування, щоб уникнути дублювання форм. ?>
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
-                <input type="hidden" name="option" value="1554">
-                <button type="submit" class="radio_link poll-option-vote">
+                <div class="item_chose_poll">
+                <button type="submit" class="radio_link poll-option-vote" name="option" value="1554">
                     <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">Yes</span>
                 </button>
-            </form>
-        </div>
-            <div class="item_chose_poll">
-            <form method="post" action="/poll/poll/vote" class="poll-option-form">
-                <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
-                <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
-                <input type="hidden" name="option" value="1555">
-                <button type="submit" class="radio_link poll-option-vote">
+                </div>
+                <div class="item_chose_poll">
+                <button type="submit" class="radio_link poll-option-vote" name="option" value="1555">
                     <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">No</span>
                 </button>
-            </form>
-        </div>
+                </div>
+                </form>
     
 <script>
 	    $(function () {

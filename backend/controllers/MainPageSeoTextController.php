@@ -44,6 +44,13 @@ class MainPageSeoTextController extends Controller
             throw new NotFoundHttpException('Домен не знайдено.');
         }
 
+        // Підстраховуємося з кодуванням з'єднання, щоб емодзі не перетворювались на "???".
+        $db = Yii::$app->db;
+        if (mb_strtolower((string) $db->charset) !== 'utf8mb4') {
+            $db->charset = 'utf8mb4';
+            $db->createCommand('SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci')->execute();
+        }
+
         $model = MainPageSeoText::findOne(['domain' => $domain]);
         if ($model === null) {
             $model = new MainPageSeoText([

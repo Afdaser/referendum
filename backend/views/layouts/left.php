@@ -63,6 +63,14 @@ use common\models\AuthItem;
 //                    'visible' => Yii::$app->user->can(AuthItem::P_CONTRACT_ENTER),
                     'items' => [],
                 ],
+                // Додаємо окремий розділ для SEO-текстів головної сторінки.
+                [
+                    'label' => 'SEO головної сторінки',
+                    'icon' => 'file-text',
+                    'url' => Url::toRoute(['/main-page-seo-text/index']),
+                    'active' => MenuHelper::isActiveMenu(['main-page-seo-text'], $this->context->route),
+                    'items' => [],
+                ],
                 // Додаємо простий розділ для керування редіректами.
                 [
                     'label' => 'Редіректи',

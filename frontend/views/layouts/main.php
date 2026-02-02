@@ -8,6 +8,7 @@ use frontend\assets\AppAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
 use common\models\Language;
+use common\models\MainPageSeoText;
 
 //use yii\bootstrap4\Breadcrumbs;
 use yii\widgets\Breadcrumbs;
@@ -178,31 +179,50 @@ if (
 ?>
     <div class="top_banner_b">
         <?php
-        // Якщо категорія 'hot' — показуємо головний SEO-текст (з common/messages/.../seo.php)
+        // Якщо категорія 'hot' — показуємо головний SEO-текст (з БД або fallback із common/messages/.../seo.php).
         if (Yii::$app->params['category'] == 'hot') {
-            $mainPageTextKey = 'main_page_text';
-            $mainPageText = Yii::t('seo', $mainPageTextKey);
+            $mainPageText = '';
+            $mainPageHeading = '';
 
-            // Для англійського піддомену підключаємо окремий файл із SEO-текстом, щоб не плутати переклади.
-            $langDomains = Yii::$app->params['langDomains'] ?? [];
-            $englishLanguageId = Language::getLanguageByName('en');
-            $englishSubdomain = $langDomains[$englishLanguageId] ?? null;
-            // Тримаємо кастомний текст у звичній папці з повідомленнями, щоб його легко знайти.
-            $englishSubdomainTextFile = Yii::getAlias('@common/messages/en-US/english_subdomain_main_text.php');
+            // Спочатку пробуємо взяти SEO-текст з адмінки (привʼязка до домену/піддомену).
+            $seoRecord = MainPageSeoText::findForHost(Yii::$app->request->hostName);
+            if ($seoRecord !== null) {
+                $mainPageHeading = trim((string) $seoRecord->heading);
+                $mainPageText = trim((string) $seoRecord->content);
+            }
 
-            if (
-                $englishSubdomain
-                && strcasecmp(Yii::$app->request->hostName, $englishSubdomain) === 0
-                && is_file($englishSubdomainTextFile)
-            ) {
-                // Не нашкодити: використовуємо вміст файлу лише якщо він повертає рядок.
-                $subdomainText = include $englishSubdomainTextFile;
-                if (is_string($subdomainText) && $subdomainText !== '') {
-                    $mainPageText = $subdomainText;
+            // Якщо в БД нічого немає — залишаємо стару логіку з файлів перекладу.
+            if ($mainPageText === '') {
+                $mainPageTextKey = 'main_page_text';
+                $mainPageText = Yii::t('seo', $mainPageTextKey);
+
+                // Для англійського піддомену підключаємо окремий файл із SEO-текстом, щоб не плутати переклади.
+                $langDomains = Yii::$app->params['langDomains'] ?? [];
+                $englishLanguageId = Language::getLanguageByName('en');
+                $englishSubdomain = $langDomains[$englishLanguageId] ?? null;
+                // Тримаємо кастомний текст у звичній папці з повідомленнями, щоб його легко знайти.
+                $englishSubdomainTextFile = Yii::getAlias('@common/messages/en-US/english_subdomain_main_text.php');
+
+                if (
+                    $englishSubdomain
+                    && strcasecmp(Yii::$app->request->hostName, $englishSubdomain) === 0
+                    && is_file($englishSubdomainTextFile)
+                ) {
+                    // Не нашкодити: використовуємо вміст файлу лише якщо він повертає рядок.
+                    $subdomainText = include $englishSubdomainTextFile;
+                    if (is_string($subdomainText) && $subdomainText !== '') {
+                        $mainPageText = $subdomainText;
+                    }
                 }
             }
 
-            echo $mainPageText;
+            if ($mainPageHeading !== '') {
+                echo Html::tag('h1', Html::encode($mainPageHeading), ['class' => 'main-page-seo__heading']);
+            }
+
+            if ($mainPageText !== '') {
+                echo $mainPageText;
+            }
         }
         ?>
     </div>

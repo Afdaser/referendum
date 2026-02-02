@@ -7,7 +7,6 @@ use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
-use common\models\MainPageSeoText;
 
 //use yii\bootstrap4\Breadcrumbs;
 use yii\widgets\Breadcrumbs;
@@ -169,7 +168,7 @@ $locale = Yii::$app->language;
 // Перевіряємо, чи користувач на головній сторінці (site/index) або на головній сторінці піддомену.
 // Додаємо умову, щоб SEO-текст показувався лише на першій сторінці пагінації.
 $pageNumber = (int) Yii::$app->request->get('page', 1);
-$isFirstPage = $pageNumber <= 1;
+$isFirstPage = $this->params['isMainPageFirst'] ?? $pageNumber <= 1;
 if (
     Yii::$app->controller->id === 'site'
     && Yii::$app->controller->action->id === 'index'
@@ -180,20 +179,8 @@ if (
         <?php
         // Якщо категорія 'hot' — показуємо головний SEO-текст з адмінки для домену/піддомену.
         if (Yii::$app->params['category'] == 'hot') {
-            $mainPageText = '';
-            $mainPageHeading = '';
-
-            // Спочатку пробуємо взяти SEO-текст з адмінки (привʼязка до домену/піддомену).
-            $seoRecord = MainPageSeoText::findForHost(Yii::$app->request->hostName);
-            if ($seoRecord !== null) {
-                $mainPageHeading = trim((string) $seoRecord->heading);
-                $mainPageText = trim((string) $seoRecord->content);
-            }
-
-            if ($mainPageHeading !== '') {
-                echo Html::tag('h1', Html::encode($mainPageHeading), ['class' => 'main-page-seo__heading']);
-            }
-
+            // Показуємо лише SEO-текст: заголовок перенесли у верхню частину сторінки.
+            $mainPageText = $this->params['mainPageText'] ?? '';
             if ($mainPageText !== '') {
                 echo $mainPageText;
             }

@@ -20,6 +20,11 @@ use yii\behaviors\TimestampBehavior;
 class MainPageSeoText extends ActiveRecord
 {
     /**
+     * Маркер для кодування емодзі у випадку, якщо БД/з'єднання не підтримує utf8mb4.
+     */
+    private const EMOJI_ENTITY_PATTERN = '/[\x{10000}-\x{10FFFF}]/u';
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -81,6 +86,38 @@ class MainPageSeoText extends ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        // Якщо з'єднання не в utf8mb4, кодуємо емодзі у HTML-сутності, щоб їх не замінювало на "???".
+        if ($this->shouldEncodeEmoji()) {
+            $this->meta_title = $this->encodeEmojiEntities((string) $this->meta_title);
+            $this->meta_description = $this->encodeEmojiEntities((string) $this->meta_description);
+            $this->heading = $this->encodeEmojiEntities((string) $this->heading);
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        // Розкодовуємо емодзі після отримання з БД, щоб їх бачили в адмінці та мета-тегах.
+        $this->meta_title = $this->decodeEmojiEntities((string) $this->meta_title);
+        $this->meta_description = $this->decodeEmojiEntities((string) $this->meta_description);
+        $this->heading = $this->decodeEmojiEntities((string) $this->heading);
+    }
+
+    /**
      * Шукає SEO-текст для поточного домену або основного домену.
      */
     public static function findForHost(string $hostName): ?self
@@ -105,5 +142,37 @@ class MainPageSeoText extends ActiveRecord
         }
 
         return null;
+    }
+
+    /**
+     * Перевіряє, чи потрібно кодувати емодзі у числові HTML-сутності.
+     */
+    private function shouldEncodeEmoji(): bool
+    {
+        $charset = static::getDb()->charset;
+        if ($charset === null) {
+            return true;
+        }
+
+        return mb_strtolower((string) $charset) !== 'utf8mb4';
+    }
+
+    /**
+     * Кодує емодзі у числові HTML-сутності, щоб зберегти їх у БД з utf8.
+     */
+    private function encodeEmojiEntities(string $value): string
+    {
+        return preg_replace_callback(self::EMOJI_ENTITY_PATTERN, static function (array $matches): string {
+            $codepoint = unpack('N', mb_convert_encoding($matches[0], 'UCS-4BE', 'UTF-8'))[1];
+            return '&#x' . strtoupper(dechex($codepoint)) . ';';
+        }, $value);
+    }
+
+    /**
+     * Декодує HTML-сутності назад у емодзі.
+     */
+    private function decodeEmojiEntities(string $value): string
+    {
+        return html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }

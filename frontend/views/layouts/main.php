@@ -7,7 +7,6 @@ use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
-use common\models\Language;
 use common\models\MainPageSeoText;
 
 //use yii\bootstrap4\Breadcrumbs;
@@ -179,7 +178,7 @@ if (
 ?>
     <div class="top_banner_b">
         <?php
-        // Якщо категорія 'hot' — показуємо головний SEO-текст (з БД або fallback із common/messages/.../seo.php).
+        // Якщо категорія 'hot' — показуємо головний SEO-текст з адмінки для домену/піддомену.
         if (Yii::$app->params['category'] == 'hot') {
             $mainPageText = '';
             $mainPageHeading = '';
@@ -189,31 +188,6 @@ if (
             if ($seoRecord !== null) {
                 $mainPageHeading = trim((string) $seoRecord->heading);
                 $mainPageText = trim((string) $seoRecord->content);
-            }
-
-            // Якщо в БД нічого немає — залишаємо стару логіку з файлів перекладу.
-            if ($mainPageText === '') {
-                $mainPageTextKey = 'main_page_text';
-                $mainPageText = Yii::t('seo', $mainPageTextKey);
-
-                // Для англійського піддомену підключаємо окремий файл із SEO-текстом, щоб не плутати переклади.
-                $langDomains = Yii::$app->params['langDomains'] ?? [];
-                $englishLanguageId = Language::getLanguageByName('en');
-                $englishSubdomain = $langDomains[$englishLanguageId] ?? null;
-                // Тримаємо кастомний текст у звичній папці з повідомленнями, щоб його легко знайти.
-                $englishSubdomainTextFile = Yii::getAlias('@common/messages/en-US/english_subdomain_main_text.php');
-
-                if (
-                    $englishSubdomain
-                    && strcasecmp(Yii::$app->request->hostName, $englishSubdomain) === 0
-                    && is_file($englishSubdomainTextFile)
-                ) {
-                    // Не нашкодити: використовуємо вміст файлу лише якщо він повертає рядок.
-                    $subdomainText = include $englishSubdomainTextFile;
-                    if (is_string($subdomainText) && $subdomainText !== '') {
-                        $mainPageText = $subdomainText;
-                    }
-                }
             }
 
             if ($mainPageHeading !== '') {

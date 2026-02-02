@@ -12,6 +12,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $domain
  * @property string|null $heading
  * @property string|null $content
+ * @property string|null $meta_title
+ * @property string|null $meta_description
  * @property int|null $created_at
  * @property int|null $updated_at
  */
@@ -42,9 +44,9 @@ class MainPageSeoText extends ActiveRecord
     {
         return [
             [['domain'], 'required'],
-            [['content'], 'string'],
+            [['content', 'meta_description'], 'string'],
             [['created_at', 'updated_at'], 'integer'],
-            [['domain', 'heading'], 'string', 'max' => 255],
+            [['domain', 'heading', 'meta_title'], 'string', 'max' => 255],
             [['domain'], 'unique'],
         ];
     }
@@ -58,6 +60,8 @@ class MainPageSeoText extends ActiveRecord
             'id' => 'ID',
             'domain' => 'Домен',
             'heading' => 'Заголовок H1',
+            'meta_title' => 'Meta title',
+            'meta_description' => 'Meta description',
             'content' => 'SEO-текст',
             'created_at' => 'Створено',
             'updated_at' => 'Оновлено',
@@ -69,8 +73,11 @@ class MainPageSeoText extends ActiveRecord
      */
     public function isEmpty(): bool
     {
+        // Вважаємо запис порожнім, якщо всі SEO-поля не заповнені.
         return trim((string) $this->heading) === ''
-            && trim((string) $this->content) === '';
+            && trim((string) $this->content) === ''
+            && trim((string) $this->meta_title) === ''
+            && trim((string) $this->meta_description) === '';
     }
 
     /**

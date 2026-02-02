@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS `main_page_seo_text` (
     `domain` VARCHAR(255) NOT NULL,
     `heading` VARCHAR(255) DEFAULT NULL,
     `content` MEDIUMTEXT DEFAULT NULL,
+    `meta_title` VARCHAR(255) DEFAULT NULL,
+    `meta_description` TEXT DEFAULT NULL,
     `created_at` INT(11) DEFAULT NULL,
     `updated_at` INT(11) DEFAULT NULL,
     PRIMARY KEY (`id`),

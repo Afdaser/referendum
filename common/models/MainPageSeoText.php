@@ -80,6 +80,7 @@ class MainPageSeoText extends ActiveRecord
             && trim((string) $this->meta_description) === '';
     }
 
+
     /**
      * Шукає SEO-текст для поточного домену або основного домену.
      */
@@ -106,4 +107,5 @@ class MainPageSeoText extends ActiveRecord
 
         return null;
     }
+
 }

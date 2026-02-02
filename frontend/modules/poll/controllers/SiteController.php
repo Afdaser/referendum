@@ -53,6 +53,13 @@ class SiteController extends Controller
 
         $request = Yii::$app->request;
 
+        // Підстраховуємо кодування з'єднання для коректного читання емодзі з БД.
+        $db = Yii::$app->db;
+        if (mb_strtolower((string) $db->charset) !== 'utf8mb4') {
+            $db->charset = 'utf8mb4';
+            $db->createCommand('SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci')->execute();
+        }
+
         // Канонічне посилання завжди повторює поточний домен і шлях (з урахуванням пагінації).
         // Це дозволяє головному домену referendum.social працювати без редіректів на en.referendum.social.
         $canonicalUrl = $request->hostInfo . $request->url;

@@ -4,6 +4,7 @@ use yii\web\View;
 use yii\widgets\Menu;
 use frontend\widgets\WPollList;
 use common\widgets\Alert;
+use yii\helpers\Html;
 //     
 
 //use Yii;
@@ -21,6 +22,19 @@ use common\widgets\Alert;
         <?= Alert::widget(); ?>
     </div>
     <div class="row right_cut_row">
+        <?php
+        // Виносимо головний h1 угору, як на сторінках метатегів, щоб він не губився під SEO-блоком.
+        $mainPageHeading = $this->params['mainPageHeading'] ?? '';
+        $isMainPageFirst = $this->params['isMainPageFirst'] ?? false;
+        ?>
+        <?php if (
+            Yii::$app->controller->id === 'site'
+            && Yii::$app->controller->action->id === 'index'
+            && $isMainPageFirst
+            && $mainPageHeading !== ''
+        ): ?>
+            <h1 class="tag-page__title"><?= Html::encode($mainPageHeading); ?></h1>
+        <?php endif; ?>
         <?=
         WPollList::widget([
             'dataProvider' => $dataProvider,

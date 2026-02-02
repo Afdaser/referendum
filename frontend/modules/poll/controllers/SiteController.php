@@ -72,6 +72,9 @@ class SiteController extends Controller
         $seoRecord = MainPageSeoText::findForHost($request->hostName);
         $metaTitle = $seoRecord ? trim((string) $seoRecord->meta_title) : '';
         $metaDescription = $seoRecord ? trim((string) $seoRecord->meta_description) : '';
+        // Готуємо h1 і SEO-текст, щоб показати заголовок угорі, а текст залишити внизу.
+        $mainPageHeading = $seoRecord ? trim((string) $seoRecord->heading) : '';
+        $mainPageText = $seoRecord ? trim((string) $seoRecord->content) : '';
 
         // Якщо значення не задані в адмінці, використовуємо безпечні дефолти.
         if ($langCode === 'ua') {
@@ -87,6 +90,10 @@ class SiteController extends Controller
         Yii::$app->page->setTitle($title);
         Yii::$app->page->setDescription($description);
         $this->view->title = $title;
+        // Передаємо дані для h1 та SEO-тексту в представлення головної сторінки.
+        $this->view->params['mainPageHeading'] = $mainPageHeading;
+        $this->view->params['mainPageText'] = $mainPageText;
+        $this->view->params['isMainPageFirst'] = (int) $request->get('page', 1) <= 1;
 
         return self::renderIndex($this->category);
     }

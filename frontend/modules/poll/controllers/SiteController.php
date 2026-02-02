@@ -13,6 +13,7 @@ use common\models\Poll;
 use common\models\search\PollSearch;
 use common\models\Tag;
 use common\models\Language;
+use common\models\MainPageSeoText;
 
 class SiteController extends Controller
 {
@@ -60,13 +61,22 @@ class SiteController extends Controller
             'href' => $canonicalUrl,
         ]);
 
+        // Беремо мета-дані для головної сторінки з налаштувань домену/піддомену.
+        $seoRecord = MainPageSeoText::findForHost($request->hostName);
+        $metaTitle = $seoRecord ? trim((string) $seoRecord->meta_title) : '';
+        $metaDescription = $seoRecord ? trim((string) $seoRecord->meta_description) : '';
+
+        // Якщо значення не задані в адмінці, використовуємо безпечні дефолти.
         if ($langCode === 'ua') {
-            $title = 'Останні опитування громадської думки про все | Referendum';
-            $description = 'Опитування та думки про все — беріть участь в опитуваннях і обговореннях: голосуйте, пишіть коментарі, пропонуйте варіанти відповідей або створюйте власні опитування. 📊 Долучайтеся! 🌟';
+            $defaultTitle = 'Останні опитування громадської думки про все | Referendum';
+            $defaultDescription = 'Опитування та думки про все — беріть участь в опитуваннях і обговореннях: голосуйте, пишіть коментарі, пропонуйте варіанти відповідей або створюйте власні опитування. 📊 Долучайтеся! 🌟';
         } else {
-            $title = Yii::t('seo', 'home_title');
-            $description = Yii::t('seo', 'home_description');
+            $defaultTitle = 'Latest public opinion polls about everything | Referendum';
+            $defaultDescription = 'Polls and opinions about everything — join discussions, vote, comment, suggest answers, or create your own polls. 📊 Join us! 🌟';
         }
+
+        $title = $metaTitle !== '' ? $metaTitle : $defaultTitle;
+        $description = $metaDescription !== '' ? $metaDescription : $defaultDescription;
         Yii::$app->page->setTitle($title);
         Yii::$app->page->setDescription($description);
         $this->view->title = $title;

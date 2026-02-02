@@ -16,11 +16,22 @@ $this->params['breadcrumbs'][] = $domainLabel;
     <h1><?= Html::encode($this->title); ?></h1>
 
     <p>
-        Заповніть H1 та SEO-текст для домену <strong><?= Html::encode($domainLabel); ?></strong>.
+        Заповніть H1, мета-теги та SEO-текст для домену <strong><?= Html::encode($domainLabel); ?></strong>.
         Порожні поля видалять збережені значення та повернуть стандартну логіку показу текстів.
     </p>
 
     <?php $form = ActiveForm::begin(); ?>
+        <?php
+        // Поля для мета-тегів залишаємо у звичайному текстовому вигляді, як і H1.
+        ?>
+        <?= $form->field($model, 'meta_title')
+            ->textInput(['maxlength' => true])
+            ->hint('Значення потрапляє у мета-тег title для головної сторінки.'); ?>
+
+        <?= $form->field($model, 'meta_description')
+            ->textInput(['maxlength' => true])
+            ->hint('Значення потрапляє у мета-тег description для головної сторінки.'); ?>
+
         <?= $form->field($model, 'heading')
             ->textInput(['maxlength' => true])
             ->hint('Значення потрапляє у головний H1 на головній сторінці.'); ?>

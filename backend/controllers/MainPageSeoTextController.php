@@ -55,6 +55,9 @@ class MainPageSeoTextController extends Controller
             // Нормалізуємо значення, щоб зайві пробіли не зберігались у БД.
             $model->heading = trim((string) $model->heading);
             $model->content = trim((string) $model->content);
+            // Підчищаємо мета-дані, щоб не зберігати лише пробіли.
+            $model->meta_title = trim((string) $model->meta_title);
+            $model->meta_description = trim((string) $model->meta_description);
 
             if (!$model->validate()) {
                 Yii::$app->session->setFlash('error', 'Не вдалося зберегти SEO-текст.');

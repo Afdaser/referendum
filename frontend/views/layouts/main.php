@@ -18,6 +18,13 @@ $bundle = AppAsset::register($this);
 $this->registerCssFile('/css/bootstrap.min.css');
 
 $locale = Yii::$app->language;
+$pageNumber = (int) Yii::$app->request->get('page', 1);
+$isFirstPage = $this->params['isMainPageFirst'] ?? $pageNumber <= 1;
+$isMainIndexPage = (
+    Yii::$app->controller->id === 'site'
+    && Yii::$app->controller->action->id === 'index'
+    && $isFirstPage
+);
 
 ?>
 <?php $this->beginPage() ?>
@@ -33,7 +40,19 @@ $locale = Yii::$app->language;
     <?= Yii::$app->page->prepare(); ?>
     <?= Yii::$app->page->openGraphHtml; ?>
     <?php /* = Yii::$app->page->adjustOpenGraph(); /* */ ?>
-    
+
+    <?php if ($isMainIndexPage): ?>
+        <?php
+        // Додаємо hreflang лише для головної сторінки домену або піддомену, без пагінації.
+        ?>
+        <link rel="alternate" hreflang="uk-UA" href="https://ua.referendum.social/" />
+        <link rel="alternate" hreflang="ru-RU" href="https://ru.referendum.social/" />
+        <link rel="alternate" hreflang="nb-NO" href="https://no.referendum.social/" />
+        <link rel="alternate" hreflang="en-US" href="https://en.referendum.social/" />
+        <link rel="alternate" hreflang="en-NZ" href="https://nz.referendum.social/" />
+        <link rel="alternate" hreflang="x-default" href="https://referendum.social/" />
+    <?php endif; ?>
+
 <?php /*
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 /* */ ?>
@@ -167,13 +186,7 @@ $locale = Yii::$app->language;
 <?php
 // Перевіряємо, чи користувач на головній сторінці (site/index) або на головній сторінці піддомену.
 // Додаємо умову, щоб SEO-текст показувався лише на першій сторінці пагінації.
-$pageNumber = (int) Yii::$app->request->get('page', 1);
-$isFirstPage = $this->params['isMainPageFirst'] ?? $pageNumber <= 1;
-if (
-    Yii::$app->controller->id === 'site'
-    && Yii::$app->controller->action->id === 'index'
-    && $isFirstPage
-) :
+if ($isMainIndexPage) :
 ?>
     <div class="top_banner_b">
         <?php

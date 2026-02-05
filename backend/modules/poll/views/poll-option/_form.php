@@ -14,7 +14,8 @@ use yii\widgets\ActiveForm;
 
     <?php // poll_id передається з контексту опитування і не редагується вручну. ?>
     <?= $form->field($model, 'poll_id')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?php // Явно уточнюємо зміст поля для адмінів, щоб уникнути двозначності з заголовком опитування. ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true])->label('Назва варіанту відповіді') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

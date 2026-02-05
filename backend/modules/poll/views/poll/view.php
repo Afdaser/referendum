@@ -20,6 +20,8 @@ $qtyOptions = count($model->pollOptions);
         <?= Html::a(Yii::t('app', 'Poll options'). ($qtyOptions ? ' ['.$qtyOptions.']' : ''),
                 ['/poll/poll-option/index', 'PollOptionSearch' => ['poll_id' =>  $model->id]], ['class' => 'btn btn-primary']
                 ) ?>
+        <?php // Швидке створення варіанту одразу в контексті поточного опитування. ?>
+        <?= Html::a(Yii::t('app', 'Create Poll option'), ['/poll/poll-option/create', 'poll_id' => $model->id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= DetailView::widget([

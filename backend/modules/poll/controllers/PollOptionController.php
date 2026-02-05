@@ -4,6 +4,7 @@ namespace backend\modules\poll\controllers;
 
 use common\models\PollOption;
 use common\models\search\PollOptionSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -65,16 +66,35 @@ class PollOptionController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($poll_id = null)
     {
         $model = new PollOption();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
+        // Визначаємо опитування з query-параметра і фіксуємо його для нової відповіді.
+        $model->poll_id = $poll_id !== null
+            ? (int) $poll_id
+            : (int) Yii::$app->request->get('poll_id');
+
+        if (!$model->poll_id) {
+            Yii::$app->session->setFlash('error', Yii::t('app', 'Poll is required.'));
+            return $this->redirect(['index']);
+        }
+
+        // Для адмінки автоматично підставляємо службові поля.
+        if (!Yii::$app->request->isPost) {
+            $model->user_id = (int) Yii::$app->user->id;
+            $model->status = PollOption::OPTION_STATUS_PUBLISHED;
+            $model->rating = 0;
             $model->loadDefaultValues();
+        }
+
+        if ($this->request->isPost) {
+            $model->user_id = (int) Yii::$app->user->id;
+            $model->status = PollOption::OPTION_STATUS_PUBLISHED;
+            $model->rating = 0;
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['/poll/poll/view', 'id' => $model->poll_id]);
+            }
         }
 
         return $this->render('create', [

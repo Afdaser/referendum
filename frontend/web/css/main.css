@@ -729,7 +729,7 @@ a.link_poll:hover {
     /* Уніфікуємо розташування опису і графіка на всіх сторінках. */
     align-content: flex-start;
     margin-top: 0;
-    padding: 0 4px 10px;
+    padding: 0 5px 10px;
 }
 .middle_name_poll_b .clearfix {
     /* Прибираємо зайвий блок очищення у flex-розкладці. */
@@ -758,8 +758,8 @@ a.link_poll:hover {
 
 }
 .inner_block_chosen {
-    margin-top: 10px;
-    margin-left: -2%;
+    margin-top: 5px;
+    margin-left: -1%;
 }
 .middle_title_b {
     margin-left: 40px;
@@ -1498,7 +1498,7 @@ a.btn_prev_var:hover {
 }
 .chosen_graph_b {
     position: absolute;
-    bottom: 20%;
+    bottom: 35%;
     right: 20px;
     width: 26px;
     height: 26px;

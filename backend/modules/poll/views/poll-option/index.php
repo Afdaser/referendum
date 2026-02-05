@@ -18,8 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="poll-option-index">
 
+    <?php
+    // Якщо відкрили зі сторінки опитування, прив'язуємо створення до конкретного poll_id.
+    $selectedPollId = (int)($searchModel->poll_id ?? Yii::$app->request->get('poll_id', 0));
+    ?>
+
     <p>
-        <?= Html::a(Yii::t('app', 'Create Poll option'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Poll option'), ['create', 'poll_id' => $selectedPollId ?: null], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>

@@ -30,6 +30,10 @@ class WPollList extends BaseWidget
     public $pages;
     /** @var bool чи потрібно показувати службовий відладочний блок */
     public $showDebug = false;
+    /**
+     * Кастомний підсумок для пагінації: використовуємо "polls" замість дефолтного "items".
+     */
+    public $summary = 'Showing <b>{begin}-{end}</b> of <b>{totalCount}</b> polls.';
 
     /**
      * @var string the layout that determines how different sections of the list view should be organized.

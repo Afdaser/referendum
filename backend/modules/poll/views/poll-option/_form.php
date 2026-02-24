@@ -16,6 +16,11 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'poll_id')->hiddenInput()->label(false) ?>
     <?php // Явно уточнюємо зміст поля для адмінів, щоб уникнути двозначності з заголовком опитування. ?>
     <?= $form->field($model, 'title')->textInput(['maxlength' => true])->label('Назва варіанту відповіді') ?>
+    <?php // Повертаємо редагування статусу у формі, щоб адміністратор міг керувати видимістю відповіді. ?>
+    <?= $form->field($model, 'status')->dropDownList([
+        \common\models\PollOption::OPTION_STATUS_PUBLISHED => 'Опубліковане',
+        \common\models\PollOption::OPTION_STATUS_UNPUBLISHED => 'Неопубліковане',
+    ]) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

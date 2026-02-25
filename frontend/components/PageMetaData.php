@@ -102,11 +102,15 @@ class PageMetaData extends BaseObject {
 
     public function getMetaDescriptionHtml() {
         //         <meta name="description" content="Page description">
-        if (!empty($this->data['description']))
+        if (!empty($this->data['description'])) {
+            // Екрануємо спецсимволи (включно з подвійними лапками),
+            // щоб не ламати HTML-атрибут content у метатегах.
+            $safeDescription = Html::encode((string) $this->data['description']);
             return <<<HTML_META_DESCRIPTION
-<meta name="description" content="{$this->data['description']}">
+<meta name="description" content="{$safeDescription}">
 
 HTML_META_DESCRIPTION;
+        }
     }
 
     public function getRobotsHtml() {
@@ -115,11 +119,14 @@ HTML_META_DESCRIPTION;
         if (preg_match('/(^|\\.)nz\\.referendum\\.social$/i', Yii::$app->request->hostName)) {
             $this->data['robots'] = 'noindex, nofollow';
         }
-        if (!empty($this->data['robots']))
+        if (!empty($this->data['robots'])) {
+            // Захищаємо атрибут content від неекранованих спецсимволів.
+            $safeRobots = Html::encode((string) $this->data['robots']);
             return <<<HTML_ROBOTS
-<meta name="robots" content="{$this->data['robots']}">
+<meta name="robots" content="{$safeRobots}">
 
 HTML_ROBOTS;
+        }
     }
 
     public function getFaviconHtml() {
@@ -138,7 +145,11 @@ HTML_FAVICON;
         $dataHtml = '';
         foreach ($this->meta[self::OG] as $key => $value) {
             if (!empty($value)) {
-                $dataHtml .= '<meta property="og:' . $key . '" content="' . $value . '">' . "\n";
+                // Екрануємо як назву властивості, так і значення,
+                // щоб лапки та інші символи не обрізали контент тега.
+                $safeKey = Html::encode((string) $key);
+                $safeValue = Html::encode((string) $value);
+                $dataHtml .= '<meta property="og:' . $safeKey . '" content="' . $safeValue . '">' . "\n";
             }
         }
         return $dataHtml;

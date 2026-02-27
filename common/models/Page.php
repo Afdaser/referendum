@@ -78,10 +78,13 @@ class Page extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'slug' => Yii::t('app', 'Slug'),
             'language_id' => Yii::t('app', 'Language'),
-            'name' => Yii::t('app', 'Name'),
-            'title' => Yii::t('app', 'Title'),
+            // Назва поля для редактора статичної сторінки: це H1 на фронтенді.
+            'name' => 'H1',
+            // Назва поля для SEO: це текст <title>.
+            'title' => 'Заголовок',
             'content' => Yii::t('app', 'Content'),
-            'describe' => Yii::t('app', 'Describe'),
+            // Назва поля для SEO-опису сторінки.
+            'describe' => 'meta-description',
             'scripts' => Yii::t('app', 'Scripts'),
             'date_add' => Yii::t('app', 'Date add'),
             'date_update' => Yii::t('app', 'Date update'),

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use Yii;
+use common\models\Language;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 //use frontend\models\ResendVerificationEmailForm;
@@ -69,7 +70,17 @@ class PageController extends Controller {
             $language = Yii::$app->language;
         }
 
-        $language = strtolower(substr($language, 0, 2));
+        $rawLanguage = trim((string) $language);
+
+        // Спершу намагаємось знайти мову за locale (наприклад, en-NZ -> nz).
+        if ($rawLanguage !== '') {
+            $languageModel = Language::find()->where(['locale' => $rawLanguage])->one();
+            if ($languageModel !== null) {
+                return (string) $languageModel->name;
+            }
+        }
+
+        $language = strtolower(substr($rawLanguage, 0, 2));
         if ($language === 'uk') {
             $language = 'ua';
         }

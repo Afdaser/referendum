@@ -25,13 +25,16 @@ use common\models\Language;
             ]);
             ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?php // H1 для статичної сторінки на фронтенді. ?>
+    <?= $form->field($model, 'name')->label('H1')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?php // SEO-заголовок для HTML <title>. ?>
+    <?= $form->field($model, 'title')->label('Заголовок')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'content')->widget(ashch\tinymce\TinyMce::class); ?>
 
-    <?= $form->field($model, 'describe')->textarea(['rows' => 6]) ?>
+    <?php // SEO-опис сторінки, буде використаний як meta-description. ?>
+    <?= $form->field($model, 'describe')->label('meta-description')->textarea(['rows' => 6]) ?>
 
     <?php // Окремий блок для власних скриптів сторінки. ?>
     <?= $form->field($model, 'scripts')->textarea(['rows' => 6]) ?>

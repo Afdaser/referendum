@@ -24,9 +24,9 @@ if (!empty($pageData['scripts'])) {
                    href="<?php echo Yii::$app->request->referrer; ?>"><?php echo Yii::t("poll", 'Назад'); ?></a>
             </div>
             <div class="my_profile_b">
-                <div class="profile_name">
-                    <?php echo!empty($pageData['name']) ? $pageData['name'] : Yii::t("main", 'Партнери'); ?>
-                </div>
+                <h1 class="profile_name">
+                    <?php echo !empty($pageData['name']) ? $pageData['name'] : Yii::t("main", 'Партнери'); ?>
+                </h1>
                 <div>
                     <?php echo!empty($pageData['content']) ? $pageData['content'] : Yii::t("static", StringHelper::PARTNERS); ?>
                 </div>

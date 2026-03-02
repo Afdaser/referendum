@@ -50,6 +50,39 @@ class FooterLink extends ActiveRecord
         ];
     }
 
+
+    /**
+     * Нормалізуємо URL перед валідацією, щоб пробіли в шляхах ставали дефісами.
+     */
+    public function beforeValidate(): bool
+    {
+        if (!parent::beforeValidate()) {
+            return false;
+        }
+
+        $this->url = $this->normalizeUrl((string) $this->url);
+
+        return true;
+    }
+
+    /**
+     * Для відносних URL замінюємо пробіли на дефіси (наприклад, /privacy policy -> /privacy-policy).
+     */
+    private function normalizeUrl(string $url): string
+    {
+        $url = trim($url);
+
+        // Зовнішні URL не змінюємо, щоб не пошкодити повні адреси.
+        if (preg_match('/^https?:\/\//i', $url)) {
+            return $url;
+        }
+
+        // Якщо шлях відносний, прибираємо зайві пробіли та міняємо їх на дефіси.
+        $url = preg_replace('/\s+/', '-', $url);
+
+        return $url;
+    }
+
     /**
      * {@inheritdoc}
      */

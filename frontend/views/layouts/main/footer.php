@@ -18,21 +18,15 @@ $footerLinks = FooterLink::getForLanguage((string) Yii::$app->language);
     <div class="container">
         <div class="row">
             <span class="foot_links">
-                <?php if (!empty($footerLinks)): ?>
-                    <?php foreach ($footerLinks as $footerLink): ?>
-                        <?php
-                        // Не нашкодь: виводимо дані безпечно, а URL приводимо до валідного виду.
-                        $url = preg_match('/^https?:\/\//i', (string) $footerLink->url)
-                            ? $footerLink->url
-                            : Url::to($footerLink->url);
-                        ?>
-                        <a href="<?= Html::encode($url); ?>"><?= Html::encode($footerLink->anchor); ?></a>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <?php // Fallback на випадок, якщо посилання ще не налаштовані в адмінці. ?>
-                    <a href="<?= Url::toRoute('/updates'); ?>"><?= Yii::t("main", 'Оновлення'); ?></a>
-                    <a href="<?= Url::to(['/page/view', 'page' => 'about']); ?>"><?= Yii::t("main", 'Про нас'); ?></a>
-                <?php endif; ?>
+                <?php foreach ($footerLinks as $footerLink): ?>
+                    <?php
+                    // Не нашкодь: виводимо дані безпечно, а URL приводимо до валідного виду.
+                    $url = preg_match('/^https?:\/\//i', (string) $footerLink->url)
+                        ? $footerLink->url
+                        : Url::to($footerLink->url);
+                    ?>
+                    <a href="<?= Html::encode($url); ?>"><?= Html::encode($footerLink->anchor); ?></a>
+                <?php endforeach; ?>
             </span>
             <span class="copyright">All Rights Reserved | <?= date('Y'); ?></span>
         </div>

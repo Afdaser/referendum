@@ -1477,7 +1477,7 @@ class Poll extends ActiveRecord
             foreach ($stats as $stat) {
                 $items[] = '<li itemprop="suggestedAnswer" itemscope itemtype="https://schema.org/Answer">'
                     . '<span itemprop="text">' . Html::encode($stat['title']) . '</span>'
-                    . '<span class="dash">—</span>'
+                    . '<span class="dash"> - </span>'
                     . '<strong itemprop="upvoteCount">' . $stat['votes'] . '</strong> ' . Yii::t('poll', 'голосів')
                     . ' (<span itemprop="percentage">' . number_format($stat['percent'], 1) . '%</span>)'
                     . '</li>';

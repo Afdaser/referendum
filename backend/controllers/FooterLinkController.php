@@ -38,6 +38,8 @@ class FooterLinkController extends Controller
     public function actionIndex()
     {
         $model = new FooterLink();
+        // Завантажуємо доступні локалі (мова+країна) для селектора.
+        $languageOptions = FooterLink::getLanguageOptions();
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             // Підтверджуємо успішне додавання посилання.
@@ -55,6 +57,7 @@ class FooterLinkController extends Controller
         return $this->render('index', [
             'model' => $model,
             'dataProvider' => $dataProvider,
+            'languageOptions' => $languageOptions,
         ]);
     }
 
@@ -72,6 +75,7 @@ class FooterLinkController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'languageOptions' => FooterLink::getLanguageOptions(),
         ]);
     }
 

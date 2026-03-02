@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var FooterLink $model */
+/** @var array $languageOptions */
 
 $this->title = 'Редагування посилання футера';
 $this->params['breadcrumbs'][] = ['label' => 'Футер', 'url' => ['index']];
@@ -17,8 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box box-primary">
         <div class="box-body">
             <?php $form = ActiveForm::begin(); ?>
-            <!-- Даємо можливість вказати довільний код мови для масштабування. -->
-            <?= $form->field($model, 'language_code')->textInput(['maxlength' => true])->hint('Напр.: uk, en-US. Порожньо = для всіх мов.') ?>
+            <!-- Селектор з існуючих локалей, щоб не вводити невалідні коди вручну. -->
+            <?= $form->field($model, 'language_code')->dropDownList($languageOptions, ['prompt' => 'Усі мови/країни'])
+                ->hint('Оберіть локаль або залиште порожньо для відображення в усіх мовах/країнах.') ?>
             <?= $form->field($model, 'anchor')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'sort_order')->textInput() ?>

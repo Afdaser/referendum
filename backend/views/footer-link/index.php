@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var FooterLink $model */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var array $languageOptions */
 
 $this->title = 'Футер';
 ?>
@@ -26,8 +27,9 @@ $this->title = 'Футер';
         </div>
         <div class="box-body">
             <?php $form = ActiveForm::begin(); ?>
-            <!-- Код мови лишаємо вільним полем, щоб можна було додавати нові мови без змін коду. -->
-            <?= $form->field($model, 'language_code')->textInput(['maxlength' => true])->hint('Напр.: uk, en-US. Залиште порожнім для всіх мов.') ?>
+            <!-- Використовуємо селектор тільки з доступних у БД локалей (мова + країна). -->
+            <?= $form->field($model, 'language_code')->dropDownList($languageOptions, ['prompt' => 'Усі мови/країни'])
+                ->hint('Оберіть конкретну локаль (напр. en-US або en-NZ), або залиште порожньо для всіх.') ?>
             <?= $form->field($model, 'anchor')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'url')->textInput(['maxlength' => true])->hint('Приклад: /about або https://example.com/page') ?>
             <?= $form->field($model, 'sort_order')->textInput() ?>
@@ -52,7 +54,7 @@ $this->title = 'Футер';
                         'attribute' => 'language_code',
                         'value' => static function (FooterLink $row) {
                             // Порожній код мови означає глобальне посилання для всіх мов.
-                            return trim((string) $row->language_code) === '' ? 'Усі мови' : $row->language_code;
+                            return FooterLink::getLanguageLabel($row->language_code);
                         },
                     ],
                     'anchor',

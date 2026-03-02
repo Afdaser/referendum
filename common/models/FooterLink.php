@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use common\components\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * Модель посилань футера.
@@ -20,6 +21,8 @@ use common\components\ActiveRecord;
  */
 class FooterLink extends ActiveRecord
 {
+    /** @var array<string,string>|null Кешуємо опції локалей в межах запиту, щоб не робити зайві звернення до БД. */
+    private static $languageOptionsCache = null;
     /**
      * {@inheritdoc}
      */
@@ -37,6 +40,9 @@ class FooterLink extends ActiveRecord
             [['anchor', 'url'], 'required'],
             [['sort_order', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['language_code'], 'string', 'max' => 32],
+            [['language_code'], 'trim'],
+            [['language_code'], 'default', 'value' => null],
+            [['language_code'], 'validateLanguageCode'],
             [['anchor'], 'string', 'max' => 255],
             [['url'], 'string', 'max' => 2048],
             // Дозволяємо відносні шляхи (/about) і абсолютні URL.
@@ -59,6 +65,61 @@ class FooterLink extends ActiveRecord
             'updated_at' => 'Оновлено',
         ];
     }
+
+    /**
+     * Перевіряємо, що код мови/країни існує серед доступних локалей у БД.
+     */
+    public function validateLanguageCode(string $attribute): void
+    {
+        if (trim((string) $this->$attribute) === '') {
+            return;
+        }
+
+        $exists = Language::find()->where(['locale' => $this->$attribute])->exists();
+        if (!$exists) {
+            $this->addError($attribute, 'Оберіть мову/країну з доступного списку.');
+        }
+    }
+
+    /**
+     * Повертає опції для селектора мови/країни у форматі locale => label.
+     *
+     * @return array<string, string>
+     */
+    public static function getLanguageOptions(): array
+    {
+        if (self::$languageOptionsCache !== null) {
+            return self::$languageOptionsCache;
+        }
+
+        $languages = Language::find()->orderBy(['title' => SORT_ASC])->all();
+        $options = [];
+
+        foreach ($languages as $language) {
+            // Додаємо і мову, і країну, щоб розрізняти однакову мову для різних країн.
+            $countryTitle = Language::getCountryTitle($language);
+            $options[$language->locale] = sprintf('%s — %s (%s)', $language->title, $countryTitle, $language->locale);
+        }
+
+        self::$languageOptionsCache = $options;
+
+        return self::$languageOptionsCache;
+    }
+
+    /**
+     * Людський підпис для збереженого коду локалі.
+     */
+    public static function getLanguageLabel(?string $languageCode): string
+    {
+        if (trim((string) $languageCode) === '') {
+            return 'Усі мови/країни';
+        }
+
+        $options = self::getLanguageOptions();
+
+        return ArrayHelper::getValue($options, $languageCode, (string) $languageCode);
+    }
+
 
     /**
      * Повертає посилання для конкретної мови + універсальні посилання без мови.

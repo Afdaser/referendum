@@ -1,13 +1,16 @@
 <!-- ~/frontend/views/layouts/main/footer.php -->
 <?php
 
+use common\models\FooterLink;
 use frontend\helpers\Url;
+use yii\helpers\Html;
 
 /** @var $this Controller */
 ?>
 <?php
 $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? '' : 'https://en.online-statistics.org';
-// 'https:'.Yii::$app->urlManager->createLangUrl(Yii::$app->language,"/")
+// Отримуємо набір посилань для поточної мови + глобальні посилання для всіх мов.
+$footerLinks = FooterLink::getForLanguage((string) Yii::$app->language);
 ?>
 <!-- Footer
 ================================================== -->
@@ -15,10 +18,21 @@ $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? 
     <div class="container">
         <div class="row">
             <span class="foot_links">
-                <?php // Навігаційні посилання футера залишаємо лише для актуальних сторінок. ?>
-                <a href="<?= Url::toRoute('/updates'); ?>"><?= Yii::t("main", 'Оновлення'); ?></a>
-                <?php // Використовуємо слаг /about, щоб відповідати кінцевій URL-адресі без /site. ?>
-                <a href="<?= Url::to(['/page/view', 'page' => 'about']); ?>"><?= Yii::t("main", 'Про нас'); ?></a>
+                <?php if (!empty($footerLinks)): ?>
+                    <?php foreach ($footerLinks as $footerLink): ?>
+                        <?php
+                        // Не нашкодь: виводимо дані безпечно, а URL приводимо до валідного виду.
+                        $url = preg_match('/^https?:\/\//i', (string) $footerLink->url)
+                            ? $footerLink->url
+                            : Url::to($footerLink->url);
+                        ?>
+                        <a href="<?= Html::encode($url); ?>"><?= Html::encode($footerLink->anchor); ?></a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <?php // Fallback на випадок, якщо посилання ще не налаштовані в адмінці. ?>
+                    <a href="<?= Url::toRoute('/updates'); ?>"><?= Yii::t("main", 'Оновлення'); ?></a>
+                    <a href="<?= Url::to(['/page/view', 'page' => 'about']); ?>"><?= Yii::t("main", 'Про нас'); ?></a>
+                <?php endif; ?>
             </span>
             <span class="copyright">All Rights Reserved | <?= date('Y'); ?></span>
         </div>

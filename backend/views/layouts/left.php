@@ -146,6 +146,14 @@ use common\models\AuthItem;
 //                        ],
 //                    ],
                 ],
+
+                [
+                    'label' => 'Футер',
+                    'icon' => 'link',
+                    'url' => Url::toRoute(['/footer-link/index']),
+                    'active' => MenuHelper::isActiveMenu(['footer-link'], $this->context->route),
+                    'items' => [],
+                ],
             ];
         }
         ?>

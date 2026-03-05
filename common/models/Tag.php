@@ -8,6 +8,7 @@ use yii\bootstrap\Html;
 use common\models\Poll;
 use common\models\TagStaticText;
 use common\models\TagStaticFaq;
+use yii\db\Query;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -212,6 +213,10 @@ class Tag extends ActiveRecord
             '@mostcomments' => 'Кількість коментарів у найактивнішому обговоренні.',
             '@totalvotes' => 'Сумарна кількість голосів в усіх активних опитуваннях.',
             '@mostcommentedlink' => 'Посилання на опитування з найбільшою кількістю коментарів.',
+            '@votes7d' => 'Кількість нових голосів за останні 90 днів у межах тегу (зворотна сумісність).',
+            '@votes90d' => 'Кількість нових голосів за останні 90 днів у межах тегу.',
+            '@polls30d' => 'Кількість нових опитувань за останні 30 днів у межах тегу.',
+            '@weeklypoll' => 'Найактивніше опитування за поточний тиждень (з посиланням).',
         ];
     }
 
@@ -273,6 +278,77 @@ class Tag extends ActiveRecord
         $averageComments = $pollCount > 0 ? $totalComments / $pollCount : 0;
         $latestDate = $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '';
 
+        // Для блоку "Latest activity" рахуємо окрему оперативну статистику.
+        // На прохання бізнесу виводимо динаміку голосів саме за 90 днів.
+        $votesFromDate = date('Y-m-d H:i:s', strtotime('-90 days'));
+        $pollsFromDate = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $weekFromDate = date('Y-m-d H:i:s', strtotime('-7 days'));
+
+        $votes90dRegistered = (new Query())
+            ->from('{{%option_vote}} ov')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ov.date_add', $votesFromDate])
+            ->count();
+
+        $votes90dGuests = (new Query())
+            ->from('{{%option_guest_vote}} ogv')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ogv.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ogv.date_add', $votesFromDate])
+            ->count();
+
+        $polls30d = (new Query())
+            ->from('{{%poll}} p')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'p.date_add', $pollsFromDate])
+            ->count('DISTINCT p.id');
+
+        $weeklyVoteRowsRegistered = (new Query())
+            ->select(['po.poll_id', 'votes' => 'COUNT(ov.id)'])
+            ->from('{{%option_vote}} ov')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ov.date_add', $weekFromDate])
+            ->groupBy(['po.poll_id'])
+            ->all();
+
+        $weeklyVoteRowsGuests = (new Query())
+            ->select(['po.poll_id', 'votes' => 'COUNT(ogv.id)'])
+            ->from('{{%option_guest_vote}} ogv')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ogv.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ogv.date_add', $weekFromDate])
+            ->groupBy(['po.poll_id'])
+            ->all();
+
+        // Склеюємо голоси авторизованих і гостьових користувачів в один рейтинг тижня.
+        $weeklyVotesByPoll = [];
+        foreach ($weeklyVoteRowsRegistered as $row) {
+            $pollId = (int) $row['poll_id'];
+            $weeklyVotesByPoll[$pollId] = (int) ($weeklyVotesByPoll[$pollId] ?? 0) + (int) $row['votes'];
+        }
+        foreach ($weeklyVoteRowsGuests as $row) {
+            $pollId = (int) $row['poll_id'];
+            $weeklyVotesByPoll[$pollId] = (int) ($weeklyVotesByPoll[$pollId] ?? 0) + (int) $row['votes'];
+        }
+
+        $weeklyPoll = null;
+        if (!empty($weeklyVotesByPoll)) {
+            arsort($weeklyVotesByPoll);
+            $weeklyPollId = (int) array_key_first($weeklyVotesByPoll);
+            $weeklyPoll = Poll::findOne($weeklyPollId);
+        }
+
         $replacements = [
             '@tag' => Html::encode($this->name),
             '@countpoll' => $pollCount,
@@ -296,6 +372,12 @@ class Tag extends ActiveRecord
                 Html::encode($mostCommentedPoll->title),
                 $mostCommentedPoll->getUrl()
             ) : '',
+            '@votes7d' => (int) $votes90dRegistered + (int) $votes90dGuests,
+            '@votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
+            '@polls30d' => (int) $polls30d,
+            '@weeklypoll' => $weeklyPoll
+                ? Html::a(Html::encode($weeklyPoll->title), $weeklyPoll->getUrl())
+                : Yii::t('tag', 'Немає даних'),
         ];
 
         return $this->_staticContentData = [
@@ -310,8 +392,37 @@ class Tag extends ActiveRecord
             'totalVotes' => $totalVotes,
             'totalComments' => $totalComments,
             'latestDate' => $latestDate,
+            'votes7d' => (int) $votes90dRegistered + (int) $votes90dGuests,
+            'votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
+            'polls30d' => (int) $polls30d,
+            'weeklyPoll' => $weeklyPoll,
             'replacements' => $replacements,
         ];
+    }
+
+    /**
+     * Повертає HTML блоку «Latest activity in {TAG} polls».
+     * Адмін може повністю перевизначити структуру через поле latest_activity_template.
+     */
+    public function getLatestActivityBlockHtml(): string
+    {
+        $data = $this->getStaticContentData();
+        $staticText = $this->getStaticTextRecord();
+
+        if ($staticText && trim((string) $staticText->latest_activity_template) !== '') {
+            return strtr($staticText->latest_activity_template, $data['replacements']);
+        }
+
+        return Yii::t(
+            'tag',
+            '<h2>Latest activity in {tag} polls</h2><p>Recent activity in {tag} polls:</p><ul><li>New votes in the last 90 days: {votes90d}</li><li>New polls added in the last 30 days: {polls30d}</li><li>Most active poll this week: {weeklypoll}</li></ul>',
+            [
+                'tag' => Html::encode($this->name),
+                'votes90d' => $data['replacements']['@votes90d'],
+                'polls30d' => $data['replacements']['@polls30d'],
+                'weeklypoll' => $data['replacements']['@weeklypoll'],
+            ]
+        );
     }
 
     /**

@@ -214,8 +214,8 @@ class Tag extends ActiveRecord
             '@totalvotes' => 'Сумарна кількість голосів в усіх активних опитуваннях.',
             '@mostcommentedlink' => 'Посилання на опитування з найбільшою кількістю коментарів.',
             '@votes90d' => 'Кількість нових голосів за останні 90 днів у межах тегу.',
-            '@polls30d' => 'Кількість нових опитувань за останні 30 днів у межах тегу.',
-            '@weeklypoll' => 'Найактивніше опитування за поточний тиждень (з посиланням).',
+            '@polls90d' => 'Кількість нових опитувань за останні 90 днів у межах тегу.',
+            '@activepoll90d' => 'Найактивніше опитування за останні 90 днів (з посиланням).',
         ];
     }
 
@@ -280,8 +280,8 @@ class Tag extends ActiveRecord
         // Для блоку "Latest activity" рахуємо окрему оперативну статистику.
         // На прохання бізнесу виводимо динаміку голосів саме за 90 днів.
         $votesFromDate = date('Y-m-d H:i:s', strtotime('-90 days'));
-        $pollsFromDate = date('Y-m-d H:i:s', strtotime('-30 days'));
-        $weekFromDate = date('Y-m-d H:i:s', strtotime('-7 days'));
+        // Усі метрики цього блоку рахуємо в одному періоді — 90 днів.
+        $activityFromDate = $votesFromDate;
 
         $votes90dRegistered = (new Query())
             ->from('{{%option_vote}} ov')
@@ -301,51 +301,51 @@ class Tag extends ActiveRecord
             ->andWhere(['>=', 'ogv.date_add', $votesFromDate])
             ->count();
 
-        $polls30d = (new Query())
+        $polls90d = (new Query())
             ->from('{{%poll}} p')
             ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
             ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
-            ->andWhere(['>=', 'p.date_add', $pollsFromDate])
+            ->andWhere(['>=', 'p.date_add', $activityFromDate])
             ->count('DISTINCT p.id');
 
-        $weeklyVoteRowsRegistered = (new Query())
+        $activePollRowsRegistered = (new Query())
             ->select(['po.poll_id', 'votes' => 'COUNT(ov.id)'])
             ->from('{{%option_vote}} ov')
             ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
             ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
             ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
             ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
-            ->andWhere(['>=', 'ov.date_add', $weekFromDate])
+            ->andWhere(['>=', 'ov.date_add', $activityFromDate])
             ->groupBy(['po.poll_id'])
             ->all();
 
-        $weeklyVoteRowsGuests = (new Query())
+        $activePollRowsGuests = (new Query())
             ->select(['po.poll_id', 'votes' => 'COUNT(ogv.id)'])
             ->from('{{%option_guest_vote}} ogv')
             ->innerJoin('{{%poll_option}} po', 'po.id = ogv.option_id')
             ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
             ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
             ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
-            ->andWhere(['>=', 'ogv.date_add', $weekFromDate])
+            ->andWhere(['>=', 'ogv.date_add', $activityFromDate])
             ->groupBy(['po.poll_id'])
             ->all();
 
-        // Склеюємо голоси авторизованих і гостьових користувачів в один рейтинг тижня.
-        $weeklyVotesByPoll = [];
-        foreach ($weeklyVoteRowsRegistered as $row) {
+        // Склеюємо голоси авторизованих і гостьових користувачів в один рейтинг за 90 днів.
+        $activeVotesByPoll90d = [];
+        foreach ($activePollRowsRegistered as $row) {
             $pollId = (int) $row['poll_id'];
-            $weeklyVotesByPoll[$pollId] = (int) ($weeklyVotesByPoll[$pollId] ?? 0) + (int) $row['votes'];
+            $activeVotesByPoll90d[$pollId] = (int) ($activeVotesByPoll90d[$pollId] ?? 0) + (int) $row['votes'];
         }
-        foreach ($weeklyVoteRowsGuests as $row) {
+        foreach ($activePollRowsGuests as $row) {
             $pollId = (int) $row['poll_id'];
-            $weeklyVotesByPoll[$pollId] = (int) ($weeklyVotesByPoll[$pollId] ?? 0) + (int) $row['votes'];
+            $activeVotesByPoll90d[$pollId] = (int) ($activeVotesByPoll90d[$pollId] ?? 0) + (int) $row['votes'];
         }
 
-        $weeklyPoll = null;
-        if (!empty($weeklyVotesByPoll)) {
-            arsort($weeklyVotesByPoll);
-            $weeklyPollId = (int) array_key_first($weeklyVotesByPoll);
-            $weeklyPoll = Poll::findOne($weeklyPollId);
+        $activePoll90d = null;
+        if (!empty($activeVotesByPoll90d)) {
+            arsort($activeVotesByPoll90d);
+            $activePoll90dId = (int) array_key_first($activeVotesByPoll90d);
+            $activePoll90d = Poll::findOne($activePoll90dId);
         }
 
         $replacements = [
@@ -372,9 +372,9 @@ class Tag extends ActiveRecord
                 $mostCommentedPoll->getUrl()
             ) : '',
             '@votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
-            '@polls30d' => (int) $polls30d,
-            '@weeklypoll' => $weeklyPoll
-                ? Html::a(Html::encode($weeklyPoll->title), $weeklyPoll->getUrl())
+            '@polls90d' => (int) $polls90d,
+            '@activepoll90d' => $activePoll90d
+                ? Html::a(Html::encode($activePoll90d->title), $activePoll90d->getUrl())
                 : Yii::t('tag', 'Немає даних'),
         ];
 
@@ -391,8 +391,8 @@ class Tag extends ActiveRecord
             'totalComments' => $totalComments,
             'latestDate' => $latestDate,
             'votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
-            'polls30d' => (int) $polls30d,
-            'weeklyPoll' => $weeklyPoll,
+            'polls90d' => (int) $polls90d,
+            'activePoll90d' => $activePoll90d,
             'replacements' => $replacements,
         ];
     }

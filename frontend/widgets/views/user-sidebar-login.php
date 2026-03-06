@@ -257,7 +257,6 @@ if(isset($error)) {
     $errorMessage = strip_tags($error);
     $scriptLogin .= <<<JS_LOGIN
     $(function() {
-alert('#registrtion_step_1');
 /*
 //        $('#registrtion_step_1').modal('show'); //DEV.R#03
 /* */
@@ -286,14 +285,12 @@ if (Yii::$app->user->isGuest) {
     $scriptLogin .= <<<JS_GUEST
         $(function() {
             $('#middle_text_input_b > form > div.bottom_btn_b > button.send_btn').click(function(){
-            alert('DEV.point#01');
 /*
 //                $('#1registration_info').modal('show'); //  DEV.R#01
 /* */
                 return false;
             });
             $('#middle_text_input__comment_b > form > div.bottom_btn_b > button.send_btn').click(function(){
-            alert('DEV.point#2402');
 /*
 //                $('#1registration_info').modal('show'); //  DEV.R#02
 /* */
@@ -374,3 +371,4 @@ jQuery(document).ready(function( $ ) {
     });
 </script>
 <?php endif; /* */ ?>
+

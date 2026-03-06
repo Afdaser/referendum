@@ -24,7 +24,7 @@ class ModalController extends Controller
             $model = new RegisterForm;
             if(isset($_POST['RegisterForm'])){
                 $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
+                if($model->validate())  {
   //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
                 }
 /*
@@ -63,7 +63,7 @@ class ModalController extends Controller
             $model = new RegisterForm;
             if(isset($_POST['RegisterForm'])){
                 $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
+                if($model->validate())  {
   //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
                 }
 /*
@@ -92,3 +92,4 @@ class ModalController extends Controller
         
     }
 }
+

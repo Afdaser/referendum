@@ -402,27 +402,19 @@ class Tag extends ActiveRecord
 
     /**
      * Повертає HTML блоку «Latest activity in {TAG} polls».
-     * Адмін може повністю перевизначити структуру через поле latest_activity_template.
+     * Якщо шаблон у адмінці порожній — блок не показуємо.
      */
     public function getLatestActivityBlockHtml(): string
     {
-        $data = $this->getStaticContentData();
         $staticText = $this->getStaticTextRecord();
-
-        if ($staticText && trim((string) $staticText->latest_activity_template) !== '') {
-            return strtr($staticText->latest_activity_template, $data['replacements']);
+        if (!$staticText || trim((string) $staticText->latest_activity_template) === '') {
+            // Нічого не рендеримо, якщо адміністратор не задав шаблон явно.
+            return '';
         }
 
-        return Yii::t(
-            'tag',
-            '<h2>Latest activity in {tag} polls</h2><p>Recent activity in {tag} polls:</p><ul><li>New votes in the last 90 days: {votes90d}</li><li>New polls added in the last 30 days: {polls30d}</li><li>Most active poll this week: {weeklypoll}</li></ul>',
-            [
-                'tag' => Html::encode($this->name),
-                'votes90d' => $data['replacements']['@votes90d'],
-                'polls30d' => $data['replacements']['@polls30d'],
-                'weeklypoll' => $data['replacements']['@weeklypoll'],
-            ]
-        );
+        $data = $this->getStaticContentData();
+
+        return strtr($staticText->latest_activity_template, $data['replacements']);
     }
 
     /**

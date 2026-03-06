@@ -23,6 +23,7 @@ Yii::$app->page->description = $meta['description'] ?? $defaultDescription;
 $pageHeading = $meta['heading'] ?? null;
 $faqList = $tagModel->getFaqList();
 $tagDescription = trim((string) $tagModel->description);
+$latestActivityBlock = $tagModel->getLatestActivityBlockHtml();
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
@@ -60,10 +61,12 @@ $tagDescription = trim((string) $tagModel->description);
             <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
             <p><?= $tagModel->getInfoText(); ?></p>
         </div>
-        <div class="info_block tag-latest-activity">
-            <?php // Блок оперативної активності для тегу, який адміністратор може змінити через шаблон. ?>
-            <?= $tagModel->getLatestActivityBlockHtml(); ?>
-        </div>
+        <?php if ($latestActivityBlock !== '') : ?>
+            <div class="info_block tag-latest-activity">
+                <?php // Блок активності показуємо лише коли адміністратор явно задав шаблон. ?>
+                <?= $latestActivityBlock; ?>
+            </div>
+        <?php endif; ?>
         <?php if (!empty($faqList)) : ?>
             <?php // Додатковий блок Schema.org FAQPage для тегу. ?>
             <div class="info_block tag-faq" itemscope itemtype="https://schema.org/FAQPage">

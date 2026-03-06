@@ -105,6 +105,19 @@ $this->params['breadcrumbs'][] = $language->title;
             </div>
         </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Блок «Latest activity in {TAG} polls»</strong></div>
+            <div class="panel-body">
+                <p>
+                    Цей шаблон керує окремим блоком активності на сторінці тегу.
+                    Якщо лишити поле порожнім, фронтенд покаже стандартний варіант блоку.
+                </p>
+                <?= $form->field($model, 'latest_activity_template')
+                    ->textarea(['rows' => 8, 'class' => 'form-control'])
+                    ->hint('Можна використовувати HTML і змінні @tag, @votes90d, @polls90d, @activepoll90d.'); ?>
+            </div>
+        </div>
+
         <div class="form-group">
             <?= Html::submitButton('Зберегти', ['class' => 'btn btn-success']); ?>
             <?= Html::a('Скасувати', ['index'], ['class' => 'btn btn-default']); ?>

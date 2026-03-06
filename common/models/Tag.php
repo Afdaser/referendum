@@ -8,6 +8,7 @@ use yii\bootstrap\Html;
 use common\models\Poll;
 use common\models\TagStaticText;
 use common\models\TagStaticFaq;
+use yii\db\Query;
 
 /**
  * This is the model class for table "{{%tag}}".
@@ -212,6 +213,9 @@ class Tag extends ActiveRecord
             '@mostcomments' => 'Кількість коментарів у найактивнішому обговоренні.',
             '@totalvotes' => 'Сумарна кількість голосів в усіх активних опитуваннях.',
             '@mostcommentedlink' => 'Посилання на опитування з найбільшою кількістю коментарів.',
+            '@votes90d' => 'Кількість нових голосів за останні 90 днів у межах тегу.',
+            '@polls90d' => 'Кількість нових опитувань за останні 90 днів у межах тегу.',
+            '@activepoll90d' => 'Найактивніше опитування за останні 90 днів (з посиланням).',
         ];
     }
 
@@ -273,6 +277,77 @@ class Tag extends ActiveRecord
         $averageComments = $pollCount > 0 ? $totalComments / $pollCount : 0;
         $latestDate = $latestPoll ? $formatter->asDate(strtotime($latestPoll->date_add), 'long') : '';
 
+        // Для блоку "Latest activity" рахуємо окрему оперативну статистику.
+        // На прохання бізнесу виводимо динаміку голосів саме за 90 днів.
+        $votesFromDate = date('Y-m-d H:i:s', strtotime('-90 days'));
+        // Усі метрики цього блоку рахуємо в одному періоді — 90 днів.
+        $activityFromDate = $votesFromDate;
+
+        $votes90dRegistered = (new Query())
+            ->from('{{%option_vote}} ov')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ov.date_add', $votesFromDate])
+            ->count();
+
+        $votes90dGuests = (new Query())
+            ->from('{{%option_guest_vote}} ogv')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ogv.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ogv.date_add', $votesFromDate])
+            ->count();
+
+        $polls90d = (new Query())
+            ->from('{{%poll}} p')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'p.date_add', $activityFromDate])
+            ->count('DISTINCT p.id');
+
+        $activePollRowsRegistered = (new Query())
+            ->select(['po.poll_id', 'votes' => 'COUNT(ov.id)'])
+            ->from('{{%option_vote}} ov')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ov.date_add', $activityFromDate])
+            ->groupBy(['po.poll_id'])
+            ->all();
+
+        $activePollRowsGuests = (new Query())
+            ->select(['po.poll_id', 'votes' => 'COUNT(ogv.id)'])
+            ->from('{{%option_guest_vote}} ogv')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ogv.option_id')
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = po.poll_id')
+            ->innerJoin('{{%poll}} p', 'p.id = po.poll_id')
+            ->where(['pt.tag_id' => $this->id, 'p.status' => Poll::POLL_STATUS_ACTIVE])
+            ->andWhere(['>=', 'ogv.date_add', $activityFromDate])
+            ->groupBy(['po.poll_id'])
+            ->all();
+
+        // Склеюємо голоси авторизованих і гостьових користувачів в один рейтинг за 90 днів.
+        $activeVotesByPoll90d = [];
+        foreach ($activePollRowsRegistered as $row) {
+            $pollId = (int) $row['poll_id'];
+            $activeVotesByPoll90d[$pollId] = (int) ($activeVotesByPoll90d[$pollId] ?? 0) + (int) $row['votes'];
+        }
+        foreach ($activePollRowsGuests as $row) {
+            $pollId = (int) $row['poll_id'];
+            $activeVotesByPoll90d[$pollId] = (int) ($activeVotesByPoll90d[$pollId] ?? 0) + (int) $row['votes'];
+        }
+
+        $activePoll90d = null;
+        if (!empty($activeVotesByPoll90d)) {
+            arsort($activeVotesByPoll90d);
+            $activePoll90dId = (int) array_key_first($activeVotesByPoll90d);
+            $activePoll90d = Poll::findOne($activePoll90dId);
+        }
+
         $replacements = [
             '@tag' => Html::encode($this->name),
             '@countpoll' => $pollCount,
@@ -296,6 +371,11 @@ class Tag extends ActiveRecord
                 Html::encode($mostCommentedPoll->title),
                 $mostCommentedPoll->getUrl()
             ) : '',
+            '@votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
+            '@polls90d' => (int) $polls90d,
+            '@activepoll90d' => $activePoll90d
+                ? Html::a(Html::encode($activePoll90d->title), $activePoll90d->getUrl())
+                : Yii::t('tag', 'Немає даних'),
         ];
 
         return $this->_staticContentData = [
@@ -310,8 +390,28 @@ class Tag extends ActiveRecord
             'totalVotes' => $totalVotes,
             'totalComments' => $totalComments,
             'latestDate' => $latestDate,
+            'votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
+            'polls90d' => (int) $polls90d,
+            'activePoll90d' => $activePoll90d,
             'replacements' => $replacements,
         ];
+    }
+
+    /**
+     * Повертає HTML блоку «Latest activity in {TAG} polls».
+     * Якщо шаблон у адмінці порожній — блок не показуємо.
+     */
+    public function getLatestActivityBlockHtml(): string
+    {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText || trim((string) $staticText->latest_activity_template) === '') {
+            // Нічого не рендеримо, якщо адміністратор не задав шаблон явно.
+            return '';
+        }
+
+        $data = $this->getStaticContentData();
+
+        return strtr($staticText->latest_activity_template, $data['replacements']);
     }
 
     /**

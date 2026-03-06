@@ -43,9 +43,9 @@ class SignupForm extends Model
      *
      * @return bool whether the creating new account was successful and email was sent
      */
-    public function signup()
+    public function signup($runValidation = true)
     {
-        if (!$this->validate()) {
+        if ($runValidation && !$this->validate()) {
             return null;
         }
         
@@ -78,3 +78,6 @@ class SignupForm extends Model
             ->send();
     }
 }
+
+
+

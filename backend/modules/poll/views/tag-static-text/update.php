@@ -114,7 +114,7 @@ $this->params['breadcrumbs'][] = $language->title;
                 </p>
                 <?= $form->field($model, 'latest_activity_template')
                     ->textarea(['rows' => 8, 'class' => 'form-control'])
-                    ->hint('Можна використовувати HTML і змінні @tag, @votes90d, @polls30d, @weeklypoll (також підтримується @votes7d для сумісності).'); ?>
+                    ->hint('Можна використовувати HTML і змінні @tag, @votes90d, @polls30d, @weeklypoll.'); ?>
             </div>
         </div>
 

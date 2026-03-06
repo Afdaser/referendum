@@ -213,7 +213,6 @@ class Tag extends ActiveRecord
             '@mostcomments' => 'Кількість коментарів у найактивнішому обговоренні.',
             '@totalvotes' => 'Сумарна кількість голосів в усіх активних опитуваннях.',
             '@mostcommentedlink' => 'Посилання на опитування з найбільшою кількістю коментарів.',
-            '@votes7d' => 'Кількість нових голосів за останні 90 днів у межах тегу (зворотна сумісність).',
             '@votes90d' => 'Кількість нових голосів за останні 90 днів у межах тегу.',
             '@polls30d' => 'Кількість нових опитувань за останні 30 днів у межах тегу.',
             '@weeklypoll' => 'Найактивніше опитування за поточний тиждень (з посиланням).',
@@ -372,7 +371,6 @@ class Tag extends ActiveRecord
                 Html::encode($mostCommentedPoll->title),
                 $mostCommentedPoll->getUrl()
             ) : '',
-            '@votes7d' => (int) $votes90dRegistered + (int) $votes90dGuests,
             '@votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
             '@polls30d' => (int) $polls30d,
             '@weeklypoll' => $weeklyPoll
@@ -392,7 +390,6 @@ class Tag extends ActiveRecord
             'totalVotes' => $totalVotes,
             'totalComments' => $totalComments,
             'latestDate' => $latestDate,
-            'votes7d' => (int) $votes90dRegistered + (int) $votes90dGuests,
             'votes90d' => (int) $votes90dRegistered + (int) $votes90dGuests,
             'polls30d' => (int) $polls30d,
             'weeklyPoll' => $weeklyPoll,

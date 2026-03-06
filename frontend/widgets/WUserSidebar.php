@@ -18,10 +18,6 @@ use yii\bootstrap\Html;
  */
 class WUserSidebar extends Widget
 {
-    private const DUPLICATE_POST_TTL = 10;
-
-    private static $registrationHandled = false;
-
     public $model;
 
     public function init()
@@ -49,104 +45,83 @@ class WUserSidebar extends Widget
         }
     }
 
-    public function run()
-    {
-        if (Yii::$app->user->isGuest) {
+    public function run() {
+        if(Yii::$app->user->isGuest){
+//            $model = new LoginForm;
             $model = new RegisterForm;
-            $attributes = Yii::$app->request->post('RegisterForm');
-
-            if (is_array($attributes)) {
+            if(isset($_POST['RegisterForm'])){
+//                $model->attributes = $_POST['RegisterForm'];
+                $attributes = Yii::$app->request->post('RegisterForm');
+//                $model->load(['RegisterForm' => $attributes]);
                 $model->load(['RegisterForm' => $attributes]);
+//                $model->attributes = $_POST['RegisterForm'];
 
-                if ($this->isDuplicateRegistrationPost($attributes)) {
-                    return $this->render('user-sidebar', ['refresh' => true]);
-                }
-
-                if (!self::$registrationHandled) {
-                    self::$registrationHandled = true;
-
-                    if ($model->validate()) {
-                        $signupFormModel = new SignupForm();
-                        $signupFormModel->load(['SignupForm' => [
-                            'username' => $attributes['login'] ?? '',
-                            'email' => $attributes['email'] ?? '',
-                            'password' => $attributes['password'] ?? '',
-                        ]]);
-
-                        if ($signupFormModel->signup(false)) {
-                            $this->rememberSuccessfulRegistration($attributes);
-                            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                            return $this->render('user-sidebar', ['refresh' => true]);
-                        }
-
-                        foreach ($signupFormModel->getFirstErrors() as $error) {
-                            $model->addError('email', $error);
-                        }
-
-                        if (!$model->hasErrors()) {
-                            $model->addError('email', Yii::t('main', 'Registration failed. Please try again.'));
-                        }
+                if ($model->validate()) {
+                    $signupFormModel = new SignupForm();
+                    $signupAttributes = [
+                        'username' => $attributes['login'],
+                        'email' => $attributes['email'],
+                        'password' => $attributes['password'],
+                    ];
+//                    $signupFormModel->load(Yii::$app->request->post());
+                    $signupFormModel->load(['SignupForm' => $signupAttributes]);
+                    if ($signupFormModel->signup()) {
+                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+                        // Після успішної реєстрації формуємо модель опитування для сайдбару.
+                        $pollModel = new Poll;
+                        $pollModel->presetAttributes();
+                        // Завершуємо виконання після успішної реєстрації, щоб уникнути дублювання.
+                        return $this->render('user-sidebar', array(
+                            'refresh' => true,
+                            'pollModel' => $pollModel,
+                        ));
                     }
 
-                    return $this->render('user-sidebar-login', [
-                        'model' => $this->model,
-                        'registerForm' => $model,
-                        'error' => json_encode(Html::errorSummary($model)),
-                    ]);
+                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
+                    $this->render('user-sidebar', array('refresh' => true));
+                } else {
+                   //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
+                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
                 }
+
+//                die(__FILE__.'#'.__LINE__);
+
+//                    echo '<h2>Errors:</h2><pre>';
+//                    var_dump($model->getErrors());
+//                    var_dump(Html::errorSummary($model));
+//                    echo '</pre>';
+//                    die(__METHOD__ . '#' . __LINE__);
+
+            } else {
+                return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model));
             }
-
-            return $this->render('user-sidebar-login', [
-                'model' => $this->model,
-                'registerForm' => $model,
-            ]);
+        } else {
+//            if(Yii::$app->request->isPost){
+//                $resultOfSaving = $this->processNewPoll();
+//                if($resultOfSaving){
+//                    Yii::$app->session->setFlash('success', 'Poll saved successfully');
+//                    return Yii::$app->response->redirect(['/poll/site/my-polls', ]);
+////                    return $this->redirect(['/poll/site/my-polls', ]);
+//                }
+//            }
+            $pollModel = new Poll;
+            $pollModel->presetAttributes();
+            
+            return $this->render('user-sidebar',[
+                'refresh'=>false,
+                    'pollModel' => $pollModel,
+                    'error' => json_encode(Html::errorSummary($pollModel)),
+//                    'forceModal' => $this->forceModal,
+                ]
+                    );
         }
 
-        $pollModel = new Poll;
-        $pollModel->presetAttributes();
 
-        return $this->render('user-sidebar', [
-            'refresh' => false,
-            'pollModel' => $pollModel,
-            'error' => json_encode(Html::errorSummary($pollModel)),
-        ]);
-    }
-
-    private function buildRegistrationFingerprint(array $attributes)
-    {
-        $login = strtolower(trim((string)($attributes['login'] ?? '')));
-        $email = strtolower(trim((string)($attributes['email'] ?? '')));
-
-        return sha1($login . '|' . $email);
-    }
-
-    private function isDuplicateRegistrationPost(array $attributes)
-    {
-        $session = Yii::$app->session;
-        $fingerprint = $this->buildRegistrationFingerprint($attributes);
-
-        $lastFingerprint = $session->get('registration.last_success_fingerprint');
-        $lastSuccessAt = (int)$session->get('registration.last_success_at', 0);
-
-        if ($lastFingerprint !== $fingerprint || $lastSuccessAt === 0) {
-            return false;
-        }
-
-        if ((time() - $lastSuccessAt) > self::DUPLICATE_POST_TTL) {
-            return false;
-        }
-
-        $session->remove('registration.last_success_fingerprint');
-        $session->remove('registration.last_success_at');
-
-        return true;
-    }
-
-    private function rememberSuccessfulRegistration(array $attributes)
-    {
-        $session = Yii::$app->session;
-        $session->set('registration.last_success_fingerprint', $this->buildRegistrationFingerprint($attributes));
-        $session->set('registration.last_success_at', time());
+//        return $this->render($this->view, [
+//                    'data' => $this->data,
+//                    'activePolls' => $this->activePolls,
+//
+//        ]);
     }
 
     public function processNewPoll()

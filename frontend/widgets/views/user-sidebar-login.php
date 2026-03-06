@@ -165,7 +165,6 @@ use frontend\helpers\Url;
                 </button>
                 <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?></div>
             </div>
-            
 <!--            <div class="modal-footer">
                 <div class="sub_title_modal"></div>
                 <div class="btn_b_modal">
@@ -257,6 +256,7 @@ if(isset($error)) {
     $errorMessage = strip_tags($error);
     $scriptLogin .= <<<JS_LOGIN
     $(function() {
+alert('#registrtion_step_1');
 /*
 //        $('#registrtion_step_1').modal('show'); //DEV.R#03
 /* */
@@ -285,12 +285,14 @@ if (Yii::$app->user->isGuest) {
     $scriptLogin .= <<<JS_GUEST
         $(function() {
             $('#middle_text_input_b > form > div.bottom_btn_b > button.send_btn').click(function(){
+            alert('DEV.point#01');
 /*
 //                $('#1registration_info').modal('show'); //  DEV.R#01
 /* */
                 return false;
             });
             $('#middle_text_input__comment_b > form > div.bottom_btn_b > button.send_btn').click(function(){
+            alert('DEV.point#2402');
 /*
 //                $('#1registration_info').modal('show'); //  DEV.R#02
 /* */
@@ -371,4 +373,3 @@ jQuery(document).ready(function( $ ) {
     });
 </script>
 <?php endif; /* */ ?>
-

@@ -67,18 +67,21 @@ class WUserSidebar extends Widget
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
                         Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // Після успішної реєстрації формуємо модель опитування для сайдбару.
-                        $pollModel = new Poll;
-                        $pollModel->presetAttributes();
-                        // Завершуємо виконання після успішної реєстрації, щоб уникнути дублювання.
-                        return $this->render('user-sidebar', array(
-                            'refresh' => true,
-                            'pollModel' => $pollModel,
+                        // Після реєстрації користувач ще не авторизований, тому показуємо гостьовий сайдбар.
+                        // Це запобігає падінню на Yii::$app->user->identity->id для неавторизованого користувача.
+                        return $this->render('user-sidebar-login', array(
+                            'model' => $this->model,
+                            'registerForm' => new RegisterForm(),
                         ));
                     }
 
-                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
+                    // Реєстрація не завершилася успіхом (наприклад, не налаштований mailer) —
+                    // повертаємо форму реєстрації з помилками, а не «авторизований» сайдбар.
+                    return $this->render('user-sidebar-login', array(
+                        'model' => $this->model,
+                        'registerForm' => $model,
+                        'error' => json_encode(Html::errorSummary($signupFormModel)),
+                    ));
                 } else {
                    //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
                     $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));

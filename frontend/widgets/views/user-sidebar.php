@@ -16,8 +16,12 @@ use common\models\Poll;
  */
 
 ?>
+<?php
+// Додатковий захист: якщо сайдбар випадково рендериться для гостя, не падаємо на null identity.
+$identity = Yii::$app->user->identity;
+?>
 <div class="title_auth">
-    <div class="left_auth_name"><?= User::getUserName(Yii::$app->user->identity->id); ?></div>
+    <div class="left_auth_name"><?= $identity ? User::getUserName($identity->id) : Yii::t('main', 'Гість'); ?></div>
     <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline']); ?>
     <?= Html::submitButton('', ['class' => 'btn btn-link right_leave_btn'] ); ?>
     <?= Html::endForm() ?>
@@ -30,9 +34,9 @@ use common\models\Poll;
         <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="<?php echo Yii::app()->createUrl('/user/newComments/')?>"><?php echo Poll::getNewCommentsCount(Yii::app()->user->id);?></a>
  */
 ?>
-        <?php echo Yii::t("user", 'Мій рейтинг'); ?>: <?= User::getUserRating(Yii::$app->user->identity->id);?><br>
-        <?php echo Yii::t("user", 'Мої опитування'); ?>: <a href="<?= Url::toRoute('/poll/site/myPolls/')?>"><?= User::getPollsCount(Yii::$app->user->identity->id);?></a><br>
-        <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="<?= Url::toRoute('/user/new/new-comments/')?>"><?= Poll::getNewCommentsCount(Yii::$app->user->identity->id);?></a>
+        <?php echo Yii::t("user", 'Мій рейтинг'); ?>: <?= $identity ? User::getUserRating($identity->id) : 0;?><br>
+        <?php echo Yii::t("user", 'Мої опитування'); ?>: <a href="<?= Url::toRoute('/poll/site/myPolls/')?>"><?= $identity ? User::getPollsCount($identity->id) : 0;?></a><br>
+        <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="<?= Url::toRoute('/user/new/new-comments/')?>"><?= $identity ? Poll::getNewCommentsCount($identity->id) : 0;?></a>
     </div>
     <a href="<?= Url::toRoute('/user/profile');?>" class="my_profile" role="tablist">
         <?= Yii::t("user", 'Мій профіль'); ?>

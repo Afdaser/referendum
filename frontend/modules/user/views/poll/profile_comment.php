@@ -13,7 +13,7 @@
 
 <?php if(isset($isNew)):?>
     <?php if(!$isNew):?>
-        <a href="<?php echo Yii::app()->createUrl('/poll/view',array('id'=>$comment->poll_id,'reply'=>$comment->id)); ?>" class="share_link">
+        <a href="<?php echo Yii::app()->createUrl('/poll/view',array('id'=>$comment->poll_id)) . '#reply-' . $comment->id; ?>" class="share_link">
             <i class="fa fa-angle-right"></i>
             <?php echo Yii::t("poll", 'Відповісти'); ?>
         </a>

@@ -25,8 +25,9 @@ use common\models\User;
 <div class="inner_text_comment" itemprop="text">
     <?= $comment->content; ?>
 </div>
-<?php /* OLD: echo Yii::app()->createUrl('/poll/view',array('id'=>$comment->poll_id,'reply'=>$comment->id)); /* */ ?>
-<a href="<?= Url::toRoute(['/poll/poll/view', 'id' => $comment->poll_id, 'reply' => $comment->id]); ?>" class="share_link">
+<?php /* OLD: echo Yii::app()->createUrl('/poll/view',array('id'=>$comment->poll_id)) . '#reply-' . $comment->id; /* */ ?>
+<?php // Формуємо URL з hash-фрагментом для відповіді, щоб не використовувати query-параметр reply. ?>
+<a href="<?= Url::toRoute(['/poll/poll/view', 'id' => $comment->poll_id]); ?>#reply-<?= $comment->id; ?>" class="share_link">
     <i class="fa fa-share"></i>
     <?= Yii::t('poll', 'Відповісти'); ?>
 </a>
@@ -36,4 +37,3 @@ use common\models\User;
         <?= $this->render('/poll/comments', ['comments' => $comment->commentChilds]); ?>
     </div>
 <?php endif; ?>
-

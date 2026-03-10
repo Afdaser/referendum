@@ -15,6 +15,34 @@ if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
 }
 
+// Підтримуємо формат hash-посилання #reply-{id}: відкриваємо вкладку коментарів
+// та підставляємо parent_id, щоб форма відповіді працювала як і раніше.
+$this->registerJs(<<<JS
+(function () {
+    var match = window.location.hash.match(/^#reply-(\d+)$/);
+    if (!match) {
+        return;
+    }
+
+    var replyId = match[1];
+    var parentInput = document.querySelector('input[name="Profile[comment][parent_id]"]');
+    if (parentInput) {
+        parentInput.value = replyId;
+    }
+
+    var commentsTabTrigger = document.querySelector('a[href="#middle_text_input__comment_b"][data-toggle="tab"]');
+    if (commentsTabTrigger && window.jQuery) {
+        window.jQuery(commentsTabTrigger).tab('show');
+    }
+
+    var commentTextarea = document.querySelector('#middle_text_input__comment_b textarea[name="Profile[comment][content]"]');
+    if (commentTextarea) {
+        commentTextarea.focus();
+    }
+})();
+JS
+, View::POS_END);
+
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">

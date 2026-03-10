@@ -12,8 +12,8 @@
 <div class="inner_text_comment">
     <?php echo $comment->content; ?>
 </div>
-<?php /* OLD: echo Yii::app()->createUrl('/poll/view',array('id'=>$comment->poll_id,'reply'=>$comment->id)); /* */ ?>
-<a href="<?php echo Yii::app()->createUrl("/poll/{$comment->poll_id}?reply={$comment->id}"); ?>" class="share_link">
+<?php /* OLD: echo Yii::app()->createUrl('/poll/view',array('id'=>$comment->poll_id)) . '#reply-' . $comment->id; /* */ ?>
+<a href="<?php echo Yii::app()->createUrl("/poll/{$comment->poll_id}") . "#reply-{$comment->id}"; ?>" class="share_link">
     <i class="fa fa-share"></i>
     <?php echo Yii::t("poll", 'Відповісти'); ?>
 </a>

@@ -15,6 +15,42 @@ if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
 }
 
+// Підтримуємо формат hash-посилання #reply-{id} як при першому відкритті,
+// так і при кліку по «Відповісти» без перезавантаження сторінки.
+$this->registerJs(<<<JS
+(function () {
+    function applyReplyHash() {
+        var match = window.location.hash.match(/^#reply-(\d+)$/);
+        if (!match) {
+            return;
+        }
+
+        var replyId = match[1];
+        var parentInput = document.querySelector('input[name="Profile[comment][parent_id]"]');
+        if (parentInput) {
+            parentInput.value = replyId;
+        }
+
+        var commentsTabTrigger = document.querySelector('a[href="#middle_text_input__comment_b"][data-toggle="tab"]');
+        if (commentsTabTrigger && window.jQuery) {
+            window.jQuery(commentsTabTrigger).tab('show');
+        }
+
+        var commentTextarea = document.querySelector('#middle_text_input__comment_b textarea[name="Profile[comment][content]"]');
+        if (commentTextarea) {
+            commentTextarea.focus();
+        }
+    }
+
+    // Запускаємо логіку одразу при завантаженні сторінки.
+    applyReplyHash();
+
+    // Повторно запускаємо логіку, коли hash змінюється без reload.
+    window.addEventListener('hashchange', applyReplyHash);
+})();
+JS
+, View::POS_END);
+
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">

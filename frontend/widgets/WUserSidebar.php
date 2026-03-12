@@ -5,6 +5,7 @@ namespace frontend\widgets;
 use Yii;
 use yii\bootstrap4\Widget;
 use common\models\form\LoginForm;
+use common\models\User;
 use frontend\models\SignupForm;
 use frontend\models\forms\RegisterForm;
 use frontend\models\forms\PollForm as Poll;
@@ -66,17 +67,28 @@ class WUserSidebar extends Widget
 //                    $signupFormModel->load(Yii::$app->request->post());
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Реєстрацію завершено. Тепер ви можете увійти під своїм логіном і паролем.');
-                        // Після реєстрації користувач ще не авторизований, тому показуємо гостьовий сайдбар.
-                        // Це запобігає падінню на Yii::$app->user->identity->id для неавторизованого користувача.
+                        // Після успішної реєстрації авторизуємо користувача,
+                        // щоб одразу відкрився другий етап заповнення профілю з кнопкою «Пропустити».
+                        $createdUser = User::findByUsername($attributes['login']);
+                        if ($createdUser && Yii::$app->user->login($createdUser, 3600 * 24 * 30)) {
+                            $pollModel = new Poll;
+                            $pollModel->presetAttributes();
+
+                            return $this->render('user-sidebar', array(
+                                'refresh' => true,
+                                'pollModel' => $pollModel,
+                            ));
+                        }
+
+                        Yii::$app->session->setFlash('error', 'Реєстрацію завершено, але автоматичний вхід не вдався. Увійдіть, будь ласка, вручну.');
+
                         return $this->render('user-sidebar-login', array(
                             'model' => $this->model,
                             'registerForm' => new RegisterForm(),
                         ));
                     }
 
-                    // Реєстрація не завершилася успіхом (наприклад, не налаштований mailer) —
-                    // повертаємо форму реєстрації з помилками, а не «авторизований» сайдбар.
+                    // Реєстрація не завершилася успіхом — повертаємо форму реєстрації з помилками.
                     return $this->render('user-sidebar-login', array(
                         'model' => $this->model,
                         'registerForm' => $model,

@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use Yii;
 use yii\base\Model;
+use Throwable;
 use common\models\User;
 
 /**
@@ -49,27 +50,53 @@ class SignupForm extends Model
             return null;
         }
 
+        $requiresEmailConfirmation = $this->isEmailConfirmationEnabled();
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
-        // На проєкті підтвердження email вимкнене, тому активуємо акаунт одразу,
-        // щоб користувач міг увійти без ручної активації в адмінці.
-        $user->status = User::STATUS_ACTIVE;
+
+        if ($requiresEmailConfirmation) {
+            // Якщо підтвердження email увімкнене — залишаємо користувача неактивним і генеруємо токен.
+            $user->generateEmailVerificationToken();
+        } else {
+            // У поточній конфігурації підтвердження email вимкнене,
+            // тому активуємо акаунт одразу, щоб користувач міг увійти без ручної активації.
+            $user->status = User::STATUS_ACTIVE;
+        }
 
         if (!$user->save()) {
             return false;
         }
 
-        // Лист не блокує успішну реєстрацію: акаунт вже створений і активний.
-        // Якщо пошта недоступна, помилку фіксуємо в логах для адміністрування.
-        if (!$this->sendEmail($user)) {
-            Yii::warning(sprintf('Не вдалося надіслати лист після реєстрації користувача ID=%d', (int)$user->id), __METHOD__);
+        // Надсилаємо verification-лист лише коли реально використовується флоу підтвердження.
+        if ($requiresEmailConfirmation && !$this->sendEmail($user)) {
+            // Лист не має призводити до 500: лог фіксує проблему для адміністратора.
+            Yii::warning(sprintf('Не вдалося надіслати лист підтвердження для користувача ID=%d', (int)$user->id), __METHOD__);
         }
 
         return true;
+    }
+
+    /**
+     * Перевіряє, чи увімкнений флоу підтвердження email у модулі користувачів.
+     *
+     * @return bool
+     */
+    private function isEmailConfirmationEnabled(): bool
+    {
+        try {
+            $module = Yii::$app->getModule('user');
+
+            return $module !== null && (bool)$module->enableConfirmation;
+        } catch (Throwable $exception) {
+            // Якщо модуль недоступний у поточному контексті — працюємо у безпечному режимі без підтвердження.
+            Yii::warning('Не вдалося отримати налаштування модуля user для перевірки підтвердження email.', __METHOD__);
+
+            return false;
+        }
     }
 
     /**

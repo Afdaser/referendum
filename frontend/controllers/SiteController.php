@@ -156,7 +156,17 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+            $userModule = Yii::$app->getModule('user');
+            $isConfirmationEnabled = $userModule !== null && (bool)$userModule->enableConfirmation;
+
+            // Повідомлення має відповідати фактичному флоу реєстрації.
+            Yii::$app->session->setFlash(
+                'success',
+                $isConfirmationEnabled
+                    ? 'Thank you for registration. Please check your inbox for verification email.'
+                    : 'Реєстрацію завершено. Тепер ви можете увійти під своїм логіном і паролем.'
+            );
+
             return $this->goHome();
         }
 

@@ -48,15 +48,28 @@ class SignupForm extends Model
         if ($runValidation && !$this->validate()) {
             return null;
         }
-        
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
+        // На проєкті підтвердження email вимкнене, тому активуємо акаунт одразу,
+        // щоб користувач міг увійти без ручної активації в адмінці.
+        $user->status = User::STATUS_ACTIVE;
 
-        return $user->save() && $this->sendEmail($user);
+        if (!$user->save()) {
+            return false;
+        }
+
+        // Лист не блокує успішну реєстрацію: акаунт вже створений і активний.
+        // Якщо пошта недоступна, помилку фіксуємо в логах для адміністрування.
+        if (!$this->sendEmail($user)) {
+            Yii::warning(sprintf('Не вдалося надіслати лист після реєстрації користувача ID=%d', (int)$user->id), __METHOD__);
+        }
+
+        return true;
     }
 
     /**
@@ -78,6 +91,5 @@ class SignupForm extends Model
             ->send();
     }
 }
-
 
 

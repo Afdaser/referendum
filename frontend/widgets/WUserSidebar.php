@@ -66,7 +66,7 @@ class WUserSidebar extends Widget
 //                    $signupFormModel->load(Yii::$app->request->post());
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
+                        Yii::$app->session->setFlash('success', 'Реєстрацію завершено. Тепер ви можете увійти під своїм логіном і паролем.');
                         // Після реєстрації користувач ще не авторизований, тому показуємо гостьовий сайдбар.
                         // Це запобігає падінню на Yii::$app->user->identity->id для неавторизованого користувача.
                         return $this->render('user-sidebar-login', array(
@@ -84,7 +84,7 @@ class WUserSidebar extends Widget
                     ));
                 } else {
                    //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
+                    return $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
                 }
 
 //                die(__FILE__.'#'.__LINE__);

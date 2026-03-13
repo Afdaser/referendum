@@ -14,7 +14,7 @@ $defaultDescription = Yii::t('tag', 'Опитування та думки щод
     'count' => $tagModel->polls_count,
     'tag' => $tagModel->name,
 ]);
-$meta = $tagModel->getStaticMeta();
+$meta = $tagModel->getStaticMeta((int) $page);
 
 $pageTitle = $meta['title'] ?? $defaultTitle;
 Yii::$app->page->title = $pageTitle;

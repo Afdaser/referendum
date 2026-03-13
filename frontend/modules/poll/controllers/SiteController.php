@@ -72,6 +72,21 @@ class SiteController extends Controller
         $seoRecord = MainPageSeoText::findForHost($request->hostName);
         $metaTitle = $seoRecord ? trim((string) $seoRecord->meta_title) : '';
         $metaDescription = $seoRecord ? trim((string) $seoRecord->meta_description) : '';
+        $currentPage = (int) $request->get('page', 1);
+        $currentPage = $currentPage > 0 ? $currentPage : 1;
+
+        // Для /page/N дозволяємо окремі шаблони meta з підстановкою номера сторінки (@page).
+        if ($currentPage > 1 && $seoRecord) {
+            $paginatedMetaTitle = trim((string) $seoRecord->paginated_meta_title);
+            $paginatedMetaDescription = trim((string) $seoRecord->paginated_meta_description);
+
+            if ($paginatedMetaTitle !== '') {
+                $metaTitle = strtr($paginatedMetaTitle, ['@page' => (string) $currentPage]);
+            }
+            if ($paginatedMetaDescription !== '') {
+                $metaDescription = strtr($paginatedMetaDescription, ['@page' => (string) $currentPage]);
+            }
+        }
         // Готуємо h1 і SEO-текст, щоб показати заголовок угорі, а текст залишити внизу.
         $mainPageHeading = $seoRecord ? trim((string) $seoRecord->heading) : '';
         $mainPageText = $seoRecord ? trim((string) $seoRecord->content) : '';
@@ -93,7 +108,7 @@ class SiteController extends Controller
         // Передаємо дані для h1 та SEO-тексту в представлення головної сторінки.
         $this->view->params['mainPageHeading'] = $mainPageHeading;
         $this->view->params['mainPageText'] = $mainPageText;
-        $this->view->params['isMainPageFirst'] = (int) $request->get('page', 1) <= 1;
+        $this->view->params['isMainPageFirst'] = $currentPage <= 1;
 
         return self::renderIndex($this->category);
     }

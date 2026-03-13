@@ -42,7 +42,10 @@ $this->params['breadcrumbs'][] = $domainLabel;
 
         <?= $form->field($model, 'heading')
             ->textInput(['maxlength' => true])
-            ->hint('Значення потрапляє у головний H1 на головній сторінці.'); ?>
+            ->hint('Значення потрапляє у головний H1 на першій сторінці головної.'); ?>
+        <?= $form->field($model, 'paginated_heading')
+            ->textInput(['maxlength' => true])
+            ->hint('Окремий H1 для сторінок пагінації головної. Доступна змінна @page.'); ?>
 
         <?php
         // Використовуємо внутрішній HTML-редактор TinyMCE для SEO-тексту.

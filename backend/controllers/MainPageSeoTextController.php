@@ -61,6 +61,7 @@ class MainPageSeoTextController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             // Нормалізуємо значення, щоб зайві пробіли не зберігались у БД.
             $model->heading = trim((string) $model->heading);
+            $model->paginated_heading = trim((string) $model->paginated_heading);
             $model->content = trim((string) $model->content);
             // Підчищаємо мета-дані, щоб не зберігати лише пробіли.
             $model->meta_title = trim((string) $model->meta_title);

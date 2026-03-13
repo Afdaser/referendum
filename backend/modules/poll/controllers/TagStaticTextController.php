@@ -58,6 +58,7 @@ class TagStaticTextController extends Controller
             // Нормалізуємо введення, щоб порожні значення не зберігались як пробіли.
             $model->content = trim((string) $model->content);
             $model->heading = trim((string) $model->heading);
+            $model->paginated_heading = trim((string) $model->paginated_heading);
             $model->meta_title = trim((string) $model->meta_title);
             $model->meta_description = trim((string) $model->meta_description);
             $model->paginated_meta_title = trim((string) $model->paginated_meta_title);

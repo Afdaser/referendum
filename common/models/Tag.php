@@ -486,10 +486,14 @@ class Tag extends ActiveRecord
         // Додаємо номер сторінки, щоб його можна було підставляти в SEO-шаблонах пагінації.
         $replacements['@page'] = (string) max(1, $page);
 
+        $headingTemplate = $page > 1 ? $staticText->paginated_heading : $staticText->heading;
         $titleTemplate = $page > 1 ? $staticText->paginated_meta_title : $staticText->meta_title;
         $descriptionTemplate = $page > 1 ? $staticText->paginated_meta_description : $staticText->meta_description;
 
         // Якщо окремі поля пагінації порожні — м'яко повертаємось до звичайних meta полів.
+        if (trim((string) $headingTemplate) === '') {
+            $headingTemplate = $staticText->heading;
+        }
         if (trim((string) $titleTemplate) === '') {
             $titleTemplate = $staticText->meta_title;
         }
@@ -498,7 +502,7 @@ class Tag extends ActiveRecord
         }
 
         return [
-            'heading' => $this->replaceTokens($staticText->heading, $replacements),
+            'heading' => $this->replaceTokens($headingTemplate, $replacements),
             'title' => $this->replaceTokens($titleTemplate, $replacements),
             'description' => $this->replaceTokens($descriptionTemplate, $replacements),
         ];

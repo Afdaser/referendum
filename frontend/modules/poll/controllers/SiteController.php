@@ -89,6 +89,13 @@ class SiteController extends Controller
         }
         // Готуємо h1 і SEO-текст, щоб показати заголовок угорі, а текст залишити внизу.
         $mainPageHeading = $seoRecord ? trim((string) $seoRecord->heading) : '';
+        // Дозволяємо окремий H1 для /page/N та підставляємо номер сторінки через @page.
+        if ($currentPage > 1 && $seoRecord) {
+            $paginatedHeading = trim((string) $seoRecord->paginated_heading);
+            if ($paginatedHeading !== '') {
+                $mainPageHeading = strtr($paginatedHeading, ['@page' => (string) $currentPage]);
+            }
+        }
         $mainPageText = $seoRecord ? trim((string) $seoRecord->content) : '';
 
         // Якщо значення не задані в адмінці, використовуємо безпечні дефолти.

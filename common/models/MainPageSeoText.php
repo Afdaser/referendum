@@ -14,6 +14,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $content
  * @property string|null $meta_title
  * @property string|null $meta_description
+ * @property string|null $paginated_heading
  * @property string|null $paginated_meta_title
  * @property string|null $paginated_meta_description
  * @property int|null $created_at
@@ -48,7 +49,7 @@ class MainPageSeoText extends ActiveRecord
             [['domain'], 'required'],
             [['content', 'meta_description', 'paginated_meta_description'], 'string'],
             [['created_at', 'updated_at'], 'integer'],
-            [['domain', 'heading', 'meta_title', 'paginated_meta_title'], 'string', 'max' => 255],
+            [['domain', 'heading', 'paginated_heading', 'meta_title', 'paginated_meta_title'], 'string', 'max' => 255],
             [['domain'], 'unique'],
         ];
     }
@@ -63,6 +64,7 @@ class MainPageSeoText extends ActiveRecord
             'domain' => 'Домен',
             'heading' => 'Заголовок H1',
             'meta_title' => 'Meta title',
+            'paginated_heading' => 'H1 для пагінації',
             'meta_description' => 'Meta description',
             'paginated_meta_title' => 'Meta title для пагінації',
             'paginated_meta_description' => 'Meta description для пагінації',
@@ -79,6 +81,7 @@ class MainPageSeoText extends ActiveRecord
     {
         // Вважаємо запис порожнім, якщо всі SEO-поля не заповнені.
         return trim((string) $this->heading) === ''
+            && trim((string) $this->paginated_heading) === ''
             && trim((string) $this->content) === ''
             && trim((string) $this->meta_title) === ''
             && trim((string) $this->meta_description) === ''

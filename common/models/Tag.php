@@ -216,6 +216,7 @@ class Tag extends ActiveRecord
             '@votes90d' => 'Кількість нових голосів за останні 90 днів у межах тегу.',
             '@polls90d' => 'Кількість нових опитувань за останні 90 днів у межах тегу.',
             '@activepoll90d' => 'Найактивніше опитування за останні 90 днів (з посиланням).',
+            '@page' => 'Номер поточної сторінки пагінації (для SEO шаблонів).',
         ];
     }
 
@@ -469,7 +470,7 @@ class Tag extends ActiveRecord
      * Повертає користувацькі мета-налаштування (title, description, H1) для сторінки тегу.
      * Значення одразу проходять через підстановку змінних.
      */
-    public function getStaticMeta(): array
+    public function getStaticMeta(int $page = 1): array
     {
         $staticText = $this->getStaticTextRecord();
         if (!$staticText) {
@@ -482,11 +483,24 @@ class Tag extends ActiveRecord
 
         $data = $this->getStaticContentData();
         $replacements = $data['replacements'];
+        // Додаємо номер сторінки, щоб його можна було підставляти в SEO-шаблонах пагінації.
+        $replacements['@page'] = (string) max(1, $page);
+
+        $titleTemplate = $page > 1 ? $staticText->paginated_meta_title : $staticText->meta_title;
+        $descriptionTemplate = $page > 1 ? $staticText->paginated_meta_description : $staticText->meta_description;
+
+        // Якщо окремі поля пагінації порожні — м'яко повертаємось до звичайних meta полів.
+        if (trim((string) $titleTemplate) === '') {
+            $titleTemplate = $staticText->meta_title;
+        }
+        if (trim((string) $descriptionTemplate) === '') {
+            $descriptionTemplate = $staticText->meta_description;
+        }
 
         return [
             'heading' => $this->replaceTokens($staticText->heading, $replacements),
-            'title' => $this->replaceTokens($staticText->meta_title, $replacements),
-            'description' => $this->replaceTokens($staticText->meta_description, $replacements),
+            'title' => $this->replaceTokens($titleTemplate, $replacements),
+            'description' => $this->replaceTokens($descriptionTemplate, $replacements),
         ];
     }
 

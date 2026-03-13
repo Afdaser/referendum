@@ -32,6 +32,14 @@ $this->params['breadcrumbs'][] = $domainLabel;
             ->textInput(['maxlength' => true])
             ->hint('Значення потрапляє у мета-тег description для головної сторінки.'); ?>
 
+        <?= $form->field($model, 'paginated_meta_title')
+            ->textInput(['maxlength' => true])
+            ->hint('Використовується на сторінках пагінації головної (/page/N). Доступна змінна @page.'); ?>
+
+        <?= $form->field($model, 'paginated_meta_description')
+            ->textInput(['maxlength' => true])
+            ->hint('Окремий description для сторінок пагінації. Можна вказати @page для номера поточної сторінки.'); ?>
+
         <?= $form->field($model, 'heading')
             ->textInput(['maxlength' => true])
             ->hint('Значення потрапляє у головний H1 на головній сторінці.'); ?>

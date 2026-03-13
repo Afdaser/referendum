@@ -65,6 +65,8 @@ class MainPageSeoTextController extends Controller
             // Підчищаємо мета-дані, щоб не зберігати лише пробіли.
             $model->meta_title = trim((string) $model->meta_title);
             $model->meta_description = trim((string) $model->meta_description);
+            $model->paginated_meta_title = trim((string) $model->paginated_meta_title);
+            $model->paginated_meta_description = trim((string) $model->paginated_meta_description);
 
             if (!$model->validate()) {
                 Yii::$app->session->setFlash('error', 'Не вдалося зберегти SEO-текст.');

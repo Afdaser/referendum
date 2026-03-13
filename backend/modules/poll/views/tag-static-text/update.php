@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $language->title;
             <div class="panel-body">
                 <p>
                     Ці поля керують заголовком H1, тегом &lt;title&gt; та мета-описом на сторінці тегу.
-                    Дозволено використовувати ті самі змінні, що й у статичному тексті.
+                    Дозволено використовувати ті самі змінні, що й у статичному тексті, а для пагінації також доступна змінна @page.
                 </p>
                 <?= $form->field($model, 'heading')
                     ->textInput(['maxlength' => true])
@@ -54,6 +54,12 @@ $this->params['breadcrumbs'][] = $language->title;
                 <?= $form->field($model, 'meta_description')
                     ->textarea(['rows' => 4, 'class' => 'form-control'])
                     ->hint('Власний мета-опис. Порожнє значення повертає автоматичний опис.'); ?>
+                <?= $form->field($model, 'paginated_meta_title')
+                    ->textInput(['maxlength' => true])
+                    ->hint('Окремий title для сторінок пагінації тегу. Працює змінна @page.'); ?>
+                <?= $form->field($model, 'paginated_meta_description')
+                    ->textarea(['rows' => 4, 'class' => 'form-control'])
+                    ->hint('Окремий meta description для пагінації тегу. Можна використовувати @page.'); ?>
             </div>
         </div>
 

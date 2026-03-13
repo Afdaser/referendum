@@ -16,6 +16,8 @@ use common\models\TagStaticFaq;
  * @property string|null $heading
  * @property string|null $meta_title
  * @property string|null $meta_description
+ * @property string|null $paginated_meta_title
+ * @property string|null $paginated_meta_description
  * @property string|null $latest_activity_template
  * @property int|null $created_at
  * @property int|null $updated_at
@@ -50,8 +52,8 @@ class TagStaticText extends ActiveRecord
         return [
             [['language_id'], 'required'],
             [['language_id', 'created_at', 'updated_at'], 'integer'],
-            [['content', 'meta_description', 'latest_activity_template'], 'string'],
-            [['heading', 'meta_title'], 'string', 'max' => 255],
+            [['content', 'meta_description', 'paginated_meta_description', 'latest_activity_template'], 'string'],
+            [['heading', 'meta_title', 'paginated_meta_title'], 'string', 'max' => 255],
             [['language_id'], 'unique'],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
@@ -69,6 +71,8 @@ class TagStaticText extends ActiveRecord
             'heading' => 'Заголовок H1',
             'meta_title' => 'Meta title',
             'meta_description' => 'Meta description',
+            'paginated_meta_title' => 'Meta title для пагінації',
+            'paginated_meta_description' => 'Meta description для пагінації',
             'latest_activity_template' => 'Шаблон блоку «Latest activity»',
             'created_at' => 'Створено',
             'updated_at' => 'Оновлено',
@@ -85,6 +89,8 @@ class TagStaticText extends ActiveRecord
             && trim((string) $this->heading) === ''
             && trim((string) $this->meta_title) === ''
             && trim((string) $this->meta_description) === ''
+            && trim((string) $this->paginated_meta_title) === ''
+            && trim((string) $this->paginated_meta_description) === ''
             && trim((string) $this->latest_activity_template) === '';
     }
 

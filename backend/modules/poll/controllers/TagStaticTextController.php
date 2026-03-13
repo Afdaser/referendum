@@ -60,6 +60,8 @@ class TagStaticTextController extends Controller
             $model->heading = trim((string) $model->heading);
             $model->meta_title = trim((string) $model->meta_title);
             $model->meta_description = trim((string) $model->meta_description);
+            $model->paginated_meta_title = trim((string) $model->paginated_meta_title);
+            $model->paginated_meta_description = trim((string) $model->paginated_meta_description);
 
             $faqPost = Yii::$app->request->post('TagStaticFaq', []);
             $faqFormModels = [];

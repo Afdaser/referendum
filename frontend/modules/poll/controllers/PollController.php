@@ -33,11 +33,11 @@ class PollController extends \yii\web\Controller
     {
         return array(
             array('allow',
-                'actions'=>array('changeCommentRating','upAnswerRating','changePollRating','view','getChartData','getRegions','getCities', 'vote','captcha'),
+                'actions'=>array('changeCommentRating','upAnswerRating','changePollRating','view','getChartData','getRegions','getCities', 'vote','captcha','addComment'),
                 'users'=>array('*'),
             ),
             array('allow',
-                'actions'=>array('addComment','addAnswer','createPoll','editPoll'),
+                'actions'=>array('addAnswer','createPoll','editPoll'),
                 'users'=>array('@'),
             ),
             array('deny',
@@ -183,6 +183,7 @@ class PollController extends \yii\web\Controller
             $comment->setCommentAttributes($postData['comment']);
         }
 
+        // Валідація моделі містить перевірку: один IP — один гостьовий коментар у межах poll.
         if (!$comment->validate() || !$comment->save()) {
 //            echo '<h2>Error~</h2><pre>';
 //            var_dump($comment->getErrors());

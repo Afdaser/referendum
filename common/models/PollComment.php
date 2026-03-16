@@ -12,7 +12,11 @@ use common\components\ActiveRecord;
  * @property int $id ID
  * @property int|null $parent_id Parent
  * @property int $poll_id Poll
- * @property int $user_id User
+ * @property int|null $user_id User
+ * @property int $is_guest Is guest comment
+ * @property string|null $guest_nickname Guest nickname
+ * @property int|null $user_ip User IP
+ * @property string|null $ip_of_user User IP text
  * @property string $content Content
  * @property int $status Status
  * @property int $is_new Is new
@@ -53,13 +57,20 @@ class PollComment extends ActiveRecord
     public function rules()
     {
         return [
-            [['parent_id', 'poll_id', 'user_id', 'status', 'is_new', 'has_new', 'read_by_parent', 'rating', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
-            [['poll_id', 'user_id', 'content', 'status'], 'required'],
+            [['parent_id', 'poll_id', 'user_id', 'status', 'is_new', 'has_new', 'read_by_parent', 'rating', 'created_by', 'updated_by', 'created_at', 'updated_at', 'user_ip'], 'integer'],
+            [['poll_id', 'content', 'status', 'is_guest'], 'required'],
             [['date_add', 'date_update'], 'safe'],
             [['content'], 'string'],
+            [['guest_nickname'], 'trim'],
+            [['guest_nickname'], 'string', 'max' => 60],
+            [['ip_of_user'], 'string', 'max' => 67],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['poll_id'], 'exist', 'skipOnError' => true, 'targetClass' => Poll::class, 'targetAttribute' => ['poll_id' => 'id']],
             [['parent_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollComment::class, 'targetAttribute' => ['parent_id' => 'id']],
+            [['guest_nickname'], 'required', 'when' => function (self $model) {
+                return (bool) $model->is_guest;
+            }, 'whenClient' => "function () { return false; }"],
+            ['user_ip', 'validateGuestCommentIpLimit'],
         ];
     }
 
@@ -73,6 +84,10 @@ class PollComment extends ActiveRecord
             'parent_id' => Yii::t('app', 'Parent'),
             'poll_id' => Yii::t('app', 'Poll'),
             'user_id' => Yii::t('app', 'User'),
+            'is_guest' => Yii::t('app', 'Is guest comment'),
+            'guest_nickname' => Yii::t('app', 'Guest nickname'),
+            'user_ip' => Yii::t('app', 'User IP'),
+            'ip_of_user' => Yii::t('app', 'User IP text'),
             'content' => Yii::t('app', 'Content'),
             'status' => Yii::t('app', 'Status'),
             'is_new' => Yii::t('app', 'Is new'),
@@ -195,12 +210,66 @@ class PollComment extends ActiveRecord
         if (intval($attributes['parent_id'])) {
             $this->parent_id = intval($attributes['parent_id']);
         }
-        $this->user_id = Yii::$app->user->identity->id;
+
+        // Для гостей зберігаємо нік та IP, а для авторизованих — user_id.
+        if (Yii::$app->user->isGuest) {
+            $this->is_guest = 1;
+            $this->user_id = null;
+            $this->guest_nickname = Html::encode(trim((string) ($attributes['guest_nickname'] ?? '')));
+            $this->user_ip = ip2long(Yii::$app->request->getUserIP());
+            $this->ip_of_user = Yii::$app->request->getUserIP();
+        } else {
+            $this->is_guest = 0;
+            $this->user_id = Yii::$app->user->id;
+            $this->guest_nickname = null;
+            $this->user_ip = null;
+            $this->ip_of_user = null;
+        }
+
         $this->content = Html::encode($attributes['content']);
         $this->status = PollComment::COMMENT_STATUS_PUBLISHED;
         $this->date_add = date('Y-m-d H:i:s');
 
         return $this;
+    }
+
+    /**
+     * Гість може лишити лише один коментар в межах одного опитування з одного IP.
+     */
+    public function validateGuestCommentIpLimit($attribute, $params)
+    {
+        if (!$this->is_guest || !$this->poll_id || !$this->user_ip) {
+            return;
+        }
+
+        $exists = self::find()
+            ->where(['poll_id' => $this->poll_id, 'is_guest' => 1, 'user_ip' => $this->user_ip])
+            ->andFilterWhere(['<>', 'id', $this->id])
+            ->exists();
+
+        if ($exists) {
+            $this->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
+        }
+    }
+
+    /**
+     * Повертає ім’я автора для відображення в шаблонах.
+     */
+    public function getDisplayAuthorName()
+    {
+        if ($this->is_guest) {
+            return $this->guest_nickname ?: Yii::t('poll', 'Гість');
+        }
+
+        return User::getUserName($this->user_id);
+    }
+
+    /**
+     * Чи є коментар гостьовим.
+     */
+    public function getIsGuestComment()
+    {
+        return (bool) $this->is_guest;
     }
 
     public function readCommentAnswers()

@@ -12,7 +12,12 @@ use common\models\User;
  */
 ?>
 <div class="title_comment_item_b clearfix" itemprop="author" itemtype="https://schema.org/Person" itemscope>
-    <a href="<?= Url::toRoute(['/poll/site/user-profile', 'id' => $comment->user_id]); ?>" class="name_link" itemprop="url"><span itemprop="name"><?= User::getUserName($comment->user_id); ?></span></a>
+    <?php if ($comment->isGuestComment): ?>
+        <?php // Для гостей не будуємо посилання на профіль, бо акаунта не існує. ?>
+        <span class="name_link" itemprop="name"><?= $comment->displayAuthorName; ?></span>
+    <?php else: ?>
+        <a href="<?= Url::toRoute(['/poll/site/user-profile', 'id' => $comment->user_id]); ?>" class="name_link" itemprop="url"><span itemprop="name"><?= $comment->displayAuthorName; ?></span></a>
+    <?php endif; ?>
     <span class="date_writing"><?= StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat" itemprop="userInteractionCount">
         <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $comment->id; ?>"></a>

@@ -31,6 +31,7 @@ Registration on the site is required not only to see the results of surveys, but
         'Запропоновані відповіді'=>'Suggested answers',
         'Додати коментар'=>'Add Comment',
         'Додати варіант відповіді'=>'Suggest an answer',
+        'Ваш нік' => 'Your nickname',
         'Нікнейм' => 'Nickname',
         'Вкажіть нікнейм, під яким буде опубліковано коментар.' => 'Specify the nickname that will be shown with your comment.',
         'незареєстрований' => 'unregistered',

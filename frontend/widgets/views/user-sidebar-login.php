@@ -284,18 +284,9 @@ if (Yii::$app->user->isGuest) {
 
     $scriptLogin .= <<<JS_GUEST
         $(function() {
+            // Для гостей лишаємо блокування тільки на "додати варіант відповіді".
+            // Коментарі для гостей дозволені, тому обробник для кнопки коментаря не блокуємо.
             $('#middle_text_input_b > form > div.bottom_btn_b > button.send_btn').click(function(){
-            alert('DEV.point#01');
-/*
-//                $('#1registration_info').modal('show'); //  DEV.R#01
-/* */
-                return false;
-            });
-            $('#middle_text_input__comment_b > form > div.bottom_btn_b > button.send_btn').click(function(){
-            alert('DEV.point#2402');
-/*
-//                $('#1registration_info').modal('show'); //  DEV.R#02
-/* */
                 return false;
             });
         });
@@ -357,10 +348,7 @@ jQuery(document).ready(function( $ ) {
                 $('#registration_info').modal('show'); //DEV.Rx#06
                 return false;
             });
-            $('#middle_text_input__comment_b > form > div.bottom_btn_b > button.send_btn').click(function(){
-                $('#registration_info').modal('show'); //DEV.Rx#07
-                return false;
-            });
+            // Коментарі для гостей дозволені, тому кнопку надсилання коментаря не блокуємо.
         });
     <?php } ?>
 

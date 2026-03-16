@@ -5,6 +5,7 @@ namespace frontend\modules\poll\controllers;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
+use yii\db\IntegrityException;
 
 use common\models\Poll;
 use common\models\PollOption;
@@ -33,11 +34,11 @@ class PollController extends \yii\web\Controller
     {
         return array(
             array('allow',
-                'actions'=>array('changeCommentRating','upAnswerRating','changePollRating','view','getChartData','getRegions','getCities', 'vote','captcha'),
+                'actions'=>array('changeCommentRating','upAnswerRating','changePollRating','view','getChartData','getRegions','getCities', 'vote','captcha','addComment'),
                 'users'=>array('*'),
             ),
             array('allow',
-                'actions'=>array('addComment','addAnswer','createPoll','editPoll'),
+                'actions'=>array('addAnswer','createPoll','editPoll'),
                 'users'=>array('@'),
             ),
             array('deny',
@@ -183,13 +184,22 @@ class PollController extends \yii\web\Controller
             $comment->setCommentAttributes($postData['comment']);
         }
 
-        if (!$comment->validate() || !$comment->save()) {
-//            echo '<h2>Error~</h2><pre>';
-//            var_dump($comment->getErrors());
-//            echo '</pre>';
-//            die(__METHOD__);
+        // Валідація моделі містить перевірку: один IP — один гостьовий коментар у межах poll.
+        if (!$comment->validate()) {
             return self::renderView($comment->poll_id, $comment);
-        } elseif ($comment->parent_id) {
+        }
+
+        try {
+            if (!$comment->save(false)) {
+                return self::renderView($comment->poll_id, $comment);
+            }
+        } catch (IntegrityException $e) {
+            // Захист від race-condition: UNIQUE-індекс у БД гарантує ліміт навіть при паралельних сабмітах.
+            $comment->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
+            return self::renderView($comment->poll_id, $comment);
+        }
+
+        if ($comment->parent_id) {
             $tmp = $comment;
             do {
                 $tmp = $tmp->parent;

@@ -281,6 +281,10 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                     <?= yii\helpers\Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken); ?>
                     <input name="Profile[comment][poll_id]" type="text" class="autocomplete" value="<?= $poll->id;?>" hidden>
                     <input name="Profile[comment][parent_id]" type="text" class="autocomplete" value="<?= isset($commentModel->parent_id)?$commentModel->parent_id:'';?>" hidden>
+                    <?php if (Yii::$app->user->isGuest): ?>
+                        <?php // Для гостьового коментаря просимо нік, щоб уникнути плутанини у стрічці. ?>
+                        <input name="Profile[comment][guest_nickname]" type="text" maxlength="60" placeholder="<?= Yii::t('poll', 'Ваш нік'); ?>" value="<?= $commentModel->guest_nickname ?? ''; ?>">
+                    <?php endif; ?>
                     <textarea name="Profile[comment][content]"><?= $commentModel->content;?></textarea>
                     <div class="bottom_btn_b">
                         <button type="submit" class="send_btn"><?= Yii::t('poll', 'Надіслати'); ?><i class="send_icon"></i></button>

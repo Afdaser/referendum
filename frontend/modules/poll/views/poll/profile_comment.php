@@ -6,7 +6,12 @@ use common\models\User;
 
 ?>
 <div class="title_comment_item_b clearfix">
-    <a href="<?= Url::toRoute(['/poll/site/user-profile', 'id' => $comment->user_id]); ?>" class="name_link"><?= User::getUserName($comment->user_id); ?></a>
+    <?php if ($comment->isGuestComment): ?>
+    <?php // Для гостей не будуємо посилання на профіль, бо акаунта не існує. ?>
+    <span class="name_link"><?= $comment->displayAuthorName; ?></span>
+<?php else: ?>
+    <a href="<?= Url::toRoute(['/poll/site/user-profile', 'id' => $comment->user_id]); ?>" class="name_link"><?= $comment->displayAuthorName; ?></a>
+<?php endif; ?>
     <span class="date_writing"><?= StringHelper::relative_date($comment->date_add); ?></span>
 <?php if (isset($isNew)): ?>
         <?php if (!$isNew): ?>

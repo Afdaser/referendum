@@ -216,8 +216,12 @@ class PollComment extends ActiveRecord
             $this->is_guest = 1;
             $this->user_id = null;
             $this->guest_nickname = Html::encode(trim((string) ($attributes['guest_nickname'] ?? '')));
-            $this->user_ip = ip2long(Yii::$app->request->getUserIP());
-            $this->ip_of_user = Yii::$app->request->getUserIP();
+
+            // Підтримуємо і IPv4, і IPv6 без втрати сумісності зі старим полем user_ip.
+            $rawIp = (string) Yii::$app->request->getUserIP();
+            $this->ip_of_user = $rawIp;
+            $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
+            $this->user_ip = ($ipv4Long !== false) ? (int) $ipv4Long : null;
         } else {
             $this->is_guest = 0;
             $this->user_id = Yii::$app->user->id;
@@ -238,16 +242,24 @@ class PollComment extends ActiveRecord
      */
     public function validateGuestCommentIpLimit($attribute, $params)
     {
-        if (!$this->is_guest || !$this->poll_id || !$this->user_ip) {
+        if (!$this->is_guest || !$this->poll_id) {
             return;
         }
 
-        $exists = self::find()
-            ->where(['poll_id' => $this->poll_id, 'is_guest' => 1, 'user_ip' => $this->user_ip])
-            ->andFilterWhere(['<>', 'id', $this->id])
-            ->exists();
+        $query = self::find()
+            ->where(['poll_id' => $this->poll_id, 'is_guest' => 1])
+            ->andFilterWhere(['<>', 'id', $this->id]);
 
-        if ($exists) {
+        // Для IPv4 використовуємо індексоване числове поле, для IPv6 — рядкове поле ip_of_user.
+        if ($this->user_ip !== null) {
+            $query->andWhere(['user_ip' => $this->user_ip]);
+        } elseif (!empty($this->ip_of_user)) {
+            $query->andWhere(['ip_of_user' => $this->ip_of_user]);
+        } else {
+            return;
+        }
+
+        if ($query->exists()) {
             $this->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
         }
     }

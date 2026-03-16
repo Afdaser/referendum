@@ -282,8 +282,20 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                     <input name="Profile[comment][poll_id]" type="text" class="autocomplete" value="<?= $poll->id;?>" hidden>
                     <input name="Profile[comment][parent_id]" type="text" class="autocomplete" value="<?= isset($commentModel->parent_id)?$commentModel->parent_id:'';?>" hidden>
                     <?php if (Yii::$app->user->isGuest): ?>
-                        <?php // Для гостьового коментаря просимо нік, щоб уникнути плутанини у стрічці. ?>
-                        <input name="Profile[comment][guest_nickname]" type="text" maxlength="60" placeholder="<?= Yii::t('poll', 'Ваш нік'); ?>" value="<?= $commentModel->guest_nickname ?? ''; ?>">
+                        <?php // Для гостьового коментаря робимо окремий дружній блок з ніком. ?>
+                        <div class="guest-comment-author-field">
+                            <label for="guest-comment-nickname"><?= Yii::t('poll', 'Нікнейм'); ?></label>
+                            <input
+                                id="guest-comment-nickname"
+                                name="Profile[comment][guest_nickname]"
+                                class="guest-comment-author-input"
+                                type="text"
+                                maxlength="60"
+                                placeholder="<?= Yii::t('poll', 'Ваш нік'); ?>"
+                                value="<?= $commentModel->guest_nickname ?? ''; ?>"
+                            >
+                            <p class="guest-comment-author-hint"><?= Yii::t('poll', 'Вкажіть нікнейм, під яким буде опубліковано коментар.'); ?></p>
+                        </div>
                     <?php endif; ?>
                     <textarea name="Profile[comment][content]"><?= $commentModel->content;?></textarea>
                     <div class="bottom_btn_b">

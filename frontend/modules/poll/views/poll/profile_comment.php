@@ -9,6 +9,7 @@ use common\models\User;
     <?php if ($comment->isGuestComment): ?>
     <?php // Для гостей не будуємо посилання на профіль, бо акаунта не існує. ?>
     <span class="name_link"><?= $comment->displayAuthorName; ?></span>
+    <span class="comment-author-badge"><?= Yii::t('poll', 'незареєстрований'); ?></span>
 <?php else: ?>
     <a href="<?= Url::toRoute(['/poll/site/user-profile', 'id' => $comment->user_id]); ?>" class="name_link"><?= $comment->displayAuthorName; ?></a>
 <?php endif; ?>

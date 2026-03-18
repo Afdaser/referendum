@@ -26,6 +26,30 @@ use common\components\ActiveRecord;
 class OptionGuestVote extends ActiveRecord
 {
     /**
+     * Формує стабільний ключ гостя для обмеження повторного голосування.
+     * Пріоритет: IP (IPv4/IPv6), фолбек — ID сесії.
+     */
+    public static function resolveGuestVoteKey(): ?string
+    {
+        $rawIp = trim((string) Yii::$app->request->getUserIP());
+        if ($rawIp !== '') {
+            return $rawIp;
+        }
+
+        $session = Yii::$app->session;
+        if (!$session->isActive) {
+            $session->open();
+        }
+
+        $sessionId = trim((string) $session->id);
+        if ($sessionId === '') {
+            return null;
+        }
+
+        return 'sid:' . $sessionId;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -42,6 +66,7 @@ class OptionGuestVote extends ActiveRecord
             [['option_id', 'poll_id'], 'required'],
             [['option_id', 'poll_id', 'user_ip', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add'], 'safe'],
+            [['guest_ip_key'], 'required'],
             [['ip_of_user', 'guest_ip_key'], 'string', 'max' => 67],
             [['option_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollOption::class, 'targetAttribute' => ['option_id' => 'id']],
             [['poll_id'], 'exist', 'skipOnError' => true, 'targetClass' => Poll::class, 'targetAttribute' => ['poll_id' => 'id']],

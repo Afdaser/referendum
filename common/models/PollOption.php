@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
+use yii\db\IntegrityException;
 use common\components\ActiveRecord;
 
 /**
@@ -274,6 +275,12 @@ class PollOption extends ActiveRecord
      */
     public function voteByGuest(){
         $result = false;
+        $guestVoteKey = OptionGuestVote::resolveGuestVoteKey();
+        if ($guestVoteKey === null) {
+            // Без ключа не можемо коректно ідентифікувати гостя та гарантувати ліміт 1 голос.
+            return false;
+        }
+
         $rawIp = (string) Yii::$app->request->getUserIP();
         $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
 
@@ -282,11 +289,16 @@ class PollOption extends ActiveRecord
         $vote->poll_id = (int) $this->poll_id;
         // Для сумісності з історичним полем user_ip зберігаємо лише IPv4 як int.
         $vote->user_ip = ($ipv4Long !== false) ? (int) $ipv4Long : null;
-        $vote->ip_of_user = $rawIp;
+        $vote->ip_of_user = ($rawIp !== '') ? $rawIp : null;
         // Єдиний ключ IP для IPv4/IPv6 (аналогічно логіці коментарів).
-        $vote->guest_ip_key = $rawIp;
+        $vote->guest_ip_key = $guestVoteKey;
         $vote->date_add = date('Y-m-d H:i:s');
-        if($vote->save()){
+        try {
+            if($vote->save()){
+                $result = true;
+            }
+        } catch (IntegrityException $e) {
+            // Рейс між перевіркою та INSERT: трактуємо як "вже проголосував".
             $result = true;
         }
         return $result;

@@ -33,16 +33,9 @@ class m260318_000001_extend_option_guest_vote_for_ipv6 extends Migration
              WHERE ogv.poll_id IS NULL"
         );
 
-        // Ніяких видалень даних: якщо після повторного бекфілу лишились NULL, зупиняємо міграцію явною помилкою.
-        $nullPollIdCount = (new \yii\db\Query())
-            ->from('{{%option_guest_vote}}')
-            ->where(['poll_id' => null])
-            ->count('*', $this->db);
-        if ((int) $nullPollIdCount > 0) {
-            throw new \RuntimeException('Не вдалося заповнити poll_id для всіх option_guest_vote без втрати даних.');
-        }
-
-        $this->alterColumn('{{%option_guest_vote}}', 'poll_id', $this->integer()->unsigned()->notNull()->comment('Poll'));
+        // ВАЖЛИВО: poll_id залишаємо NULLABLE у цій міграції.
+        // Причина: під час rolling/zero-downtime деплою старі інстанси можуть ще писати рядки без poll_id.
+        // NOT NULL слід вмикати окремою "другою фазою" після повного перемикання всіх writer-інстансів.
 
         $this->createIndex('idx_option_guest_vote_poll_id', '{{%option_guest_vote}}', 'poll_id');
         $this->addForeignKey('fk_option_guest_vote_poll', '{{%option_guest_vote}}', 'poll_id', '{{%poll}}', 'id', 'CASCADE', 'CASCADE');

@@ -905,16 +905,23 @@ class Poll extends ActiveRecord
         }
 
         $query = OptionGuestVote::find()
-            ->where(['poll_id' => $this->id]);
+            ->alias('ogv')
+            ->leftJoin(['po' => PollOption::tableName()], 'po.id = ogv.option_id')
+            ->andWhere([
+                'or',
+                ['ogv.poll_id' => $this->id],
+                // Сумісність для rollout: старі writer-и могли вставити рядки з NULL poll_id.
+                ['and', ['ogv.poll_id' => null], ['po.poll_id' => $this->id]],
+            ]);
 
         // Основна перевірка: текстовий ключ guest_ip_key (IPv4/IPv6).
-        $conditions = ['guest_ip_key' => $guestVoteKey];
+        $conditions = ['ogv.guest_ip_key' => $guestVoteKey];
 
         // Фолбек для історичних записів, де guest_ip_key ще не був заповнений.
         $rawIp = (string) Yii::$app->request->getUserIP();
         $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
         if ($ipv4Long !== false) {
-            $conditions = ['or', $conditions, ['user_ip' => (int) $ipv4Long]];
+            $conditions = ['or', $conditions, ['ogv.user_ip' => (int) $ipv4Long]];
         }
 
         $resultOfQuery = $query->andWhere($conditions)->count();
@@ -931,7 +938,6 @@ class Poll extends ActiveRecord
 //        if($resultOfQuery = OptionGuestVote::model()->count($criteria)){
 //            $result = true;
 //        }
-        return $result;
     }
 
     /*

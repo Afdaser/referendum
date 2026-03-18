@@ -21,16 +21,8 @@ class m260318_000001_extend_option_guest_vote_for_ipv6 extends Migration
         $this->execute("UPDATE {{%option_guest_vote}} SET guest_ip_key = ip_of_user WHERE ip_of_user IS NOT NULL AND ip_of_user <> ''");
         $this->execute("UPDATE {{%option_guest_vote}} SET guest_ip_key = CAST(user_ip AS CHAR) WHERE (guest_ip_key IS NULL OR guest_ip_key = '') AND user_ip IS NOT NULL");
 
-        // На випадок історичних дублікатів залишаємо найстаріший гостьовий голос у межах одного poll + IP.
-        $this->execute(
-            "DELETE ogv1 FROM {{%option_guest_vote}} ogv1
-             INNER JOIN {{%option_guest_vote}} ogv2
-               ON ogv1.poll_id = ogv2.poll_id
-              AND ogv1.guest_ip_key = ogv2.guest_ip_key
-              AND ogv1.id > ogv2.id
-             WHERE ogv1.guest_ip_key IS NOT NULL
-               AND ogv1.guest_ip_key <> ''"
-        );
+        // Історичні дублікати навмисно НЕ видаляємо (великий обсяг даних у проді).
+        // Очищення дублікатів виконаємо окремою міграцією/скриптом після узгодження вікна обслуговування.
 
         // Валідація даних перед введенням NOT NULL та індексів.
         $this->execute("DELETE FROM {{%option_guest_vote}} WHERE poll_id IS NULL");
@@ -40,13 +32,14 @@ class m260318_000001_extend_option_guest_vote_for_ipv6 extends Migration
         $this->createIndex('idx_option_guest_vote_poll_id', '{{%option_guest_vote}}', 'poll_id');
         $this->addForeignKey('fk_option_guest_vote_poll', '{{%option_guest_vote}}', 'poll_id', '{{%poll}}', 'id', 'CASCADE', 'CASCADE');
 
-        // Гарантія на рівні БД: один гостьовий голос з одного IP на одне опитування.
-        $this->createIndex('ux_option_guest_vote_poll_guest_ip_key', '{{%option_guest_vote}}', ['poll_id', 'guest_ip_key'], true);
+        // Поки що без UNIQUE, щоб не блокувати міграцію на історичних дублікатах.
+        // Індекс залишаємо для швидкої перевірки/пошуку, унікальність додамо окремо після дедуплікації.
+        $this->createIndex('idx_option_guest_vote_poll_guest_ip_key', '{{%option_guest_vote}}', ['poll_id', 'guest_ip_key'], false);
     }
 
     public function safeDown()
     {
-        $this->dropIndex('ux_option_guest_vote_poll_guest_ip_key', '{{%option_guest_vote}}');
+        $this->dropIndex('idx_option_guest_vote_poll_guest_ip_key', '{{%option_guest_vote}}');
         $this->dropForeignKey('fk_option_guest_vote_poll', '{{%option_guest_vote}}');
         $this->dropIndex('idx_option_guest_vote_poll_id', '{{%option_guest_vote}}');
         $this->dropColumn('{{%option_guest_vote}}', 'guest_ip_key');

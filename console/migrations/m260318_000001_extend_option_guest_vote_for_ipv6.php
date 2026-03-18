@@ -24,8 +24,23 @@ class m260318_000001_extend_option_guest_vote_for_ipv6 extends Migration
         // Історичні дублікати навмисно НЕ видаляємо (великий обсяг даних у проді).
         // Очищення дублікатів виконаємо окремою міграцією/скриптом після узгодження вікна обслуговування.
 
-        // Валідація даних перед введенням NOT NULL та індексів.
-        $this->execute("DELETE FROM {{%option_guest_vote}} WHERE poll_id IS NULL");
+        // Повторний бекфіл перед NOT NULL, щоб закрити вікно між початком міграції та перемиканням всіх app-серверів.
+        // Це безпечніше за DELETE і не втрачає голоси, які могли бути записані старим кодом під час rollout.
+        $this->execute(
+            "UPDATE {{%option_guest_vote}} ogv
+             INNER JOIN {{%poll_option}} po ON po.id = ogv.option_id
+             SET ogv.poll_id = po.poll_id
+             WHERE ogv.poll_id IS NULL"
+        );
+
+        // Ніяких видалень даних: якщо після повторного бекфілу лишились NULL, зупиняємо міграцію явною помилкою.
+        $nullPollIdCount = (new \yii\db\Query())
+            ->from('{{%option_guest_vote}}')
+            ->where(['poll_id' => null])
+            ->count('*', $this->db);
+        if ((int) $nullPollIdCount > 0) {
+            throw new \RuntimeException('Не вдалося заповнити poll_id для всіх option_guest_vote без втрати даних.');
+        }
 
         $this->alterColumn('{{%option_guest_vote}}', 'poll_id', $this->integer()->unsigned()->notNull()->comment('Poll'));
 

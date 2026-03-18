@@ -27,26 +27,12 @@ class OptionGuestVote extends ActiveRecord
 {
     /**
      * Формує стабільний ключ гостя для обмеження повторного голосування.
-     * Пріоритет: IP (IPv4/IPv6), фолбек — ID сесії.
+     * Працює виключно по IP (IPv4/IPv6), без fallback на сесію чи інші ідентифікатори.
      */
     public static function resolveGuestVoteKey(): ?string
     {
         $rawIp = trim((string) Yii::$app->request->getUserIP());
-        if ($rawIp !== '') {
-            return $rawIp;
-        }
-
-        $session = Yii::$app->session;
-        if (!$session->isActive) {
-            $session->open();
-        }
-
-        $sessionId = trim((string) $session->id);
-        if ($sessionId === '') {
-            return null;
-        }
-
-        return 'sid:' . $sessionId;
+        return ($rawIp !== '') ? $rawIp : null;
     }
 
     /**

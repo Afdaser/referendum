@@ -314,7 +314,7 @@ class PollController extends \yii\web\Controller
          }
 /* */
         if(Yii::$app->user->isGuest){
-            // Для гостей ключ ідентифікації обов'язковий (IP або фолбек сесії).
+            // Для гостей ключ ідентифікації обов'язковий і формується лише з IP.
             if (OptionGuestVote::resolveGuestVoteKey() === null) {
                 Yii::$app->session->setFlash('error', Yii::t('poll', 'Не вдалося ідентифікувати ваш голос. Спробуйте оновити сторінку.'));
                 return $this->redirect(['view', 'id' => $option->poll_id]);

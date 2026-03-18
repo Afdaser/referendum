@@ -319,13 +319,25 @@ class PollOption extends ActiveRecord
         $driverCode = (int) ($errorInfo[1] ?? 0);
         $message = (string) ($errorInfo[2] ?? $e->getMessage());
 
-        // SQLSTATE 23000 + код 1062 — типовий дублікат ключа для MySQL/MariaDB.
-        if ($sqlState === '23000' && $driverCode === 1062) {
-            return true;
+        // Спершу переконуємось, що це справді помилка дублювання ключа MySQL/MariaDB.
+        if (!($sqlState === '23000' && $driverCode === 1062)) {
+            return false;
         }
 
-        // Фолбек по назві індексу на випадок відмінностей драйвера/повідомлення.
-        return stripos($message, 'ux_option_guest_vote_poll_guest_ip_key') !== false;
+        // Обробляємо як "вже проголосував" лише дублікат саме цільового індексу гостьового голосу.
+        // Інші дублікати (наприклад, primary key) мають бути підняті вище як реальна проблема БД.
+        $allowedConstraintNames = [
+            'ux_option_guest_vote_poll_guest_ip_key',  // історична назва UNIQUE-індексу
+            'uq_option_guest_vote_poll_guest_ip_key',  // можлива майбутня назва
+        ];
+
+        foreach ($allowedConstraintNames as $constraintName) {
+            if (stripos($message, $constraintName) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /*

@@ -298,10 +298,34 @@ class PollOption extends ActiveRecord
                 $result = true;
             }
         } catch (IntegrityException $e) {
-            // Рейс між перевіркою та INSERT: трактуємо як "вже проголосував".
-            $result = true;
+            // Рейс між перевіркою та INSERT: дублікат означає "вже проголосував".
+            if ($this->isDuplicateGuestVoteIntegrityError($e)) {
+                $result = true;
+            } else {
+                // Інші помилки цілісності не маскуємо.
+                throw $e;
+            }
         }
         return $result;
+    }
+
+    /**
+     * Перевіряє, чи помилка цілісності відповідає саме дублюванню ключа унікальності гостя.
+     */
+    private function isDuplicateGuestVoteIntegrityError(IntegrityException $e): bool
+    {
+        $errorInfo = $e->errorInfo;
+        $sqlState = (string) ($errorInfo[0] ?? '');
+        $driverCode = (int) ($errorInfo[1] ?? 0);
+        $message = (string) ($errorInfo[2] ?? $e->getMessage());
+
+        // SQLSTATE 23000 + код 1062 — типовий дублікат ключа для MySQL/MariaDB.
+        if ($sqlState === '23000' && $driverCode === 1062) {
+            return true;
+        }
+
+        // Фолбек по назві індексу на випадок відмінностей драйвера/повідомлення.
+        return stripos($message, 'ux_option_guest_vote_poll_guest_ip_key') !== false;
     }
 
     /*

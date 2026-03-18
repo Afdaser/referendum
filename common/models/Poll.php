@@ -899,12 +899,24 @@ class Poll extends ActiveRecord
      * Return TRUE if Guest has already voted at this poll from its IP address
      */
     public function isVotedByGuest(){
-        $result = false;
-        $resultOfQuery = OptionGuestVote::find()
-                ->joinWith('option')
-                ->where(['user_ip' => ip2long(Yii::$app->request->getUserIP())])
-                ->andWhere(['poll_option.poll_id' => $this->id])
-                ->count();
+        $rawIp = (string) Yii::$app->request->getUserIP();
+        if ($rawIp === '') {
+            return false;
+        }
+
+        $query = OptionGuestVote::find()
+            ->where(['poll_id' => $this->id]);
+
+        // Основна перевірка: текстовий ключ guest_ip_key (IPv4/IPv6).
+        $conditions = ['guest_ip_key' => $rawIp];
+
+        // Фолбек для історичних записів, де guest_ip_key ще не був заповнений.
+        $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
+        if ($ipv4Long !== false) {
+            $conditions = ['or', $conditions, ['user_ip' => (int) $ipv4Long]];
+        }
+
+        $resultOfQuery = $query->andWhere($conditions)->count();
         return boolval($resultOfQuery);
 
 //        $criteria = new CDbCriteria;

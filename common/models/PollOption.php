@@ -274,10 +274,17 @@ class PollOption extends ActiveRecord
      */
     public function voteByGuest(){
         $result = false;
+        $rawIp = (string) Yii::$app->request->getUserIP();
+        $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
+
         $vote = new OptionGuestVote();
         $vote->option_id = $this->id;
-        $vote->user_ip = ip2long(Yii::$app->request->userIP);
-        $vote->ip_of_user = Yii::$app->request->userIP;
+        $vote->poll_id = (int) $this->poll_id;
+        // Для сумісності з історичним полем user_ip зберігаємо лише IPv4 як int.
+        $vote->user_ip = ($ipv4Long !== false) ? (int) $ipv4Long : null;
+        $vote->ip_of_user = $rawIp;
+        // Єдиний ключ IP для IPv4/IPv6 (аналогічно логіці коментарів).
+        $vote->guest_ip_key = $rawIp;
         $vote->date_add = date('Y-m-d H:i:s');
         if($vote->save()){
             $result = true;

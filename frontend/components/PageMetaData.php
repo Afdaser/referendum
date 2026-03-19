@@ -115,10 +115,6 @@ HTML_META_DESCRIPTION;
 
     public function getRobotsHtml() {
         // <meta name="robots" content="index, follow">
-        // Для піддомену NZ блокуємо індексацію через robots meta tag.
-        if (preg_match('/(^|\\.)nz\\.referendum\\.social$/i', Yii::$app->request->hostName)) {
-            $this->data['robots'] = 'noindex, nofollow';
-        }
         if (!empty($this->data['robots'])) {
             // Захищаємо атрибут content від неекранованих спецсимволів.
             $safeRobots = Html::encode((string) $this->data['robots']);

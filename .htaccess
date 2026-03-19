@@ -28,13 +28,13 @@ AddDefaultCharset utf-8
     #SITEMAPS:
 
     # Схожі правила для sitemap-ів поєднуємо в одне, щоб легше було додавати нові локалі.
-    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
     RewriteRule ^poll-sitemap\.xml$ sitemaps/%1.poll.xml [L]
 
-    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
     RewriteRule ^tags-sitemap\.xml$ sitemaps/%1.tags.xml [L]
 
-    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no)\.referendum\.social$ [NC]
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
     RewriteRule ^sitemap\.xml$ sitemaps/%1.index.xml [L]
 
 

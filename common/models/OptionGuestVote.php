@@ -10,8 +10,10 @@ use common\components\ActiveRecord;
  *
  * @property int $id ID
  * @property int $option_id Option
+ * @property int $poll_id Poll
  * @property int|null $user_ip User IP
  * @property string|null $ip_of_user User IP
+ * @property string|null $guest_ip_key Guest IP key for uniqueness
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
  * @property int|null $updated_by Updated by:
@@ -19,9 +21,20 @@ use common\components\ActiveRecord;
  * @property int|null $updated_at Updated at:
  *
  * @property PollOption $option
+ * @property Poll $poll
  */
 class OptionGuestVote extends ActiveRecord
 {
+    /**
+     * Формує стабільний ключ гостя для обмеження повторного голосування.
+     * Працює виключно по IP (IPv4/IPv6), без fallback на сесію чи інші ідентифікатори.
+     */
+    public static function resolveGuestVoteKey(): ?string
+    {
+        $rawIp = trim((string) Yii::$app->request->getUserIP());
+        return ($rawIp !== '') ? $rawIp : null;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -36,11 +49,13 @@ class OptionGuestVote extends ActiveRecord
     public function rules()
     {
         return [
-            [['option_id'], 'required'],
-            [['option_id', 'user_ip', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['option_id', 'poll_id'], 'required'],
+            [['option_id', 'poll_id', 'user_ip', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add'], 'safe'],
-            [['ip_of_user'], 'string', 'max' => 67],
+            [['guest_ip_key'], 'required'],
+            [['ip_of_user', 'guest_ip_key'], 'string', 'max' => 67],
             [['option_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollOption::class, 'targetAttribute' => ['option_id' => 'id']],
+            [['poll_id'], 'exist', 'skipOnError' => true, 'targetClass' => Poll::class, 'targetAttribute' => ['poll_id' => 'id']],
         ];
     }
 
@@ -52,8 +67,10 @@ class OptionGuestVote extends ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'option_id' => Yii::t('app', 'Option'),
+            'poll_id' => Yii::t('app', 'Poll'),
             'user_ip' => Yii::t('app', 'User IP'),
             'ip_of_user' => Yii::t('app', 'User IP'),
+            'guest_ip_key' => Yii::t('app', 'Guest IP key'),
             'date_add' => Yii::t('app', 'Date add'),
             'created_by' => Yii::t('app', 'Created by:'),
             'updated_by' => Yii::t('app', 'Updated by:'),
@@ -70,6 +87,16 @@ class OptionGuestVote extends ActiveRecord
     public function getOption()
     {
         return $this->hasOne(PollOption::class, ['id' => 'option_id']);
+    }
+
+    /**
+     * Gets query for [[Poll]].
+     *
+     * @return \yii\db\ActiveQuery|\common\models\query\PollQuery
+     */
+    public function getPoll()
+    {
+        return $this->hasOne(Poll::class, ['id' => 'poll_id']);
     }
 
     /**

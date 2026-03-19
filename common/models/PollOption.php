@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
+use yii\db\IntegrityException;
 use common\components\ActiveRecord;
 
 /**
@@ -274,15 +275,69 @@ class PollOption extends ActiveRecord
      */
     public function voteByGuest(){
         $result = false;
+        $guestVoteKey = OptionGuestVote::resolveGuestVoteKey();
+        if ($guestVoteKey === null) {
+            // Без ключа не можемо коректно ідентифікувати гостя та гарантувати ліміт 1 голос.
+            return false;
+        }
+
+        $rawIp = (string) Yii::$app->request->getUserIP();
+        $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
+
         $vote = new OptionGuestVote();
         $vote->option_id = $this->id;
-        $vote->user_ip = ip2long(Yii::$app->request->userIP);
-        $vote->ip_of_user = Yii::$app->request->userIP;
+        $vote->poll_id = (int) $this->poll_id;
+        // Для сумісності з історичним полем user_ip зберігаємо лише IPv4 як int.
+        $vote->user_ip = ($ipv4Long !== false) ? (int) $ipv4Long : null;
+        $vote->ip_of_user = ($rawIp !== '') ? $rawIp : null;
+        // Єдиний ключ IP для IPv4/IPv6 (аналогічно логіці коментарів).
+        $vote->guest_ip_key = $guestVoteKey;
         $vote->date_add = date('Y-m-d H:i:s');
-        if($vote->save()){
-            $result = true;
+        try {
+            if($vote->save()){
+                $result = true;
+            }
+        } catch (IntegrityException $e) {
+            // Рейс між перевіркою та INSERT: дублікат означає "вже проголосував".
+            if ($this->isDuplicateGuestVoteIntegrityError($e)) {
+                $result = true;
+            } else {
+                // Інші помилки цілісності не маскуємо.
+                throw $e;
+            }
         }
         return $result;
+    }
+
+    /**
+     * Перевіряє, чи помилка цілісності відповідає саме дублюванню ключа унікальності гостя.
+     */
+    private function isDuplicateGuestVoteIntegrityError(IntegrityException $e): bool
+    {
+        $errorInfo = $e->errorInfo;
+        $sqlState = (string) ($errorInfo[0] ?? '');
+        $driverCode = (int) ($errorInfo[1] ?? 0);
+        $message = (string) ($errorInfo[2] ?? $e->getMessage());
+
+        // Спершу переконуємось, що це справді помилка дублювання ключа MySQL/MariaDB.
+        if (!($sqlState === '23000' && $driverCode === 1062)) {
+            return false;
+        }
+
+        // Обробляємо як "вже проголосував" лише дублікат саме цільового індексу гостьового голосу.
+        // Інші дублікати (наприклад, primary key) мають бути підняті вище як реальна проблема БД.
+        $allowedConstraintNames = [
+            'ux_option_guest_vote_poll_guest_ip_key',  // історична назва UNIQUE-індексу
+            'uq_option_guest_vote_poll_guest_ip_key',  // можлива майбутня назва
+        ];
+
+        foreach ($allowedConstraintNames as $constraintName) {
+            if (stripos($message, $constraintName) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /*

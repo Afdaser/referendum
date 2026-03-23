@@ -66,25 +66,32 @@ class WUserSidebar extends Widget
 //                    $signupFormModel->load(Yii::$app->request->post());
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Дякуємо за реєстрацію. Ваш акаунт уже активний.');
+                        // Синхронізуємо поведінку з конфігом, щоб не було "двох різних" сценаріїв одночасно.
+                        $requireEmailVerification = (bool) (Yii::$app->params['user.requireEmailVerification'] ?? true);
+                        $successMessage = $requireEmailVerification
+                            ? 'Дякуємо за реєстрацію. Перевірте пошту для підтвердження акаунта.'
+                            : 'Дякуємо за реєстрацію. Ваш акаунт уже активний.';
+                        Yii::$app->session->setFlash('success', $successMessage);
 
-                        // Після вимкнення email-верифікації логінимо користувача одразу.
-                        $loginModel = new LoginForm();
-                        $loginModel->username = $signupAttributes['username'];
-                        $loginModel->password = $signupAttributes['password'];
-                        $loginModel->rememberMe = true;
+                        // Логінимо одразу лише коли email-верифікацію вимкнено.
+                        if (!$requireEmailVerification) {
+                            $loginModel = new LoginForm();
+                            $loginModel->username = $signupAttributes['username'];
+                            $loginModel->password = $signupAttributes['password'];
+                            $loginModel->rememberMe = true;
 
-                        if ($loginModel->login()) {
-                            $pollModel = new Poll;
-                            $pollModel->presetAttributes();
+                            if ($loginModel->login()) {
+                                $pollModel = new Poll;
+                                $pollModel->presetAttributes();
 
-                            return $this->render('user-sidebar', array(
-                                'refresh' => false,
-                                'pollModel' => $pollModel,
-                            ));
+                                return $this->render('user-sidebar', array(
+                                    'refresh' => false,
+                                    'pollModel' => $pollModel,
+                                ));
+                            }
                         }
 
-                        // Якщо авто-логін не вдався — показуємо гостьовий сайдбар.
+                        // Для сценарію з верифікацією (або якщо авто-логін не вдався) лишаємо гостьовий сайдбар.
                         return $this->render('user-sidebar-login', array(
                             'model' => $this->model,
                             'registerForm' => new RegisterForm(),

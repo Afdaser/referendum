@@ -159,8 +159,6 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && ($user = $model->signup())) {
             // Логінимо одразу після успішної реєстрації та переводимо на заповнення профілю.
             if (Yii::$app->user->login($user)) {
-                Yii::$app->session->setFlash('success', 'Реєстрація успішна. Будь ласка, заповніть профіль.');
-
                 // Другий крок після signup — поточний profile flow за canonical-роутом.
                 return $this->redirect(['/user/profile']);
             }
@@ -186,10 +184,8 @@ class SiteController extends Controller
         $model = new RegisterForm();
         if ($model->load(Yii::$app->request->post()) && ($user = $model->registerUser())) {
             if (Yii::$app->user->login($user)) {
-                Yii::$app->session->setFlash('success', 'Реєстрація успішна. Будь ласка, заповніть профіль.');
-
-                // Другий крок onboarding після реєстрації.
-                return $this->redirect(['/user/user/profile']);
+                // Не показуємо success-flash після signup, щоб повідомлення не "подорожувало" між сторінками.
+                return $this->redirect(['/user/profile']);
             }
 
             // Якщо автологін не вдався — не ведемо на profile, щоб уникнути циклу редіректів для гостя.

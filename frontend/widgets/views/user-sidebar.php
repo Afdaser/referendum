@@ -19,7 +19,13 @@ use common\models\Poll;
 <?php
 // Додатковий захист: якщо сайдбар випадково рендериться для гостя, не падаємо на null identity.
 $identity = Yii::$app->user->identity;
+$successMessage = Yii::$app->session->getFlash('success');
 ?>
+<?php if (!empty($successMessage)): ?>
+    <div class="alert alert-success">
+        <?= Html::encode($successMessage); ?>
+    </div>
+<?php endif; ?>
 <div class="title_auth">
     <div class="left_auth_name"><?= $identity ? User::getUserName($identity->id) : Yii::t('main', 'Гість'); ?></div>
     <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'form-inline']); ?>

@@ -9,6 +9,8 @@ return [
     'senderName' => 'Example.com mailer',
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 8,
+    // Тимчасово вимикаємо обов'язкову верифікацію email під час реєстрації.
+    'user.requireEmailVerification' => false,
     // From Yii1:
     // this is displayed in the header section
     'title' => 'Statistics',

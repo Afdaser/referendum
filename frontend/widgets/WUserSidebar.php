@@ -66,9 +66,25 @@ class WUserSidebar extends Widget
 //                    $signupFormModel->load(Yii::$app->request->post());
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // Після реєстрації користувач ще не авторизований, тому показуємо гостьовий сайдбар.
-                        // Це запобігає падінню на Yii::$app->user->identity->id для неавторизованого користувача.
+                        Yii::$app->session->setFlash('success', 'Дякуємо за реєстрацію. Ваш акаунт уже активний.');
+
+                        // Після вимкнення email-верифікації логінимо користувача одразу.
+                        $loginModel = new LoginForm();
+                        $loginModel->username = $signupAttributes['username'];
+                        $loginModel->password = $signupAttributes['password'];
+                        $loginModel->rememberMe = true;
+
+                        if ($loginModel->login()) {
+                            $pollModel = new Poll;
+                            $pollModel->presetAttributes();
+
+                            return $this->render('user-sidebar', array(
+                                'refresh' => false,
+                                'pollModel' => $pollModel,
+                            ));
+                        }
+
+                        // Якщо авто-логін з якоїсь причини не вдався — показуємо гостьовий сайдбар.
                         return $this->render('user-sidebar-login', array(
                             'model' => $this->model,
                             'registerForm' => new RegisterForm(),

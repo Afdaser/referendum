@@ -41,22 +41,40 @@ class SignupForm extends Model
     /**
      * Signs user up.
      *
-     * @return bool whether the creating new account was successful and email was sent
+     * @return bool whether the account was successfully created
      */
     public function signup($runValidation = true)
     {
         if ($runValidation && !$this->validate()) {
             return null;
         }
-        
+
+        // Дає змогу централізовано керувати верифікацією через конфіг.
+        $requireEmailVerification = (bool) (Yii::$app->params['user.requireEmailVerification'] ?? true);
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
+        if ($requireEmailVerification) {
+            $user->status = User::STATUS_INACTIVE;
+            $user->generateEmailVerificationToken();
+        } else {
+            // Верифікацію email тимчасово вимкнено: активуємо акаунт одразу.
+            $user->status = User::STATUS_ACTIVE;
+            $user->verification_token = null;
+        }
 
-        return $user->save() && $this->sendEmail($user);
+        if (!$user->save()) {
+            return false;
+        }
+
+        if ($requireEmailVerification) {
+            return $this->sendEmail($user);
+        }
+
+        return true;
     }
 
     /**
@@ -78,6 +96,5 @@ class SignupForm extends Model
             ->send();
     }
 }
-
 
 

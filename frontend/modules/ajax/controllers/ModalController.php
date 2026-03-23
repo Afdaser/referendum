@@ -66,19 +66,37 @@ class WUserSidebar extends Widget
 //                    $signupFormModel->load(Yii::$app->request->post());
                     $signupFormModel->load(['SignupForm' => $signupAttributes]);
                     if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // Після успішної реєстрації формуємо модель опитування для сайдбару.
-                        $pollModel = new Poll;
-                        $pollModel->presetAttributes();
-                        // Завершуємо виконання після успішної реєстрації, щоб уникнути дублювання.
-                        return $this->render('user-sidebar', array(
-                            'refresh' => true,
-                            'pollModel' => $pollModel,
+                        Yii::$app->session->setFlash('success', 'Дякуємо за реєстрацію. Ваш акаунт уже активний.');
+
+                        // Після вимкнення email-верифікації логінимо користувача одразу.
+                        $loginModel = new LoginForm();
+                        $loginModel->username = $signupAttributes['username'];
+                        $loginModel->password = $signupAttributes['password'];
+                        $loginModel->rememberMe = true;
+
+                        if ($loginModel->login()) {
+                            $pollModel = new Poll;
+                            $pollModel->presetAttributes();
+
+                            return $this->render('user-sidebar', array(
+                                'refresh' => false,
+                                'pollModel' => $pollModel,
+                            ));
+                        }
+
+                        // Якщо авто-логін не вдався — показуємо гостьовий сайдбар.
+                        return $this->render('user-sidebar-login', array(
+                            'model' => $this->model,
+                            'registerForm' => new RegisterForm(),
                         ));
                     }
 
-                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
+                    // Реєстрація не завершилася успіхом — повертаємо форму з помилками.
+                    $this->render('user-sidebar-login', array(
+                        'model' => $this->model,
+                        'registerForm' => $model,
+                        'error' => json_encode(Html::errorSummary($signupFormModel)),
+                    ));
                 } else {
                    //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
                     $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));

@@ -16,7 +16,7 @@
 <?php /*
         <FORM METHOD="POST" ACTION="/">
 * */ ?>
-        <form method="post" action="/">
+        <form method="post" action="/site/register-modal">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>">
             <div class="modal-body" id="registrationBody" style="border:1px dashed red;">
                 <div class="item_reg clearfix">
@@ -24,7 +24,7 @@
 <?= Yii::t('main', 'Логін'); ?> *
                     </div>
                     <div class="right_reg_label item_param item_show">
-                        <input name="RegisterForm[login]" id="login" type="text" class="autocomplete" value="<?= $registerForm->login; ?>">
+                        <input name="RegisterForm[login]" id="login" type="text" class="autocomplete" value="<?= ($registerForm->login ?? ''); ?>">
                     </div>
                 </div>
                 <div class="item_reg clearfix">
@@ -32,7 +32,7 @@
 <?= Yii::t('main', 'Email'); ?> *
                     </div>
                     <div class="right_reg_label item_param item_show email">
-                        <input name="RegisterForm[email]" id="email" type="text" class="autocomplete" value="<?= $registerForm->email; ?>">
+                        <input name="RegisterForm[email]" id="email" type="text" class="autocomplete" value="<?= ($registerForm->email ?? ''); ?>">
                         <a href="javascript:void(0)" class="del_btn"></a>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                 </div>
                 <a href="#" class="create_new_poll" id="registrationCancel" data-dismiss="modal"><?= Yii::t('main', 'Скасувати'); ?></a>
             </div>
-        </FORM>
+        </form>
     </div>
 </div>
 

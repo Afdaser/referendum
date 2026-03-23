@@ -15,6 +15,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use frontend\models\forms\RegisterForm;
 
 /**
  * Site controller
@@ -30,10 +31,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'signup', 'register-modal'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup', 'register-modal'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -155,14 +156,49 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post()) && ($user = $model->signup())) {
+            // Логінимо одразу після успішної реєстрації та переводимо на заповнення профілю.
+            if (Yii::$app->user->login($user)) {
+                // Другий крок після signup — поточний profile flow за canonical-роутом.
+                return $this->redirect(['/user/profile']);
+            }
+
+            // Не редіректимо на profile, якщо автологін не вдався (сесія/кукі/обробники можуть відхилити логін).
+            Yii::$app->session->setFlash('warning', 'Реєстрація успішна, але автоматичний вхід не вдався. Увійдіть, будь ласка, вручну.');
+
+            return $this->redirect(['/site/login']);
         }
 
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Обробляє submit модальної реєстрації на RegisterForm.
+     *
+     * @return \yii\web\Response
+     */
+    public function actionRegisterModal()
+    {
+        $model = new RegisterForm();
+        if ($model->load(Yii::$app->request->post()) && ($user = $model->registerUser())) {
+            if (Yii::$app->user->login($user)) {
+                // Не показуємо success-flash після signup, щоб повідомлення не "подорожувало" між сторінками.
+                return $this->redirect(['/user/profile']);
+            }
+
+            // Якщо автологін не вдався — не ведемо на profile, щоб уникнути циклу редіректів для гостя.
+            Yii::$app->session->setFlash('warning', 'Реєстрація успішна, але автоматичний вхід не вдався. Увійдіть, будь ласка, вручну.');
+            return $this->redirect(['/site/login']);
+        }
+
+        if (Yii::$app->request->isPost) {
+            // Повертаємо узагальнену помилку, щоб користувач не втрачав контекст модального flow.
+            Yii::$app->session->setFlash('error', 'Перевірте правильність заповнення полів реєстрації.');
+        }
+
+        return $this->redirect(Yii::$app->request->referrer ?: ['/']);
     }
 
     /**

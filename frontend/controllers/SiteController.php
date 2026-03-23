@@ -157,10 +157,16 @@ class SiteController extends Controller
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && ($user = $model->signup())) {
             // Логінимо одразу після успішної реєстрації та переводимо на заповнення профілю.
-            Yii::$app->user->login($user);
-            Yii::$app->session->setFlash('success', 'Реєстрація успішна. Будь ласка, заповніть профіль.');
+            if (Yii::$app->user->login($user)) {
+                Yii::$app->session->setFlash('success', 'Реєстрація успішна. Будь ласка, заповніть профіль.');
 
-            return $this->redirect(['/user/user/profile']);
+                return $this->redirect(['/user/user/profile']);
+            }
+
+            // Не редіректимо на profile, якщо автологін не вдався (сесія/кукі/обробники можуть відхилити логін).
+            Yii::$app->session->setFlash('warning', 'Реєстрація успішна, але автоматичний вхід не вдався. Увійдіть, будь ласка, вручну.');
+
+            return $this->redirect(['/site/login']);
         }
 
         return $this->render('signup', [

@@ -160,7 +160,8 @@ class SiteController extends Controller
             if (Yii::$app->user->login($user)) {
                 Yii::$app->session->setFlash('success', 'Реєстрація успішна. Будь ласка, заповніть профіль.');
 
-                return $this->redirect(['/user/user/profile']);
+                // Другий крок після signup — поточний profile flow за canonical-роутом.
+                return $this->redirect(['/user/profile']);
             }
 
             // Не редіректимо на profile, якщо автологін не вдався (сесія/кукі/обробники можуть відхилити логін).

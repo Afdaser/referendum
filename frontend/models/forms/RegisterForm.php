@@ -200,4 +200,25 @@ class RegisterForm extends Model {
         return $result;
     }
 
+    /**
+     * Реєструє користувача в Yii2-flow без legacy Yii1-залежностей.
+     * @return User|null створений користувач або null у разі помилки
+     */
+    public function registerUser()
+    {
+        if (!$this->validate()) {
+            return null;
+        }
+
+        $user = new User();
+        $user->username = Html::encode($this->login);
+        $user->email = Html::encode($this->email);
+        $user->setPassword($this->password);
+        $user->generateAuthKey();
+        // Для модального signup одразу активуємо акаунт, щоб не ламати onboarding.
+        $user->status = User::STATUS_ACTIVE;
+
+        return $user->save() ? $user : null;
+    }
+
 }

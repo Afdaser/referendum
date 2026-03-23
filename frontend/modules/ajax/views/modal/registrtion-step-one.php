@@ -16,7 +16,7 @@
 <?php /*
         <FORM METHOD="POST" ACTION="/">
 * */ ?>
-        <form method="post" action="/ajax/modal/registrtion-step-one">
+        <form method="post" action="/site/register-modal">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>">
             <div class="modal-body" id="registrationBody" style="border:1px dashed red;">
                 <div class="item_reg clearfix">

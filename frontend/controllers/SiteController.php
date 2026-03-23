@@ -15,6 +15,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use frontend\models\forms\RegisterForm;
 
 /**
  * Site controller
@@ -30,10 +31,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'signup', 'register-modal'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup', 'register-modal'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -173,6 +174,35 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Обробляє submit модальної реєстрації на RegisterForm.
+     *
+     * @return \yii\web\Response
+     */
+    public function actionRegisterModal()
+    {
+        $model = new RegisterForm();
+        if ($model->load(Yii::$app->request->post()) && ($user = $model->registerUser())) {
+            if (Yii::$app->user->login($user)) {
+                Yii::$app->session->setFlash('success', 'Реєстрація успішна. Будь ласка, заповніть профіль.');
+
+                // Другий крок onboarding після реєстрації.
+                return $this->redirect(['/user/user/profile']);
+            }
+
+            // Якщо автологін не вдався — не ведемо на profile, щоб уникнути циклу редіректів для гостя.
+            Yii::$app->session->setFlash('warning', 'Реєстрація успішна, але автоматичний вхід не вдався. Увійдіть, будь ласка, вручну.');
+            return $this->redirect(['/site/login']);
+        }
+
+        if (Yii::$app->request->isPost) {
+            // Повертаємо узагальнену помилку, щоб користувач не втрачав контекст модального flow.
+            Yii::$app->session->setFlash('error', 'Перевірте правильність заповнення полів реєстрації.');
+        }
+
+        return $this->redirect(Yii::$app->request->referrer ?: ['/']);
     }
 
     /**

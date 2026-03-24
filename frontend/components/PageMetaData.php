@@ -103,9 +103,7 @@ class PageMetaData extends BaseObject {
     public function getMetaDescriptionHtml() {
         //         <meta name="description" content="Page description">
         if (!empty($this->data['description'])) {
-            // Екрануємо спецсимволи (включно з подвійними лапками),
-            // щоб не ламати HTML-атрибут content у метатегах.
-            $safeDescription = Html::encode((string) $this->data['description']);
+            $safeDescription = $this->sanitizeMetaValue($this->data['description']);
             return <<<HTML_META_DESCRIPTION
 <meta name="description" content="{$safeDescription}">
 
@@ -116,8 +114,7 @@ HTML_META_DESCRIPTION;
     public function getRobotsHtml() {
         // <meta name="robots" content="index, follow">
         if (!empty($this->data['robots'])) {
-            // Захищаємо атрибут content від неекранованих спецсимволів.
-            $safeRobots = Html::encode((string) $this->data['robots']);
+            $safeRobots = $this->sanitizeMetaValue($this->data['robots']);
             return <<<HTML_ROBOTS
 <meta name="robots" content="{$safeRobots}">
 
@@ -141,10 +138,9 @@ HTML_FAVICON;
         $dataHtml = '';
         foreach ($this->meta[self::OG] as $key => $value) {
             if (!empty($value)) {
-                // Екрануємо як назву властивості, так і значення,
-                // щоб лапки та інші символи не обрізали контент тега.
-                $safeKey = Html::encode((string) $key);
-                $safeValue = Html::encode((string) $value);
+                // Екранування уніфіковане: одна функція для всіх значень мета-тегів.
+                $safeKey = $this->sanitizeMetaValue($key);
+                $safeValue = $this->sanitizeMetaValue($value);
                 $dataHtml .= '<meta property="og:' . $safeKey . '" content="' . $safeValue . '">' . "\n";
             }
         }
@@ -157,17 +153,7 @@ HTML_FAVICON;
     }
 
     public function establishAuto() {
-        $this->data['image']['uri'] = Url::to(\Yii::$app->request->hostInfo . $this->imageDefault);
-        $this->data['host'] = $_SERVER['HTTP_HOST'];
-        $this->data['locale'] = \Yii::$app->language;
-        if (empty($this->data['uri'])) {
-            $this->data['uri'] = Yii::$app->request->hostInfo . Yii::$app->request->url;
-//            if (!empty($this->data['local_uri'])) {
-//                $this->data['uri'] = \Yii::$app->request->hostInfo . $this->data['local_uri'];
-//            }else{
-//                $this->data['uri'] = \Yii::$app->request->hostInfo .'/'. $this->data['local_uri'];// = $this->pageUrl();
-//            }
-        }
+        $this->buildBaseData();
     }
 
     public function establish($data) {
@@ -210,13 +196,13 @@ HTML_FAVICON;
     }
 
     public function prepareTwitter() {
-        $this->meta['twitter']['url']['content'] = $this->data['uri'];
-        $this->meta['twitter']['title']['content'] = $this->data['title'];
-        $this->meta['twitter']['domain']['content'] = $this->data['host'];
-        $this->meta['twitter']['title']['content'] = $this->data['title'];
-        $this->meta['twitter']['description']['content'] = $this->data['description'];
+        // Пріоритети значень: беремо підготовлені поля з $this->data, щоб не ламати існуючі сценарії.
+        $this->fillTwitterContent('url', $this->data['uri']);
+        $this->fillTwitterContent('title', $this->data['title']);
+        $this->fillTwitterContent('domain', $this->data['host']);
+        $this->fillTwitterContent('description', $this->data['description']);
         if (!empty($this->data['image']['uri'])) {
-            $this->meta['twitter']['image']['content'] = $this->data['image']['uri'];
+            $this->fillTwitterContent('image', $this->data['image']['uri']);
         }
     }
 
@@ -253,14 +239,39 @@ HTML_FAVICON;
     }
 
     public function adjustOpenGraph() {
+        $this->registerOpenGraphTags();
+    }
+
+    public function adjustTwitter() {
+        $this->registerTwitterTags();
+    }
+
+    private function buildBaseData() {
+        // Fallback-зображення потрібне, коли сторінка не передала власний OG image.
+        $this->data['image']['uri'] = Url::to(Yii::$app->request->hostInfo . $this->imageDefault);
+        // Через request-компонент стабільніше у CLI/тестах, ніж прямий доступ до $_SERVER.
+        $this->data['host'] = Yii::$app->request->hostName;
+        $this->data['locale'] = Yii::$app->language;
+        if (empty($this->data['uri'])) {
+            // Fallback-URL: повна адреса поточного запиту для коректного og:url/twitter:url.
+            $this->data['uri'] = Yii::$app->request->hostInfo . Yii::$app->request->url;
+        }
+    }
+
+    private function sanitizeMetaValue($value) {
+        // Централізоване екранування для атрибутів content/property/name.
+        return Html::encode((string) $value);
+    }
+
+    private function registerOpenGraphTags() {
         foreach ($this->meta[self::OG] as $key => $item) {
             if (!empty($item)) {
-                \Yii::$app->view->registerMetaTag(['property' => 'og:' . $key, 'content' => $item]);
+                Yii::$app->view->registerMetaTag(['property' => 'og:' . $key, 'content' => $item]);
             }
         }
     }
 
-    public function adjustTwitter() {
+    private function registerTwitterTags() {
         foreach ($this->meta[self::TWITTER] as $key => $item) {
             if (!empty($item['content'])) {
                 if (empty($item['type'])) {
@@ -268,15 +279,21 @@ HTML_FAVICON;
                 }
                 switch ($item['type']) {
                     case 'name':
-                        \Yii::$app->view->registerMetaTag(['name' => self::TWITTER . ':' . $key, 'content' => $item['content']]);
+                        Yii::$app->view->registerMetaTag(['name' => self::TWITTER . ':' . $key, 'content' => $item['content']]);
                         break;
                     case 'property':
-                        \Yii::$app->view->registerMetaTag(['property' => self::TWITTER . ':' . $key, 'content' => $item['content']]);
+                        Yii::$app->view->registerMetaTag(['property' => self::TWITTER . ':' . $key, 'content' => $item['content']]);
                         break;
                     default:
                         break;
                 }
             }
+        }
+    }
+
+    private function fillTwitterContent($key, $content) {
+        if (isset($this->meta[self::TWITTER][$key])) {
+            $this->meta[self::TWITTER][$key]['content'] = $content;
         }
     }
 

@@ -45,13 +45,6 @@ class PageMetaData extends BaseObject {
             'mime' => 'image/png',
         ],
     ];
-    /*
-      <meta property="og:title" content='Statistics - Site'>
-      <meta property="og:description" content="Statistics - Authors Site">
-      //        <meta property="og:site_name" content="referendum.social">
-      //        <meta property="og:image" content="http://referendum.social/img/layout/logo_social.png">
-      //       <meta property="og:type" content="website">
-     */
     protected $meta = [
         self::OG => [
             'locale' => 'uk_UA',
@@ -145,11 +138,6 @@ HTML_FAVICON;
             }
         }
         return $dataHtml;
-//        return <<<HTML_OPEN_GRAPH
-//        <!-- Open Graph
-//        ================================================== -->
-//{$dataHtml}
-//HTML_OPEN_GRAPH;
     }
 
     public function establishAuto() {
@@ -174,7 +162,6 @@ HTML_FAVICON;
         if (!empty($this->data['image'])) {
             if (is_array($this->data['image'])) {
                 if (!empty($this->data['image']['uri'])) {
-//                $this->meta[self::OG]['image'] = \Yii::$app->view->registerMetaTag(['property' => 'og:image', 'content' => Url::to(\Yii::$app->request->hostInfo . '/images/og/logo_gbs.png')]);
                     $this->meta[self::OG]['image'] = $this->data['image']['uri'];
                 }
                 $this->meta[self::OG]['image:width'] = $this->data['image']['width'];
@@ -209,33 +196,6 @@ HTML_FAVICON;
     public function adjust() {
         $this->adjustOpenGraph();
         $this->adjustTwitter();
-        /*
-          <!-- Facebook Meta Tags -->
-          <meta property="og:url" content="http://domen.com.ua/ru/projects/zhivchik/">
-          <meta property="og:type" content="website">
-          <meta property="og:title" content="Ребрендинг и Разработка Дизайна упаковки | DoMeN.com.ua">
-          <meta property="og:description" content="Ребрендинг и разработка дизайна упаковки Звоните!⭐Опыт-️1500 кейсов $ Лучшая✅DoMeN.com.ua">
-          <meta property="og:image" content="http://domen.com.ua/images/og/logo_gbs.png">
-          /* */
-
-        /*
-          <!-- Facebook Meta Tags -->
-          <meta property="og:url" content="http://domen.com.ua/ru/projects/zhivchik/">
-          <meta property="og:type" content="website">
-          <meta property="og:title" content="Ребрендинг и Разработка Дизайна упаковки | DoMeN.com.ua">
-          <meta property="og:description" content="Ребрендинг и разработка дизайна упаковки ✅ Звоните!⭐Опыт-️1500 кейсов $ Лучшая✅DoMeN.com.ua">
-          <meta property="og:image" content="http://domen.com.ua/images/og/logo_gbs.png">
-          <meta property="og:locale" content="ru_RU" />
-          <meta property="og:type" content="article" />
-          <meta property="og:title" content="Бренд бук СТМ - DoMeN.com.ua" />
-          <meta property="og:url" content="http://domen.com.ua/ru/proekt/brandbook-easy-good/" />
-          <meta property="og:site_name" content="DoMeN.com.ua" />
-          <meta property="article:modified_time" content="2022-03-15T19:36:58+00:00" />
-          <meta property="og:image" content="http://domen.com.ua/wp-content/uploads/2022/03/anons-brandbook.jpg?_t=1656508023" />
-          <meta property="og:image:width" content="418" />
-          <meta property="og:image:height" content="315" />
-          <meta property="og:image:type" content="image/jpeg" />
-         */
     }
 
     public function adjustOpenGraph() {

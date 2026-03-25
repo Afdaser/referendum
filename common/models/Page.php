@@ -112,6 +112,28 @@ class Page extends ActiveRecord
     }
 
 
+
+    /**
+     * Перевіряє, чи міграція robots-полів вже застосована в БД.
+     *
+     * Не нашкодити: якщо схема тимчасово недоступна або колонки відсутні,
+     * повертаємо false і не використовуємо ці поля у UI/запитах.
+     */
+    public static function supportsRobotsFlags(): bool
+    {
+        try {
+            $schema = Yii::$app->db->schema->getTableSchema(self::tableName(), true);
+
+            if ($schema === null) {
+                return false;
+            }
+
+            return isset($schema->columns['robots_index'], $schema->columns['robots_follow']);
+        } catch (\Throwable $exception) {
+            return false;
+        }
+    }
+
     /**
      * Повертає опції для випадаючого списку індексації.
      */

@@ -95,10 +95,15 @@ class PageController extends Controller {
         Yii::$app->page->setDescription($page->describe ?? '');
         Yii::$app->page->setKeywords($page->name ?? '');
 
-        // Формуємо meta robots з окремих прапорців індексації та обходу посилань.
-        $robotsIndex = $page->robots_index ?: Page::ROBOTS_INDEX;
-        $robotsFollow = $page->robots_follow ?: Page::ROBOTS_FOLLOW;
-        Yii::$app->page->setRobots($robotsIndex . ', ' . $robotsFollow);
+        // Не нашкодити: якщо міграція ще не застосована, залишаємо безпечний дефолт.
+        if (Page::supportsRobotsFlags()) {
+            // Формуємо meta robots з окремих прапорців індексації та обходу посилань.
+            $robotsIndex = $page->getAttribute('robots_index') ?: Page::ROBOTS_INDEX;
+            $robotsFollow = $page->getAttribute('robots_follow') ?: Page::ROBOTS_FOLLOW;
+            Yii::$app->page->setRobots($robotsIndex . ', ' . $robotsFollow);
+        } else {
+            Yii::$app->page->setRobots(Page::ROBOTS_INDEX . ', ' . Page::ROBOTS_FOLLOW);
+        }
 
         $this->registerCanonicalLink($page);
     }

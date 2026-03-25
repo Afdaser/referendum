@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Page;
 
 /** @var yii\web\View $this */
 /** @var common\models\Page $model */
@@ -10,6 +11,9 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Pages'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
+// Не нашкодити: виводимо robots-поля лише після застосування міграції.
+$hasRobotsFlags = Page::supportsRobotsFlags();
 ?>
 <div class="page-view">
 
@@ -35,8 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'content:raw',
             'describe:ntext',
             'scripts:raw',
-            'robots_index',
-            'robots_follow',
+            ...($hasRobotsFlags ? ['robots_index', 'robots_follow'] : []),
 //            'date_add:datetime',
 //            'date_update:datetime',
 //            'created_by',

@@ -15,6 +15,9 @@ use common\models\Language;
 
 $this->title = Yii::t('app', 'Pages');
 $this->params['breadcrumbs'][] = $this->title;
+
+// Не нашкодити: підключаємо robots-колонки лише коли вони існують у БД.
+$hasRobotsFlags = Page::supportsRobotsFlags();
 ?>
 <div class="page-index">
 
@@ -41,16 +44,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'name',
             'title',
-            [
-                'attribute' => 'robots_index',
-                // Фільтр точними значеннями robots index.
-                'filter' => Page::robotsIndexOptions(),
-            ],
-            [
-                'attribute' => 'robots_follow',
-                // Фільтр точними значеннями robots follow.
-                'filter' => Page::robotsFollowOptions(),
-            ],
+            ...($hasRobotsFlags ? [
+                [
+                    'attribute' => 'robots_index',
+                    // Фільтр точними значеннями robots index.
+                    'filter' => Page::robotsIndexOptions(),
+                ],
+                [
+                    'attribute' => 'robots_follow',
+                    // Фільтр точними значеннями robots follow.
+                    'filter' => Page::robotsFollowOptions(),
+                ],
+            ] : []),
             //'content:ntext',
             //'describe:ntext',
             //'date_add:datetime',

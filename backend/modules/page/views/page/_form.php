@@ -40,15 +40,22 @@ use common\models\Language;
     <?= $form->field($model, 'scripts')->textarea(['rows' => 6]) ?>
 
 
-    <?php // Керування meta robots: чи можна індексувати сторінку. ?>
-    <?= $form->field($model, 'robots_index')->dropDownList(\common\models\Page::robotsIndexOptions(), [
-        'prompt' => false,
-    ]) ?>
+    <?php if (\common\models\Page::supportsRobotsFlags()): ?>
+        <?php // Керування meta robots: чи можна індексувати сторінку. ?>
+        <?= $form->field($model, 'robots_index')->dropDownList(\common\models\Page::robotsIndexOptions(), [
+            'prompt' => false,
+        ]) ?>
 
-    <?php // Керування meta robots: чи можна переходити за посиланнями на сторінці. ?>
-    <?= $form->field($model, 'robots_follow')->dropDownList(\common\models\Page::robotsFollowOptions(), [
-        'prompt' => false,
-    ]) ?>
+        <?php // Керування meta robots: чи можна переходити за посиланнями на сторінці. ?>
+        <?= $form->field($model, 'robots_follow')->dropDownList(\common\models\Page::robotsFollowOptions(), [
+            'prompt' => false,
+        ]) ?>
+    <?php else: ?>
+        <?php // Не нашкодити: показуємо підказку, якщо міграцію ще не застосовано. ?>
+        <div class="alert alert-warning">
+            Параметри robots стануть доступними після застосування міграцій.
+        </div>
+    <?php endif; ?>
 
 
     <div class="form-group">

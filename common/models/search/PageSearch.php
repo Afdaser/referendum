@@ -68,16 +68,19 @@ class PageSearch extends Page
             'updated_at' => $this->updated_at,
         ]);
 
-        // Для robots-полів застосовуємо точну рівність, щоб уникнути хибних збігів
-        // на кшталт index -> noindex або follow -> nofollow.
         $query->andFilterWhere(['like', 'slug', $this->slug])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'describe', $this->describe])
-            ->andFilterWhere(['like', 'scripts', $this->scripts])
-            ->andFilterWhere(['robots_index' => $this->robots_index])
-            ->andFilterWhere(['robots_follow' => $this->robots_follow]);
+            ->andFilterWhere(['like', 'scripts', $this->scripts]);
+
+        if (Page::supportsRobotsFlags()) {
+            // Для robots-полів застосовуємо точну рівність, щоб уникнути хибних збігів
+            // на кшталт index -> noindex або follow -> nofollow.
+            $query->andFilterWhere(['robots_index' => $this->robots_index])
+                ->andFilterWhere(['robots_follow' => $this->robots_follow]);
+        }
 
         return $dataProvider;
     }

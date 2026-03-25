@@ -8,7 +8,6 @@ Disallow: /site/hotPolls
 Disallow: /*reply
 Disallow: /site/search
 Disallow: /site/captcha*
-Disallow: /updates*
 Disallow: /*per-page=10
 Disallow: */site/actualPolls
 

@@ -43,10 +43,29 @@ SQL1;
             'active' => [],
             'inactive' => [],
         ];
-        foreach ($dataVotes as $key => $item) {
+        // Триматимемо загальні суми за поточний і попередній місяці для великого індикатора у шапці дашборду.
+        $data['monthly_totals'] = [
+            'current' => 0,
+            'previous' => 0,
+        ];
+        foreach ($dataVotes as $item) {
             $data['monthly_diagram']['labels'][] = $item['the_month'];
-            $data['monthly_diagram']['active'][] = $item['user_votes'];
-            $data['monthly_diagram']['inactive'][] = $item['guest_votes'];
+            $data['monthly_diagram']['active'][] = (int)$item['user_votes'];
+            $data['monthly_diagram']['inactive'][] = (int)$item['guest_votes'];
+        }
+
+        // Останні 2 елементи після сортування ASC — це поточний і попередній місяць відповідно.
+        $currentMonthIndex = count($dataVotes) - 1;
+        $previousMonthIndex = count($dataVotes) - 2;
+
+        if ($currentMonthIndex >= 0) {
+            $data['monthly_totals']['current'] = (int)$dataVotes[$currentMonthIndex]['user_votes']
+                + (int)$dataVotes[$currentMonthIndex]['guest_votes'];
+        }
+
+        if ($previousMonthIndex >= 0) {
+            $data['monthly_totals']['previous'] = (int)$dataVotes[$previousMonthIndex]['user_votes']
+                + (int)$dataVotes[$previousMonthIndex]['guest_votes'];
         }
         return $this->render('index', ['data' => $data]);
     }

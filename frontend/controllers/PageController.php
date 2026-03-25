@@ -94,6 +94,12 @@ class PageController extends Controller {
         Yii::$app->page->setTitle($pageTitle);
         Yii::$app->page->setDescription($page->describe ?? '');
         Yii::$app->page->setKeywords($page->name ?? '');
+
+        // Формуємо meta robots з окремих прапорців індексації та обходу посилань.
+        $robotsIndex = $page->robots_index ?: Page::ROBOTS_INDEX;
+        $robotsFollow = $page->robots_follow ?: Page::ROBOTS_FOLLOW;
+        Yii::$app->page->setRobots($robotsIndex . ', ' . $robotsFollow);
+
         $this->registerCanonicalLink($page);
     }
 

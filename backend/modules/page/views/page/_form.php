@@ -40,6 +40,17 @@ use common\models\Language;
     <?= $form->field($model, 'scripts')->textarea(['rows' => 6]) ?>
 
 
+    <?php // Керування meta robots: чи можна індексувати сторінку. ?>
+    <?= $form->field($model, 'robots_index')->dropDownList(\common\models\Page::robotsIndexOptions(), [
+        'prompt' => false,
+    ]) ?>
+
+    <?php // Керування meta robots: чи можна переходити за посиланнями на сторінці. ?>
+    <?= $form->field($model, 'robots_follow')->dropDownList(\common\models\Page::robotsFollowOptions(), [
+        'prompt' => false,
+    ]) ?>
+
+
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>

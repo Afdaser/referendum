@@ -17,6 +17,8 @@ use yii\helpers\Inflector;
  * @property string|null $content Content
  * @property string|null $describe Describe
  * @property string|null $scripts Scripts
+ * @property string $robots_index Robots index
+ * @property string $robots_follow Robots follow
  * @property string $date_add Date add
  * @property string $date_update Date update
  * @property int|null $created_by Created by:
@@ -28,6 +30,11 @@ use yii\helpers\Inflector;
  */
 class Page extends ActiveRecord
 {
+    public const ROBOTS_INDEX = 'index';
+    public const ROBOTS_NOINDEX = 'noindex';
+    public const ROBOTS_FOLLOW = 'follow';
+    public const ROBOTS_NOFOLLOW = 'nofollow';
+
     /**
      * Готуємо обробку слагу перед валідацією.
      */
@@ -61,9 +68,14 @@ class Page extends ActiveRecord
             [['slug', 'name', 'title'], 'required'],
             [['language_id', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['content', 'describe', 'scripts'], 'string'],
+            [['robots_index'], 'default', 'value' => self::ROBOTS_INDEX],
+            [['robots_follow'], 'default', 'value' => self::ROBOTS_FOLLOW],
+            [['robots_index'], 'in', 'range' => [self::ROBOTS_INDEX, self::ROBOTS_NOINDEX]],
+            [['robots_follow'], 'in', 'range' => [self::ROBOTS_FOLLOW, self::ROBOTS_NOFOLLOW]],
             [['date_add', 'date_update'], 'safe'],
             [['slug'], 'string', 'max' => 128],
             [['name', 'title'], 'string', 'max' => 255],
+            [['robots_index', 'robots_follow'], 'string', 'max' => 10],
             [['slug', 'language_id'], 'unique', 'targetAttribute' => ['slug', 'language_id']],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
@@ -86,12 +98,39 @@ class Page extends ActiveRecord
             // Назва поля для SEO-опису сторінки.
             'describe' => 'meta-description',
             'scripts' => Yii::t('app', 'Scripts'),
+            // Прапорець, чи дозволено індексацію сторінки пошуковими системами.
+            'robots_index' => 'Індексація',
+            // Прапорець, чи дозволено переходити за посиланнями зі сторінки.
+            'robots_follow' => 'Кравлінг посилань',
             'date_add' => Yii::t('app', 'Date add'),
             'date_update' => Yii::t('app', 'Date update'),
             'created_by' => Yii::t('app', 'Created by:'),
             'updated_by' => Yii::t('app', 'Updated by:'),
             'created_at' => Yii::t('app', 'Created at:'),
             'updated_at' => Yii::t('app', 'Updated at:'),
+        ];
+    }
+
+
+    /**
+     * Повертає опції для випадаючого списку індексації.
+     */
+    public static function robotsIndexOptions(): array
+    {
+        return [
+            self::ROBOTS_INDEX => 'index',
+            self::ROBOTS_NOINDEX => 'noindex',
+        ];
+    }
+
+    /**
+     * Повертає опції для випадаючого списку кравлінгу посилань.
+     */
+    public static function robotsFollowOptions(): array
+    {
+        return [
+            self::ROBOTS_FOLLOW => 'follow',
+            self::ROBOTS_NOFOLLOW => 'nofollow',
         ];
     }
 

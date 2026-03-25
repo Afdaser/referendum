@@ -41,8 +41,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'name',
             'title',
-            'robots_index',
-            'robots_follow',
+            [
+                'attribute' => 'robots_index',
+                // Фільтр точними значеннями robots index.
+                'filter' => Page::robotsIndexOptions(),
+            ],
+            [
+                'attribute' => 'robots_follow',
+                // Фільтр точними значеннями robots follow.
+                'filter' => Page::robotsFollowOptions(),
+            ],
             //'content:ntext',
             //'describe:ntext',
             //'date_add:datetime',

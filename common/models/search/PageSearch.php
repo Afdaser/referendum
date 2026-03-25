@@ -18,7 +18,7 @@ class PageSearch extends Page
     {
         return [
             [['id', 'language_id', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
-            [['slug', 'name', 'title', 'content', 'describe', 'scripts', 'date_add', 'date_update'], 'safe'],
+            [['slug', 'name', 'title', 'content', 'describe', 'scripts', 'robots_index', 'robots_follow', 'date_add', 'date_update'], 'safe'],
         ];
     }
 
@@ -73,7 +73,9 @@ class PageSearch extends Page
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'describe', $this->describe])
-            ->andFilterWhere(['like', 'scripts', $this->scripts]);
+            ->andFilterWhere(['like', 'scripts', $this->scripts])
+            ->andFilterWhere(['like', 'robots_index', $this->robots_index])
+            ->andFilterWhere(['like', 'robots_follow', $this->robots_follow]);
 
         return $dataProvider;
     }

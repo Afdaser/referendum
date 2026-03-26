@@ -53,23 +53,14 @@ $this->title = Yii::t('app', 'Dashboard');
                         <h3 class="box-title"><?= Yii::t('app', 'last votes'); ?></h3>
                     </div>
                     <div class="box-body">
-                        <!-- Розтягуємо графік по вертикалі майже на весь екран, щоб дрібні значення було краще видно. -->
-                        <div class="chart" style="height: calc(100vh - 260px); min-height: 620px;">
+                        <!-- Повертаємо розмір графіка до історичного вигляду, як до PR #294. -->
+                        <div class="chart">
                             <?=
                             ChartJs::widget([
                                 'type' => 'bar',
                                 'options' => [
-                                    'style' => 'height: 100%; width: 100%;'
-                                ],
-                                'clientOptions' => [
-                                    'maintainAspectRatio' => false,
-                                    'scales' => [
-                                        'yAxes' => [[
-                                            'ticks' => [
-                                                'beginAtZero' => true,
-                                            ],
-                                        ]],
-                                    ],
+                                    'height' => 80,
+                                    'width' => 400
                                 ],
                                 'data' => [
                                     'labels' => $data['monthly_diagram']['labels'],

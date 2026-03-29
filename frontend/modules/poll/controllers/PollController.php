@@ -185,7 +185,6 @@ class PollController extends \yii\web\Controller
             $comment->setCommentAttributes($postData['comment']);
         }
 
-        // Валідація моделі містить перевірку: один IP — один гостьовий коментар у межах poll.
         if (!$comment->validate()) {
             return self::renderView($comment->poll_id, $comment);
         }
@@ -195,8 +194,8 @@ class PollController extends \yii\web\Controller
                 return self::renderView($comment->poll_id, $comment);
             }
         } catch (IntegrityException $e) {
-            // Захист від race-condition: UNIQUE-індекс у БД гарантує ліміт навіть при паралельних сабмітах.
-            $comment->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
+            // Повертаємо нейтральну помилку БД без згадки IP-обмежень.
+            $comment->addError('content', Yii::t('poll', 'Не вдалося зберегти коментар. Спробуйте ще раз.'));
             return self::renderView($comment->poll_id, $comment);
         }
 

@@ -74,7 +74,6 @@ class PollComment extends ActiveRecord
             [['ip_of_user', 'guest_ip_key'], 'required', 'when' => function (self $model) {
                 return (bool) $model->is_guest;
             }, 'whenClient' => "function () { return false; }"],
-            ['guest_ip_key', 'validateGuestCommentIpLimit'],
         ];
     }
 
@@ -237,7 +236,9 @@ class PollComment extends ActiveRecord
             $this->guest_ip_key = null;
         }
 
-        $this->content = Html::encode($attributes['content']);
+        // Приймаємо вставку з будь-якою розміткою, але зберігаємо лише чистий текст.
+        $content = $this->sanitizePlainTextInput((string) ($attributes['content'] ?? ''));
+        $this->content = Html::encode($content);
         $this->status = PollComment::COMMENT_STATUS_PUBLISHED;
         $this->date_add = date('Y-m-d H:i:s');
 
@@ -245,28 +246,18 @@ class PollComment extends ActiveRecord
     }
 
     /**
-     * Гість може лишити лише один коментар в межах одного опитування з одного IP.
+     * Нормалізуємо довільний введений текст до plain text.
      */
-    public function validateGuestCommentIpLimit($attribute, $params)
+    private function sanitizePlainTextInput(string $value): string
     {
-        if (!$this->is_guest || !$this->poll_id) {
-            return;
-        }
+        // 1) Декодуємо HTML-сутності (напр. &lt;b&gt;), щоб потім коректно прибрати теги.
+        $decoded = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // 2) Видаляємо HTML/XML-розмітку, залишаючи тільки текст.
+        $withoutMarkup = strip_tags($decoded);
+        // 3) Уніфікуємо переноси рядків для стабільного збереження.
+        $normalized = str_replace(["\r\n", "\r"], "\n", $withoutMarkup);
 
-        $query = self::find()
-            ->where(['poll_id' => $this->poll_id, 'is_guest' => 1])
-            ->andFilterWhere(['<>', 'id', $this->id]);
-
-        // Використовуємо єдиний ключ IP для обох протоколів (IPv4/IPv6).
-        if (empty($this->guest_ip_key)) {
-            return;
-        }
-
-        $query->andWhere(['guest_ip_key' => $this->guest_ip_key]);
-
-        if ($query->exists()) {
-            $this->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
-        }
+        return trim($normalized);
     }
 
     /**

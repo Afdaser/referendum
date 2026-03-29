@@ -51,6 +51,49 @@ $this->registerJs(<<<JS
 JS
 , View::POS_END);
 
+$this->registerJs(<<<JS
+(function () {
+    // Для полів коментаря перехоплюємо вставку з буфера й залишаємо лише plain text.
+    function handlePlainTextPaste(event) {
+        var clipboard = event.clipboardData || window.clipboardData;
+        if (!clipboard) {
+            return;
+        }
+
+        event.preventDefault();
+        var pastedText = clipboard.getData('text/plain') || '';
+        // Додатково прибираємо можливі HTML-теги, якщо вони потрапили в plain text.
+        var textOnly = pastedText.replace(/<[^>]*>/g, '');
+
+        var target = event.target;
+        if (typeof target.selectionStart === 'number' && typeof target.selectionEnd === 'number') {
+            var start = target.selectionStart;
+            var end = target.selectionEnd;
+            var currentValue = target.value || '';
+            target.value = currentValue.slice(0, start) + textOnly + currentValue.slice(end);
+            var cursorPosition = start + textOnly.length;
+            target.setSelectionRange(cursorPosition, cursorPosition);
+            return;
+        }
+
+        target.value = (target.value || '') + textOnly;
+    }
+
+    var selectors = [
+        'input[name="Profile[comment][guest_nickname]"]',
+        'textarea[name="Profile[comment][content]"]'
+    ];
+
+    selectors.forEach(function (selector) {
+        var field = document.querySelector(selector);
+        if (field) {
+            field.addEventListener('paste', handlePlainTextPaste);
+        }
+    });
+})();
+JS
+, View::POS_END);
+
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">

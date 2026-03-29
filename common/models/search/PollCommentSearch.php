@@ -46,6 +46,13 @@ class PollCommentSearch extends PollComment
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                // За замовчуванням показуємо найсвіжіші коментарі першими в адмінці.
+                'defaultOrder' => [
+                    'date_add' => SORT_DESC,
+                    'id' => SORT_DESC,
+                ],
+            ],
         ]);
 
         $this->load($params);

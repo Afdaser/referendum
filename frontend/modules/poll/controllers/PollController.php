@@ -5,7 +5,6 @@ namespace frontend\modules\poll\controllers;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
-use yii\db\IntegrityException;
 
 use common\models\Poll;
 use common\models\PollOption;
@@ -185,18 +184,14 @@ class PollController extends \yii\web\Controller
             $comment->setCommentAttributes($postData['comment']);
         }
 
-        // Валідація моделі містить перевірку: один IP — один гостьовий коментар у межах poll.
+        // Валідація моделі перевіряє базові правила (обов'язкові поля, формат тощо).
         if (!$comment->validate()) {
             return self::renderView($comment->poll_id, $comment);
         }
 
-        try {
-            if (!$comment->save(false)) {
-                return self::renderView($comment->poll_id, $comment);
-            }
-        } catch (IntegrityException $e) {
-            // Захист від race-condition: UNIQUE-індекс у БД гарантує ліміт навіть при паралельних сабмітах.
-            $comment->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
+        // Зберігаємо без повторної валідації, бо validate() виконали вище.
+        // Дозволяємо кілька гостьових коментарів з одного IP у межах одного опитування.
+        if (!$comment->save(false)) {
             return self::renderView($comment->poll_id, $comment);
         }
 

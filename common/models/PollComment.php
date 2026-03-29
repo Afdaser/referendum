@@ -74,7 +74,8 @@ class PollComment extends ActiveRecord
             [['ip_of_user', 'guest_ip_key'], 'required', 'when' => function (self $model) {
                 return (bool) $model->is_guest;
             }, 'whenClient' => "function () { return false; }"],
-            ['guest_ip_key', 'validateGuestCommentIpLimit'],
+            // Не обмежуємо кількість гостьових коментарів з одного IP в межах опитування.
+            // Це дозволяє гостю залишати декілька коментарів у тій самій дискусії.
         ];
     }
 
@@ -242,31 +243,6 @@ class PollComment extends ActiveRecord
         $this->date_add = date('Y-m-d H:i:s');
 
         return $this;
-    }
-
-    /**
-     * Гість може лишити лише один коментар в межах одного опитування з одного IP.
-     */
-    public function validateGuestCommentIpLimit($attribute, $params)
-    {
-        if (!$this->is_guest || !$this->poll_id) {
-            return;
-        }
-
-        $query = self::find()
-            ->where(['poll_id' => $this->poll_id, 'is_guest' => 1])
-            ->andFilterWhere(['<>', 'id', $this->id]);
-
-        // Використовуємо єдиний ключ IP для обох протоколів (IPv4/IPv6).
-        if (empty($this->guest_ip_key)) {
-            return;
-        }
-
-        $query->andWhere(['guest_ip_key' => $this->guest_ip_key]);
-
-        if ($query->exists()) {
-            $this->addError('content', Yii::t('poll', 'З цього IP вже додано коментар у цьому опитуванні.'));
-        }
     }
 
     /**

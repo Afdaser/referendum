@@ -167,6 +167,29 @@ class Tag extends ActiveRecord
         return $tagId;
     }
 
+    /**
+     * Нормалізує тег для використання в URL:
+     * - нижній регістр;
+     * - пробіли та підкреслення перетворюємо на дефіси.
+     */
+    public static function normalizeTagSlug(string $tag): string
+    {
+        $normalizedTag = trim($tag);
+        $normalizedTag = mb_strtolower($normalizedTag, 'UTF-8');
+        // Працюємо і з пробілами, і з підкресленнями, щоб старі URL теж стали канонічними.
+        $normalizedTag = str_replace([' ', '_'], '-', $normalizedTag);
+
+        return trim($normalizedTag, '-');
+    }
+
+    /**
+     * Формує slug саме з назви тегу для консистентного формування URL.
+     */
+    public function getSlug(): string
+    {
+        return self::normalizeTagSlug((string) $this->name);
+    }
+
     public function getUrl()
     {
         if (is_null(self::$subdomen)) {
@@ -179,7 +202,8 @@ class Tag extends ActiveRecord
             }
         }
 
-        $tag = urlencode($this->name);
+        // Використовуємо канонічний slug для стабільних, SEO-дружніх URL тегів.
+        $tag = rawurlencode($this->getSlug());
         if (self::$subdomen === '') {
             return SITE_PROTOCOL . "{$this->language->name}." . SITE_DOMAIN . "/tag/{$tag}";
         }

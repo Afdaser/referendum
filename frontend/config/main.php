@@ -252,17 +252,17 @@ return [
                                     'updates' => 'page/updates',
                 // Search
 				[
-    'pattern' => 'tag/<tag:\w+>/page/<page:\d+>',
+    'pattern' => 'tag/<tag:[^/]+>/page/<page:\d+>',
     'route' => 'poll/tag/index',
     'defaults' => ['page' => 1], // По умолчанию 1-я страница
 ],
 [
-    'pattern' => 'tag/<tag:\w+>',
+    'pattern' => 'tag/<tag:[^/]+>',
     'route' => 'poll/tag/index',
   
 ],
   /*              [
-                    'pattern' => 'tag/<tag:\w+>',
+                    'pattern' => 'tag/<tag:[^/]+>',
                     'route' => 'poll/tag/index'
                 ],*/
                 // poll/ajax/*

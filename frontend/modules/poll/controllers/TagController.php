@@ -21,7 +21,8 @@ class TagController extends Controller
         $normalizedTag = Tag::normalizeTagSlug((string) $tag);
 
         // Для nz-піддомена обмежуємо вибірку мовою, а далі шукаємо за канонічним slug.
-        $slugExpression = new Expression("LOWER(REPLACE(REPLACE(TRIM(name), '_', '-'), ' ', '-'))");
+        // Нормалізація в SQL має повністю збігатися з Tag::normalizeTagSlug().
+        $slugExpression = new Expression("TRIM(BOTH '-' FROM LOWER(REPLACE(REPLACE(TRIM(name), '_', '-'), ' ', '-')))");
         // Важливо: Expression передаємо в операторному форматі, а не як ключ масиву.
         $tagQuery = Tag::find()->where(['=', $slugExpression, $normalizedTag]);
         if ($isNzSubdomain && $languageId) {

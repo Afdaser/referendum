@@ -230,8 +230,10 @@ class SitemapController extends Controller
                 self::$data['tags']['maxDates'][$item['language_id']] = $date;
             }
             if(!empty($item['language_id']) && !empty($item['idt'])){
+                // Формуємо канонічний slug тегу в нижньому регістрі для всіх піддоменів у sitemap.
+                $tagSlug = Tag::normalizeTagSlug((string) $item['idt']);
                 self::$data['tags']['links'][$item['language_id']][] = [
-                    'url' => 'https://'.static::$subdomains[$item['language_id']] . '.' . SITE_DOMAIN . '/tag/' . urlencode($item['idt']),
+                    'url' => 'https://'.static::$subdomains[$item['language_id']] . '.' . SITE_DOMAIN . '/tag/' . rawurlencode($tagSlug),
                     'lastmod' => $date,
                     'changefreq' => 'weekly',
                     'priority' =>  '0.7',

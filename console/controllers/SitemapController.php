@@ -205,8 +205,11 @@ class SitemapController extends Controller
             'from_unixtime(if(t.updated_at is null, "0", t.updated_at))',
         ];
 
+        // Нормалізуємо slug одразу в SQL, щоб sitemap завжди отримував канонічний нижній регістр.
+        $slugExpression = "TRIM(BOTH '-' FROM LOWER(REPLACE(REPLACE(TRIM(t.name), '_', '-'), ' ', '-')))";
+
         $list = Tag::find()
-            ->select(['t.id', 't.language_id', 't.name AS idt', 'MAX(GREATEST(' . implode(',', $select) . ')) AS poll_date'])
+            ->select(['t.id', 't.language_id', $slugExpression . ' AS tag_slug', 'MAX(GREATEST(' . implode(',', $select) . ')) AS poll_date'])
             ->from('tag t')
             ->innerJoin('poll_tag p2t', 'p2t.tag_id = t.id')
             ->innerJoin('poll p', 'p2t.poll_id = p.id')
@@ -229,9 +232,9 @@ class SitemapController extends Controller
             if ( empty(self::$data['tags']['maxDates'][$item['language_id']]) || self::$data['tags']['maxDates'][$item['language_id']] < $date) {
                 self::$data['tags']['maxDates'][$item['language_id']] = $date;
             }
-            if(!empty($item['language_id']) && !empty($item['idt'])){
-                // Формуємо канонічний slug тегу в нижньому регістрі для всіх піддоменів у sitemap.
-                $tagSlug = Tag::normalizeTagSlug((string) $item['idt']);
+            if(!empty($item['language_id']) && !empty($item['tag_slug'])){
+                // Використовуємо вже нормалізований slug з SQL, щоб уникати розбіжностей у різних середовищах.
+                $tagSlug = (string) $item['tag_slug'];
                 self::$data['tags']['links'][$item['language_id']][] = [
                     'url' => 'https://'.static::$subdomains[$item['language_id']] . '.' . SITE_DOMAIN . '/tag/' . rawurlencode($tagSlug),
                     'lastmod' => $date,

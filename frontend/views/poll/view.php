@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $poll \common\models\Poll */
@@ -180,6 +181,25 @@ if (!empty($poll->pollLanguage)) {
 			<div class="item_list_poll" style="text-align:center;"><?php echo Yii::t("poll", 'Це опитування вам не підходить, тому ви бачите одразу результати.'); ?></div>
  <?php  /*  */ ?>
 		<?php } ?>
+        <?php // Показуємо до 3 релевантних опитувань за спільними тегами. ?>
+        <?php $relatedPolls = $poll->getRelatedPollsByTags(3); ?>
+        <?php if (!empty($relatedPolls)): ?>
+            <div class="related-polls_b">
+                <h3 class="related-polls_title"><?= Yii::t('poll', 'Related polls'); ?></h3>
+                <div class="related-polls_list">
+                    <?php foreach ($relatedPolls as $relatedPoll): ?>
+                        <?php
+                        // Виводимо кількість спільних тегів як компактний "score", подібно до Stack Overflow.
+                        $relatedTagsCount = (int)$relatedPoll->getAttribute('related_tags_count');
+                        ?>
+                        <a class="related-polls_item" href="<?= Url::to(['/poll/view', 'id' => $relatedPoll->id]); ?>">
+                            <span class="related-polls_score"><?= $relatedTagsCount; ?></span>
+                            <span class="related-polls_text"><?= Html::encode($relatedPoll->title); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
 		<div class="comments_add-answer_b">
             <ul class="nav nav-tabs" role="tablist">
                 <li>

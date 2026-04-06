@@ -1326,6 +1326,48 @@ class Poll extends ActiveRecord
         $this->tagNames = array_values($normalizedNames);
     }
 
+    /**
+     * Підбирає схожі опитування за найбільшою кількістю спільних тегів.
+     *
+     * @param int $limit Максимальна кількість результатів.
+     *
+     * @return Poll[]
+     */
+    public function getRelatedPollsByTags(int $limit = 3): array
+    {
+        // Отримуємо теги поточного опитування; без них підбір неможливий.
+        $tagIds = $this->getTags()->select('id')->column();
+        if (empty($tagIds)) {
+            return [];
+        }
+
+        $query = self::find()
+            ->alias('p')
+            ->select([
+                'p.*',
+                // Рахуємо кількість спільних тегів, щоб ранжувати найрелевантніші опитування вище.
+                'related_tags_count' => new Expression('COUNT(DISTINCT pt.tag_id)'),
+            ])
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
+            ->where(['pt.tag_id' => $tagIds])
+            ->andWhere(['<>', 'p.id', $this->id])
+            ->andWhere(['p.status' => self::POLL_STATUS_ACTIVE])
+            ->groupBy(['p.id'])
+            ->orderBy([
+                'related_tags_count' => SORT_DESC,
+                'p.rating' => SORT_DESC,
+                'p.date_add' => SORT_DESC,
+            ])
+            ->limit($limit);
+
+        // Обмежуємося тією ж мовою, якщо вона задана для поточного опитування.
+        if ((int)$this->poll_language_id > 0) {
+            $query->andWhere(['p.poll_language_id' => (int)$this->poll_language_id]);
+        }
+
+        return $query->all();
+    }
+
     /*
      * Return user polls that has new comments
      */

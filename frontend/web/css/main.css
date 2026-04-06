@@ -1697,6 +1697,54 @@ a.btn_prev_var:hover {
 .item_show .del_btn:hover {
     background: url(/img/layout/del_icon_hover.png);
 }
+/* Блок схожих опитувань перед секцією коментарів/відповідей. */
+.poll_related_b {
+    margin: 0 0 16px;
+}
+.poll_related_title {
+    margin: 0 0 10px;
+    font-size: 30px;
+    font-weight: normal;
+    color: #226338;
+}
+.poll_related_list {
+    border: 1px solid #dce6e4;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f0f4f4;
+}
+.poll_related_item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #dce6e4;
+}
+.poll_related_item:last-child {
+    border-bottom: none;
+}
+.poll_related_votes {
+    flex: 0 0 auto;
+    min-width: 48px;
+    height: 32px;
+    border-radius: 5px;
+    background: #058f42;
+    color: #fff;
+    text-align: center;
+    line-height: 32px;
+    font-size: 18px;
+}
+.poll_related_link {
+    color: #226338;
+    font-size: 28px;
+    line-height: 1.25;
+    text-decoration: none;
+}
+.poll_related_link:hover,
+.poll_related_link:focus {
+    color: #3ac469;
+    text-decoration: underline;
+}
 .comments_add-answer_b .nav-tabs>li {
     width: 50%;
 }
@@ -3547,6 +3595,13 @@ a.pass_on_main_page {
     .comments_add-answer_b .nav-tabs>li {
         width: 100%;
     }
+    /* Адаптуємо блок схожих опитувань під планшети та телефони. */
+    .poll_related_title {
+        font-size: 24px;
+    }
+    .poll_related_link {
+        font-size: 22px;
+    }
     .left_btn_b {
         float: none;
         display: block;
@@ -3568,6 +3623,22 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 480px) {
+    .poll_related_item {
+        padding: 10px;
+        gap: 10px;
+    }
+    .poll_related_votes {
+        min-width: 42px;
+        height: 28px;
+        line-height: 28px;
+        font-size: 16px;
+    }
+    .poll_related_title {
+        font-size: 20px;
+    }
+    .poll_related_link {
+        font-size: 18px;
+    }
     .item_param .for_all_check input  {
         margin: 0 0 0 1px;
     }

@@ -10,6 +10,7 @@ use yii\helpers\Json;
 /** @var yii\web\View $this */
 /* @var Poll $poll */
 /* @var string|null $pageHeading */
+/* @var common\models\Poll[] $relatedPolls */
 
 if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
@@ -234,6 +235,22 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                             </div>
                         <?php endif; ?>
                     </div>
+                    <?php if (!empty($relatedPolls)): ?>
+                        <div class="poll_related_b" aria-label="<?= Yii::t('poll', 'Схожі опитування'); ?>">
+                            <h3 class="poll_related_title"><?= Yii::t('poll', 'Related polls'); ?></h3>
+                            <div class="poll_related_list">
+                                <?php foreach ($relatedPolls as $relatedPoll): ?>
+                                    <?php // Показуємо кількість голосів і заголовок максимально в дусі Stack Overflow, але у стилі сайту. ?>
+                                    <div class="poll_related_item">
+                                        <span class="poll_related_votes"><?= (int)$relatedPoll->countPollOptionsVoters; ?></span>
+                                        <a href="<?= Url::toRoute(['/poll/poll/view', 'id' => $relatedPoll->id]); ?>" class="poll_related_link">
+                                            <?= Html::encode($relatedPoll->title); ?>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     <div class="comments_add-answer_b">
     <ul class="nav nav-tabs" role="tablist">
         <li class="active"> <!-- ТЕПЕР активна вкладка "Коментарі" -->

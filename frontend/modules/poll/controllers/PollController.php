@@ -167,10 +167,43 @@ class PollController extends \yii\web\Controller
             'poll'=>$poll,
             'commentModel'=>$comment,
             'answerModel'=>$answer,
+            // Передаємо блок схожих опитувань (до 3 штук) за найбільшою кількістю спільних тегів.
+            'relatedPolls' => $this->getRelatedPollsByTags($poll, 3),
             // Передаємо кастомний H1, якщо його налаштовано в адмінці.
             'pageHeading' => $staticMeta['heading'] ?? null,
             'error'=>$error,
         ]);
+    }
+
+    /**
+     * Повертає список схожих опитувань за перетином тегів.
+     *
+     * Алгоритм: беремо активні опитування (окрім поточного), рахуємо кількість
+     * спільних тегів і сортуємо за цим числом, далі — за свіжістю.
+     */
+    private function getRelatedPollsByTags(Poll $poll, int $limit = 3): array
+    {
+        $tagIds = $poll->getTags()->select('id')->column();
+
+        // Якщо у поточного опитування немає тегів, показувати блок немає сенсу.
+        if (empty($tagIds)) {
+            return [];
+        }
+
+        return Poll::find()
+            ->alias('p')
+            ->published()
+            ->andWhere(['<>', 'p.id', $poll->id])
+            ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
+            ->andWhere(['pt.tag_id' => $tagIds])
+            ->groupBy(['p.id'])
+            ->orderBy([
+                'COUNT(pt.tag_id)' => SORT_DESC,
+                'p.date_add' => SORT_DESC,
+                'p.id' => SORT_DESC,
+            ])
+            ->limit($limit)
+            ->all();
     }
 
     /*

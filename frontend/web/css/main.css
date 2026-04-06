@@ -1700,6 +1700,55 @@ a.btn_prev_var:hover {
 .comments_add-answer_b .nav-tabs>li {
     width: 50%;
 }
+.related-polls-block {
+    margin: 14px 0 18px;
+}
+.related-polls-title {
+    color: #226338;
+    font-size: 24px;
+    margin: 0 0 12px;
+}
+.related-polls-list {
+    background: #f0f4f4;
+    border: 1px solid #dce6e4;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.related-polls-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 62px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #dce6e4;
+}
+.related-polls-item:last-child {
+    border-bottom: none;
+}
+.related-polls-score {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: 6px;
+    background: #26a654;
+    color: #fff;
+    font-size: 19px;
+    line-height: 1;
+}
+.related-polls-link-text {
+    color: #05662F;
+    font-size: 20px;
+    line-height: 1.35;
+}
+.related-polls-item:hover .related-polls-link-text,
+.related-polls-item:focus .related-polls-link-text,
+.related-polls-item:focus-visible .related-polls-link-text {
+    color: #147536;
+    text-decoration: underline;
+}
 .count_poll {
     border-color: #3ac469;
     color: #3ac469;
@@ -3485,6 +3534,21 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 768px) {
+    .related-polls-title {
+        font-size: 20px;
+    }
+    .related-polls-item {
+        min-height: 56px;
+        padding: 10px 12px;
+    }
+    .related-polls-score {
+        min-width: 44px;
+        height: 32px;
+        font-size: 17px;
+    }
+    .related-polls-link-text {
+        font-size: 18px;
+    }
     .refresh_password.top_input_b input.autocomplete {
         width: 100%;
         margin-bottom: 10px;
@@ -3568,6 +3632,13 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 480px) {
+    .related-polls-item {
+        gap: 10px;
+        padding: 8px 10px;
+    }
+    .related-polls-link-text {
+        font-size: 16px;
+    }
     .item_param .for_all_check input  {
         margin: 0 0 0 1px;
     }

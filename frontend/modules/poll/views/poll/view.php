@@ -10,6 +10,7 @@ use yii\helpers\Json;
 /** @var yii\web\View $this */
 /* @var Poll $poll */
 /* @var string|null $pageHeading */
+/* @var Poll[] $relatedPolls */
 
 if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
@@ -234,6 +235,23 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                             </div>
                         <?php endif; ?>
                     </div>
+                    <?php if (!empty($relatedPolls)): ?>
+                        <div class="related_polls_b">
+                            <div class="related_polls_b__title"><?= Yii::t('poll', 'Related polls'); ?></div>
+                            <div class="related_polls_b__list">
+                                <?php foreach ($relatedPolls as $relatedPoll): ?>
+                                    <?php
+                                    // Показуємо кількість спільних тегів як лічильник релевантності.
+                                    $sharedTagsCount = (int)($relatedPoll->shared_tags_count ?? 0);
+                                    ?>
+                                    <a href="<?= $relatedPoll->url; ?>" class="related_polls_b__item">
+                                        <span class="related_polls_b__score"><?= $sharedTagsCount; ?></span>
+                                        <span class="related_polls_b__question"><?= Html::encode($relatedPoll->title); ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     <div class="comments_add-answer_b">
     <ul class="nav nav-tabs" role="tablist">
         <li class="active"> <!-- ТЕПЕР активна вкладка "Коментарі" -->

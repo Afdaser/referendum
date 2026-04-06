@@ -109,6 +109,31 @@ class PollController extends \yii\web\Controller
                         $tags[] = $pollTag->name;
                 }
 
+                // Підбираємо 3 схожі опитування за максимальною кількістю спільних тегів.
+                $relatedPolls = [];
+                $tagIds = $poll->getPollTags()->select('tag_id')->column();
+                if (!empty($tagIds)) {
+                    $relatedPolls = Poll::find()
+                        ->alias('p')
+                        ->select(['p.*', 'shared_tags_count' => 'COUNT(DISTINCT pt.tag_id)'])
+                        ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
+                        ->where(['pt.tag_id' => $tagIds])
+                        ->andWhere(['<>', 'p.id', $poll->id])
+                        ->andWhere(['or',
+                            ['p.poll_language_id' => $poll->poll_language_id],
+                            ['p.show_for_all_languages' => 1],
+                        ])
+                        ->published()
+                        ->groupBy('p.id')
+                        ->orderBy([
+                            'shared_tags_count' => SORT_DESC,
+                            'p.rating' => SORT_DESC,
+                            'p.date_add' => SORT_DESC,
+                        ])
+                        ->limit(3)
+                        ->all();
+                }
+
                 // Отримуємо статичні мета-налаштування для сторінки опитування.
                 $staticMeta = $poll->getStaticMeta();
                 $defaultTitle = $poll->title . ' ' . Yii::t('main', 'опрос');
@@ -167,6 +192,8 @@ class PollController extends \yii\web\Controller
             'poll'=>$poll,
             'commentModel'=>$comment,
             'answerModel'=>$answer,
+            // Передаємо блок схожих опитувань для рендеру перед коментарями.
+            'relatedPolls' => $relatedPolls,
             // Передаємо кастомний H1, якщо його налаштовано в адмінці.
             'pageHeading' => $staticMeta['heading'] ?? null,
             'error'=>$error,

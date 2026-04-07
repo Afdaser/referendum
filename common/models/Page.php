@@ -16,6 +16,7 @@ use yii\helpers\Inflector;
  * @property string $title Title
  * @property string|null $content Content
  * @property string|null $describe Describe
+ * @property string|null $robots Robots
  * @property string|null $scripts Scripts
  * @property string $date_add Date add
  * @property string $date_update Date update
@@ -28,6 +29,11 @@ use yii\helpers\Inflector;
  */
 class Page extends ActiveRecord
 {
+    public const ROBOTS_INDEX_FOLLOW = 'index, follow';
+    public const ROBOTS_NOINDEX_NOFOLLOW = 'noindex, nofollow';
+    public const ROBOTS_NOINDEX_FOLLOW = 'noindex, follow';
+    public const ROBOTS_INDEX_NOFOLLOW = 'index, nofollow';
+
     /**
      * Готуємо обробку слагу перед валідацією.
      */
@@ -64,6 +70,10 @@ class Page extends ActiveRecord
             [['date_add', 'date_update'], 'safe'],
             [['slug'], 'string', 'max' => 128],
             [['name', 'title'], 'string', 'max' => 255],
+            [['robots'], 'string', 'max' => 32],
+            // Не нашкодь: зберігаємо лише валідні комбінації robots-інструкцій.
+            [['robots'], 'in', 'range' => array_keys(self::robotsOptions())],
+            [['robots'], 'default', 'value' => self::ROBOTS_INDEX_FOLLOW],
             [['slug', 'language_id'], 'unique', 'targetAttribute' => ['slug', 'language_id']],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
@@ -85,6 +95,7 @@ class Page extends ActiveRecord
             'content' => Yii::t('app', 'Content'),
             // Назва поля для SEO-опису сторінки.
             'describe' => 'meta-description',
+            'robots' => 'Robots Tag',
             'scripts' => Yii::t('app', 'Scripts'),
             'date_add' => Yii::t('app', 'Date add'),
             'date_update' => Yii::t('app', 'Date update'),
@@ -103,6 +114,19 @@ class Page extends ActiveRecord
     public function getLanguage()
     {
         return $this->hasOne(Language::class, ['id' => 'language_id']);
+    }
+
+    /**
+     * Повертає доступні варіанти Robots Tag для статичних сторінок.
+     */
+    public static function robotsOptions(): array
+    {
+        return [
+            self::ROBOTS_INDEX_FOLLOW => 'index, follow',
+            self::ROBOTS_NOINDEX_NOFOLLOW => 'No index, nofollow',
+            self::ROBOTS_NOINDEX_FOLLOW => 'no index, follow',
+            self::ROBOTS_INDEX_NOFOLLOW => 'index, no follow',
+        ];
     }
 
     /**

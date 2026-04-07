@@ -94,6 +94,8 @@ class PageController extends Controller {
         Yii::$app->page->setTitle($pageTitle);
         Yii::$app->page->setDescription($page->describe ?? '');
         Yii::$app->page->setKeywords($page->name ?? '');
+        // Не нашкодь SEO: якщо Robots Tag не заданий, лишаємо дефолтний index, follow.
+        Yii::$app->page->setRobots($page->robots ?: Page::ROBOTS_INDEX_FOLLOW);
         $this->registerCanonicalLink($page);
     }
 

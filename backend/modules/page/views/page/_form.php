@@ -36,6 +36,12 @@ use common\models\Language;
     <?php // SEO-опис сторінки, буде використаний як meta-description. ?>
     <?= $form->field($model, 'describe')->label('meta-description')->textarea(['rows' => 6]) ?>
 
+    <?php // Даємо адміну явний вибір Robots Tag із фіксованого безпечного переліку. ?>
+    <?= $form->field($model, 'robots')->dropDownList(
+        \common\models\Page::robotsOptions(),
+        ['prompt' => false]
+    ) ?>
+
     <?php // Окремий блок для власних скриптів сторінки. ?>
     <?= $form->field($model, 'scripts')->textarea(['rows' => 6]) ?>
 

@@ -17,6 +17,7 @@ use yii\helpers\Inflector;
  * @property string|null $content Content
  * @property string|null $describe Describe
  * @property string|null $scripts Scripts
+ * @property string|null $robots_tag Robots tag
  * @property string $date_add Date add
  * @property string $date_update Date update
  * @property int|null $created_by Created by:
@@ -28,6 +29,11 @@ use yii\helpers\Inflector;
  */
 class Page extends ActiveRecord
 {
+    public const ROBOTS_INDEX_FOLLOW = 'index, follow';
+    public const ROBOTS_NOINDEX_NOFOLLOW = 'noindex, nofollow';
+    public const ROBOTS_NOINDEX_FOLLOW = 'noindex, follow';
+    public const ROBOTS_INDEX_NOFOLLOW = 'index, nofollow';
+
     /**
      * Готуємо обробку слагу перед валідацією.
      */
@@ -64,6 +70,8 @@ class Page extends ActiveRecord
             [['date_add', 'date_update'], 'safe'],
             [['slug'], 'string', 'max' => 128],
             [['name', 'title'], 'string', 'max' => 255],
+            [['robots_tag'], 'string', 'max' => 32],
+            [['robots_tag'], 'in', 'range' => array_keys(self::getRobotsTagItems())],
             [['slug', 'language_id'], 'unique', 'targetAttribute' => ['slug', 'language_id']],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
@@ -85,6 +93,8 @@ class Page extends ActiveRecord
             'content' => Yii::t('app', 'Content'),
             // Назва поля для SEO-опису сторінки.
             'describe' => 'meta-description',
+            // Назва поля для robots-тега сторінки.
+            'robots_tag' => 'Robots Tag',
             'scripts' => Yii::t('app', 'Scripts'),
             'date_add' => Yii::t('app', 'Date add'),
             'date_update' => Yii::t('app', 'Date update'),
@@ -112,5 +122,18 @@ class Page extends ActiveRecord
     public static function find()
     {
         return new \common\models\query\PageQuery(get_called_class());
+    }
+
+    /**
+     * Повертає варіанти robots-тега для адмін-форми.
+     */
+    public static function getRobotsTagItems(): array
+    {
+        return [
+            self::ROBOTS_INDEX_FOLLOW => 'index, follow',
+            self::ROBOTS_NOINDEX_NOFOLLOW => 'No index, nofollow',
+            self::ROBOTS_NOINDEX_FOLLOW => 'no index, follow',
+            self::ROBOTS_INDEX_NOFOLLOW => 'index, no follow',
+        ];
     }
 }

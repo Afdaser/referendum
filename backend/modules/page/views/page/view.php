@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'content:raw',
             'describe:ntext',
+            'robots_tag',
             'scripts:raw',
 //            'date_add:datetime',
 //            'date_update:datetime',

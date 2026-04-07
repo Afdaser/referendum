@@ -25,6 +25,94 @@ $(document).ready(function(){
             $(arr).prepend('<i class="fa fa-google-plus"></i>');
         },0);
 
+        // Базова логіка cookie-consent:
+        // - зберігаємо вибір у cookie на 180 днів (та дублюємо у localStorage як fallback),
+        // - не використовуємо IP для рішення, бо стандартно це прив'язка до браузера/пристрою.
+        (function initCookieConsent() {
+            var banner = document.querySelector('[data-cookie-consent-banner]');
+            if (!banner) {
+                return;
+            }
+
+            var consentCookieName = 'cookie_consent_choice';
+            var consentStorageKey = 'cookie_consent_choice';
+            var cookieMaxAgeDays = 180;
+
+            function getCookieValue(name) {
+                var escaped = name.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+                var match = document.cookie.match(new RegExp('(?:^|; )' + escaped + '=([^;]*)'));
+                return match ? decodeURIComponent(match[1]) : '';
+            }
+
+            function setCookieValue(name, value, days) {
+                var expiresDate = new Date();
+                expiresDate.setTime(expiresDate.getTime() + (days * 24 * 60 * 60 * 1000));
+                var cookie = name + '=' + encodeURIComponent(value)
+                    + '; expires=' + expiresDate.toUTCString()
+                    + '; path=/; SameSite=Lax';
+
+                if (location.protocol === 'https:') {
+                    cookie += '; Secure';
+                }
+
+                document.cookie = cookie;
+            }
+
+            function getSavedChoice() {
+                var fromCookie = getCookieValue(consentCookieName);
+                if (fromCookie) {
+                    return fromCookie;
+                }
+
+                try {
+                    return window.localStorage.getItem(consentStorageKey) || '';
+                } catch (storageError) {
+                    return '';
+                }
+            }
+
+            function saveChoice(choice) {
+                setCookieValue(consentCookieName, choice, cookieMaxAgeDays);
+                try {
+                    window.localStorage.setItem(consentStorageKey, choice);
+                } catch (storageError) {
+                    // Fallback уже є через cookie, тому без додаткових дій.
+                }
+            }
+
+            function hideBanner() {
+                banner.classList.remove('is-visible');
+                banner.setAttribute('aria-hidden', 'true');
+            }
+
+            function showBanner() {
+                banner.classList.add('is-visible');
+                banner.removeAttribute('aria-hidden');
+            }
+
+            var savedChoice = getSavedChoice();
+            if (savedChoice === 'accept' || savedChoice === 'essential') {
+                hideBanner();
+            } else {
+                showBanner();
+            }
+
+            banner.addEventListener('click', function (event) {
+                var actionButton = event.target.closest('[data-cookie-consent-action]');
+                if (!actionButton) {
+                    return;
+                }
+
+                var action = actionButton.getAttribute('data-cookie-consent-action');
+                if (action !== 'accept' && action !== 'essential') {
+                    return;
+                }
+
+                saveChoice(action);
+                hideBanner();
+            });
+        })();
+
         window.Share = {
         vkontakte: function(purl, ptitle, pimg, text) {
             var url  = 'http://vkontakte.ru/share.php?';

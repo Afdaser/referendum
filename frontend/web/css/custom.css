@@ -318,3 +318,71 @@ h1.title {
     text-transform: uppercase;
     letter-spacing: .04em;
 }
+
+/*
+ * Базовий cookie banner у стилі "як на більшості сайтів США":
+ * - фіксований блок унизу;
+ * - кнопки "Essential only" та "Accept all";
+ * - посилання на повну Cookie Policy (URL задається в params.php).
+ */
+.cookie-consent {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    z-index: 9999;
+    display: none;
+}
+
+.cookie-consent.is-visible {
+    display: block;
+}
+
+.cookie-consent__content {
+    margin: 0 auto;
+    max-width: 980px;
+    background: #fff;
+    border: 1px solid #d5ded4;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    padding: 14px 16px;
+}
+
+.cookie-consent__text {
+    margin: 0 0 10px;
+    color: #2e2e2e;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.cookie-consent__link {
+    color: #1a6e3d;
+    text-decoration: underline;
+}
+
+.cookie-consent__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.cookie-consent__btn {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    min-height: 36px;
+    padding: 8px 14px;
+    font-size: 13px;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.cookie-consent__btn--essential {
+    background: #fff;
+    border-color: #9db7a3;
+    color: #315638;
+}
+
+.cookie-consent__btn--accept {
+    background: #1d7f45;
+    color: #fff;
+}

@@ -41,6 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'name',
             'title',
+            [
+                'attribute' => 'robots_tag',
+                'filter' => Page::getRobotsTagItems(),
+            ],
             //'content:ntext',
             //'describe:ntext',
             //'date_add:datetime',

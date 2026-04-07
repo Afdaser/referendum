@@ -162,11 +162,41 @@ class PollController extends \yii\web\Controller
             $error = Html::errorSummary($answer)?json_encode(Html::errorSummary($answer)):null;
         }
 
+        // Підбираємо схожі опитування за найбільшою кількістю спільних тегів.
+        $relatedPolls = [];
+        $tagIds = array_filter(array_map(static function ($tag) {
+            return (int) $tag->id;
+        }, $poll->tags));
+
+        if (!empty($tagIds)) {
+            $relatedPolls = Poll::find()
+                ->alias('p')
+                ->select([
+                    'p.*',
+                    // Рахуємо, скільки тегів у кандидата збігається з поточним опитуванням.
+                    'related_matches' => 'COUNT(DISTINCT pt.tag_id)',
+                ])
+                ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
+                ->where(['pt.tag_id' => $tagIds])
+                ->andWhere(['<>', 'p.id', $poll->id])
+                ->published()
+                ->groupBy('p.id')
+                ->orderBy([
+                    // Найбільше співпадінь — вище в списку.
+                    'related_matches' => SORT_DESC,
+                    // Далі показуємо новіші опитування.
+                    'p.date_add' => SORT_DESC,
+                ])
+                ->limit(3)
+                ->all();
+        }
+
 //		var_dump($poll->describe);
         return $this->render('view', [
             'poll'=>$poll,
             'commentModel'=>$comment,
             'answerModel'=>$answer,
+            'relatedPolls' => $relatedPolls,
             // Передаємо кастомний H1, якщо його налаштовано в адмінці.
             'pageHeading' => $staticMeta['heading'] ?? null,
             'error'=>$error,

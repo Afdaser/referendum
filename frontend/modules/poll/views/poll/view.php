@@ -9,6 +9,7 @@ use yii\helpers\Json;
 
 /** @var yii\web\View $this */
 /* @var Poll $poll */
+/* @var Poll[] $relatedPolls */
 /* @var string|null $pageHeading */
 
 if (!empty($poll->pollLanguage)) {
@@ -234,6 +235,24 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                             </div>
                         <?php endif; ?>
                     </div>
+                    <?php // Блок показуємо тільки якщо знайшли щонайменше одне схоже опитування. ?>
+                    <?php if (!empty($relatedPolls)): ?>
+                        <div class="related-polls-block">
+                            <h3 class="related-polls-title"><?= Yii::t('poll', 'Схожі опитування'); ?></h3>
+                            <div class="related-polls-list">
+                                <?php foreach ($relatedPolls as $relatedPoll): ?>
+                                    <div class="related-polls-item">
+                                        <?php // Лічильник виносимо за межі посилання, але зберігаємо попередній візуальний вигляд. ?>
+                                        <span class="related-polls-score"><?= (int) $relatedPoll->countPollOptionsVoters; ?></span>
+                                        <a class="related-polls-link" href="<?= Url::toRoute(['/poll/poll/view', 'id' => $relatedPoll->id]); ?>">
+                                            <span class="related-polls-link-text"><?= Html::encode($relatedPoll->title); ?></span>
+                                        </a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="comments_add-answer_b">
     <ul class="nav nav-tabs" role="tablist">
         <li class="active"> <!-- ТЕПЕР активна вкладка "Коментарі" -->

@@ -24,6 +24,8 @@ return array(
         'Зареєстровані'=>'Registered',
         'Незареєстровані'=>'Unregistered',
         'Коментарі'=>'Kommentarer',
+        // Заголовок блоку з подібними опитуваннями на сторінці перегляду.
+        'Схожі опитування' => 'Relaterte avstemninger',
         'Запропоновані відповіді'=>'Foreslåtte svar',
         'Додати коментар'=>'Legg til en kommentar',
         'Додати варіант відповіді'=>'Foreslå svar',

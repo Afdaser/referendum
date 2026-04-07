@@ -1725,6 +1725,10 @@ a.btn_prev_var:hover {
 .related-polls-item:last-child {
     border-bottom: none;
 }
+.related-polls-link {
+    flex: 1 1 auto;
+    min-width: 0;
+}
 .related-polls-score {
     display: inline-flex;
     align-items: center;
@@ -1743,9 +1747,9 @@ a.btn_prev_var:hover {
     font-size: 20px;
     line-height: 1.35;
 }
-.related-polls-item:hover .related-polls-link-text,
-.related-polls-item:focus .related-polls-link-text,
-.related-polls-item:focus-visible .related-polls-link-text {
+.related-polls-link:hover .related-polls-link-text,
+.related-polls-link:focus .related-polls-link-text,
+.related-polls-link:focus-visible .related-polls-link-text {
     color: #147536;
     text-decoration: underline;
 }

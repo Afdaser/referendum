@@ -28,6 +28,8 @@ Registration on the site is required not only to see the results of surveys, but
         'Зареєстровані'=>'Registered',
         'Незареєстровані'=>'Unregistered',
         'Коментарі'=>'Comments',
+        // Заголовок блоку з подібними опитуваннями на сторінці перегляду.
+        'Схожі опитування' => 'Related polls',
         'Запропоновані відповіді'=>'Suggested answers',
         'Додати коментар'=>'Add Comment',
         'Додати варіант відповіді'=>'Suggest an answer',

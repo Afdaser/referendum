@@ -241,10 +241,13 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                             <h3 class="related-polls-title"><?= Yii::t('poll', 'Схожі опитування'); ?></h3>
                             <div class="related-polls-list">
                                 <?php foreach ($relatedPolls as $relatedPoll): ?>
-                                    <a class="related-polls-item" href="<?= Url::toRoute(['/poll/poll/view', 'id' => $relatedPoll->id]); ?>">
+                                    <div class="related-polls-item">
+                                        <?php // Лічильник виносимо за межі посилання, але зберігаємо попередній візуальний вигляд. ?>
                                         <span class="related-polls-score"><?= (int) $relatedPoll->countPollOptionsVoters; ?></span>
-                                        <span class="related-polls-link-text"><?= Html::encode($relatedPoll->title); ?></span>
-                                    </a>
+                                        <a class="related-polls-link" href="<?= Url::toRoute(['/poll/poll/view', 'id' => $relatedPoll->id]); ?>">
+                                            <span class="related-polls-link-text"><?= Html::encode($relatedPoll->title); ?></span>
+                                        </a>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                         </div>

@@ -206,6 +206,7 @@ if ($isMainIndexPage) :
             </div>
         </div>
 <?= $this->render('main/footer'); ?>
+<?= $this->render('main/cookie-consent'); ?>
 <!-- Javascript
 ================================================== -->
 <?php /* Yii2 base layout: * / ?>

@@ -154,6 +154,13 @@ use common\models\AuthItem;
                     'active' => MenuHelper::isActiveMenu(['footer-link'], $this->context->route),
                     'items' => [],
                 ],
+                [
+                    'label' => 'Cookie consent',
+                    'icon' => 'shield',
+                    'url' => Url::toRoute(['/cookie-consent-setting/index']),
+                    'active' => MenuHelper::isActiveMenu(['cookie-consent-setting'], $this->context->route),
+                    'items' => [],
+                ],
             ];
         }
         ?>

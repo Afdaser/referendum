@@ -65,8 +65,39 @@ $(document).ready(function(){
                 }
 
                 try {
-                    return window.localStorage.getItem(consentStorageKey) || '';
+                    // Не нашкодь:
+                    // localStorage без TTL може "заморозити" згоду назавжди.
+                    // Тому читаємо тільки формат з expiresAt і очищаємо прострочені/старі значення.
+                    var raw = window.localStorage.getItem(consentStorageKey);
+                    if (!raw) {
+                        return '';
+                    }
+
+                    var parsed = JSON.parse(raw);
+                    if (!parsed || typeof parsed !== 'object') {
+                        window.localStorage.removeItem(consentStorageKey);
+                        return '';
+                    }
+
+                    var choice = parsed.choice;
+                    var expiresAt = Number(parsed.expiresAt || 0);
+                    if ((choice !== 'accept' && choice !== 'essential') || !expiresAt) {
+                        window.localStorage.removeItem(consentStorageKey);
+                        return '';
+                    }
+
+                    if (Date.now() > expiresAt) {
+                        window.localStorage.removeItem(consentStorageKey);
+                        return '';
+                    }
+
+                    return choice;
                 } catch (storageError) {
+                    try {
+                        window.localStorage.removeItem(consentStorageKey);
+                    } catch (removeError) {
+                        // Ігноруємо, бо це лише best-effort очищення.
+                    }
                     return '';
                 }
             }
@@ -74,7 +105,11 @@ $(document).ready(function(){
             function saveChoice(choice) {
                 setCookieValue(consentCookieName, choice, cookieMaxAgeDays);
                 try {
-                    window.localStorage.setItem(consentStorageKey, choice);
+                    var expiresAt = Date.now() + (cookieMaxAgeDays * 24 * 60 * 60 * 1000);
+                    window.localStorage.setItem(consentStorageKey, JSON.stringify({
+                        choice: choice,
+                        expiresAt: expiresAt
+                    }));
                 } catch (storageError) {
                     // Fallback уже є через cookie, тому без додаткових дій.
                 }

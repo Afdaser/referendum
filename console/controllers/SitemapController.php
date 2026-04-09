@@ -136,27 +136,18 @@ class SitemapController extends Controller
 
     protected static function generatePoll()
     {
-        $select = [
-            'if(p.date_add is null, "0", p.date_add)',
-            'if(p.date_update is null, "0", p.date_update)',
-            'from_unixtime(if(p.updated_at is null, "0", p.updated_at))',
-            'if(pc.date_add is null, "0", pc.date_add)',
-            'if(prv.date_add is null, "0", prv.date_add)',
-        ];
-
         $list = Poll::find()
-            ->select(['p.id', 'p.poll_language_id', 'greatest(' . implode(',', $select) . ') as date'])
+            // Беремо останню зміну самого опитування, без додаткових обчислень і перевірок.
+            ->select(['p.id', 'p.poll_language_id', 'p.updated_at'])
             ->from('poll p')
-            ->leftJoin('poll_comment pc', 'pc.poll_id=p.id')
-            ->leftJoin('poll_rating_vote prv', 'prv.poll_id=p.id')
-            ->orderBy(['date' => SORT_DESC ])
+            ->orderBy(['p.updated_at' => SORT_DESC ])
             ->asArray()->all();
 
         self::$data['poll']['links'] = array_fill_keys(array_keys(static::$subdomains), []);
         self::$data['poll']['maxDate'] = null;
 
         foreach ($list as $item) {
-            $date = mb_substr($item['date'], 0, 10);
+            $date = date('Y-m-d', (int)$item['updated_at']);
             if (self::$data['poll']['maxDate'] === null || self::$data['poll']['maxDate'] < $date) {
                 self::$data['poll']['maxDate'] = $date;
             }
@@ -196,31 +187,20 @@ class SitemapController extends Controller
 
     protected static function generateTag()
     {
-        $select = [
-            'if(p.date_add is null, "0", p.date_add)',
-            'if(p.date_update is null, "0", p.date_update)',
-            'from_unixtime(if(p.updated_at is null, "0", p.updated_at))',
-            'if(pc.date_add is null, "0", pc.date_add)',
-            'if(prv.date_add is null, "0", prv.date_add)',
-            'from_unixtime(if(t.updated_at is null, "0", t.updated_at))',
-        ];
-
         $list = Tag::find()
-            ->select(['t.id', 't.language_id', 't.name AS idt', 'MAX(GREATEST(' . implode(',', $select) . ')) AS poll_date'])
+            // Для тегів теж беремо тільки дату останньої зміни самого тегу.
+            ->select(['t.id', 't.language_id', 't.name AS idt', 't.updated_at'])
             ->from('tag t')
             ->innerJoin('poll_tag p2t', 'p2t.tag_id = t.id')
-            ->innerJoin('poll p', 'p2t.poll_id = p.id')
-            ->leftJoin('poll_comment pc', 'pc.poll_id = p.id')
-            ->leftJoin('poll_rating_vote prv', 'prv.poll_id = p.id')
             ->groupBy(['t.id', 't.language_id', 't.name'])
-            ->orderBy(['t.name' => SORT_ASC])
+            ->orderBy(['t.updated_at' => SORT_DESC])
             ->asArray()->all();
 
         self::$data['tags']['links'] = array_fill_keys(array_keys(static::$subdomains), []);
         self::$data['tags']['maxDate'] = null;
 
         foreach ($list as $item) {
-            $date = mb_substr($item['poll_date'], 0, 10);
+            $date = date('Y-m-d', (int)$item['updated_at']);
 
             if (self::$data['tags']['maxDate'] === null || self::$data['tags']['maxDate'] < $date) {
                 self::$data['tags']['maxDate'] = $date;

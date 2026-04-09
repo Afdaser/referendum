@@ -4,6 +4,7 @@ namespace backend\modules\poll\controllers;
 
 use common\models\Tag;
 use common\models\search\TagSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

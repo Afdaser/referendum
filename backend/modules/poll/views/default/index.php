@@ -90,8 +90,7 @@ $this->title = Yii::t('app', 'Dashboard');
 
                                         this.update();
                                     }"),
-                                    'responsive' => true,
-                                    'maintainAspectRatio' => false,
+                                    // Не змінюємо поведінку ресайзу, щоб зберегти історичну висоту графіка.
                                 ],
                                 'data' => [
                                     'labels' => $data['monthly_diagram']['labels'],

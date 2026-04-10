@@ -64,30 +64,12 @@ $this->title = Yii::t('app', 'Dashboard');
                                     'width' => 400
                                 ],
                                 'clientOptions' => [
-                                    // Мінімальна логіка: клік по стовпчику прибирає місяць із графіка.
-                                    // Використовуємо вже наявний механізм оновлення графіка Chart.js.
-                                    'onClick' => new JsExpression("function(evt, activeEls) {
-                                        if (!activeEls || !activeEls.length) {
-                                            return;
-                                        }
-                                        var clicked = activeEls[0];
-                                        var index = (typeof clicked.index !== 'undefined') ? clicked.index : clicked._index;
-                                        if (typeof index === 'undefined') {
-                                            return;
-                                        }
-                                        var labels = this.data.labels || [];
-                                        if (index < 0 || index >= labels.length) {
-                                            return;
-                                        }
-
-                                        // Видаляємо місяць із підписів і з обох серій одразу.
-                                        labels.splice(index, 1);
-                                        this.data.datasets.forEach(function(dataset) {
-                                            if (dataset.data && index < dataset.data.length) {
-                                                dataset.data.splice(index, 1);
-                                            }
-                                        });
-
+                                    // Клік по стовпчику прибирає відповідний місяць з усіх серій.
+                                    'onClick' => new JsExpression("function(e, a) {
+                                        if (!a || !a.length) return;
+                                        var i = (a[0].index !== undefined) ? a[0].index : a[0]._index, d = this.data;
+                                        if (i === undefined || i < 0 || i >= d.labels.length) return;
+                                        d.labels.splice(i, 1); d.datasets.forEach(function(s) { s.data.splice(i, 1); });
                                         this.update();
                                     }"),
                                     // Не змінюємо поведінку ресайзу, щоб зберегти історичну висоту графіка.

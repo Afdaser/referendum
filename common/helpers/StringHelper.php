@@ -44,25 +44,15 @@ class StringHelper {
      */
 
     public static function formatForBar($data) {
-        $result = array();
-        $result['series'] = '';
-
+        // Збираємо серії через масив, щоб уникнути зайвих конкатенацій у циклі.
+        $series = [];
         foreach ($data as $item) {
-            $option = ' ';
-            $value = 0;
-
-            if (isset($item['option'])) {
-                $option = $item['option'];
-            }
-
-            if (isset($item['value'])) {
-                $value = $item['value'];
-            }
-
-            $result['series'] .= "{name: '" . $option . "',data: [" . $value . "]},";
+            $option = $item['option'] ?? ' ';
+            $value = $item['value'] ?? 0;
+            $series[] = "{name: '" . $option . "',data: [" . $value . "]}";
         }
 
-        return $result;
+        return ['series' => empty($series) ? '' : implode(',', $series) . ','];
     }
 
     /*
@@ -83,27 +73,20 @@ class StringHelper {
      */
 
     public static function formatForPie($data) {
-        $result = '';
+        // Формуємо список елементів і склеюємо вкінці (менше операцій рядків).
+        $items = [];
         foreach ($data as $item) {
-            $option = ' ';
-            $value = 0;
-
-            if (isset($item['option'])) {
-                $option = $item['option'];
-            }
-
-            if (isset($item['value'])) {
-                $value = $item['value'];
-            }
+            $option = $item['option'] ?? ' ';
+            $value = $item['value'] ?? 0;
 
             if (isset($item['isMax'])) {
-                $result .= "{name:'" . $option . "',y:" . $value . ", sliced: true, selected: true },";
+                $items[] = "{name:'" . $option . "',y:" . $value . ", sliced: true, selected: true }";
             } else {
-                $result .= "['" . $option . "'," . $value . "],";
+                $items[] = "['" . $option . "'," . $value . "]";
             }
         }
 
-        return $result;
+        return empty($items) ? '' : implode(',', $items) . ',';
     }
 
     /*
@@ -202,17 +185,10 @@ class StringHelper {
      */
 
     public static function tagsToString($tags) {
-        $result = '';
-        if (count($tags) > 0) {
-            foreach ($tags as $index => $tag) {
-                $result .= $tag->name;
-                if ($index < count($tags) - 1) {
-                    $result .= ', ';
-                }
-            }
-        }
-
-        return $result;
+        // Використовуємо implode замість ручного циклу: коротше і швидше.
+        return implode(', ', array_map(static function ($tag) {
+            return $tag->name;
+        }, $tags));
     }
 
     /**

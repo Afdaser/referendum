@@ -1,7 +1,7 @@
 <?php
 
-use yii\web\View;
 use dosamigos\chartjs\ChartJs;
+use yii\web\JsExpression;
 
 $this->title = Yii::t('app', 'Dashboard');
 
@@ -59,8 +59,20 @@ $this->title = Yii::t('app', 'Dashboard');
                             ChartJs::widget([
                                 'type' => 'bar',
                                 'options' => [
+                                    'id' => 'monthly_votes_chart',
                                     'height' => 80,
                                     'width' => 400
+                                ],
+                                'clientOptions' => [
+                                    // Клік по стовпчику прибирає відповідний місяць з усіх серій.
+                                    'onClick' => new JsExpression("function(e, a) {
+                                        if (!a || !a.length) return;
+                                        var i = (a[0].index !== undefined) ? a[0].index : a[0]._index, d = this.data;
+                                        if (i === undefined || i < 0 || i >= d.labels.length) return;
+                                        d.labels.splice(i, 1); d.datasets.forEach(function(s) { s.data.splice(i, 1); });
+                                        this.update();
+                                    }"),
+                                    // Не змінюємо поведінку ресайзу, щоб зберегти історичну висоту графіка.
                                 ],
                                 'data' => [
                                     'labels' => $data['monthly_diagram']['labels'],

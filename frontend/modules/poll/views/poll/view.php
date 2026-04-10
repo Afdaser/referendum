@@ -91,7 +91,7 @@ JS
                             </div>
                         </div>
                     </div>
-                    <div class="middle_name_poll_b clearfix">
+                    <div class="middle_name_poll_b clearfix page">
                         <?php // Виносимо опис опитування в окремий блок для точнішого керування відступами. ?>
                         <div class="desc_my_chart" itemprop="text">
                             <?= $poll->getClearedDescribe() ?>
@@ -100,7 +100,7 @@ JS
                         <?php $bar = StringHelper::formatForBar($chartData); ?>
                         <?php $pie = StringHelper::formatForPie($chartData); ?>
                         <?php if(!$poll->isShowResult()):?>
-                            <div class="inner_block_chosen">
+                            <div>
                                 <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
                             </div>
                         <?php endif;?>

@@ -1,7 +1,8 @@
 <?php
 
+use common\helpers\StringHelper;
 use frontend\helpers\Url;
-use yii\web\View;
+use yii\helpers\Json;
 
 /*
  * Раніше голосування виконувалось GET-посиланням на /poll/vote.
@@ -9,6 +10,13 @@ use yii\web\View;
  */
 
 ?>
+<?php if ($poll->result_type == 2) {
+    $result_type = 'column';
+} elseif ($poll->result_type == 1) {
+    $result_type = 'bar';
+} else {
+    $result_type = 'pie';
+} ?>
 <?php if(!$poll->isShowResult()):?>
     <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
         <!-- Один POST-формат на блок опитування, щоб не дублювати форму для кожної опції. -->
@@ -36,42 +44,19 @@ use yii\web\View;
         </form>
     </div>
 <?php else:?>
-    <div class="inner_container_graph" id="container<?= $poll->id; ?>"></div>
+    <?php
+    // Формуємо JSON-дані для централізованого рендера в окремому JS-файлі без inline-скриптів.
+    $chartConfigJson = Json::htmlEncode([
+        'category' => $result_type,
+        'id' => 'container' . $poll->id,
+        'title' => (string)$poll->title,
+        'series' => StringHelper::formatForBarAjax($chartData)['series'] ?? [],
+        'pie' => StringHelper::formatForPieAjax($chartData),
+    ]);
+    ?>
+    <div
+        class="inner_container_graph"
+        id="container<?= $poll->id; ?>"
+        data-chart-config='<?= $chartConfigJson; ?>'
+    ></div>
 <?php endif;?>
-
-<?php if($poll->result_type == 2){ $result_type = 'column'; }else if($poll->result_type == 1){ $result_type = 'bar';} else { $result_type = 'pie'; } ?>
-<?php /* */ ?>
-<script>
-
-</script>
-
-<?php 
-
-$jsRenderChart = <<<JS_RENDER_CHART
-/* DEV.JS f=~/frontend/modules/poll/views/poll/options.php */
-$(function () {
-        renderChart('{$result_type}','container{$poll->id}','{$poll->title}',[ {$bar['series']}],[{$pie}]);
-});
-JS_RENDER_CHART;
-$script = <<<JS_FINAL
-jQuery(document).ready(function() {
-{$jsRenderChart}
-
-});
-JS_FINAL;
-
-$this->registerJs($script, View::POS_END);
-
-
-/* */ ?>
-<?php
-/* DEV.JS f=~/frontend/modules/poll/views/poll/options.php */
-/*
-<script>
-    $(function () {
-        renderChart('<?php echo $result_type; ?>','container<?php echo $poll->id; ?>','<?php echo $poll->title;?>',[<?php echo $bar['series']; ?>],[<?php echo $pie;?>]);
-    });
-</script>
-
-
-<?php /* */ ?>

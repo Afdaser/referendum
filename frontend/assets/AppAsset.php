@@ -49,6 +49,8 @@ class AppAsset extends AssetBundle
         '/js/custom.js',
         '/js/custom-modal.js',
         '/js/highCharts/highcharts.js',
+        // Централізований рендер графіків опитувань через один цикл.
+        '/js/poll-chart-queue.js',
 //        '/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js',
 
 

@@ -11,10 +11,8 @@
                     <div class="slide">
                         <div class="inner_slide_b">
                             <div class="item_normal">
-                                <?php // Лінк лише навколо тексту опитування, решта блоку лишається статичною. ?>
-                                <a class="poll_title_link" href="<?php echo $poll->url; ?>">
-                                    <?php echo $poll->title; ?>
-                                </a>
+                                <?php // Тримаємо посилання на один рядок, щоб HTML у вихідному коді сторінки був компактнішим і читабельнішим. ?>
+                                <a class="poll_title_link" href="<?php echo $poll->url; ?>"><?php echo $poll->title; ?></a>
                             </div>
                             <?php // Інформаційний шар наводить статистику і не блокує взаємодію з посиланням на назву. ?>
                             <div class="item_hover clearfix">
@@ -27,9 +25,8 @@
                                     </span>
                                 </div>
                                 <div class="middle_text_info">
-                                    <?php echo Yii::t("poll", 'коментарів'); ?>: <?php echo count($poll->pollComments); ?><br>
-                                    <?php // Виводимо сумарну кількість голосів (зареєстровані + гості), щоб відображення у хедері було коректним. ?>
-                                    <?php echo Yii::t("poll", 'голосів'); ?>: <?php echo $poll->countPollOptionsVoters; ?>
+                                    <?php // Тримаємо обидва рядки статистики максимально щільно, без зайвих переносів/відступів у HTML-виводі. ?>
+                                    <?php echo Yii::t("poll", 'коментарів'); ?>: <?php echo count($poll->pollComments); ?><br><?php echo Yii::t("poll", 'голосів'); ?>: <?php echo $poll->countPollOptionsVoters; ?>
                                 </div>
                             </div>
                         </div>

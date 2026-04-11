@@ -13,7 +13,8 @@ use yii\helpers\Html;
             <?php foreach ($pollsLast as $poll): ?>
                 <?php $tags = $poll->tags; $isOpen = $poll->isOpen(); // Стискаємо верстку виводу, не змінюючи логіку. ?>
                 <div class="item_list_poll">
-                    <a href="<?php echo $poll->url; ?>" class="item_list_poll__title"><?php echo Html::encode($poll->title); ?></a>
+                    <?php /* Заголовок уже екранується під час збереження в Poll::setPollAttributes(), повторно не кодуємо. */ ?>
+                    <a href="<?php echo $poll->url; ?>" class="item_list_poll__title"><?php echo $poll->title; ?></a>
                     <?php if (!empty($tags)): ?><div class="item_list_poll__tags"><span class="item_list_poll__tags-label" aria-hidden="true"><i class="fa fa-tags"></i></span><?php foreach ($tags as $tag): ?><a href="<?php echo $tag->url; ?>" class="item_list_poll__tag"><?php echo Html::encode($tag->name); ?></a><?php endforeach; ?></div><?php endif; ?>
                     <div class="bottom_item_list_poll">
                         <div class="bottom_item_list_poll__meta"><span class="icon_lock <?php echo $isOpen ? '' : 'closed'; ?>"><i class="fa <?php echo $isOpen ? 'fa-unlock' : 'fa-lock'; ?>"></i></span><?php echo Yii::t("poll", 'голосів'); ?>: <?php echo $poll->countPollOptionsVoters; ?></div>
@@ -26,7 +27,8 @@ use yii\helpers\Html;
             <?php foreach ($pollsPopular as $poll): ?>
                 <?php $tags = $poll->tags; $isOpen = $poll->isOpen(); // Стискаємо верстку виводу, не змінюючи логіку. ?>
                 <div class="item_list_poll">
-                    <a href="<?php echo $poll->url; ?>" class="item_list_poll__title"><?php echo Html::encode($poll->title); ?></a>
+                    <?php /* Заголовок уже екранується під час збереження в Poll::setPollAttributes(), повторно не кодуємо. */ ?>
+                    <a href="<?php echo $poll->url; ?>" class="item_list_poll__title"><?php echo $poll->title; ?></a>
                     <?php if (!empty($tags)): ?><div class="item_list_poll__tags"><span class="item_list_poll__tags-label" aria-hidden="true"><i class="fa fa-tags"></i></span><?php foreach ($tags as $tag): ?><a href="<?php echo $tag->url; ?>" class="item_list_poll__tag"><?php echo Html::encode($tag->name); ?></a><?php endforeach; ?></div><?php endif; ?>
                     <div class="bottom_item_list_poll">
                         <div class="bottom_item_list_poll__meta"><span class="icon_lock <?php echo $isOpen ? '' : 'closed'; ?>"><i class="fa <?php echo $isOpen ? 'fa-unlock' : 'fa-lock'; ?>"></i></span><?php echo Yii::t("poll", 'голосів'); ?>: <?php echo $poll->countPollOptionsVoters; ?></div>

@@ -44,7 +44,7 @@ class AppAsset extends AssetBundle
         '/js/vendor/jquery.bxslider.min.js',
         '/js/vendor/jquery.autocomplete.js',
 //        '/js/vendor/jquery.autocomplete.min.js',
-        '/js/vendor/currency-autocomplete.js',
+        // Прибрано неактуальний currency-autocomplete: цільові селектори відсутні у поточних шаблонах.
         '/js/main.js',
         '/js/custom.js',
         // Скрипт реєстраційної модалки лишається глобальним, бо використовується на різних сторінках.

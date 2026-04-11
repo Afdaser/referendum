@@ -251,21 +251,15 @@ use common\models\User;
                     onchange='document.location.href = "<?= Url::toRoute('/site') . '/' .  Yii::$app->controller->action->id; ?>/<?php echo $sort;?>" + "/" + $(this).val() + "/" + "<?php echo $limit; ?>" + "?click=true"'>
  *
  */ ?>
-                <select
-                    onchange='document.location.href = "<?= "{$uriPrefix}/{$sort}/"; ?>" + $(this).val() + "<?= "/{$limit}?click=true"; ?>"'>
+                <?php /* Ущільнили HTML-розмітку select/options: менше переносів рядків без змін DOM/CSS-класів. */ ?>
+                <select onchange='document.location.href = "<?= "{$uriPrefix}/{$sort}/"; ?>" + $(this).val() + "<?= "/{$limit}?click=true"; ?>"'>
                     <?php /* Опція "за весь час" потрібна для показу всіх опитувань за замовчуванням. */ ?>
-                    <option value="all"
-                            <?php if ($period == 'all'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за весь час'); ?></option>
-                    <option value="day"
-                            <?php if ($period == 'day'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за день'); ?></option>
-                    <option value="week"
-                            <?php if ($period == 'week'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за неділю'); ?></option>
-                    <option value="month"
-                            <?php if ($period == 'month'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за місяць'); ?></option>
-                    <option value="halfyear"
-                            <?php if ($period == 'halfyear'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за півроку'); ?></option>
-                    <option value="year"
-                            <?php if ($period == 'year'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за рік'); ?></option>
+                    <option value="all" <?php if ($period == 'all'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за весь час'); ?></option>
+                    <option value="day" <?php if ($period == 'day'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за день'); ?></option>
+                    <option value="week" <?php if ($period == 'week'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за неділю'); ?></option>
+                    <option value="month" <?php if ($period == 'month'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за місяць'); ?></option>
+                    <option value="halfyear" <?php if ($period == 'halfyear'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за півроку'); ?></option>
+                    <option value="year" <?php if ($period == 'year'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за рік'); ?></option>
                 </select>
             </span>
         <?php endif; ?>

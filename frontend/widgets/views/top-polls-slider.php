@@ -11,10 +11,8 @@
                     <div class="slide">
                         <div class="inner_slide_b">
                             <div class="item_normal">
-                                <?php // Лінк лише навколо тексту опитування, решта блоку лишається статичною. ?>
-                                <a class="poll_title_link" href="<?php echo $poll->url; ?>">
-                                    <?php echo $poll->title; ?>
-                                </a>
+                                <?php // Тримаємо посилання на один рядок, щоб HTML у вихідному коді сторінки був компактнішим і читабельнішим. ?>
+                                <a class="poll_title_link" href="<?php echo $poll->url; ?>"><?php echo $poll->title; ?></a>
                             </div>
                             <?php // Інформаційний шар наводить статистику і не блокує взаємодію з посиланням на назву. ?>
                             <div class="item_hover clearfix">

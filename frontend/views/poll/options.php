@@ -1,8 +1,16 @@
 <?php
 
-//use yii\helpers\Url;
+use common\helpers\StringHelper;
 use frontend\helpers\Url;
-use yii\web\View;
+use yii\helpers\Json;
+
+if ($poll->result_type == 2) {
+    $result_type = 'column';
+} elseif ($poll->result_type == 1) {
+    $result_type = 'bar';
+} else {
+    $result_type = 'pie';
+}
 
 ?>
 <?php if(!$poll->isShowResult()):?>
@@ -32,43 +40,19 @@ use yii\web\View;
         </form>
     </div>
 <?php else: ?>
-    <div class="inner_container_graph" id="container<?= $poll->id; ?>"></div>
+    <?php
+    // Формуємо дані в JSON через ті самі helper-и, що й для AJAX, щоб зберегти сумісну структуру серій.
+    $chartConfigJson = Json::htmlEncode([
+        'category' => $result_type,
+        'id' => 'container' . $poll->id,
+        'title' => (string)$poll->title,
+        'series' => StringHelper::formatForBarAjax($chartData)['series'] ?? [],
+        'pie' => StringHelper::formatForPieAjax($chartData),
+    ]);
+    ?>
+    <div
+        class="inner_container_graph"
+        id="container<?= $poll->id; ?>"
+        data-chart-config='<?= $chartConfigJson; ?>'
+    ></div>
 <?php endif; ?>
-
-<?php
-if ($poll->result_type == 2) {
-    $result_type = 'column';
-} elseif ($poll->result_type == 1) {
-    $result_type = 'bar';
-} else {
-    $result_type = 'pie';
-}
-
-
-$jsRenderChart = <<<JS_RENDER_CHART
-/* DEV.JS f=~/frontend/views/poll/options.php */
-    $(function () {
-        renderChart('{$result_type}','container{$poll->id}','{$poll->title}',[{$bar['series']}],[{$pie}]);
-    });
-JS_RENDER_CHART;
-$script = <<<JS_FINAL
-jQuery(document).ready(function() {
-{$jsRenderChart}
-
-});
-JS_FINAL;
-
-$this->registerJs($script, View::POS_END);
-
-
-/* */ ?>
-
-<?php /* * / ?>
-<script>
-    <?php if($poll->result_type == 2){ $result_type = 'column'; }else if($poll->result_type == 1){ $result_type = 'bar';} else { $result_type = 'pie'; } ?>
-
-    $(function () {
-        renderChart('<?= $result_type; ?>','container<?= $poll->id; ?>','<?= $poll->title;?>',[<?= $bar['series']; ?>],[<?= $pie;?>]);
-    });
-</script>
-<?php /* */ ?>

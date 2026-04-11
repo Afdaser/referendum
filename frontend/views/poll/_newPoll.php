@@ -261,7 +261,7 @@ $modelId = $model->id ? $model->id : 0;
 
 
 $jsCode = <<<JS_CODE
-/* DEV.JS f=~/frontend/modules/poll/views/poll/options.php */
+/* DEV.JS f=~/frontend/views/poll/options.php */
 $(function () {
     console.log('~/frontend/views/poll/_newPoll.php');
 // ADD:

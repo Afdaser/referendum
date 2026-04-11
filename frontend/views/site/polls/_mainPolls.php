@@ -23,7 +23,6 @@
             <?php $chartData = $poll->getChartData();?>
             <?php $bar = StringHelper::formatForBar($chartData); ?>
             <?php $pie = StringHelper::formatForPie($chartData); ?>
-            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
             <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>"></a><br>
@@ -34,7 +33,6 @@
                     <div class="title_poll">
                         <a href="<?= $poll->url ?>"><?= $poll->title; ?></a>
                     </div>
-                    <?php /* h3>#DEV1.a</h3> */ ?>
                 </div>
             </div>
             <div class="middle_name_poll_b clearfix">

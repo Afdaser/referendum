@@ -19,13 +19,10 @@ use yii\helpers\Json;
 } ?>
 <?php if(!$poll->isShowResult()):?>
     <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
-        <!-- Один POST-формат на блок опитування, щоб не дублювати форму для кожної опції. -->
-        <!-- Відправляємо голос POST-запитом, щоб не показувати ідентифікатор опції в адресному рядку. -->
         <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
         <?php foreach($poll->pollOptions as $option):?>
             <div class="item_chose_poll">
                 <button type="submit" class="radio_link poll-option-vote" name="option" value="<?= $option->id; ?>">
-                    <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text"><?= (YII_ENV != 'dev') ? '' : "[{$option->id}]:"; ?><?= $option->title; ?></span>
                 </button>
@@ -37,7 +34,6 @@ use yii\helpers\Json;
             <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
             <input type="hidden" name="result" value="1">
             <button type="submit" class="radio_link poll-see-results">
-                <!-- Новий чіткий індикатор вибору без зображень. -->
                 <span class="radio_indicator"></span>
                 <span class="link_text"><?= Yii::t('poll', 'Побачити результати'); ?></span>
             </button>

@@ -28,36 +28,36 @@ $(window).resize(function(){
 })
 function initSliderHomepage() {
     var width = window.innerWidth;
-    // Вимикаємо нескінченну прокрутку, щоб bxSlider не додавав клоновані .slide елементи (bx-clone) у DOM.
-    // Це зменшує розмір дерева елементів без візуальних змін для користувача.
-    var sliderBaseConfig = {
-        moveSlides: 1,
-        pager: false,
-        controls: false,
-        infiniteLoop: false,
-        hideControlOnEnd: true
-    };
     if(width > 991){
-        slider = $('.slider').bxSlider($.extend({}, sliderBaseConfig, {
+        slider = $('.slider').bxSlider({
             slideWidth: 310,
             minSlides: 1,
             maxSlides: 3,
+            moveSlides: 1,
+            pager: false,
+            controls: false,
             slideMargin: 20
-        }));
+        });
     } else if ( 768 < width && width < 991){
-        slider = $('.slider').bxSlider($.extend({}, sliderBaseConfig, {
+        slider =$('.slider').bxSlider({
             slideWidth: 310,
             minSlides: 1,
             maxSlides: 2,
+            moveSlides: 1,
+            pager: false,
+            controls: false,
             slideMargin: 20
-        }));
+        });
     } else if (width < 768) {
-        slider = $('.slider').bxSlider($.extend({}, sliderBaseConfig, {
+        slider = $('.slider').bxSlider({
             slideWidth: 310,
             minSlides: 1,
             maxSlides: 1,
+            moveSlides: 1,
+            pager: false,
+            controls: false,
             slideMargin: 0
-        }));
+        });
     }
 }
 function hoverGraphBtn(){

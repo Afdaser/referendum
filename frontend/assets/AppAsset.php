@@ -47,7 +47,8 @@ class AppAsset extends AssetBundle
         '/js/vendor/currency-autocomplete.js',
         '/js/main.js',
         '/js/custom.js',
-        '/js/custom-modal.js',
+        // Скрипт реєстраційної модалки лишається глобальним, бо використовується на різних сторінках.
+        '/js/registration-modal.js',
         '/js/highCharts/highcharts.js',
         // Централізований рендер графіків опитувань через один цикл.
         '/js/poll-chart-queue.js',

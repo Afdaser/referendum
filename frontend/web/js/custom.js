@@ -244,56 +244,8 @@ $(document).ready(function(){
        $('.tabs_graphs li.active input').prop("checked", true);
     });
 
-    $(document).on('click','.modal-body .modal_add',function(){
-		var url = document.URL.split('.');
-		if(url[0] == 'http://ua'){
-			var left = 'Залишилось', chars = 'символів';
-		}
-		else if(url[0] == 'http://ru'){
-			var left = 'Осталось', chars = 'символов';
-		}
-		else if(url[0] == 'http://en'){
-			var left = 'Left', chars = 'symbols';
-		}
-
-        $('#new_poll'+$(this).data('id')+" .item_variants:last").after('<div class="item_variants"><span>'+(parseInt($('#new_poll'+$(this).data('id')+" .item_variants:last span").text())+1)+'</span><input type="text" value="" maxlength="60" class="variant_text answer_var" name="Poll[options][]"><div class="count_symbols">' + left + ': <div class="answer_left">60</div> ' + chars + '</div><a class="del_btn" href="#" data-id="'+$(this).data('id')+'"></a></div>');
-
-		$(function(){
-			var maxLength = $('.answer_var:last').attr('maxlength');
-			$('.answer_var:last').keyup(function()
-			{
-				var curLength = $(this).val().length;
-				$(this).val($(this).val().substr(0, maxLength));
-				var remaning = maxLength - curLength;
-				if (remaning < 0) remaning = 0;
-				$(this).next().find('.answer_left').html(remaning);
-			})
-		})
-
-	});
-
-    $(document).on('click','.item_variants .del_btn',function(){
-       $(this).parent().remove();
-        var arr = document.querySelectorAll('#new_poll'+$(this).data('id')+' .item_variants span');
-        for(var i = 0; i < arr.length; ++i){
-            $(arr[i]).replaceWith('<span>'+(i+1)+'</span>');
-        }
-    });
-
-    $('.answer_var').each(
-        function()
-        {
-            var maxLength = $(this).attr('maxlength'), input = $(this);
-            $(this).keyup(function()
-            {
-                    var curLength = $(this).val().length;
-                    $(this).val($(this).val().substr(0, maxLength));
-                    var remaning = maxLength - curLength;
-                    if (remaning < 0) remaning = 0;
-                    $(this).next().find('.answer_left').html(remaning);
-            })
-        }
-    );
+    // Логіку створення/редагування опитувань винесено в окремий poll-create-modal.js
+    // і підключаємо лише на /site/myPolls.
 
     $(document).on('click', '.copy_link', function(e){
         e.preventDefault();
@@ -590,27 +542,6 @@ function refreshCities(countryVal,regionVal,cityAC,cityClass,cityId){
             });
         }
     });
-}
-
-function getRandomInt(){
-    min = 1;
-    max = 100;
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function refreshChart(popUpNum) {
-    title = $('#new_poll' + popUpNum + ' #title').val();
-    series = [];
-    pie = [];
-    options = document.querySelectorAll('#new_poll' + popUpNum + ' .variant_text');
-    for(var i = 0; i < options.length; ++i){
-        series[i] = {name: $(options[i]).val(), data: [getRandomInt()]};
-        pie[i] = [$(options[i]).val(),getRandomInt()];
-    }
-
-    renderChart('bar','new_poll'+popUpNum+' #horizontal_b_chart',title,series,pie);
-    renderChart('column','new_poll'+popUpNum+' #vertical_b_chart',title,series,pie);
-    renderChart('pie','new_poll'+popUpNum+' #pie_chart',title,series,pie);
 }
 
 function clearChartFilters(id,title){

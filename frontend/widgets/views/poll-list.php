@@ -102,7 +102,13 @@ Menu::widget([
                 )); /* */
                 ?>
             <?php endif; ?>
-            <?= $this->render('//poll/_newPoll', array('model' => new Poll)); ?>
+            <?php
+            // Модалку та JS-логіку створення опитування тримаємо лише для "Мої опитування" (/site/myPolls),
+            // щоб не навантажувати інші сторінки зайвим функціоналом.
+            if ($category === 'own') {
+                echo $this->render('//poll/_newPoll', array('model' => new Poll));
+            }
+            ?>
         <?php else: ?>
             <?= $this->render('/user/profile', array('user' => $user, 'error' => $error, 'profileCategory' => $profileCategory, 'other' => $other)); ?>
 <?php endif; ?>
@@ -164,6 +170,13 @@ JS_THREE;
 $this->registerJs($scriptNotGuest);
 ?>
 <?php endif; ?>
+
+<?php
+// Підключаємо JavaScript створення опитувань лише на сторінці "Мої опитування".
+if ($category === 'own') {
+    $this->registerJsFile('/js/poll-create-modal.js', ['depends' => [\yii\web\JqueryAsset::class]]);
+}
+?>
 
 <?php /*
 <div class="col-md-8">

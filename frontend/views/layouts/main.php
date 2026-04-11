@@ -94,23 +94,29 @@ $isMainIndexPage = (
     }
     ?>
     <script>
-        window.rfrndm = <?=
-    json_encode([
-        'csrf' => Yii::$app->request->csrfToken,
-        'locale' => Yii::$app->language,
-        'languageId' => Yii::$app->request->languageId,
-        'routes' => [
-            'ajax' => [
-                'registrtion_step_one' => Url::toRoute(['/ajax/modal/registrtion-step-one']),
-                'create_poll_step_one' => Url::toRoute(['/ajax/modal/create-poll-step-one']),
-                'poll_form_ajax' => Url::toRoute(['/ajax/modal/store-poll-form']),
+        <?php
+        // Базові JS-маршрути залишаємо глобально, а маршрути створення опитувань додаємо
+        // тільки для /site/myPolls, де ця функція справді потрібна.
+        $rfrndmConfig = [
+            'csrf' => Yii::$app->request->csrfToken,
+            'locale' => Yii::$app->language,
+            'languageId' => Yii::$app->request->languageId,
+            'routes' => [
+                'ajax' => [
+                    'registrtion_step_one' => Url::toRoute(['/ajax/modal/registrtion-step-one']),
+                ],
+                'customer' => [
+                    'home' => '/home',
+                ],
             ],
-            'customer' => [
-                'home' => "/home",
-            ]
-        ],
-    ]);
-    ?>;
+        ];
+
+        if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id === 'my-polls') {
+            $rfrndmConfig['routes']['ajax']['create_poll_step_one'] = Url::toRoute(['/ajax/modal/create-poll-step-one']);
+            $rfrndmConfig['routes']['ajax']['poll_form_ajax'] = Url::toRoute(['/ajax/modal/store-poll-form']);
+        }
+        ?>
+        window.rfrndm = <?= json_encode($rfrndmConfig); ?>;
     </script>
 </head>
 

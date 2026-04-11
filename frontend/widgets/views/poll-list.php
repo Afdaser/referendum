@@ -314,7 +314,6 @@ if ($category === 'own') {
 </span>                </span>
 
                             </div>
-            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
             <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="382"></a><br>
@@ -325,7 +324,6 @@ if ($category === 'own') {
                     <div class="title_poll">
                         <a href="#P#/poll/382">Do you think that Trump is Traitor? </a>
                     </div>
-                    <h3>#DEV1</h3>
                 </div>
             </div>
             <div class="middle_name_poll_b clearfix">
@@ -371,7 +369,6 @@ if ($category === 'own') {
 </span>                </span>
 
                             </div>
-            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
             <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="383"></a><br>
@@ -382,25 +379,21 @@ if ($category === 'own') {
                     <div class="title_poll">
                         <a href="#P#/poll/383">Do you think, that Trump Will go to Prison?</a>
                     </div>
-                    <h3>#DEV1</h3>
                 </div>
             </div>
             <div class="middle_name_poll_b clearfix">
                                                                                                         <div class="inner_block_chosen">
                                         <form method="post" action="/poll/poll/vote" class="poll-option-form">
-                <?php // Один POST-формат на блок опитування, щоб уникнути дублювання форм. ?>
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
                 <div class="item_chose_poll">
                 <button type="submit" class="radio_link poll-option-vote" name="option" value="1512">
-                    <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">Yes</span>
                 </button>
                 </div>
                 <div class="item_chose_poll">
                 <button type="submit" class="radio_link poll-option-vote" name="option" value="1513">
-                    <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">No</span>
                 </button>
@@ -449,7 +442,6 @@ if ($category === 'own') {
 </span>                </span>
 
                             </div>
-            <!-- Виносимо рейтинг і заголовок в окремий контейнер для вертикального центрування. -->
             <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="401"></a><br>
@@ -460,25 +452,21 @@ if ($category === 'own') {
                     <div class="title_poll">
                         <a href="#P#/poll/401">Do you stand with Steve Bannon? </a>
                     </div>
-                    <h3>#DEV1</h3>
                 </div>
             </div>
             <div class="middle_name_poll_b clearfix">
                                                                                                         <div class="inner_block_chosen">
                                         <form method="post" action="/poll/poll/vote" class="poll-option-form">
-                <?php // Один POST-формат на блок опитування, щоб уникнути дублювання форм. ?>
                 <?php // Додаємо CSRF-токен, аби POST-запит із голосом пройшов стандартну перевірку Yii. ?>
                 <?= Html::hiddenInput($csrfParam, $csrfToken); ?>
                 <div class="item_chose_poll">
                 <button type="submit" class="radio_link poll-option-vote" name="option" value="1554">
-                    <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">Yes</span>
                 </button>
                 </div>
                 <div class="item_chose_poll">
                 <button type="submit" class="radio_link poll-option-vote" name="option" value="1555">
-                    <!-- Новий чіткий індикатор вибору без зображень. -->
                     <span class="radio_indicator"></span>
                     <span class="link_text">No</span>
                 </button>

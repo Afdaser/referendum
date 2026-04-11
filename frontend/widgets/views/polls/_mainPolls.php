@@ -30,7 +30,6 @@ use common\models\User;
             <?php $chartData = $poll->getChartData();?>
             <?php $bar = StringHelper::formatForBar($chartData); ?>
             <?php $pie = StringHelper::formatForPie($chartData); ?>
-            <!-- Виносимо рейтинг і заголовок в окремий контейнер для центрування. -->
             <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
                     <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?= $poll->id; ?>"></a><br>
@@ -41,7 +40,6 @@ use common\models\User;
                     <div class="title_poll">
                         <a href="<?= $poll->url ?>"><?= $poll->title; ?></a>
                     </div>
-                    <!-- h3>#DEV1</h3 -->
                 </div>
             </div>
             <div class="middle_name_poll_b clearfix">
@@ -67,19 +65,6 @@ use common\models\User;
                 <span class="item_bottom_poll"><?= Yii::t('poll', 'Користувач'); ?>: <?= User::getUserName($poll->user_id); ?></span>
                 <span class="item_bottom_poll"><?= Yii::t('poll', 'коментарів'); ?>: <?= count($poll->pollComments); ?></span>
                 <span class="item_bottom_poll"><?= Yii::t('poll', 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?><?= (YII_ENV == 'dev') ? '[#DEV2404b]' : ''; ?></span>
-               <!--<?php if($poll->isOpen()): ?>
-                    <div class="right_poll_status open">
-                        <?= Yii::t('poll', 'Відкрите голосування'); ?>
-                        <span><i class="fa fa-unlock"></i></span>
-                    </div>
-                <?php else: ?>
-                    <div class="right_poll_status closed" title="<?= $poll->countPollOptionsVoters; ?>/<?= $poll->votes_count_close;?>">
-                        <?= Yii::t('poll', 'Закрите голосування'); ?>
-                        <span><i class="fa fa-lock"></i></span>
-                    </div>
-                <?php endif;?> 
-                Це функціонал закритих і відкритих голосувань.
-                -->
             </div>
         </div>
     <?php endforeach?>

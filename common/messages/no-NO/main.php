@@ -76,7 +76,6 @@ return array(
 
 
     // ошибка на сайте
-    'Нашли ошибку на сайте? Выделите ее и нажмите Ctrl+Enter' => 'Fant du en feil på nettstedet? Velg det og trykk Ctrl + Enter',
     'Спасибо! Сообщение об ошибке отправлено' => 'Takk! Feilmelding sendt',
     'Сообщение об ошибке' => 'Feilmelding',
     'Страница' => 'Side',

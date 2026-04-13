@@ -1,6 +1,5 @@
 <?php
 
-use yii\web\View;
 use frontend\widgets\WPollsSidebar;
 use frontend\widgets\WUserSidebar;
 
@@ -48,61 +47,6 @@ use frontend\widgets\WUserSidebar;
 			<div id="fb-root"></div>
 			<div id="fb-root"></div>
 		</div>
-        <div class="social_grey_b">
-            <?= Yii::t('main', 'Нашли ошибку на сайте? Выделите ее и нажмите Ctrl+Enter') ?>
-        </div>
+        <?php // Блок з повідомленням про помилки на сайті свідомо видалено. ?>
 	</div>
 </div>
-
-<?php /*
-<script>
-    $(document).keydown(function(e) {
-        if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 13)) {
-            e.preventDefault();
-            var text = "";
-            if (window.getSelection) {
-                text = window.getSelection().toString();
-            } else if (document.selection && document.selection.type != "Control") {
-                text = document.selection.createRange().text;
-            }
-
-            if (text !== '') {
-                $.post('/site/submitError', {selection: text, pageUrl: document.location.href}, function() {
-                    alert('<?= Yii::t('main', 'Спасибо! Сообщение об ошибке отправлено') ?>');
-                });
-            }
-        }
-    });
-</script>
-/* */ 
-
-$alertMessage = Yii::t('main', 'Спасибо! Сообщение об ошибке отправлено');
-
-$scriptKeyDown = <<<JS_KEYDOWN
-    $(document).keydown(function(e) {
-        if ((e.ctrlKey && e.keyCode == 13) || (e.metaKey && e.keyCode == 13)) {
-            e.preventDefault();
-            var text = "";
-            if (window.getSelection) {
-                text = window.getSelection().toString();
-            } else if (document.selection && document.selection.type != "Control") {
-                text = document.selection.createRange().text;
-            }
-
-            if (text !== '') {
-                $.post('/site/submitError', {selection: text, pageUrl: document.location.href}, function() {
-                    alert('{$alertMessage}');
-                });
-            }
-        }
-    });
-JS_KEYDOWN;
-
-$script = <<<JS_FINAL
-jQuery(document).ready(function() {
-{$scriptKeyDown}
-
-});
-JS_FINAL;
-
-$this->registerJs($script, View::POS_END);

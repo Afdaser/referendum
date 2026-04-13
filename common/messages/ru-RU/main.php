@@ -75,7 +75,6 @@ return array(
 </li>
                         </ul>',
     // ошибка на сайте
-    'Нашли ошибку на сайте? Выделите ее и нажмите Ctrl+Enter' => 'Found a mistake on the site? Select it and press Ctrl + Enter',
     'Спасибо! Сообщение об ошибке отправлено' => 'Thanks! Error message sent',
     'Сообщение об ошибке' => 'Error message',
     'Страница' => 'Page',

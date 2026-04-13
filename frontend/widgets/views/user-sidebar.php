@@ -43,11 +43,14 @@ $identity = Yii::$app->user->identity;
     </a>
 </div>
 <?php /*
- * 
+ * Модалка створення опитування більше НЕ рендериться глобально в сайдбарі.
+ * Причина: цей шаблон створення не потрібен на всіх сторінках для залогіненого користувача.
+ * Безпечний сценарій: рендерити модалку лише у профільних/цільових в'ю створення опитування.
+ *
+ * Історичне посилання на старий рендер:
  * /var/www/vhosts_yii/referendum.social/referendum.social.local/frontend/widgets/views/create-poll-modal.php
- * <?= $this->render('create-poll-modal', ['user'=>Yii::$app->user->identity,]); ?>
+ * <?= $this->render('create-poll-modal', ['pollModel' => $pollModel]); ?>
  */ ?>
-<?= $this->render('create-poll-modal', [ 'pollModel' => $pollModel,]); ?>
     
     
 <?php if($refresh):?>

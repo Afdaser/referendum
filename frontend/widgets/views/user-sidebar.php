@@ -43,11 +43,29 @@ $identity = Yii::$app->user->identity;
     </a>
 </div>
 <?php /*
- * 
+ * Модалка створення опитування більше НЕ рендериться глобально в сайдбарі.
+ * Причина: цей шаблон створення не потрібен на всіх сторінках для залогіненого користувача.
+ * Безпечний сценарій: рендерити модалку лише у профільних/цільових в'ю створення опитування.
+ *
+ * Історичне посилання на старий рендер:
  * /var/www/vhosts_yii/referendum.social/referendum.social.local/frontend/widgets/views/create-poll-modal.php
- * <?= $this->render('create-poll-modal', ['user'=>Yii::$app->user->identity,]); ?>
+ * <?= $this->render('create-poll-modal', ['pollModel' => $pollModel]); ?>
  */ ?>
-<?= $this->render('create-poll-modal', [ 'pollModel' => $pollModel,]); ?>
+<?php
+// Регресійний захист: кнопка "Створити нове" на /site/myPolls має відкривати модалку.
+// Тому повертаємо рендер create-poll-modal лише на сторінці "Мої опитування",
+// а не глобально на всіх сторінках авторизованого користувача.
+$requestedRoute = Yii::$app->requestedRoute;
+$controllerRoute = Yii::$app->controller ? Yii::$app->controller->route : '';
+$pathInfo = trim(Yii::$app->request->pathInfo, '/');
+$isMyPollsPage = in_array($requestedRoute, ['poll/site/my-polls', 'site/my-polls', 'site/myPolls'], true)
+    || in_array($controllerRoute, ['poll/site/my-polls', 'site/my-polls'], true)
+    || strpos($pathInfo, 'site/myPolls') === 0
+    || strpos($pathInfo, 'poll/site/my-polls') === 0;
+?>
+<?php if ($isMyPollsPage): ?>
+    <?= $this->render('create-poll-modal', ['pollModel' => $pollModel]); ?>
+<?php endif; ?>
     
     
 <?php if($refresh):?>

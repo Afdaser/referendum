@@ -42,11 +42,16 @@ use frontend\widgets\WUserSidebar;
 <?php /* /OLD.adsbygoogle */?>
 		</div>
 		<?= WPollsSidebar::widget(); ?>
-		<?php /* $this->widget('PollsSidebar'); /* */  ?>
-		<div class="social_grey_b">
-			<div id="fb-root"></div>
-			<div id="fb-root"></div>
+			<?php /* $this->widget('PollsSidebar'); /* */  ?>
+			<div class="social_grey_b">
+				<?php
+				// Для девелопера: fb-root блоки повністю вимкнені, щоб не потрапляли у фінальний HTML сторінки.
+				/*
+				<div id="fb-root"></div>
+				<div id="fb-root"></div>
+				*/
+				?>
+			</div>
+	        <?php // Блок з повідомленням про помилки на сайті свідомо видалено. ?>
 		</div>
-        <?php // Блок з повідомленням про помилки на сайті свідомо видалено. ?>
-	</div>
 </div>

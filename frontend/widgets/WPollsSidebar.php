@@ -54,14 +54,16 @@ class WPollsSidebar extends Widget {
     }
 
     /**
-     * Визначає, чи поточний хост є головним доменом без мовного піддомену.
+     * Перевіряє, чи поточний піддомен — nz, щоб обмежити дані лише своїм доменом.
      *
      * @return bool
      */
-    private function isMainDomain(): bool
+    private function isNzSubdomain(): bool
     {
-        // Тимчасове обмеження вимкнено: дозволяємо NZ-опитування для всіх піддоменів.
-        return true;
+        $hostParts = explode('.', Yii::$app->request->hostName);
+        $subdomain = strtolower($hostParts[0] ?? '');
+
+        return $subdomain === 'nz';
     }
 
     public function initYiiOne() {
@@ -87,6 +89,8 @@ class WPollsSidebar extends Widget {
     public function init() {
         // Визначаємо ідентифікатор мови з урахуванням поточного піддомену.
         $languageId = $this->resolveLanguageId();
+        $restrictToLanguageOnly = $this->isNzSubdomain();
+
         $commentsCountExpression = new Expression('(SELECT COUNT(*) FROM {{%poll_comment}} pc WHERE pc.poll_id = p.id)');
 
         $pollsLastQuery = Poll::find()
@@ -98,17 +102,15 @@ class WPollsSidebar extends Widget {
                 ->limit(Yii::$app->params['POLLS_LIMIT_SIDEBAR'])
                 ->orderBy(['date_add' => SORT_DESC]);
 
-        $lastPollLanguageFilter = ['or',
-            ['poll_language_id' => $languageId],
-            ['show_for_all_languages' => 1],
-        ];
-
-        if ($this->isMainDomain()) {
-            // На головному домені додаємо локаль NZ, щоб її опитування стабільно потрапляли у віджет.
-            $lastPollLanguageFilter[] = ['poll_language_id' => Language::getLanguageByName('nz')];
+        if ($restrictToLanguageOnly) {
+            // Для nz показуємо лише локальні опитування без глобальних винятків.
+            $pollsLastQuery->andWhere(['poll_language_id' => $languageId]);
+        } else {
+            $pollsLastQuery->andWhere(['or',
+                ['poll_language_id' => $languageId],
+                ['show_for_all_languages' => 1],
+            ]);
         }
-
-        $pollsLastQuery->andWhere($lastPollLanguageFilter);
 
         $this->pollsLast = $pollsLastQuery->all();
         //         $criteria->addCondition('id <> :holderPoll');
@@ -147,17 +149,15 @@ class WPollsSidebar extends Widget {
                 // Та сама межа кількості застосовується і для популярних опитувань.
                 ->limit(Yii::$app->params['POLLS_LIMIT_SIDEBAR']);
 
-        $popularPollLanguageFilter = ['or',
-            ['p.poll_language_id' => $languageId],
-            ['p.show_for_all_languages' => 1],
-        ];
-
-        if ($this->isMainDomain()) {
-            // Для популярних опитувань застосовуємо таке саме включення NZ на головному домені.
-            $popularPollLanguageFilter[] = ['p.poll_language_id' => Language::getLanguageByName('nz')];
+        if ($restrictToLanguageOnly) {
+            // Для nz не показуємо опитування «для всіх мов».
+            $pollsPopularQuery->andWhere(['p.poll_language_id' => $languageId]);
+        } else {
+            $pollsPopularQuery->andWhere(['or',
+                ['p.poll_language_id' => $languageId],
+                ['p.show_for_all_languages' => 1],
+            ]);
         }
-
-        $pollsPopularQuery->andWhere($popularPollLanguageFilter);
 
         $this->pollsPopular = $pollsPopularQuery->all();
     }

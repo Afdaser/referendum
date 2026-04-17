@@ -54,16 +54,19 @@ class WPollsSidebar extends Widget {
     }
 
     /**
-     * Перевіряє, чи поточний піддомен — nz, щоб обмежити дані лише своїм доменом.
+     * Перевіряє, чи це головний домен (без мовного піддомену).
+     *
+     * На головному домені показуємо всі опитування з усіх мов.
      *
      * @return bool
      */
-    private function isNzSubdomain(): bool
+    private function isMainDomain(): bool
     {
-        $hostParts = explode('.', Yii::$app->request->hostName);
-        $subdomain = strtolower($hostParts[0] ?? '');
+        $host = explode('.', (string) Yii::$app->request->hostName);
+        $subdomain = strtolower($host[0] ?? '');
 
-        return $subdomain === 'nz';
+        // У нашій схемі мовні піддомени мають довжину 2 символи: en, nz, ua, ru тощо.
+        return strlen($subdomain) !== 2;
     }
 
     public function initYiiOne() {
@@ -87,9 +90,9 @@ class WPollsSidebar extends Widget {
     }
 
     public function init() {
-        // Визначаємо ідентифікатор мови з урахуванням поточного піддомену.
+        // Визначаємо режим фільтрації: головний домен = всі мови, піддомен = лише своя мова.
         $languageId = $this->resolveLanguageId();
-        $restrictToLanguageOnly = $this->isNzSubdomain();
+        $showAllLanguages = $this->isMainDomain();
 
         $commentsCountExpression = new Expression('(SELECT COUNT(*) FROM {{%poll_comment}} pc WHERE pc.poll_id = p.id)');
 
@@ -102,14 +105,10 @@ class WPollsSidebar extends Widget {
                 ->limit(Yii::$app->params['POLLS_LIMIT_SIDEBAR'])
                 ->orderBy(['date_add' => SORT_DESC]);
 
-        if ($restrictToLanguageOnly) {
-            // Для nz показуємо лише локальні опитування без глобальних винятків.
+        if (!$showAllLanguages) {
+            // Для будь-якого мовного піддомену показуємо лише локальні опитування,
+            // щоб не підтягувати контент з інших країн/мов (наприклад nz -> en).
             $pollsLastQuery->andWhere(['poll_language_id' => $languageId]);
-        } else {
-            $pollsLastQuery->andWhere(['or',
-                ['poll_language_id' => $languageId],
-                ['show_for_all_languages' => 1],
-            ]);
         }
 
         $this->pollsLast = $pollsLastQuery->all();
@@ -149,14 +148,9 @@ class WPollsSidebar extends Widget {
                 // Та сама межа кількості застосовується і для популярних опитувань.
                 ->limit(Yii::$app->params['POLLS_LIMIT_SIDEBAR']);
 
-        if ($restrictToLanguageOnly) {
-            // Для nz не показуємо опитування «для всіх мов».
+        if (!$showAllLanguages) {
+            // Така сама логіка для популярних: піддомен бачить лише свою мову.
             $pollsPopularQuery->andWhere(['p.poll_language_id' => $languageId]);
-        } else {
-            $pollsPopularQuery->andWhere(['or',
-                ['p.poll_language_id' => $languageId],
-                ['p.show_for_all_languages' => 1],
-            ]);
         }
 
         $this->pollsPopular = $pollsPopularQuery->all();

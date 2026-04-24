@@ -49,7 +49,8 @@ class TagController extends Controller
         }
 
         $canonicalUrl = 'https://' . $canonicalDomain . $path;
-        $requestedTag = rawurldecode((string) $tag);
+        // Не нашкодити: роут-параметр уже декодований Yii, тому уникаємо повторного rawurldecode і redirect-loop.
+        $requestedTag = (string) $tag;
         $isCanonicalTagUrl = ($requestedTag === $canonicalTag);
 
         // Не нашкодити: редіректимо лише коли URL неканонічний (домен або slug), щоб прибрати дублікати з великими літерами.

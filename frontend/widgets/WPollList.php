@@ -100,6 +100,12 @@ LAYOUT;
      */
     public function renderSection($name)
     {
+        if ($this->shouldHideListingForGuestOwn() && in_array($name, ['{summary}', '{pager}', '{sorter}'], true)) {
+            // Для гостей на /site/myPolls ховаємо службові блоки списку (summary/sorter/pager),
+            // щоб не показувати пагінацію та лічильники неіснуючого для них "власного" контенту.
+            return '';
+        }
+
         switch ($name) {
             case '{summary}':
                 return $this->renderSummary();
@@ -114,6 +120,17 @@ LAYOUT;
             default:
                 return false;
         }
+    }
+
+    /**
+     * Для незалогіненого користувача в категорії "own" прибираємо блоки списку,
+     * щоб сторінка не виглядала як публічний каталог з пагінацією.
+     */
+    protected function shouldHideListingForGuestOwn(): bool
+    {
+        $category = $this->data['category'] ?? null;
+
+        return $category === 'own' && Yii::$app->user->isGuest;
     }
 
     public function renderDebug()

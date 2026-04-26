@@ -31,10 +31,6 @@ class PollQuery extends \yii\db\ActiveQuery
         }
         if (!empty($criteriaParams[':user'])) {
             $this->andWhere(['user_id' => $criteriaParams[':user']]);
-        } else {
-            // Безпековий фільтр: для гостя в категорії "Мої опитування"
-            // не повертаємо жодного запису, щоб не показувати всі опитування.
-            $this->andWhere('1 = 0');
         }
     }
 

@@ -14,6 +14,7 @@ use common\models\search\PollSearch;
 use common\models\Tag;
 use common\models\Language;
 use common\models\MainPageSeoText;
+use yii\web\NotFoundHttpException;
 
 class SiteController extends Controller
 {
@@ -145,6 +146,11 @@ class SiteController extends Controller
 
     public function actionMyPolls($language = null, $sorting = 'desc', $period = '', $limit = 10)
     {
+        // "Мої опитування" — приватний розділ; для гостей сторінка недоступна.
+        if (Yii::$app->user->isGuest) {
+            throw new NotFoundHttpException();
+        }
+
         if (Yii::$app->request->isPost) {
             $resultOfSaving = $this->processCreatePoll();
             if ($resultOfSaving) {

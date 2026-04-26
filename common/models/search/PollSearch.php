@@ -72,6 +72,14 @@ class PollSearch extends Poll
         }
 
         $query = Poll::find();
+        // Для "Мої опитування" і "Актуальні для вас теми" контент доступний
+        // лише авторизованим користувачам: гостям примусово повертаємо порожній набір.
+        $isRestrictedGuestCategory = Yii::$app->user->isGuest
+            && !empty($params['category'])
+            && in_array($params['category'], ['own', 'actual'], true);
+        if ($isRestrictedGuestCategory) {
+            $query->andWhere('0=1');
+        }
         if(!empty($params['category'])){
             switch ($params['category']){
                 case 'own' :

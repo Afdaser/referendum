@@ -146,7 +146,30 @@ HTML;
      */
     public function renderSorter()
     {
+        if ($this->shouldHideRestrictedGuestContent()) {
+            // На закритих для гостей сторінках не показуємо жодні елементи керування списком.
+            return '';
+        }
+
         return $this->render('poll-list-soter', $this->data);
+    }
+
+    public function renderSummary()
+    {
+        if ($this->shouldHideRestrictedGuestContent()) {
+            return '';
+        }
+
+        return parent::renderSummary();
+    }
+
+    public function renderPager()
+    {
+        if ($this->shouldHideRestrictedGuestContent()) {
+            return '';
+        }
+
+        return parent::renderPager();
     }
 
     /**
@@ -178,6 +201,21 @@ HTML;
         $this->data['sort'] = $this->data['sort']
             ?? $this->getRequestString('sort')
             ?? ($this->data['category'] === 'own' ? 'default' : 'desc');
+    }
+
+    /**
+     * Для неавторизованих користувачів сторінки "Актуальні" та "Мої опитування"
+     * мають бути повністю порожніми: без підсумку, сортування і пагінації.
+     */
+    protected function shouldHideRestrictedGuestContent(): bool
+    {
+        if (!Yii::$app->user->isGuest) {
+            return false;
+        }
+
+        $category = $this->data['category'] ?? null;
+
+        return in_array($category, ['own', 'actual'], true);
     }
 
     protected function getRequestString(string $name, ?string $default = null): ?string

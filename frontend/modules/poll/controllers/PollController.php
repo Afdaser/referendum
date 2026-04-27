@@ -169,6 +169,8 @@ class PollController extends \yii\web\Controller
         }, $poll->tags));
 
         if (!empty($tagIds)) {
+            // Не змішуємо пов'язані опитування між піддоменами:
+            // беремо лише ті, що належать тій самій мові та країні, що й поточне опитування.
             $relatedPolls = Poll::find()
                 ->alias('p')
                 ->select([
@@ -179,6 +181,10 @@ class PollController extends \yii\web\Controller
                 ->innerJoin('{{%poll_tag}} pt', 'pt.poll_id = p.id')
                 ->where(['pt.tag_id' => $tagIds])
                 ->andWhere(['<>', 'p.id', $poll->id])
+                ->andWhere([
+                    'p.poll_language_id' => (int) $poll->poll_language_id,
+                    'p.poll_country_id' => (int) $poll->poll_country_id,
+                ])
                 ->published()
                 ->groupBy('p.id')
                 ->orderBy([

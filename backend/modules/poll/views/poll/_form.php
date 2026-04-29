@@ -43,8 +43,15 @@ use common\models\Tag;
             ]);
             ?>
 
+    <?php
+    // Показуємо лише теги поточної мови опитування, щоб не змішувати піддомени в адмінці.
+    $tagItems = $model->poll_language_id !== null
+        ? Tag::find()->select(['name'])->where(['language_id' => (int)$model->poll_language_id])->indexBy('name')->orderBy(['name' => SORT_ASC])->column()
+        : [];
+    ?>
+
     <?= $form->field($model, 'tagNames')->widget(Select2::classname(), [
-                'data' => Tag::find()->select(['name'])->indexBy('name')->orderBy(['name' => SORT_ASC])->column(),
+                'data' => $tagItems,
                 'language' => Yii::$app->language,
                 'options' => [
                     'multiple' => true,

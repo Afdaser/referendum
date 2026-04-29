@@ -146,10 +146,8 @@ class Tag extends ActiveRecord
         }
 
         if ($languageId !== null) {
-            // Унікальність тегу тепер локалізована в межах language_id (домен/піддомен).
             $item = Tag::find()->where(['name' => $tag, 'language_id' => $languageId])->one();
         } else {
-            // Тимчасовий fallback для legacy-викликів без language_id (зворотна сумісність).
             $item = Tag::find()->where(['name' => $tag])->one();
         }
 

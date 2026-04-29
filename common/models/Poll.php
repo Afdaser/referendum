@@ -1076,7 +1076,6 @@ class Poll extends ActiveRecord
         $tagString = Html::encode($tagString);
         $tags = explode(',',$tagString);
         foreach($tags as $tagName){
-            // Створення/перевикористання тегів виконується в межах мови поточного опитування.
             if($tagId = Tag::createNewTag($tagName, $this->poll_language_id)){
                 $pollTag = new PollTag;
                 $pollTag->poll_id = $this->id;
@@ -1298,7 +1297,6 @@ class Poll extends ActiveRecord
         $newTagIds = [];
 
         foreach ($normalizedNames as $tagName) {
-            // Унікальність тегів перевіряємо в межах поточного language_id, щоб не змішувати піддомени.
             $tagId = Tag::getTagId($tagName, $this->poll_language_id);
             if (!$tagId) {
                 $tagId = Tag::createNewTag($tagName, $this->poll_language_id);

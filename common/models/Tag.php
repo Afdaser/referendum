@@ -136,11 +136,21 @@ class Tag extends ActiveRecord
      * return tag`s id by name
      * @tag - tag`s name
      */
-    public static function getTagId($tag)
+    public static function getTagId(string $tag, ?int $languageId = null)
     {
         $result = 0;
-//        $item = Tag::model()->findByAttributes(array('name' => CHtml::encode($tag)));
-        $item = Tag::find()->where(['name' => Html::encode($tag)])->one();
+        $tag = trim(Html::encode($tag));
+
+        if ($tag === "") {
+            return $result;
+        }
+
+        if ($languageId !== null) {
+            $item = Tag::find()->where(['name' => $tag, 'language_id' => $languageId])->one();
+        } else {
+            $item = Tag::find()->where(['name' => $tag])->one();
+        }
+
         if ($item) {
             $result = $item->id;
         }
@@ -155,7 +165,7 @@ class Tag extends ActiveRecord
         $tagId = 0;
         $name = trim($name);
         if ($name != '') {
-            $tagId = self::getTagId($name);
+            $tagId = self::getTagId($name, (int)$languageId);
             if (!$tagId) {
                 $tag = new Tag;
                 $tag->name = $name;

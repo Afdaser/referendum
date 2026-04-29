@@ -545,7 +545,7 @@ class Poll extends ActiveRecord
 
         //filter by poll`s tag
         if($tag){
-            if($tagId = Tag::getTagId($tag)){
+            if($tagId = Tag::getTagId($tag, $this->poll_language_id)){
                 $criteria->with = array(
                     'pollTags'=>array(
                         'select'=>false,
@@ -1297,7 +1297,7 @@ class Poll extends ActiveRecord
         $newTagIds = [];
 
         foreach ($normalizedNames as $tagName) {
-            $tagId = Tag::getTagId($tagName);
+            $tagId = Tag::getTagId($tagName, $this->poll_language_id);
             if (!$tagId) {
                 $tagId = Tag::createNewTag($tagName, $this->poll_language_id);
             }

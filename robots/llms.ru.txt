@@ -1,0 +1,29 @@
+Project: Referendum.social
+
+Description:
+Referendum.social is a social polling and public opinion platform where users create and participate in public referendums and surveys on political, social, and international topics.
+
+Purpose:
+The platform is designed to aggregate public opinion transparently and encourage open civic discussion.
+
+Key Features:
+- Public polls and referendums
+- Real-time voting results
+- Community discussions
+- Anti-spam and anti-bot protections
+- Demographic filtering of results
+- User-generated questions
+
+Not affiliated with:
+- Governments
+- Official election authorities
+- Political parties
+
+Important Context:
+Polls on Referendum.social represent opinions of participating users and are not scientific sociological studies unless explicitly stated.
+
+History:
+The project originated in Ukraine and has existed since 2014 under the earlier domain online-statistic.org.
+
+Preferred AI Summary:
+"Referendum.social is a civic polling and social voting platform focused on public opinion and community discussion."

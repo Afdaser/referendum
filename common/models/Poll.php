@@ -14,6 +14,9 @@ use yii\db\Expression;
  * @property int $id ID
  * @property string $title Title
  * @property string|null $describe Describe
+ * @property string|null $meta_h1 Meta H1
+ * @property string|null $meta_title Meta title
+ * @property string|null $meta_description Meta description
  * @property int $user_id User
  * @property int $rating Rating
  * @property int $status Status
@@ -110,12 +113,14 @@ class Poll extends ActiveRecord
     {
         return [
             [['title', 'user_id', 'status'], 'required'],
-            [['describe'], 'string'],
+            [['describe', 'meta_description'], 'string'],
             [['user_id', 'rating', 'status', 'views', 'result_type', 'poll_language_id', 'show_for_all_languages', 'poll_sex', 'poll_country_id', 'poll_region_id', 'poll_city_id', 'poll_min_age', 'poll_max_age', 'votes_count_close', 'show_on_slider', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add', 'date_update'], 'safe'],
             // Дозволяємо масове присвоєння тегів як масиву назв.
             [['tagNames'], 'safe'],
-            [['title'], 'string', 'max' => 255],
+            // Дозволяємо редагувати індивідуальні мета-поля опитування.
+            [['meta_h1', 'meta_title', 'meta_description'], 'default', 'value' => null],
+            [['title', 'meta_h1', 'meta_title'], 'string', 'max' => 255],
             [['poll_language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['poll_language_id' => 'id']],
         ];
     }
@@ -129,6 +134,9 @@ class Poll extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'title' => Yii::t('app', 'Title'),
             'describe' => Yii::t('app', 'Describe'),
+            'meta_h1' => 'Meta H1',
+            'meta_title' => 'Meta title',
+            'meta_description' => 'Meta description',
             'user_id' => Yii::t('app', 'User'),
             'author.name' => Yii::t('app', 'Author'),
             'rating' => Yii::t('app', 'Rating'),
@@ -1358,21 +1366,30 @@ class Poll extends ActiveRecord
     public function getStaticMeta(): array
     {
         $staticText = $this->getStaticTextRecord();
-        if (!$staticText) {
-            return [
-                'heading' => null,
-                'title' => null,
-                'description' => null,
-            ];
-        }
-
         $replacements = $this->getStaticMetaReplacements();
 
-        return [
-            'heading' => $this->replaceStaticMetaTokens($staticText->heading, $replacements),
-            'title' => $this->replaceStaticMetaTokens($staticText->meta_title, $replacements),
-            'description' => $this->replaceStaticMetaTokens($staticText->meta_description, $replacements),
+        // Спочатку беремо індивідуальні SEO-поля опитування (якщо їх заповнили в адмінці).
+        $meta = [
+            'heading' => $this->replaceStaticMetaTokens($this->meta_h1, $replacements),
+            'title' => $this->replaceStaticMetaTokens($this->meta_title, $replacements),
+            'description' => $this->replaceStaticMetaTokens($this->meta_description, $replacements),
         ];
+
+        // Якщо якесь поле порожнє — м'яко повертаємось до шаблонних значень зі статичних налаштувань мови.
+        $staticText = $this->getStaticTextRecord();
+        if ($staticText) {
+            if ($meta['heading'] === null) {
+                $meta['heading'] = $this->replaceStaticMetaTokens($staticText->heading, $replacements);
+            }
+            if ($meta['title'] === null) {
+                $meta['title'] = $this->replaceStaticMetaTokens($staticText->meta_title, $replacements);
+            }
+            if ($meta['description'] === null) {
+                $meta['description'] = $this->replaceStaticMetaTokens($staticText->meta_description, $replacements);
+            }
+        }
+
+        return $meta;
     }
 
     /**

@@ -27,6 +27,20 @@ use common\models\Tag;
     
     <?= $form->field($model, 'describe')->widget(ashch\tinymce\TinyMce::class); ?>
 
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Мета-теги сторінки опитування</strong></div>
+        <div class="panel-body">
+            <?php // Індивідуальні поля мають пріоритет над шаблоном, але можуть залишатись порожніми. ?>
+            <?= $form->field($model, 'meta_h1')->textInput(['maxlength' => true])
+                ->hint('Кастомний H1 для цього опитування. Якщо порожньо — використається шаблон з налаштувань мови.'); ?>
+            <?= $form->field($model, 'meta_title')->textInput(['maxlength' => true])
+                ->hint('Кастомний title для цього опитування. Якщо порожньо — використається шаблон з налаштувань мови.'); ?>
+            <?= $form->field($model, 'meta_description')->textarea(['rows' => 4, 'class' => 'form-control'])
+                ->hint('Кастомний description для цього опитування. Якщо порожньо — використається шаблон з налаштувань мови.'); ?>
+        </div>
+    </div>
+
     <?= $form->field($model, 'poll_language_id')->widget(Select2::classname(), [
                 'data' => Language::dropDownAllItems(),
                 'language' => Yii::$app->language,

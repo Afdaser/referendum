@@ -126,6 +126,9 @@ return [
 //            'enableStrictParsing' => true,
             'class' => \frontend\components\LanguageUrlManager::class,
             'rules' => [
+                // Текстові технічні файли для ботів/LLM (на рівні кореня домену).
+                'robots.txt' => 'site/robots',
+                'llms.txt' => 'site/llms',
                 // Ajax validate:
                 [
                     'pattern' => '/ajax/validate/login',

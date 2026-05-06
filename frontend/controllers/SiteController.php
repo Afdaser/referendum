@@ -16,6 +16,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\forms\RegisterForm;
+use yii\web\NotFoundHttpException;
 
 /**
  * Site controller
@@ -293,6 +294,61 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
-    
+
+    /**
+     * Віддає robots.txt для поточного піддомену.
+     */
+    public function actionRobots()
+    {
+        return $this->sendDomainTextFile('robots', 'robots');
+    }
+
+    /**
+     * Віддає llms.txt для поточного піддомену.
+     */
+    public function actionLlms()
+    {
+        return $this->sendDomainTextFile('llms', 'llms');
+    }
+
+    /**
+     * Повертає текстовий файл за кодом піддомену (fallback: поточний -> en -> ua).
+     */
+    private function sendDomainTextFile(string $directory, string $basename): string
+    {
+        $subdomain = $this->resolveSubdomainCode();
+        $basePath = Yii::getAlias('@frontend/../' . $directory);
+        $candidates = [
+            $basePath . DIRECTORY_SEPARATOR . $basename . '.' . $subdomain . '.txt',
+            $basePath . DIRECTORY_SEPARATOR . $basename . '.en.txt',
+            $basePath . DIRECTORY_SEPARATOR . $basename . '.ua.txt',
+        ];
+
+        foreach ($candidates as $filePath) {
+            if (is_file($filePath)) {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+                Yii::$app->response->headers->set('Content-Type', 'text/plain; charset=UTF-8');
+                return (string) file_get_contents($filePath);
+            }
+        }
+
+        throw new NotFoundHttpException('Text file is not configured for this subdomain.');
+    }
+
+    /**
+     * Витягує код піддомену з hostName.
+     */
+    private function resolveSubdomainCode(): string
+    {
+        $hostName = (string) Yii::$app->request->hostName;
+        $hostParts = explode('.', $hostName);
+        if (count($hostParts) > 2 && $hostParts[0] !== '') {
+            return strtolower($hostParts[0]);
+        }
+
+        // Не нашкодити: головний домен лишається на історичній UA-конфігурації.
+        return 'ua';
+    }
+
     // Додаткові статичні сторінки видалені, щоб уникнути доступу до неактуальних маршрутів.
 }

@@ -19,12 +19,6 @@ use common\models\Tag;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'votes_count_close')->textInput(['type' => 'number']) ?>
-
-    <?= $form->field($model, 'show_on_slider')->textInput() ?>
-    
     <?= $form->field($model, 'describe')->widget(ashch\tinymce\TinyMce::class); ?>
 
 
@@ -87,6 +81,14 @@ use common\models\Tag;
     <?= $form->field($model, 'result_type')->textInput() ?>    
 
     <?= $form->field($model, 'show_for_all_languages')->textInput() ?>
+
+
+    <?php // Перенесли службові поля вниз форми, щоб SEO-блок був одразу після заголовка. ?>
+    <?= $form->field($model, 'status')->textInput() ?>
+
+    <?= $form->field($model, 'votes_count_close')->textInput(['type' => 'number']) ?>
+
+    <?= $form->field($model, 'show_on_slider')->textInput() ?>
 
     <hr>
     

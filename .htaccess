@@ -17,8 +17,13 @@ AddDefaultCharset utf-8
     RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
     RewriteRule ^robots\.txt$ robots/robots.%1.txt [L,END]
 
-    # Основний домен віддає стандартний robots.txt без примусового редіректу на HTTPS.
-    RewriteCond %{REQUEST_URI} ^/robots\.txt$ [NC]
+    # Для llms.txt застосовуємо ту саму логіку, що і для robots.txt: окремий файл на кожен піддомен.
+    RewriteCond %{REQUEST_URI} ^/llms\.txt$ [NC]
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
+    RewriteRule ^llms\.txt$ robots/llms.%1.txt [L,END]
+
+    # Основний домен віддає стандартні robots.txt і llms.txt без примусового редіректу на HTTPS.
+    RewriteCond %{REQUEST_URI} ^/(robots|llms)\.txt$ [NC]
     RewriteRule ^ - [L]
 
     RewriteRule ^xadmin/plugins/(.*)$ backend/web/plugins/$1 [L]

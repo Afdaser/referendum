@@ -312,15 +312,20 @@ class SiteController extends Controller
     }
 
     /**
-     * Повертає текстовий файл за кодом піддомену (fallback: поточний -> en -> ua).
+     * Повертає текстовий файл за кодом піддомену (fallback: поточний -> apex -> en -> ua).
      */
     private function sendDomainTextFile(string $directory, string $basename): string
     {
         $subdomain = $this->resolveSubdomainCode();
         $basePath = Yii::getAlias('@frontend/../' . $directory);
         $candidates = [
+            // 1) Прямий збіг для піддомену/апекса.
             $basePath . DIRECTORY_SEPARATOR . $basename . '.' . $subdomain . '.txt',
+            // 2) Канонічний файл для apex-домену referendum.social.
+            $basePath . DIRECTORY_SEPARATOR . $basename . '.apex.txt',
+            // 3) Безпечний fallback на англомовну версію.
             $basePath . DIRECTORY_SEPARATOR . $basename . '.en.txt',
+            // 4) Історичний fallback для сумісності.
             $basePath . DIRECTORY_SEPARATOR . $basename . '.ua.txt',
         ];
 
@@ -346,8 +351,8 @@ class SiteController extends Controller
             return strtolower($hostParts[0]);
         }
 
-        // Не нашкодити: головний домен лишається на історичній UA-конфігурації.
-        return 'ua';
+        // Не нашкодити: apex має власний файл, не підміняємо його UA-версією.
+        return 'apex';
     }
 
     // Додаткові статичні сторінки видалені, щоб уникнути доступу до неактуальних маршрутів.

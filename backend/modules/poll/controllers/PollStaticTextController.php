@@ -88,23 +88,22 @@ class PollStaticTextController extends Controller
                         $model->delete();
                     }
                 } elseif (!$model->save(false)) {
-                    Yii::$app->session->setFlash('error', 'Не вдалося зберегти мета-теги.');
-                    return $this->render('update', [
-                        'language' => $language,
-                        'model' => $model,
-                        'metaTokens' => Poll::getStaticMetaTokens(),
-                        'infoTokens' => Poll::getStaticInfoTokens(),
-                        'faqModels' => $faqFormModels,
-                    ]);
+                    // Не повертаємось з відкритою транзакцією: кидаємо виняток і відкотимося в catch.
+                    throw new \RuntimeException('Не вдалося зберегти мета-теги.');
                 }
 
                 $savedIds = [];
                 foreach ($faqModelsToSave as $faqModel) { $faqModel->save(false); $savedIds[] = $faqModel->id; }
                     if (!empty($savedIds)) { PollStaticFaq::deleteAll(['and', ['language_id' => $language->id], ['not in', 'id', $savedIds]]); } else { PollStaticFaq::deleteAll(['language_id' => $language->id]); }
                     $transaction->commit();
-                } catch (\Throwable $exception) { $transaction->rollBack(); throw $exception; }
-                Yii::$app->session->setFlash('success', 'Статичний текст та FAQ для опитувань оновлено.');
-                return $this->redirect(['index']);
+                } catch (\Throwable $exception) {
+                    $transaction->rollBack();
+                    Yii::$app->session->setFlash('error', 'Не вдалося зберегти мета-теги.');
+                }
+                if (!Yii::$app->session->hasFlash('error')) {
+                    Yii::$app->session->setFlash('success', 'Статичний текст та FAQ для опитувань оновлено.');
+                    return $this->redirect(['index']);
+                }
             }
         }
 

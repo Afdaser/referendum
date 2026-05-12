@@ -7,6 +7,7 @@ use kartik\select2\Select2;
 use common\models\Language;
 use common\models\User;
 use common\models\Tag;
+use common\models\PollFaq;
 
 /** @var yii\web\View $this */
 /** @var common\models\Poll $model */
@@ -31,6 +32,32 @@ use common\models\Tag;
         </div>
     </div>
     <?= $form->field($model, 'describe')->widget(ashch\tinymce\TinyMce::class); ?>
+    <?php
+    // Завантажуємо індивідуальні FAQ для цього опитування (або показуємо 2 порожні рядки для нового).
+    $pollFaqItems = $model->isNewRecord ? [] : PollFaq::find()->where(['poll_id' => $model->id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
+    $pollFaqItems[] = new PollFaq();
+    $pollFaqItems[] = new PollFaq();
+    ?>
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Індивідуальний FAQ для цього опитування</strong></div>
+        <div class="panel-body">
+            <?php foreach ($pollFaqItems as $index => $faqItem): ?>
+                <div class="well">
+                    <?= Html::hiddenInput("PollFaq[$index][id]", $faqItem->id); ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?= Html::label('Питання', "poll-faq-question-$index"); ?>
+                            <?= Html::textarea("PollFaq[$index][question]", $faqItem->question, ['id' => "poll-faq-question-$index", 'class' => 'form-control', 'rows' => 3]); ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?= Html::label('Відповідь', "poll-faq-answer-$index"); ?>
+                            <?= Html::textarea("PollFaq[$index][answer]", $faqItem->answer, ['id' => "poll-faq-answer-$index", 'class' => 'form-control', 'rows' => 3]); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
     <?= $form->field($model, 'poll_language_id')->widget(Select2::classname(), [
                 'data' => Language::dropDownAllItems(),
                 'language' => Yii::$app->language,

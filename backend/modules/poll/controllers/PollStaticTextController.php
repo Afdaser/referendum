@@ -8,6 +8,7 @@ use yii\web\Response;
 use common\models\Language;
 use common\models\Poll;
 use common\models\PollStaticText;
+use common\models\PollStaticFaq;
 
 /**
  * Керує сторінкою "Статичний текст для опитувань" в адмінці.
@@ -47,7 +48,27 @@ class PollStaticTextController extends Controller
             ]);
         }
 
+        $faqItems = PollStaticFaq::find()->where(['language_id' => $language->id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
+        $faqFormModels = $faqItems;
+
         if ($model->load(Yii::$app->request->post())) {
+            $faqPost = Yii::$app->request->post('PollStaticFaq', []);
+            $faqFormModels = [];
+            $faqModelsToSave = [];
+            $position = 0;
+            $hasFaqErrors = false;
+            foreach ($faqPost as $faqRow) {
+                $question = trim((string) ($faqRow['question'] ?? ''));
+                $answer = trim((string) ($faqRow['answer'] ?? ''));
+                $id = isset($faqRow['id']) ? (int) $faqRow['id'] : null;
+                if ($question === '' && $answer === '') { continue; }
+                $faqModel = $id ? PollStaticFaq::findOne(['id' => $id, 'language_id' => $language->id]) : null;
+                if (!$faqModel) { $faqModel = new PollStaticFaq(['language_id' => $language->id]); }
+                $faqModel->question = $question; $faqModel->answer = $answer; $faqModel->position = $position++;
+                if (!$faqModel->validate()) { $hasFaqErrors = true; }
+                $faqModelsToSave[] = $faqModel; $faqFormModels[] = $faqModel;
+            }
+
             // Нормалізуємо введення, щоб порожні значення не зберігались як пробіли.
             // Додаємо підтримку HTML-блоку для опису статистики опитування.
             $model->content = trim((string) $model->content);
@@ -55,9 +76,11 @@ class PollStaticTextController extends Controller
             $model->meta_title = trim((string) $model->meta_title);
             $model->meta_description = trim((string) $model->meta_description);
 
-            if (!$model->validate()) {
+            if (!$model->validate() || $hasFaqErrors) {
                 Yii::$app->session->setFlash('error', 'Не вдалося зберегти мета-теги.');
             } else {
+                $transaction = PollStaticText::getDb()->beginTransaction();
+                try {
                 if ($model->isEmpty()) {
                     if (!$model->isNewRecord) {
                         $model->delete();
@@ -69,19 +92,27 @@ class PollStaticTextController extends Controller
                         'model' => $model,
                         'metaTokens' => Poll::getStaticMetaTokens(),
                         'infoTokens' => Poll::getStaticInfoTokens(),
+                        'faqModels' => $faqFormModels,
                     ]);
                 }
 
-                Yii::$app->session->setFlash('success', 'Статичний текст та мета-теги для опитувань оновлено.');
+                foreach ($faqModelsToSave as $faqModel) { $faqModel->save(false); $savedIds[] = $faqModel->id; }
+                    if (!empty($savedIds)) { PollStaticFaq::deleteAll(['and', ['language_id' => $language->id], ['not in', 'id', $savedIds]]); } else { PollStaticFaq::deleteAll(['language_id' => $language->id]); }
+                    $transaction->commit();
+                } catch (\Throwable $exception) { $transaction->rollBack(); throw $exception; }
+                Yii::$app->session->setFlash('success', 'Статичний текст та FAQ для опитувань оновлено.');
                 return $this->redirect(['index']);
             }
         }
 
+        $faqFormModels[] = new PollStaticFaq(['language_id' => $language->id]);
+        $faqFormModels[] = new PollStaticFaq(['language_id' => $language->id]);
         return $this->render('update', [
             'language' => $language,
             'model' => $model,
             'metaTokens' => Poll::getStaticMetaTokens(),
             'infoTokens' => Poll::getStaticInfoTokens(),
+            'faqModels' => $faqFormModels,
         ]);
     }
 

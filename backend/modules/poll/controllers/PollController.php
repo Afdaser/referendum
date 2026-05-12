@@ -2,6 +2,7 @@
 
 namespace backend\modules\poll\controllers;
 
+use common\models\PollFaq;
 use common\models\Poll;
 use common\models\search\PollSearch;
 use yii\web\Controller;
@@ -76,6 +77,7 @@ class PollController extends Controller
             if ($model->load($this->request->post()) && $model->save()) {
                 // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
                 $model->syncTags($model->tagNames);
+                $this->savePollFaq($model);
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -101,6 +103,7 @@ class PollController extends Controller
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
             $model->syncTags($model->tagNames);
+            $this->savePollFaq($model);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -137,5 +140,43 @@ class PollController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Зберігає індивідуальні FAQ для конкретного опитування.
+     */
+    private function savePollFaq(Poll $poll): void
+    {
+        $rows = $this->request->post('PollFaq', []);
+        $position = 0;
+        $savedIds = [];
+
+        foreach ($rows as $row) {
+            $question = trim((string)($row['question'] ?? ''));
+            $answer = trim((string)($row['answer'] ?? ''));
+            $id = isset($row['id']) ? (int)$row['id'] : null;
+
+            if ($question === '' && $answer === '') {
+                continue;
+            }
+
+            $faq = $id ? PollFaq::findOne(['id' => $id, 'poll_id' => $poll->id]) : null;
+            if (!$faq) {
+                $faq = new PollFaq(['poll_id' => $poll->id]);
+            }
+
+            $faq->poll_id = $poll->id;
+            $faq->question = $question;
+            $faq->answer = $answer;
+            $faq->position = $position++;
+            $faq->save(false);
+            $savedIds[] = $faq->id;
+        }
+
+        if (!empty($savedIds)) {
+            PollFaq::deleteAll(['and', ['poll_id' => $poll->id], ['not in', 'id', $savedIds]]);
+        } else {
+            PollFaq::deleteAll(['poll_id' => $poll->id]);
+        }
     }
 }

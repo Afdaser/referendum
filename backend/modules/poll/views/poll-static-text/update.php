@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 /** @var common\models\PollStaticText $model */
 /** @var array $metaTokens */
 /** @var array $infoTokens */
+/** @var common\models\PollStaticFaq[] $faqModels */
 
 $this->title = 'Статичний текст для опитувань: ' . $language->title;
 $this->params['breadcrumbs'][] = ['label' => 'Статичний текст для опитувань', 'url' => ['index']];
@@ -60,6 +61,31 @@ $this->params['breadcrumbs'][] = $language->title;
                 <?= $form->field($model, 'meta_description')
                     ->textarea(['rows' => 4, 'class' => 'form-control'])
                     ->hint('Власний мета-опис. Порожнє значення повертає автоматичний опис.'); ?>
+            </div>
+        </div>
+
+        
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>FAQ для сторінки опитування (статичний)</strong></div>
+            <div class="panel-body">
+                <p>Ці FAQ додаються для всіх опитувань обраної підмови. Доступні ті самі змінні, що і вище.</p>
+                <div class="faq-items">
+                    <?php foreach ($faqModels as $index => $faqModel): ?>
+                        <div class="faq-item well">
+                            <?= Html::hiddenInput("PollStaticFaq[$index][id]", $faqModel->id); ?>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <?= Html::label('Питання', "poll-static-faq-question-$index"); ?>
+                                    <?= Html::textarea("PollStaticFaq[$index][question]", $faqModel->question, ['id'=>"poll-static-faq-question-$index", 'class'=>'form-control', 'rows'=>3]); ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= Html::label('Відповідь', "poll-static-faq-answer-$index"); ?>
+                                    <?= Html::textarea("PollStaticFaq[$index][answer]", $faqModel->answer, ['id'=>"poll-static-faq-answer-$index", 'class'=>'form-control', 'rows'=>3]); ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
 

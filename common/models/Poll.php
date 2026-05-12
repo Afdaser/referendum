@@ -1476,6 +1476,32 @@ class Poll extends ActiveRecord
         return $this->replaceStaticMetaTokens($staticText->content, $replacements);
     }
 
+
+    /**
+     * Повертає об'єднаний FAQ: спершу статичний (для підмови), потім індивідуальний для опитування.
+     */
+    public function getFaqList(): array
+    {
+        $data = $this->getStaticInfoBlockData();
+        $replacements = $this->getStaticInfoReplacements($data);
+
+        $items = [];
+        $staticFaq = PollStaticFaq::find()->where(['language_id' => (int)$this->poll_language_id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
+        foreach ($staticFaq as $faq) {
+            $q = strtr((string)$faq->question, $replacements);
+            $a = strtr((string)$faq->answer, $replacements);
+            if (trim($q) !== '' && trim($a) !== '') { $items[] = ['question' => $q, 'answer' => $a]; }
+        }
+
+        $pollFaq = PollFaq::find()->where(['poll_id' => (int)$this->id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
+        foreach ($pollFaq as $faq) {
+            $q = strtr((string)$faq->question, $replacements);
+            $a = strtr((string)$faq->answer, $replacements);
+            if (trim($q) !== '' && trim($a) !== '') { $items[] = ['question' => $q, 'answer' => $a]; }
+        }
+
+        return $items;
+    }
     /**
      * Повертає обчислені дані для блоку статистики опитування.
      */

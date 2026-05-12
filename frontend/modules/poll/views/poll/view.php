@@ -328,6 +328,7 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
     // Дозволяємо перевизначити стандартний блок статистики через адмінку.
     $infoBlockData = $poll->getStaticInfoBlockData();
     $customInfoBlock = $poll->getStaticInfoBlock($infoBlockData);
+    $faqList = $poll->getFaqList();
     ?>
     <?php if ($customInfoBlock !== null): ?>
         <?= $customInfoBlock; ?>
@@ -386,6 +387,24 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
             <p class="muted"><?= Yii::t('poll', 'У цьому опитуванні ще немає варіантів відповіді.'); ?></p>
         <?php endif; ?>
     <?php endif; ?>
+
+    <?php if (!empty($faqList)): ?>
+        <?php // Рендеримо один спільний FAQ-блок: статичний + індивідуальний для цього опитування. ?>
+        <div class="tag-faq" itemscope itemtype="https://schema.org/FAQPage">
+            <h2><?= Yii::t('poll', 'FAQ'); ?></h2>
+            <?php foreach ($faqList as $faqIndex => $faqItem): ?>
+                <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+                    <button class="faq_question" type="button" aria-expanded="false" aria-controls="poll-faq-answer-<?= $faqIndex; ?>">
+                        <span class="faq_question-text" itemprop="name"><?= Html::encode($faqItem['question']); ?></span>
+                    </button>
+                    <div class="faq_answer" id="poll-faq-answer-<?= $faqIndex; ?>" hidden itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
+                        <div itemprop="text"><?= nl2br(Html::encode($faqItem['answer'])); ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
 </div>
 
 
@@ -409,6 +428,7 @@ $pollId = $poll->id;
 $pollTitle = Json::encode($poll->title);
 
 $js = <<<JS
+(function(){var faqButtons=document.querySelectorAll('.tag-faq .faq_question');faqButtons.forEach(function(button){button.addEventListener('click',function(){var entry=button.closest('.faq_entry');if(!entry){return;}var isOpen=entry.classList.toggle('is-open');button.setAttribute('aria-expanded',isOpen?'true':'false');var answerId=button.getAttribute('aria-controls');var answer=answerId?document.getElementById(answerId):null;if(answer){answer.hidden=!isOpen;}});});})();
 var maxLength = jQuery('#answer_text').attr('maxlength');
 jQuery('#answer_text').on('keyup', function () {
     var curLength = jQuery('#answer_text').val().length;

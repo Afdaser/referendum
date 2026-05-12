@@ -160,6 +160,11 @@ class PollController extends Controller
                 continue;
             }
 
+            // Не зберігаємо неповні FAQ-рядки, щоб не створювати «невидимі» записи.
+            if ($question === '' || $answer === '') {
+                continue;
+            }
+
             $faq = $id ? PollFaq::findOne(['id' => $id, 'poll_id' => $poll->id]) : null;
             if (!$faq) {
                 $faq = new PollFaq(['poll_id' => $poll->id]);
@@ -169,6 +174,11 @@ class PollController extends Controller
             $faq->question = $question;
             $faq->answer = $answer;
             $faq->position = $position++;
+            // Додатково валідуємо модель перед збереженням навіть для повних рядків.
+            if (!$faq->validate()) {
+                continue;
+            }
+
             $faq->save(false);
             $savedIds[] = $faq->id;
         }

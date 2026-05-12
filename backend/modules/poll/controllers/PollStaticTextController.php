@@ -62,6 +62,8 @@ class PollStaticTextController extends Controller
                 $answer = trim((string) ($faqRow['answer'] ?? ''));
                 $id = isset($faqRow['id']) ? (int) $faqRow['id'] : null;
                 if ($question === '' && $answer === '') { continue; }
+                // Забороняємо збереження неповних FAQ-рядків: питання без відповіді або навпаки.
+                if ($question === '' || $answer === '') { $hasFaqErrors = true; continue; }
                 $faqModel = $id ? PollStaticFaq::findOne(['id' => $id, 'language_id' => $language->id]) : null;
                 if (!$faqModel) { $faqModel = new PollStaticFaq(['language_id' => $language->id]); }
                 $faqModel->question = $question; $faqModel->answer = $answer; $faqModel->position = $position++;
@@ -77,7 +79,7 @@ class PollStaticTextController extends Controller
             $model->meta_description = trim((string) $model->meta_description);
 
             if (!$model->validate() || $hasFaqErrors) {
-                Yii::$app->session->setFlash('error', 'Не вдалося зберегти мета-теги.');
+                Yii::$app->session->setFlash('error', $hasFaqErrors ? 'Перевірте FAQ: кожне запитання повинно мати відповідь.' : 'Не вдалося зберегти мета-теги.');
             } else {
                 $transaction = PollStaticText::getDb()->beginTransaction();
                 try {
@@ -96,6 +98,7 @@ class PollStaticTextController extends Controller
                     ]);
                 }
 
+                $savedIds = [];
                 foreach ($faqModelsToSave as $faqModel) { $faqModel->save(false); $savedIds[] = $faqModel->id; }
                     if (!empty($savedIds)) { PollStaticFaq::deleteAll(['and', ['language_id' => $language->id], ['not in', 'id', $savedIds]]); } else { PollStaticFaq::deleteAll(['language_id' => $language->id]); }
                     $transaction->commit();

@@ -395,10 +395,10 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
             <?php foreach ($faqList as $faqIndex => $faqItem): ?>
                 <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
                     <button class="faq_question" type="button" aria-expanded="false" aria-controls="poll-faq-answer-<?= $faqIndex; ?>">
-                        <span class="faq_question-text" itemprop="name"><?= $faqItem['question']; ?></span>
+                        <span class="faq_question-text" itemprop="name"><?= Html::encode($faqItem['question']); ?></span>
                     </button>
                     <div class="faq_answer" id="poll-faq-answer-<?= $faqIndex; ?>" hidden itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-                        <div itemprop="text"><?= $faqItem['answer']; ?></div>
+                        <div itemprop="text"><?= nl2br(Html::encode($faqItem['answer'])); ?></div>
                     </div>
                 </div>
             <?php endforeach; ?>

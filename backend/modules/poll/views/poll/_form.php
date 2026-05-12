@@ -10,6 +10,7 @@ use common\models\Tag;
 
 /** @var yii\web\View $this */
 /** @var common\models\Poll $model */
+/** @var common\models\PollStaticFaq[] $faqModels */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
@@ -26,8 +27,30 @@ use common\models\Tag;
                 ->hint('Кастомний H1 для цього опитування. Якщо порожньо — використається шаблон з налаштувань мови.'); ?>
             <?= $form->field($model, 'meta_title')->textInput(['maxlength' => true])
                 ->hint('Кастомний title для цього опитування. Якщо порожньо — використається шаблон з налаштувань мови.'); ?>
-            <?= $form->field($model, 'meta_description')->textarea(['rows' => 4, 'class' => 'form-control'])
+    <?= $form->field($model, 'meta_description')->textarea(['rows' => 4, 'class' => 'form-control'])
                 ->hint('Кастомний description для цього опитування. Якщо порожньо — використається шаблон з налаштувань мови.'); ?>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>FAQ для сторінки опитування</strong></div>
+        <div class="panel-body">
+            <?php foreach ($faqModels as $index => $faqModel): ?>
+                <div class="well">
+                    <?= Html::hiddenInput("PollStaticFaq[$index][id]", $faqModel->id); ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <?php // Редактор питання FAQ для мікророзмітки FAQPage. ?>
+                            <?= Html::label('Питання', "poll-faq-question-$index"); ?>
+                            <?= Html::textarea("PollStaticFaq[$index][question]", $faqModel->question, ['class' => 'form-control', 'rows' => 3, 'id' => "poll-faq-question-$index"]); ?>
+                        </div>
+                        <div class="col-md-6">
+                            <?php // Редактор відповіді FAQ у тому ж форматі, що й для тегів. ?>
+                            <?= Html::label('Відповідь', "poll-faq-answer-$index"); ?>
+                            <?= Html::textarea("PollStaticFaq[$index][answer]", $faqModel->answer, ['class' => 'form-control', 'rows' => 3, 'id' => "poll-faq-answer-$index"]); ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <?= $form->field($model, 'describe')->widget(ashch\tinymce\TinyMce::class); ?>

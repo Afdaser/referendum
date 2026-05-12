@@ -4,6 +4,7 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var common\models\Poll $model */
+/** @var common\models\PollStaticFaq[] $faqModels */
 
 $this->title = Yii::t('app', 'Update Poll: {name}', [
     'name' => $model->title,
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
     <?= $this->render('_form', [
         'model' => $model,
+        'faqModels' => $faqModels,
     ]) ?>
 
 </div>

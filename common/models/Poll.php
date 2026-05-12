@@ -303,6 +303,17 @@ class Poll extends ActiveRecord
     }
 
     /**
+     * Повертає FAQ, що налаштовані саме для цього опитування.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStaticFaqs()
+    {
+        return $this->hasMany(PollStaticFaq::class, ['poll_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC]);
+    }
+
+    /**
      * Gets query for [[Tags]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\TagQuery

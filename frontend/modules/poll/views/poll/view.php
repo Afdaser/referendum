@@ -52,6 +52,27 @@ $this->registerJs(<<<JS
 JS
 , View::POS_END);
 
+$this->registerJs(<<<JS
+(function () {
+    var faqButtons = document.querySelectorAll('.tag-faq .faq_question');
+    faqButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            var entry = button.closest('.faq_entry');
+            var answer = document.getElementById(button.getAttribute('aria-controls'));
+            var isOpen = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+            if (answer) {
+                answer.hidden = isOpen;
+            }
+            if (entry) {
+                entry.classList.toggle('is-open', !isOpen);
+            }
+        });
+    });
+})();
+JS
+, View::POS_READY);
+
 ?>
 <div class="col-md-8">
     <div class="row right_cut_row">
@@ -109,6 +130,21 @@ JS
                                 <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
                             </div>
                         <?php endif;?>
+                        <?php if (!empty($poll->staticFaqs)): ?>
+                            <div class="info_block tag-faq" itemscope itemtype="https://schema.org/FAQPage">
+                                <h2><?= Yii::t('poll', 'Frequently Asked Questions about the {title}', ['title' => $poll->title]); ?></h2>
+                                <?php foreach ($poll->staticFaqs as $index => $faqItem): ?>
+                                    <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+                                        <button class="faq_question" type="button" aria-expanded="false" aria-controls="faq-answer-<?= $index; ?>">
+                                            <span class="faq_question-text" itemprop="name"><?= Html::encode($faqItem->question); ?></span>
+                                        </button>
+                                        <div class="faq_answer" id="faq-answer-<?= $index; ?>" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer" hidden>
+                                            <div itemprop="text"><?= nl2br(Html::encode($faqItem->answer)); ?></div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="top_poll_b clearfix bottom_space_for_chart poll_view_footer">
                         <div class="poll_view_tags">

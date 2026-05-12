@@ -27,10 +27,10 @@ class PollStaticFaq extends ActiveRecord
         return [
             [['poll_id'], 'required'],
             [['poll_id', 'position', 'created_at', 'updated_at'], 'integer'],
+            [['is_dynamic'], 'boolean'],
             [['question', 'answer'], 'string'],
             [['question', 'answer'], 'required'],
             [['poll_id'], 'exist', 'skipOnError' => true, 'targetClass' => Poll::class, 'targetAttribute' => ['poll_id' => 'id']],
         ];
     }
 }
-

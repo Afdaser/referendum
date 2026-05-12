@@ -14,6 +14,8 @@ class m20260512_120000_create_table_poll_static_faq extends Migration
             'poll_id' => $this->integer()->notNull(),
             'question' => $this->text()->notNull(),
             'answer' => $this->text()->notNull(),
+            // Якщо 1 — дозволяємо підстановку токенів (@title, @votes_total, тощо) перед рендером.
+            'is_dynamic' => $this->boolean()->notNull()->defaultValue(0),
             'position' => $this->integer()->notNull()->defaultValue(0),
             'created_at' => $this->integer()->null(),
             'updated_at' => $this->integer()->null(),
@@ -37,4 +39,3 @@ class m20260512_120000_create_table_poll_static_faq extends Migration
         $this->dropTable('{{%poll_static_faq}}');
     }
 }
-

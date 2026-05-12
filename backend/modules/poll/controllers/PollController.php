@@ -144,6 +144,8 @@ class PollController extends Controller
             $faqModel->poll_id = (int) $pollId;
             $faqModel->question = $question;
             $faqModel->answer = $answer;
+            // Даємо змогу окремо керувати статичним/динамічним режимом FAQ.
+            $faqModel->is_dynamic = (int) (($faqRow['is_dynamic'] ?? 0) ? 1 : 0);
             $faqModel->position = $position++;
             $faqModels[] = $faqModel;
         }

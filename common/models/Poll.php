@@ -314,6 +314,35 @@ class Poll extends ActiveRecord
     }
 
     /**
+     * Повертає готові до виводу FAQ: статичні як є, динамічні — з підстановкою токенів.
+     */
+    public function getFaqList(): array
+    {
+        $items = [];
+        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData());
+        foreach ($this->staticFaqs as $faq) {
+            $question = (string) $faq->question;
+            $answer = (string) $faq->answer;
+
+            if ((int) $faq->is_dynamic === 1) {
+                $question = $this->replaceStaticMetaTokens($question, $replacements) ?? $question;
+                $answer = $this->replaceStaticMetaTokens($answer, $replacements) ?? $answer;
+            }
+
+            if (trim($question) === '' || trim($answer) === '') {
+                continue;
+            }
+
+            $items[] = [
+                'question' => $question,
+                'answer' => $answer,
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
      * Gets query for [[Tags]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\TagQuery

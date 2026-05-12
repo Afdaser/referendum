@@ -47,6 +47,12 @@ use common\models\Tag;
                             <?php // Редактор відповіді FAQ у тому ж форматі, що й для тегів. ?>
                             <?= Html::label('Відповідь', "poll-faq-answer-$index"); ?>
                             <?= Html::textarea("PollStaticFaq[$index][answer]", $faqModel->answer, ['class' => 'form-control', 'rows' => 3, 'id' => "poll-faq-answer-$index"]); ?>
+                            <div class="checkbox" style="margin-top: 10px;">
+                                <label>
+                                    <?= Html::checkbox("PollStaticFaq[$index][is_dynamic]", (int) $faqModel->is_dynamic === 1, ['value' => 1]); ?>
+                                    Динамічний FAQ (дозволити токени на кшталт @title, @votes_total)
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>

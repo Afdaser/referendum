@@ -130,21 +130,6 @@ JS
                                 <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
                             </div>
                         <?php endif;?>
-                        <?php if (!empty($poll->staticFaqs)): ?>
-                            <div class="info_block tag-faq" itemscope itemtype="https://schema.org/FAQPage">
-                                <h2><?= Yii::t('poll', 'Frequently Asked Questions about the {title}', ['title' => $poll->title]); ?></h2>
-                                <?php foreach ($poll->staticFaqs as $index => $faqItem): ?>
-                                    <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-                                        <button class="faq_question" type="button" aria-expanded="false" aria-controls="faq-answer-<?= $index; ?>">
-                                            <span class="faq_question-text" itemprop="name"><?= Html::encode($faqItem->question); ?></span>
-                                        </button>
-                                        <div class="faq_answer" id="faq-answer-<?= $index; ?>" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer" hidden>
-                                            <div itemprop="text"><?= nl2br(Html::encode($faqItem->answer)); ?></div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
                     </div>
                     <div class="top_poll_b clearfix bottom_space_for_chart poll_view_footer">
                         <div class="poll_view_tags">
@@ -421,6 +406,24 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
         <?php else: ?>
             <p class="muted"><?= Yii::t('poll', 'У цьому опитуванні ще немає варіантів відповіді.'); ?></p>
         <?php endif; ?>
+    <?php endif; ?>
+
+    <?php $faqList = $poll->getFaqList(); ?>
+    <?php if (!empty($faqList)): ?>
+        <?php // FAQ-блок виносимо вниз info_block, як просили, зі збереженням існуючих стилів tag-faq. ?>
+        <div class="tag-faq" itemscope itemtype="https://schema.org/FAQPage">
+            <h2><?= Yii::t('poll', 'Frequently Asked Questions about the {title}', ['title' => $poll->title]); ?></h2>
+            <?php foreach ($faqList as $index => $faqItem): ?>
+                <div class="faq_entry" itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+                    <button class="faq_question" type="button" aria-expanded="false" aria-controls="faq-answer-<?= $index; ?>">
+                        <span class="faq_question-text" itemprop="name"><?= Html::encode($faqItem['question']); ?></span>
+                    </button>
+                    <div class="faq_answer" id="faq-answer-<?= $index; ?>" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer" hidden>
+                        <div itemprop="text"><?= nl2br(Html::encode($faqItem['answer'])); ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
 </div>
 

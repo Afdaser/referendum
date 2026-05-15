@@ -76,7 +76,27 @@ Menu::widget([
             <?php if ($category == 'own' && !count($polls)): ?>
                 <?php if (!Yii::$app->user->isGuest): ?>
                     <?= $this->render('polls/_myPollsEmpty'); ?>
+                <?php else: ?>
+                    <?php // Для гостей показуємо пояснення в стилі сайту + відкриття реєстраційної модалки, як в інших блоках. ?>
+                    <div class="top_b_chart search_prefix">
+                        <a class="btn_prev_var go_to_main_btn" href="<?= \yii\helpers\Url::base(true) ?>"><?= Yii::t("filter", 'Головна'); ?></a>
+                        <span class="search_text"><?= Html::encode(Yii::t('main', 'Ваші опитування')); ?></span>
+                    </div>
+                    <div class="bottom_content_tabs marg_bot" role="alert">
+                        <p><?= Html::encode(Yii::t('main', 'Ця сторінка наразі пуста, тому що вона працює тільки для зареєстрованих користувачів.')); ?></p>
+                        <p><a href="#" class="toggle_modal_registrtion"><?= Html::encode(Yii::t('main', 'Реєстрація')); ?></a></p>
+                    </div>
                 <?php endif; ?>
+            <?php elseif ($category === 'actual' && Yii::$app->user->isGuest): ?>
+                <?php // Для гостей в "Актуальні для вас теми" пояснюємо причину і відкриваємо стандартну модалку реєстрації. ?>
+                <div class="top_b_chart search_prefix">
+                    <a class="btn_prev_var go_to_main_btn" href="<?= \yii\helpers\Url::base(true) ?>"><?= Yii::t("filter", 'Головна'); ?></a>
+                    <span class="search_text"><?= Html::encode(Yii::t('main', 'Актуальні для вас теми')); ?></span>
+                </div>
+                <div class="bottom_content_tabs marg_bot" role="alert">
+                    <p><?= Html::encode(Yii::t('main', 'Ця сторінка наразі пуста, тому що вона показує топ опитувань, які підходять саме вам, і працює тільки для зареєстрованих користувачів.')); ?></p>
+                    <p><a href="#" class="toggle_modal_registrtion"><?= Html::encode(Yii::t('main', 'Реєстрація')); ?></a></p>
+                </div>
             <?php elseif ($category != 'actual' || !Yii::$app->user->isGuest): ?>
                 <?= $this->render('filters/_sort', array(
                     'category' => $category,

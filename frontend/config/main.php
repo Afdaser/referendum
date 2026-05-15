@@ -286,6 +286,10 @@ return [
                 ],
 
 //                    '/tag/<tag:\w+>' => '/poll/tag/index',
+                    // Людські URL без /site/ для ключових сторінок з опитуваннями.
+                    'actual-polls' => 'poll/site/actual-polls',
+                    'my-polls' => 'poll/site/my-polls',
+                    'my-polls/<sorting:(desc|asc|default)>/<period:\w+>/<limit:(2|5|10)>' => 'poll/site/my-polls',
                     'site/actualPolls' => 'poll/site/actual-polls',
                     'site/myPolls' => 'poll/site/my-polls',
                     'site/myPolls/<sorting:(desc|asc|default)>/<period:\w+>/<limit:(2|5|10)>' => 'poll/site/my-polls',

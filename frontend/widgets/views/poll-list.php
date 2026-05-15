@@ -2,6 +2,7 @@
 
 use yii\widgets\Menu;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use common\models\Poll;
 
 /* @var $this SiteController */
@@ -76,7 +77,27 @@ Menu::widget([
             <?php if ($category == 'own' && !count($polls)): ?>
                 <?php if (!Yii::$app->user->isGuest): ?>
                     <?= $this->render('polls/_myPollsEmpty'); ?>
+                <?php else: ?>
+                    <?php // Для гостей показуємо пояснення замість порожньої сторінки. ?>
+                    <div class="alert alert-info" role="alert">
+                        <p><?= Html::encode(Yii::t('main', 'Ця сторінка наразі пуста, тому що вона працює тільки для зареєстрованих користувачів.')); ?></p>
+                        <p><?= Html::a(
+                            Html::encode(Yii::t('main', 'Перейти до реєстрації')),
+                            Url::toRoute(['/site/signup']),
+                            ['class' => 'btn btn-primary']
+                        ); ?></p>
+                    </div>
                 <?php endif; ?>
+            <?php elseif ($category === 'actual' && Yii::$app->user->isGuest): ?>
+                <?php // Для гостей в "Актуальні для вас теми" пояснюємо, чому список порожній. ?>
+                <div class="alert alert-info" role="alert">
+                    <p><?= Html::encode(Yii::t('main', 'Ця сторінка наразі пуста, тому що вона показує топ опитувань, які підходять саме вам, і працює тільки для зареєстрованих користувачів.')); ?></p>
+                    <p><?= Html::a(
+                        Html::encode(Yii::t('main', 'Перейти до реєстрації')),
+                        Url::toRoute(['/site/signup']),
+                        ['class' => 'btn btn-primary']
+                    ); ?></p>
+                </div>
             <?php elseif ($category != 'actual' || !Yii::$app->user->isGuest): ?>
                 <?= $this->render('filters/_sort', array(
                     'category' => $category,

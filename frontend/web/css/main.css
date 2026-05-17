@@ -126,39 +126,62 @@ a:hover {
     max-width: 970px;
 }
 .header {
-    min-height: 100px;
+    min-height: 112px;
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 a.logo, div.logo {
     margin-top: 10px;
     display: inline-block;
     text-decoration: none;
 }
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px 0;
+}
+/* Використовуємо окремий клас-обгортку для контролю сучасного вирівнювання логотипа. */
+.header_logo_wrap {
+    margin-top: 0 !important;
+}
 .sub_text_logo {
     color: #fff;
     display: inline-block;
     margin-left: 37px;
     line-height: 24px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
 }
 .right_header_b {
-    float: right;
     text-align: right;
-    margin-top: 13px;
+    margin-top: 0;
+}
+/* Контейнер елементів керування формуємо у вертикальну колонку для чистішого сучасного вигляду. */
+.header_controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
+    width: 170px;
+    height: 32px;
+    line-height: 30px;
     border: 1px solid #147536;
-    border-radius: 2px;
+    border-radius: 8px;
     background: #dce6e4;
-    margin-bottom: 10px;
+    padding: 0 10px;
+    transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .language_select:hover,
 .language_select:focus {
     background: #fff;
+    border-color: #3ac469;
+    box-shadow: 0 0 0 2px rgba(58, 196, 105, 0.15);
 }
 .search_b {
     position: relative;
@@ -166,31 +189,48 @@ a.logo, div.logo {
 .search_input {
     display: inline-block;
     width: 300px;
-    height: 32px;
+    height: 36px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
+    border-radius: 18px;
     padding-left: 12px;
+    padding-right: 36px;
     color: #565656;
     outline: none;
+    transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .search_input:hover,
 .search_input:focus {
     background: #fff;
     color: #000;
     border-color: #3ac469;
+    box-shadow: 0 0 0 2px rgba(58, 196, 105, 0.15);
 }
 .search_btn {
     position: absolute;
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
+    top: 12px;
     right: 10px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+}
+@media (max-width: 767px) {
+    .header_row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .header_controls {
+        width: 100%;
+        align-items: stretch;
+    }
+    .language_select,
+    .search_input {
+        width: 100%;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

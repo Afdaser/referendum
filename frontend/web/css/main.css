@@ -129,36 +129,51 @@ a:hover {
     min-height: 100px;
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
+    box-shadow: 0 10px 28px rgba(9, 68, 34, 0.24);
+}
+.header_inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 0 12px;
 }
 a.logo, div.logo {
-    margin-top: 10px;
+    margin-top: 0;
     display: inline-block;
     text-decoration: none;
 }
 .sub_text_logo {
-    color: #fff;
+    color: #e9fff1;
     display: inline-block;
     margin-left: 37px;
-    line-height: 24px;
+    line-height: 20px;
+    font-size: 13px;
+    letter-spacing: .02em;
 }
 .right_header_b {
-    float: right;
-    text-align: right;
-    margin-top: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
+    width: 165px;
+    height: 34px;
     line-height: 22px;
     border: 1px solid #147536;
-    border-radius: 2px;
-    background: #dce6e4;
-    margin-bottom: 10px;
+    border-radius: 17px;
+    background: #eaf4ef;
+    margin-bottom: 0;
+    padding: 0 11px;
+    font-size: 13px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 .language_select:hover,
 .language_select:focus {
     background: #fff;
+    border-color: #3ac469;
 }
 .search_b {
     position: relative;
@@ -166,31 +181,39 @@ a.logo, div.logo {
 .search_input {
     display: inline-block;
     width: 300px;
-    height: 32px;
-    border: 2px solid #147536;
-    background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    height: 38px;
+    border: 1px solid #147536;
+    background: #f5faf7;
+    border-radius: 19px;
+    padding: 0 44px 0 14px;
     color: #565656;
     outline: none;
+    box-shadow: 0 7px 16px rgba(9, 68, 34, 0.14);
+    transition: all .2s ease;
 }
 .search_input:hover,
 .search_input:focus {
     background: #fff;
     color: #000;
     border-color: #3ac469;
+    box-shadow: 0 9px 18px rgba(9, 68, 34, 0.18);
 }
 .search_btn {
     position: absolute;
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 13px;
+    right: 14px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: transform .2s ease;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+    transform: scale(1.08);
 }
 .sub_header_slider_b {
     height: 81px;

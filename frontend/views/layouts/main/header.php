@@ -9,7 +9,8 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <?php // Додаємо внутрішній контейнер для сучаснішої композиції без зміни функціоналу. ?>
+        <div class="row header_inner">
             <?php if (Yii::$app->request->url == '/') : ?>
                 <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
@@ -29,7 +30,6 @@ use frontend\widgets\WSearchForm;
 
             <div class="right_header_b">
                 <?= WLanguageSelector::widget(); ?>
-                <br>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>
@@ -37,7 +37,8 @@ use frontend\widgets\WSearchForm;
                     <form method="post" action="/site/search" name="HeaderSearch">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
                         <input class="search_input" type="search" name="SearchForm[text]" value="" placeholder="<?= Yii::t("main", 'Пошук'); ?>...">
-                        <a href="#" class="search_btn" onclick="document.forms['HeaderSearch'].submit()"></a>
+                        <?php // Замінюємо декоративне посилання на кнопку для кращої доступності. ?>
+                        <button type="submit" class="search_btn" aria-label="<?= Yii::t("main", 'Пошук'); ?>"></button>
                         <input type="checkbox" name="SearchForm[search_in_title]" checked hidden value="1">
                     </form>
                 </div>

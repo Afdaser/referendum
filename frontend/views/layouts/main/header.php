@@ -9,15 +9,15 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <div class="row header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                <div class="logo header_logo" aria-label="referendum.social logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
                 </div>
             <?php else: ?>
-                <a href="/" class="logo">
+                <a href="/" class="logo header_logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
                     <br>
@@ -27,9 +27,9 @@ use frontend\widgets\WSearchForm;
                 </a>
             <?php endif; ?>
 
-            <div class="right_header_b">
+            <div class="right_header_b" aria-label="header controls">
                 <?= WLanguageSelector::widget(); ?>
-                <br>
+                <?php // Прибираємо застарілий перенос і переходимо на керування відступами через CSS. ?>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>

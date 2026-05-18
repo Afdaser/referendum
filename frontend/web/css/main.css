@@ -130,8 +130,18 @@ a:hover {
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+
+.header_row {
+    /* Оновлений хедер: гнучке компонування з вирівнюванням елементів керування. */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    min-height: 96px;
+}
 a.logo, div.logo {
-    margin-top: 10px;
+    margin-top: 0;
     display: inline-block;
     text-decoration: none;
 }
@@ -142,9 +152,12 @@ a.logo, div.logo {
     line-height: 24px;
 }
 .right_header_b {
-    float: right;
-    text-align: right;
-    margin-top: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 0;
+    margin-left: auto;
 }
 .language_select {
     display: inline-block;
@@ -162,6 +175,7 @@ a.logo, div.logo {
 }
 .search_b {
     position: relative;
+    display: inline-block;
 }
 .search_input {
     display: inline-block;
@@ -191,6 +205,24 @@ a.logo, div.logo {
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+}
+
+@media (max-width: 767px) {
+    .header_row {
+        align-items: flex-start;
+        gap: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .right_header_b {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .search_input {
+        width: 220px;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

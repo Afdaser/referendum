@@ -9,30 +9,28 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <div class="row header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                <?php // Для головної сторінки залишаємо логотип без посилання, але зі спільною сучасною обгорткою. ?>
+                <div class="logo header_logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
-                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
+                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
                 </div>
             <?php else: ?>
-                <a href="/" class="logo">
+                <?php // На внутрішніх сторінках логотип лишається клікабельним та веде на головну. ?>
+                <a href="/" class="logo header_logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
-                    <br>
                     <span class="sub_text_logo">
                         <?php echo Yii::t("main", 'кожен голос важливий'); ?>
                     </span>
                 </a>
             <?php endif; ?>
 
-            <div class="right_header_b">
-                <?= WLanguageSelector::widget(); ?>
-                <br>
-<?php /* * / ?>
-                <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
-<?php /* */ ?>
+            <?php // Права частина хедера: селектор мови + форма пошуку (без зміни функціональності). ?>
+            <div class="right_header_b header_controls">
+                <div class="header_language_wrap"><?= WLanguageSelector::widget(); ?></div>
                 <div class="search_b">
                     <form method="post" action="/site/search" name="HeaderSearch">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />

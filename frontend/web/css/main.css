@@ -136,6 +136,8 @@ a:hover {
     justify-content: space-between;
     gap: 34px;
     padding: 14px 0;
+    margin-left: 0;
+    margin-right: 0;
 }
 a.logo, div.logo {
     display: inline-flex;
@@ -160,6 +162,7 @@ a.logo, div.logo {
     gap: 9px;
     flex: 1;
     max-width: 520px;
+    min-width: 0;
 }
 .header_controls_top {
     display: flex;
@@ -198,6 +201,7 @@ a.logo, div.logo {
 .search_b {
     position: relative;
     width: 100%;
+    overflow: hidden;
 }
 .search_input {
     display: block;
@@ -241,6 +245,7 @@ a.logo, div.logo {
 
 /* Адаптуємо хедер під мобільні екрани без втрати функціональності. */
 @media (max-width: 767px) {
+    /* Прибираємо bootstrap-відступи row, щоб поля не вилазили за контейнер на вузьких екранах. */
     .header_row {
         align-items: flex-start;
         flex-direction: column;

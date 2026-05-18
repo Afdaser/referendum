@@ -127,24 +127,38 @@ a:hover {
 }
 .header {
     min-height: 100px;
-    background: url(/img/layout/header_bg.png) repeat;
+    /* Оновлюємо шапку сучасним градієнтом і м'якою тінню, але зберігаємо корпоративну зелену палітру. */
+    background: linear-gradient(135deg, #0a5f2a 0%, #147536 45%, #1d8f44 100%);
     border-bottom: 2px solid #147536;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+}
+.header_row {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 }
 a.logo, div.logo {
-    margin-top: 10px;
+    margin-top: 0;
     display: inline-block;
     text-decoration: none;
 }
 .sub_text_logo {
-    color: #fff;
+    color: #e8fff0;
     display: inline-block;
     margin-left: 37px;
     line-height: 24px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 .right_header_b {
-    float: right;
     text-align: right;
-    margin-top: 13px;
+}
+.header_controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
 }
 .language_select {
     display: inline-block;
@@ -152,9 +166,10 @@ a.logo, div.logo {
     height: 24px;
     line-height: 22px;
     border: 1px solid #147536;
-    border-radius: 2px;
+    border-radius: 18px;
     background: #dce6e4;
-    margin-bottom: 10px;
+    padding: 0 8px;
+    margin-bottom: 0;
 }
 .language_select:hover,
 .language_select:focus {
@@ -165,12 +180,14 @@ a.logo, div.logo {
 }
 .search_input {
     display: inline-block;
-    width: 300px;
-    height: 32px;
+    width: 320px;
+    max-width: 100%;
+    height: 36px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    border-radius: 20px;
+    padding-left: 14px;
+    padding-right: 34px;
     color: #565656;
     outline: none;
 }
@@ -185,8 +202,8 @@ a.logo, div.logo {
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
@@ -1478,6 +1495,34 @@ a.btn_prev_var:hover {
     font-size: 110%;
     line-height: 1.6;
 }
+@media (max-width: 768px) {
+    /* Для мобільних перебудовуємо шапку в одну колонку, щоб елементи не накладались. */
+    .header {
+        padding: 10px 0 12px;
+    }
+    .header_row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        text-align: left;
+        line-height: 20px;
+    }
+    .right_header_b,
+    .header_controls {
+        width: 100%;
+        text-align: left;
+        align-items: stretch;
+    }
+    .language_select,
+    .search_b,
+    .search_input {
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .desc_my_chart {
         /* На мобільних прибираємо надлишкові бічні відступи, щоб текст не "плив". */

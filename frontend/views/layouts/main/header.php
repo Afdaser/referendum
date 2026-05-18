@@ -9,7 +9,8 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <?php // Редизайн хедера: зберігаємо ті самі елементи керування, але оновлюємо структуру для сучасної сітки. ?>
+        <div class="row header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
                 <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
@@ -29,7 +30,7 @@ use frontend\widgets\WSearchForm;
 
             <div class="right_header_b">
                 <?= WLanguageSelector::widget(); ?>
-                <br>
+                <?php // Замість переносу рядка використовуємо вертикальний flex-контейнер у CSS. ?>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>

@@ -130,31 +130,50 @@ a:hover {
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+/* Оновлений контейнер хедера: зберігаємо фірмовий фон, але додаємо сучасну композицію. */
+.header .row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 0 14px;
+}
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    margin-top: 0;
+    display: inline-flex;
+    flex-direction: column;
     text-decoration: none;
 }
 .sub_text_logo {
     color: #fff;
     display: inline-block;
     margin-left: 37px;
+    margin-top: 4px;
     line-height: 24px;
+    font-size: 24px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
 }
 .right_header_b {
-    float: right;
+    float: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     text-align: right;
-    margin-top: 13px;
+    gap: 10px;
+    margin-top: 0;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
+    width: 180px;
+    max-width: 100%;
+    height: 36px;
+    line-height: 34px;
     border: 1px solid #147536;
-    border-radius: 2px;
-    background: #dce6e4;
-    margin-bottom: 10px;
+    border-radius: 7px;
+    background: rgba(240, 244, 244, 0.93);
+    margin-bottom: 0;
+    padding: 0 10px;
+    box-shadow: 0 8px 20px rgba(10, 61, 31, 0.18);
 }
 .language_select:hover,
 .language_select:focus {
@@ -165,14 +184,17 @@ a.logo, div.logo {
 }
 .search_input {
     display: inline-block;
-    width: 300px;
-    height: 32px;
+    width: 340px;
+    max-width: 100%;
+    height: 40px;
     border: 2px solid #147536;
-    background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    background: rgba(240, 244, 244, 0.95);
+    border-radius: 10px;
+    padding: 0 42px 0 14px;
     color: #565656;
+    font-size: 15px;
     outline: none;
+    box-shadow: 0 8px 20px rgba(10, 61, 31, 0.18);
 }
 .search_input:hover,
 .search_input:focus {
@@ -185,8 +207,8 @@ a.logo, div.logo {
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 14px;
+    right: 14px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
@@ -747,7 +769,7 @@ a.link_poll:hover {
 .title_poll {
     display: block;
     vertical-align: middle;
-    font-size: 22px;
+    font-size: 14px;
     font-weight: 600;
     line-height: 1.35;
     transform: translateY(0);
@@ -877,7 +899,7 @@ button.radio_link:active .radio_indicator {
 }
 .title_poll h1 {
     color: #05662F;
-    font-size: 22px;
+    font-size: 14px;
     /* Утримуємо H1 в межах контентного блоку. */
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -2436,7 +2458,7 @@ input::-ms-reveal {
     height: auto;
 }
 .large_text_welcome {
-    font-size: 26px;
+    font-size: 18px;
     margin-bottom: 20px;
 }
 .small_text_welcome {
@@ -2593,7 +2615,7 @@ a.skip_btn:hover {
     margin-top: -7px;
 }
 .large_rating {
-    font-size: 34px;
+    font-size: 24px;
     color: #3ac469;
     text-align: center;
     line-height: 25px;
@@ -3513,6 +3535,41 @@ a.pass_on_main_page {
 }
 .refresh_password_block_for_ankor {
     margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+    /* Мобільна адаптація: зберігаємо весь функціонал та підвищуємо читабельність у вузьких екранах. */
+    .header .row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        padding: 10px 0 12px;
+    }
+    a.logo, div.logo {
+        align-self: flex-start;
+    }
+    .sub_text_logo {
+        margin-left: 37px;
+        line-height: 20px;
+        font-size: 20px;
+    }
+    .right_header_b {
+        width: 100%;
+        align-items: stretch;
+    }
+    .language_select,
+    .search_input {
+        width: 100%;
+    }
+}
+@media (max-width: 480px) {
+    .sub_text_logo {
+        font-size: 18px;
+    }
+    .search_input {
+        height: 38px;
+        font-size: 14px;
+    }
 }
 /* ==========================================================================
    Media Queries

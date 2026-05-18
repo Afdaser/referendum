@@ -130,9 +130,17 @@ a:hover {
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+/* Осучаснюємо хедер: переводимо layout на flex для кращої адаптивності. */
+.header .header_row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
 a.logo, div.logo {
     margin-top: 10px;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
     text-decoration: none;
 }
 .sub_text_logo {
@@ -142,19 +150,22 @@ a.logo, div.logo {
     line-height: 24px;
 }
 .right_header_b {
-    float: right;
-    text-align: right;
     margin-top: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
+    min-width: 132px;
+    width: auto;
     height: 24px;
     line-height: 22px;
     border: 1px solid #147536;
     border-radius: 2px;
     background: #dce6e4;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 .language_select:hover,
 .language_select:focus {
@@ -3543,6 +3554,32 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 768px) {
+    /* Робимо хедер читабельним на планшетах і телефонах без втрати функціоналу. */
+    .header {
+        min-height: auto;
+        padding-bottom: 12px;
+    }
+    .header .header_row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .sub_text_logo {
+        margin-left: 36px;
+        line-height: 20px;
+    }
+    .right_header_b {
+        width: 100%;
+        margin-top: 0;
+        align-items: stretch;
+    }
+    .language_select,
+    .search_input {
+        width: 100%;
+    }
+    .search_b {
+        width: 100%;
+    }
     .related-polls-title {
         font-size: 20px;
     }
@@ -3641,6 +3678,14 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 480px) {
+    .logo img {
+        width: 184px;
+        height: 58px;
+        max-width: 100%;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+    }
     .related-polls-item {
         gap: 10px;
         padding: 8px 10px;

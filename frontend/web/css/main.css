@@ -126,35 +126,47 @@ a:hover {
     max-width: 970px;
 }
 .header {
-    min-height: 100px;
+    min-height: 110px;
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
+    padding: 10px 0 14px;
+}
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
 }
 a.logo, div.logo {
-    margin-top: 10px;
     display: inline-block;
     text-decoration: none;
+    flex-shrink: 0;
 }
 .sub_text_logo {
     color: #fff;
     display: inline-block;
     margin-left: 37px;
-    line-height: 24px;
+    line-height: 22px;
+    font-size: 32px;
 }
 .right_header_b {
-    float: right;
     text-align: right;
-    margin-top: 13px;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
+    min-width: 140px;
+    height: 34px;
     line-height: 22px;
     border: 1px solid #147536;
-    border-radius: 2px;
+    border-radius: 4px;
     background: #dce6e4;
-    margin-bottom: 10px;
+    padding: 4px 28px 4px 10px;
+    font-size: 17px;
 }
 .language_select:hover,
 .language_select:focus {
@@ -165,14 +177,16 @@ a.logo, div.logo {
 }
 .search_input {
     display: inline-block;
-    width: 300px;
-    height: 32px;
+    width: 360px;
+    max-width: 100%;
+    height: 42px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    border-radius: 6px;
+    padding: 0 38px 0 14px;
     color: #565656;
     outline: none;
+    font-size: 34px;
 }
 .search_input:hover,
 .search_input:focus {
@@ -182,11 +196,11 @@ a.logo, div.logo {
 }
 .search_btn {
     position: absolute;
-    width: 14px;
-    height: 13px;
+    width: 18px;
+    height: 17px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 13px;
+    right: 12px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
@@ -1479,6 +1493,45 @@ a.btn_prev_var:hover {
     line-height: 1.6;
 }
 @media (max-width: 768px) {
+    /* Перебудовуємо хедер для мобільного вигляду без втрати доступу до ключових елементів. */
+    .header {
+        min-height: auto;
+        padding: 10px 0 12px;
+    }
+    .header_row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .right_header_b {
+        width: 100%;
+        align-items: stretch;
+        text-align: left;
+        gap: 8px;
+    }
+    .language_select {
+        width: auto;
+        min-width: 0;
+        max-width: 220px;
+        margin-left: auto;
+        height: 32px;
+        font-size: 16px;
+    }
+    .search_b {
+        width: 100%;
+    }
+    .search_input {
+        width: 100%;
+        height: 40px;
+        font-size: 30px;
+    }
+    .search_btn {
+        top: 12px;
+    }
+    .sub_text_logo {
+        font-size: 30px;
+        line-height: 20px;
+    }
     .desc_my_chart {
         /* На мобільних прибираємо надлишкові бічні відступи, щоб текст не "плив". */
         margin-left: 1%;
@@ -3641,6 +3694,18 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 480px) {
+    .sub_text_logo {
+        margin-left: 0;
+        margin-top: 6px;
+        font-size: 28px;
+        display: block;
+    }
+    .language_select {
+        max-width: 180px;
+    }
+    .search_input {
+        font-size: 24px;
+    }
     .related-polls-item {
         gap: 10px;
         padding: 8px 10px;

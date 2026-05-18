@@ -9,9 +9,10 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <?php // Обгортаємо елементи хедера у гнучкий контейнер для сучасного адаптивного компонування. ?>
+        <div class="row header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                <div class="logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
@@ -27,6 +28,7 @@ use frontend\widgets\WSearchForm;
                 </a>
             <?php endif; ?>
 
+            <?php // Блок керування мовою та пошуком зберігає поточний функціонал без змін логіки. ?>
             <div class="right_header_b">
                 <?= WLanguageSelector::widget(); ?>
                 <br>

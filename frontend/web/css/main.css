@@ -126,25 +126,41 @@ a:hover {
     max-width: 970px;
 }
 .header {
+    /* Осучаснений верхній блок: м’який градієнт + легка тінь без зміни палітри бренду. */
     min-height: 100px;
-    background: url(/img/layout/header_bg.png) repeat;
-    border-bottom: 2px solid #147536;
+    background: linear-gradient(135deg, #0f6b33 0%, #147536 55%, #1a8f45 100%);
+    border-bottom: 1px solid #0d5829;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+}
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+}
+.header_brand_block {
+    display: flex;
+    align-items: center;
 }
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
     text-decoration: none;
 }
 .sub_text_logo {
-    color: #fff;
+    color: #eaf8ef;
     display: inline-block;
     margin-left: 37px;
-    line-height: 24px;
+    line-height: 20px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 .right_header_b {
-    float: right;
-    text-align: right;
-    margin-top: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
 }
 .language_select {
     display: inline-block;
@@ -191,6 +207,46 @@ a.logo, div.logo {
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+}
+
+
+/* Мобільна адаптація: всі ключові елементи хедера збережені, але перебудовані у вертикальний стек. */
+@media (max-width: 767px) {
+    .header {
+        min-height: 0;
+    }
+    .header_row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 10px 0 12px;
+    }
+    .header_brand_block {
+        justify-content: center;
+    }
+    a.logo, div.logo {
+        align-items: center;
+        width: 100%;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        margin-top: 2px;
+        text-align: center;
+    }
+    .right_header_b {
+        align-items: stretch;
+        width: 100%;
+    }
+    .language_select {
+        width: 100%;
+        max-width: 100%;
+    }
+    .search_input {
+        width: 100%;
+    }
+    .search_btn {
+        right: 12px;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

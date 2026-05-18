@@ -130,10 +130,26 @@ a:hover {
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+/* Сучасна композиція хедера: контрольований ритм, повітря та адаптивність. */
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 108px;
+    padding: 10px 0;
+}
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    margin-top: 0;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
     text-decoration: none;
+}
+.header_logo img {
+    width: 184px;
+    height: 58px;
+    display: block;
 }
 .sub_text_logo {
     color: #fff;
@@ -142,19 +158,33 @@ a.logo, div.logo {
     line-height: 24px;
 }
 .right_header_b {
-    float: right;
+    float: none;
     text-align: right;
-    margin-top: 13px;
+    margin-top: 0;
+}
+.header_controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    min-width: 300px;
+}
+.header_tools_top {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
+    width: 160px;
+    height: 34px;
+    line-height: 30px;
     border: 1px solid #147536;
-    border-radius: 2px;
+    border-radius: 8px;
     background: #dce6e4;
-    margin-bottom: 10px;
+    padding: 0 8px;
+    margin-bottom: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .language_select:hover,
 .language_select:focus {
@@ -163,16 +193,24 @@ a.logo, div.logo {
 .search_b {
     position: relative;
 }
+.header_search_wrap {
+    width: 100%;
+}
+.header_search_form {
+    position: relative;
+}
 .search_input {
     display: inline-block;
     width: 300px;
-    height: 32px;
+    height: 40px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    border-radius: 10px;
+    padding-left: 14px;
+    padding-right: 38px;
     color: #565656;
     outline: none;
+    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
 }
 .search_input:hover,
 .search_input:focus {
@@ -185,7 +223,7 @@ a.logo, div.logo {
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
+    top: 14px;
     right: 10px;
 }
 .search_input:hover ~ .search_btn,
@@ -3526,6 +3564,33 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 991px) {
+    .header_row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+        padding-bottom: 14px;
+    }
+    .header_controls {
+        width: 100%;
+        min-width: 0;
+        align-items: stretch;
+    }
+    .header_tools_top {
+        justify-content: flex-start;
+    }
+    .right_header_b {
+        text-align: left;
+    }
+    .search_input {
+        width: 100%;
+    }
+    .language_select {
+        width: 100%;
+        max-width: 240px;
+    }
+}
+
+@media (max-width: 991px) {
     .auth_b {
         margin-top: 20px;
     }
@@ -3640,6 +3705,37 @@ a.pass_on_main_page {
         left: 62px;
     }
 }
+@media (max-width: 480px) {
+    .header {
+        min-height: 0;
+    }
+    .header_row {
+        gap: 10px;
+        padding-top: 8px;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        line-height: 20px;
+        font-size: 17px;
+    }
+    .header_logo img {
+        width: 184px;
+        height: 58px;
+    }
+    .language_select {
+        max-width: 100%;
+        height: 38px;
+    }
+    .search_input {
+        height: 44px;
+        font-size: 16px;
+        line-height: 42px;
+    }
+    .search_btn {
+        top: 16px;
+    }
+}
+
 @media (max-width: 480px) {
     .related-polls-item {
         gap: 10px;

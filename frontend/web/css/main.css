@@ -126,25 +126,49 @@ a:hover {
     max-width: 970px;
 }
 .header {
-    min-height: 100px;
-    background: url(/img/layout/header_bg.png) repeat;
-    border-bottom: 2px solid #147536;
+    min-height: 108px;
+    background: linear-gradient(180deg, #1c8e45 0%, #147536 100%);
+    border-bottom: 2px solid #0f5f2b;
+    box-shadow: 0 10px 24px rgba(10, 76, 35, 0.22);
+}
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 a.logo, div.logo {
     margin-top: 10px;
     display: inline-block;
     text-decoration: none;
 }
+.header_logo_wrap {
+    margin-top: 0 !important;
+    padding: 16px 0 14px;
+}
+.header_logo_wrap img {
+    display: block;
+    width: 184px;
+    height: 58px;
+}
 .sub_text_logo {
-    color: #fff;
+    color: #e6f8ee;
     display: inline-block;
-    margin-left: 37px;
-    line-height: 24px;
+    margin-left: 38px;
+    margin-top: 2px;
+    line-height: 20px;
+    font-size: 13px;
+    letter-spacing: .02em;
 }
 .right_header_b {
     float: right;
     text-align: right;
     margin-top: 13px;
+}
+.header_controls_wrap {
+    margin-top: 0;
+    padding: 16px 0;
 }
 .language_select {
     display: inline-block;
@@ -173,6 +197,8 @@ a.logo, div.logo {
     padding-left: 12px;
     color: #565656;
     outline: none;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
+    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
 }
 .search_input:hover,
 .search_input:focus {
@@ -187,6 +213,49 @@ a.logo, div.logo {
     background: url(/img/layout/search_icon.png);
     top: 10px;
     right: 10px;
+}
+
+/* Адаптуємо хедер для планшетів і телефонів: ті самі елементи, але у компактнішому компонуванні. */
+@media (max-width: 768px) {
+    .header {
+        min-height: 0;
+    }
+    .header_row {
+        display: block;
+        padding: 10px 0 12px;
+    }
+    .header_logo_wrap {
+        display: block;
+        text-align: center;
+        padding: 4px 0 8px;
+    }
+    .sub_text_logo {
+        display: block;
+        margin: 4px 0 0;
+        line-height: 18px;
+        text-align: center;
+    }
+    .header_controls_wrap,
+    .right_header_b {
+        float: none;
+        text-align: center;
+        padding: 0;
+        margin-top: 8px;
+    }
+    .header_controls_wrap br,
+    .right_header_b br {
+        display: none;
+    }
+    .search_b {
+        margin: 8px auto 0;
+        max-width: 360px;
+    }
+    .search_input {
+        width: 100%;
+    }
+    .language_select {
+        margin-bottom: 8px;
+    }
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {

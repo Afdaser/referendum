@@ -130,10 +130,25 @@ a:hover {
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+/* Осучаснений контейнер шапки без зміни функціональних елементів. */
+.header_modern {
+    position: relative;
+    box-shadow: 0 8px 24px rgba(5, 92, 43, 0.14);
+}
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 100px;
+}
 a.logo, div.logo {
     margin-top: 10px;
     display: inline-block;
     text-decoration: none;
+}
+.header_logo {
+    margin-top: 0;
 }
 .sub_text_logo {
     color: #fff;
@@ -145,6 +160,18 @@ a.logo, div.logo {
     float: right;
     text-align: right;
     margin-top: 13px;
+}
+.header_controls {
+    float: none;
+    margin-top: 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 12px;
+    background: rgba(7, 91, 42, 0.24);
+    backdrop-filter: blur(2px);
+}
+.header_controls_gap {
+    height: 10px;
 }
 .language_select {
     display: inline-block;
@@ -191,6 +218,33 @@ a.logo, div.logo {
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+}
+/* Мобільна адаптація: елементи стають в одну колонку для кращої читабельності. */
+@media (max-width: 767px) {
+    .header {
+        min-height: 0;
+        padding: 12px 0 14px;
+    }
+    .header_row {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+    .header_controls {
+        width: 100%;
+        max-width: 360px;
+        text-align: center;
+        padding: 10px;
+    }
+    .search_input {
+        width: 100%;
+        max-width: 340px;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

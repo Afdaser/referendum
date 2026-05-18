@@ -7,17 +7,19 @@ use frontend\widgets\WSearchForm;
 <!-- ~/frontend/views/layouts/main/header.php -->
 <!-- Header
 ================================================== -->
-<header class="header">
+<header class="header header_modern" role="banner">
     <div class="container">
-        <div class="row">
+        <div class="row header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                <?php // На головній сторінці лишаємо логотип без посилання, щоб не дублювати навігацію на поточну сторінку. ?>
+                <div class="logo header_logo" aria-label="referendum.social">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
                 </div>
             <?php else: ?>
-                <a href="/" class="logo">
+                <?php // На інших сторінках логотип веде на головну, зберігаючи звичну поведінку. ?>
+                <a href="/" class="logo header_logo" aria-label="referendum.social">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
                     <br>
@@ -27,9 +29,9 @@ use frontend\widgets\WSearchForm;
                 </a>
             <?php endif; ?>
 
-            <div class="right_header_b">
+            <div class="right_header_b header_controls">
                 <?= WLanguageSelector::widget(); ?>
-                <br>
+                <div class="header_controls_gap"></div>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>

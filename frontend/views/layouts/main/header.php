@@ -10,6 +10,7 @@ use frontend\widgets\WSearchForm;
 <header class="header">
     <div class="container">
         <div class="row header_row">
+            <?php // Ребілдимо хедер: лого зліва, керування справа у дві лінії для сучаснішого ритму. ?>
             <?php if (Yii::$app->request->url == '/') : ?>
                 <div class="logo" aria-label="Referendum.social">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
@@ -28,7 +29,11 @@ use frontend\widgets\WSearchForm;
             <?php endif; ?>
 
             <div class="right_header_b">
-                <?= WLanguageSelector::widget(); ?>
+                <div class="header_controls_top">
+                    <span class="header_caption"><?= Yii::t("main", "швидка навігація"); ?></span>
+                    <?= WLanguageSelector::widget(); ?>
+                </div>
+                <div class="header_controls_bottom">
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>
@@ -40,6 +45,7 @@ use frontend\widgets\WSearchForm;
                         <button type="submit" class="search_btn" aria-label="<?= Yii::t("main", 'Пошук'); ?>"></button>
                         <input type="checkbox" name="SearchForm[search_in_title]" checked hidden value="1">
                     </form>
+                </div>
                 </div>
             </div>
         </div>

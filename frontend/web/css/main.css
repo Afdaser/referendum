@@ -126,38 +126,60 @@ a:hover {
     max-width: 970px;
 }
 .header {
-    min-height: 100px;
+    min-height: 118px;
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
 .header_row {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
-    gap: 24px;
-    padding: 14px 0 12px;
+    gap: 34px;
+    padding: 14px 0;
 }
 a.logo, div.logo {
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
     text-decoration: none;
+    min-width: 184px;
 }
 .sub_text_logo {
     color: #fff;
     display: inline-block;
-    margin-left: 37px;
-    line-height: 24px;
+    margin-left: 0;
+    margin-top: 4px;
+    line-height: 20px;
+    font-size: 35px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 .right_header_b {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    text-align: right;
-    gap: 10px;
+    align-items: stretch;
+    gap: 9px;
+    flex: 1;
+    max-width: 520px;
+}
+.header_controls_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.header_controls_bottom {
+    display: block;
+}
+.header_caption {
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-family: "UbuntuMedium", Arial, sans-serif;
 }
 .language_select {
-    display: inline-block;
-    width: 165px;
+    display: block;
+    width: 210px;
     height: 36px;
     line-height: 34px;
     border: 1px solid #1a8542;
@@ -175,10 +197,13 @@ a.logo, div.logo {
 }
 .search_b {
     position: relative;
+    width: 100%;
 }
 .search_input {
-    display: inline-block;
-    width: 320px;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     height: 40px;
     border: 2px solid #147536;
     background: rgba(240, 244, 244, 0.96);
@@ -219,13 +244,25 @@ a.logo, div.logo {
     .header_row {
         align-items: flex-start;
         flex-direction: column;
-        gap: 14px;
+        gap: 12px;
         padding: 12px 0;
+    }
+    .logo img {
+        width: 184px;
+        height: 58px;
     }
     .right_header_b {
         width: 100%;
         align-items: stretch;
-        text-align: left;
+        max-width: 100%;
+    }
+    .header_controls_top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 7px;
+    }
+    .header_caption {
+        font-size: 10px;
     }
     .language_select,
     .search_input {
@@ -235,7 +272,8 @@ a.logo, div.logo {
     .sub_text_logo {
         margin-left: 0;
         margin-top: 4px;
-        line-height: 20px;
+        line-height: 18px;
+        font-size: 30px;
     }
 }
 .sub_header_slider_b {

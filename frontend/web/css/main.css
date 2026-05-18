@@ -130,8 +130,14 @@ a:hover {
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 14px 0;
+}
 a.logo, div.logo {
-    margin-top: 10px;
     display: inline-block;
     text-decoration: none;
 }
@@ -140,57 +146,111 @@ a.logo, div.logo {
     display: inline-block;
     margin-left: 37px;
     line-height: 24px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-.right_header_b {
-    float: right;
-    text-align: right;
-    margin-top: 13px;
+.header_controls {
+    width: min(420px, 100%);
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 80, 32, 0.22);
+    box-shadow: 0 10px 22px rgba(0, 43, 17, 0.25);
+    backdrop-filter: blur(2px);
+}
+.header_controls_top {
+    display: flex;
+    justify-content: flex-end;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
-    border: 1px solid #147536;
-    border-radius: 2px;
-    background: #dce6e4;
-    margin-bottom: 10px;
+    width: 210px;
+    max-width: 100%;
+    height: 38px;
+    line-height: 36px;
+    border: 1px solid #1a8542;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #055c2b;
+    font-weight: 600;
+    padding: 0 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 .language_select:hover,
 .language_select:focus {
     background: #fff;
+    border-color: #3ac469;
 }
 .search_b {
     position: relative;
+    width: 100%;
 }
 .search_input {
-    display: inline-block;
-    width: 300px;
-    height: 32px;
+    display: block;
+    width: 100%;
+    height: 40px;
     border: 2px solid #147536;
-    background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    background: rgba(240, 244, 244, 0.96);
+    border-radius: 12px;
+    box-sizing: border-box;
+    padding: 0 44px 0 14px;
     color: #565656;
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 .search_input:hover,
 .search_input:focus {
     background: #fff;
     color: #000;
     border-color: #3ac469;
+    box-shadow: 0 0 0 3px rgba(58, 196, 105, 0.2);
 }
 .search_btn {
     position: absolute;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
 }
 .search_input:hover ~ .search_btn,
-.search_input:focus ~ .search_btn {
+.search_input:focus ~ .search_btn,
+.search_btn:hover,
+.search_btn:focus {
     background: url(/img/layout/search_icon_hover.png);
+}
+
+/* Адаптуємо хедер під мобільні екрани без втрати функціональності. */
+@media (max-width: 767px) {
+    .header_row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 14px;
+        padding: 12px 0;
+    }
+    .header_controls {
+        width: 100%;
+        padding: 10px;
+        gap: 10px;
+    }
+    .header_controls_top {
+        justify-content: stretch;
+    }
+    .language_select,
+    .search_input {
+        width: 100%;
+        max-width: 100%;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        margin-top: 4px;
+        line-height: 20px;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

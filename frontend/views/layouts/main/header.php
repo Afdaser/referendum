@@ -9,9 +9,10 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <?php // Новий обгортковий блок для сучасного, адаптивного вирівнювання елементів хедера. ?>
+        <div class="row header_inner">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                <div class="logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
@@ -27,12 +28,15 @@ use frontend\widgets\WSearchForm;
                 </a>
             <?php endif; ?>
 
-            <div class="right_header_b">
-                <?= WLanguageSelector::widget(); ?>
-                <br>
+            <div class="right_header_b" aria-label="Header controls">
+                <?php // Зберігаємо існуючий віджет мов, але розміщуємо його в окремому рядку керування. ?>
+                <div class="header_control_row">
+                    <?= WLanguageSelector::widget(); ?>
+                </div>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>
+                <?php // Пошук залишився функціонально ідентичним, змінили лише візуальне оформлення контейнера. ?>
                 <div class="search_b">
                     <form method="post" action="/site/search" name="HeaderSearch">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />

@@ -125,36 +125,56 @@ a:hover {
 .container {
     max-width: 970px;
 }
+/* Осучаснений хедер: зберігаємо фірмові кольори та структуру, додаємо більше "повітря" й адаптивності. */
 .header {
-    min-height: 100px;
-    background: url(/img/layout/header_bg.png) repeat;
+    min-height: 112px;
+    background: linear-gradient(180deg, rgba(7, 108, 51, 0.94) 0%, rgba(6, 95, 45, 0.97) 100%), url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
+    box-shadow: 0 8px 24px rgba(3, 46, 22, 0.22);
+}
+.header_inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 0;
 }
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    margin-top: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
     text-decoration: none;
 }
 .sub_text_logo {
-    color: #fff;
+    color: #e8fff0;
     display: inline-block;
     margin-left: 37px;
-    line-height: 24px;
+    line-height: 22px;
+    letter-spacing: 0.2px;
 }
 .right_header_b {
-    float: right;
     text-align: right;
-    margin-top: 13px;
+    margin-top: 0;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    backdrop-filter: blur(1px);
+}
+.header_control_row {
+    margin-bottom: 10px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
+    width: 142px;
+    height: 30px;
+    line-height: 28px;
     border: 1px solid #147536;
-    border-radius: 2px;
+    border-radius: 6px;
     background: #dce6e4;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    padding: 0 6px;
 }
 .language_select:hover,
 .language_select:focus {
@@ -165,12 +185,14 @@ a.logo, div.logo {
 }
 .search_input {
     display: inline-block;
-    width: 300px;
-    height: 32px;
+    width: 320px;
+    max-width: 100%;
+    height: 36px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    border-radius: 18px;
+    padding-left: 14px;
+    padding-right: 34px;
     color: #565656;
     outline: none;
 }
@@ -185,12 +207,26 @@ a.logo, div.logo {
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+}
+@media (max-width: 991px) {
+    .header_inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .right_header_b {
+        width: 100%;
+        text-align: left;
+    }
+    .search_input {
+        width: 100%;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

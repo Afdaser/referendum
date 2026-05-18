@@ -125,36 +125,57 @@ a:hover {
 .container {
     max-width: 970px;
 }
+/* Оновлений хедер: сучасніший вигляд при збереженні поточної айдентики. */
 .header {
-    min-height: 100px;
-    background: url(/img/layout/header_bg.png) repeat;
-    border-bottom: 2px solid #147536;
+    min-height: 108px;
+    background: linear-gradient(180deg, #0f5d2a 0%, #147536 100%);
+    border-bottom: 2px solid #0f5d2a;
+    box-shadow: 0 8px 20px rgba(8, 56, 25, 0.25);
+}
+.header_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 14px 0 12px;
 }
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
     text-decoration: none;
 }
+.header_logo_wrap img {
+    width: 184px;
+    height: 58px;
+}
 .sub_text_logo {
-    color: #fff;
+    color: #eaf6ef;
     display: inline-block;
     margin-left: 37px;
-    line-height: 24px;
+    margin-top: 4px;
+    line-height: 20px;
 }
 .right_header_b {
-    float: right;
-    text-align: right;
-    margin-top: 13px;
+    margin-left: auto;
+}
+/* Інструменти хедера вирівнюємо колонкою для чистішої композиції. */
+.header_tools {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
-    border: 1px solid #147536;
-    border-radius: 2px;
-    background: #dce6e4;
-    margin-bottom: 10px;
+    width: 140px;
+    height: 32px;
+    line-height: 30px;
+    border: 1px solid #0b5425;
+    border-radius: 8px;
+    background: #e6efe9;
+    padding: 0 8px;
+    box-shadow: 0 2px 8px rgba(7, 43, 20, 0.2);
 }
 .language_select:hover,
 .language_select:focus {
@@ -165,14 +186,15 @@ a.logo, div.logo {
 }
 .search_input {
     display: inline-block;
-    width: 300px;
-    height: 32px;
-    border: 2px solid #147536;
-    background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
-    color: #565656;
+    width: 320px;
+    height: 36px;
+    border: 1px solid #0f5d2a;
+    background: #f7fbf8;
+    border-radius: 10px;
+    padding-left: 14px;
+    color: #1f3f2a;
     outline: none;
+    box-shadow: 0 2px 8px rgba(7, 43, 20, 0.15);
 }
 .search_input:hover,
 .search_input:focus {
@@ -185,8 +207,8 @@ a.logo, div.logo {
     width: 14px;
     height: 13px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    top: 12px;
+    right: 12px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {

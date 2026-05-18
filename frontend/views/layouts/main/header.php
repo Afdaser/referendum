@@ -7,36 +7,33 @@ use frontend\widgets\WSearchForm;
 <!-- ~/frontend/views/layouts/main/header.php -->
 <!-- Header
 ================================================== -->
-<header class="header">
+<header class="header header--rebuilt">
     <div class="container">
-        <div class="row">
+        <div class="row header__row">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
-                    <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
-                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
+                <div class="logo header__logo" aria-label="Referendum Social home">
+                    <?php // Зберігаємо розмір логотипа без змін, щоб не ламати візуальну айдентику. ?>
+                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
                 </div>
             <?php else: ?>
-                <a href="/" class="logo">
-                    <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
+                <a href="/" class="logo header__logo" aria-label="Referendum Social home">
+                    <?php // Зберігаємо розмір логотипа без змін, щоб не ламати візуальну айдентику. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
-                    <br>
-                    <span class="sub_text_logo">
-                        <?php echo Yii::t("main", 'кожен голос важливий'); ?>
-                    </span>
+                    <span class="sub_text_logo"><?php echo Yii::t("main", 'кожен голос важливий'); ?></span>
                 </a>
             <?php endif; ?>
 
-            <div class="right_header_b">
-                <?= WLanguageSelector::widget(); ?>
-                <br>
+            <div class="right_header_b header__controls">
+                <div class="header__language"><?= WLanguageSelector::widget(); ?></div>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>
-                <div class="search_b">
-                    <form method="post" action="/site/search" name="HeaderSearch">
+                <div class="search_b header__search">
+                    <form method="post" action="/site/search" name="HeaderSearch" class="header__search-form">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
                         <input class="search_input" type="search" name="SearchForm[text]" value="" placeholder="<?= Yii::t("main", 'Пошук'); ?>...">
+                        <?php // Тримаємо submit через посилання для повної сумісності зі старою версткою та подіями. ?>
                         <a href="#" class="search_btn" onclick="document.forms['HeaderSearch'].submit()"></a>
                         <input type="checkbox" name="SearchForm[search_in_title]" checked hidden value="1">
                     </form>

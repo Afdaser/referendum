@@ -127,12 +127,22 @@ a:hover {
 }
 .header {
     min-height: 100px;
+    padding: 10px 0;
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
 }
+.header .row.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+}
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    margin-top: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
     text-decoration: none;
 }
 .sub_text_logo {
@@ -142,19 +152,26 @@ a.logo, div.logo {
     line-height: 24px;
 }
 .right_header_b {
-    float: right;
+    margin-top: 0;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
     text-align: right;
-    margin-top: 13px;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
+    min-width: 154px;
+    height: 36px;
+    line-height: 34px;
     border: 1px solid #147536;
-    border-radius: 2px;
-    background: #dce6e4;
-    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #eef5f2;
+    margin-bottom: 0;
+    padding: 0 10px;
+    color: #055C2B;
+    cursor: pointer;
 }
 .language_select:hover,
 .language_select:focus {
@@ -166,11 +183,11 @@ a.logo, div.logo {
 .search_input {
     display: inline-block;
     width: 300px;
-    height: 32px;
+    height: 40px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    border-radius: 999px;
+    padding: 0 42px 0 14px;
     color: #565656;
     outline: none;
 }
@@ -182,15 +199,60 @@ a.logo, div.logo {
 }
 .search_btn {
     position: absolute;
-    width: 14px;
-    height: 13px;
+    width: 26px;
+    height: 26px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 7px;
     right: 10px;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+@media (max-width: 767px) {
+    /* Робимо хедер зручним для натискання та читання на телефонах. */
+    .header {
+        padding: 12px 0 14px;
+    }
+    .header .row.header_row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    a.logo, div.logo {
+        align-items: center;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        text-align: center;
+        width: 100%;
+        line-height: 20px;
+    }
+    .right_header_b {
+        margin-left: 0;
+        width: 100%;
+        align-items: stretch;
+        text-align: left;
+    }
+    .language_select,
+    .search_input {
+        width: 100%;
+    }
+    .language_select {
+        min-width: 0;
+        height: 42px;
+        line-height: 40px;
+    }
+    .search_input {
+        height: 44px;
+    }
+    .search_btn {
+        top: 9px;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

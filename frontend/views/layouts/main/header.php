@@ -9,7 +9,7 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row header_row">
+        <div class="header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
                 <div class="logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>

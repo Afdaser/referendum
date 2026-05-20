@@ -138,9 +138,6 @@ a:hover {
     justify-content: space-between;
     gap: 20px;
     padding: 10px 0 12px;
-    /* Компенсуємо базові відступи .row, щоб на мобільних не з'являвся горизонтальний оверфлоу. */
-    margin-left: 0;
-    margin-right: 0;
 }
 a.logo, div.logo {
     display: inline-flex;
@@ -3553,6 +3550,11 @@ a.pass_on_main_page {
 }
 @media (max-width: 991px) {
     /* Робимо елементи хедера сенсорно-дружніми й складаємо їх у колонку для телефонів. */
+    .header .container {
+        /* Трохи зменшуємо поля контейнера, щоб інпути візуально не «впиралися» в краї екрана. */
+        padding-left: 10px;
+        padding-right: 10px;
+    }
     .header_row {
         flex-direction: column;
         align-items: stretch;

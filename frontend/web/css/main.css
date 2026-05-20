@@ -129,32 +129,45 @@ a:hover {
     min-height: 100px;
     background: url(/img/layout/header_bg.png) repeat;
     border-bottom: 2px solid #147536;
+    box-shadow: 0 6px 18px rgba(6, 80, 40, 0.18);
 }
 a.logo, div.logo {
-    margin-top: 10px;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
     text-decoration: none;
+}
+.header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 10px 0;
 }
 .sub_text_logo {
     color: #fff;
     display: inline-block;
     margin-left: 37px;
-    line-height: 24px;
+    line-height: 20px;
 }
 .right_header_b {
-    float: right;
-    text-align: right;
-    margin-top: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 .language_select {
     display: inline-block;
-    width: 102px;
-    height: 24px;
-    line-height: 22px;
+    width: 150px;
+    height: 40px;
+    line-height: 38px;
     border: 1px solid #147536;
-    border-radius: 2px;
-    background: #dce6e4;
-    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #edf4f2;
+    padding: 0 34px 0 12px;
+    cursor: pointer;
 }
 .language_select:hover,
 .language_select:focus {
@@ -166,11 +179,11 @@ a.logo, div.logo {
 .search_input {
     display: inline-block;
     width: 300px;
-    height: 32px;
+    height: 40px;
     border: 2px solid #147536;
     background: #f0f4f4;
-    border-radius: 4px;
-    padding-left: 12px;
+    border-radius: 20px;
+    padding: 0 44px 0 14px;
     color: #565656;
     outline: none;
 }
@@ -182,15 +195,45 @@ a.logo, div.logo {
 }
 .search_btn {
     position: absolute;
-    width: 14px;
-    height: 13px;
+    width: 24px;
+    height: 24px;
     background: url(/img/layout/search_icon.png);
-    top: 10px;
-    right: 10px;
+    border: 0;
+    top: 8px;
+    right: 12px;
+    cursor: pointer;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
+}
+/* Підвищуємо розміри та вертикальний стек для комфортного керування на смартфонах. */
+@media (max-width: 768px) {
+    .header {
+        padding-bottom: 8px;
+    }
+    .header_row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    a.logo, div.logo {
+        align-items: center;
+    }
+    .sub_text_logo {
+        margin-left: 0;
+        text-align: center;
+    }
+    .right_header_b {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    .language_select,
+    .search_input {
+        width: 100%;
+    }
 }
 .sub_header_slider_b {
     height: 81px;

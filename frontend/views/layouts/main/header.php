@@ -9,18 +9,18 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
+        <?php // Додаємо адаптивну сітку для сучаснішого вигляду та кращого UX на мобільних. ?>
+        <div class="row header_row">
             <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                <div class="logo" role="img" aria-label="referendum.social logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
-                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
+                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
                     <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
                 </div>
             <?php else: ?>
                 <a href="/" class="logo">
                     <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
                     <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
-                    <br>
                     <span class="sub_text_logo">
                         <?php echo Yii::t("main", 'кожен голос важливий'); ?>
                     </span>
@@ -29,7 +29,6 @@ use frontend\widgets\WSearchForm;
 
             <div class="right_header_b">
                 <?= WLanguageSelector::widget(); ?>
-                <br>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
 <?php /* */ ?>
@@ -37,7 +36,8 @@ use frontend\widgets\WSearchForm;
                     <form method="post" action="/site/search" name="HeaderSearch">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
                         <input class="search_input" type="search" name="SearchForm[text]" value="" placeholder="<?= Yii::t("main", 'Пошук'); ?>...">
-                        <a href="#" class="search_btn" onclick="document.forms['HeaderSearch'].submit()"></a>
+                        <?php // Використовуємо кнопку замість посилання для кращої доступності й натискань на телефоні. ?>
+                        <button type="submit" class="search_btn" aria-label="<?= Yii::t("main", 'Пошук'); ?>"></button>
                         <input type="checkbox" name="SearchForm[search_in_title]" checked hidden value="1">
                     </form>
                 </div>

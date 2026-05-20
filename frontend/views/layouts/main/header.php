@@ -9,23 +9,25 @@ use frontend\widgets\WSearchForm;
 ================================================== -->
 <header class="header">
     <div class="container">
-        <div class="row">
-            <?php if (Yii::$app->request->url == '/') : ?>
-                <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
-                    <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
-                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
-                    <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
-                </div>
-            <?php else: ?>
-                <a href="/" class="logo">
-                    <?php // Оновлюємо alt-текст логотипа для актуальної назви сайту. ?>
-                    <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
-                    <br>
-                    <span class="sub_text_logo">
-                        <?php echo Yii::t("main", 'кожен голос важливий'); ?>
-                    </span>
-                </a>
-            <?php endif; ?>
+        <div class="row header_row">
+            <div class="logo_b">
+                <?php if (Yii::$app->request->url == '/') : ?>
+                    <div class="logo" style="margin-top: 10px; display: inline-block; text-decoration: none;">
+                        <?php // Логотип зберігаємо у тих самих розмірах для візуальної тяглості бренду. ?>
+                        <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58"><br>
+                        <span class="sub_text_logo"><?= Yii::t("main", 'кожен голос важливий'); ?></span>
+                    </div>
+                <?php else: ?>
+                    <a href="/" class="logo">
+                        <?php // Логотип зберігаємо у тих самих розмірах для візуальної тяглості бренду. ?>
+                        <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
+                        <br>
+                        <span class="sub_text_logo">
+                            <?php echo Yii::t("main", 'кожен голос важливий'); ?>
+                        </span>
+                    </a>
+                <?php endif; ?>
+            </div>
 
             <div class="right_header_b">
                 <?= WLanguageSelector::widget(); ?>

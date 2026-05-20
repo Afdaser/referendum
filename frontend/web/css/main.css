@@ -174,6 +174,8 @@ a.logo, div.logo {
     color: #114f2c;
     font-size: 14px;
     cursor: pointer;
+    /* Фіксуємо розрахунок ширини з padding, щоб селект не вилазив за контейнер на мобільних. */
+    box-sizing: border-box;
 }
 .language_select:hover,
 .language_select:focus {
@@ -3567,9 +3569,14 @@ a.pass_on_main_page {
     .right_header_b {
         margin-left: 0;
         align-items: stretch;
+        width: 100%;
     }
     .language_select,
     .search_input {
+        width: 100%;
+    }
+    /* Забезпечуємо однакову ширину форми пошуку з контейнером правого блоку. */
+    .search_b form {
         width: 100%;
     }
 }

@@ -3550,11 +3550,6 @@ a.pass_on_main_page {
 }
 @media (max-width: 991px) {
     /* Робимо елементи хедера сенсорно-дружніми й складаємо їх у колонку для телефонів. */
-    .header .container {
-        /* Трохи зменшуємо поля контейнера, щоб інпути візуально не «впиралися» в краї екрана. */
-        padding-left: 10px;
-        padding-right: 10px;
-    }
     .header_row {
         flex-direction: column;
         align-items: stretch;
@@ -3571,14 +3566,9 @@ a.pass_on_main_page {
     .right_header_b {
         margin-left: 0;
         align-items: stretch;
-        width: 100%;
     }
-    .language_select,
-    .search_input {
-        width: 100%;
-    }
-    /* Забезпечуємо однакову ширину форми пошуку з контейнером правого блоку. */
-    .search_b form {
+    /* На мобільних розтягуємо лише селект мови; інпут лишаємо з базовою шириною + max-width. */
+    .language_select {
         width: 100%;
     }
 }

@@ -44,6 +44,9 @@ class NewsController extends Controller
             return $this->redirect(['index']);
         }
 
+        // Для нової форми підтягуємо значення за замовчуванням (чернетка), щоб не опублікувати новину випадково.
+        $model->loadDefaultValues();
+
         return $this->render('create', ['model' => $model]);
     }
 

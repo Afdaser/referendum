@@ -44,6 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => ActionColumn::class,
+                // У контролері немає actionView(), тому лишаємо тільки робочі дії для адмінки.
+                'template' => '{update} {delete}',
                 'urlCreator' => static fn($action, News $model): string => Url::toRoute([$action, 'id' => $model->id]),
             ],
         ],

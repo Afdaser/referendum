@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS `news` (
   `h1` varchar(255) DEFAULT NULL,
   `created_at` int DEFAULT NULL,
   `updated_at` int DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ux_news_slug` (`slug`),
   KEY `idx_news_published_at` (`published_at`),

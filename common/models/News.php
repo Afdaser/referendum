@@ -20,6 +20,8 @@ use yii\helpers\Inflector;
  * @property int $is_published
  * @property int|null $created_at
  * @property int|null $updated_at
+ * @property int|null $created_by
+ * @property int|null $updated_by
  */
 class News extends ActiveRecord
 {
@@ -48,7 +50,7 @@ class News extends ActiveRecord
             [['title', 'slug'], 'required'],
             [['excerpt', 'content', 'desc'], 'string'],
             [['published_at'], 'safe'],
-            [['is_published', 'created_at', 'updated_at'], 'integer'],
+            [['is_published', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['title', 'h1'], 'string', 'max' => 255],
             [['slug'], 'string', 'max' => 128],
             [['slug'], 'unique'],
@@ -71,6 +73,8 @@ class News extends ActiveRecord
             'is_published' => 'Опубліковано',
             'created_at' => 'Створено',
             'updated_at' => 'Оновлено',
+            'created_by' => 'Створив',
+            'updated_by' => 'Оновив',
         ];
     }
 

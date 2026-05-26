@@ -7,6 +7,7 @@ use Yii;
 use yii\data\Pagination;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class NewsController extends Controller
 {
@@ -23,12 +24,15 @@ class NewsController extends Controller
         $pagination = new Pagination([
             'totalCount' => $totalCount,
             'pageSize' => 10,
-            'page' => $page - 1,
             'route' => 'news/index',
             'pageParam' => 'page',
             'forcePageParam' => false,
             'validatePage' => true,
         ]);
+        // Не нашкодити: явно валідуємо номер сторінки й повертаємо 404 для page поза діапазоном.
+        if (!$pagination->setPage($page - 1, true)) {
+            throw new NotFoundHttpException('Сторінку новин не знайдено.');
+        }
 
         $items = (clone $baseQuery)
             // Сортуємо від найновіших до найстаріших.

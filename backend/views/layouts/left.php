@@ -63,6 +63,13 @@ use common\models\AuthItem;
 //                    'visible' => Yii::$app->user->can(AuthItem::P_CONTRACT_ENTER),
                     'items' => [
                         [
+                            // Повертаємо доступ до класичних статичних сторінок (privacy policy, terms тощо).
+                            'label' => Yii::t('app', 'Pages'),
+                            'icon' => 'file-text-o',
+                            'url' => Url::toRoute(['/page/page/index']),
+                            'active' => MenuHelper::isActiveMenu(['page', 'page'], $this->context->route),
+                        ],
+                        [
                             'label' => 'Новини',
                             'icon' => 'newspaper-o',
                             'url' => Url::toRoute(['/page/news/index']),

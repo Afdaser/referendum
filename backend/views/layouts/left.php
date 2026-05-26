@@ -61,7 +61,21 @@ use common\models\AuthItem;
                     'url' => Url::toRoute(['/page/page/index']), // => Url::toRoute(['/page/default/index']),
                     'active' => MenuHelper::isActiveMenu(['page'], $this->context->route),
 //                    'visible' => Yii::$app->user->can(AuthItem::P_CONTRACT_ENTER),
-                    'items' => [],
+                    'items' => [
+                        [
+                            // Повертаємо доступ до класичних статичних сторінок (privacy policy, terms тощо).
+                            'label' => Yii::t('app', 'Pages'),
+                            'icon' => 'file-text-o',
+                            'url' => Url::toRoute(['/page/page/index']),
+                            'active' => MenuHelper::isActiveMenu(['page', 'page'], $this->context->route),
+                        ],
+                        [
+                            'label' => 'Новини',
+                            'icon' => 'newspaper-o',
+                            'url' => Url::toRoute(['/page/news/index']),
+                            'active' => MenuHelper::isActiveMenu(['page', 'news'], $this->context->route),
+                        ],
+                    ],
                 ],
                 // Додаємо окремий розділ для SEO-текстів головної сторінки.
                 [

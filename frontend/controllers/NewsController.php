@@ -29,10 +29,15 @@ class NewsController extends Controller
             'forcePageParam' => false,
             'validatePage' => true,
         ]);
-        // Не нашкодити: явно валідуємо номер сторінки й повертаємо 404 для page поза діапазоном.
-        if (!$pagination->setPage($page - 1, true)) {
+        // Не нашкодити: Pagination::setPage() не повертає bool, тому валідацію діапазону робимо явно.
+        $requestedPageZeroBased = $page - 1;
+        $pageCount = (int) $pagination->getPageCount();
+        // Для порожнього списку допускаємо лише першу сторінку; для непорожнього — 0..(pageCount-1).
+        $maxAllowedPageZeroBased = $pageCount > 0 ? $pageCount - 1 : 0;
+        if ($requestedPageZeroBased < 0 || $requestedPageZeroBased > $maxAllowedPageZeroBased) {
             throw new NotFoundHttpException('Сторінку новин не знайдено.');
         }
+        $pagination->setPage($requestedPageZeroBased, true);
 
         $items = (clone $baseQuery)
             // Сортуємо від найновіших до найстаріших.

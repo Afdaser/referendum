@@ -36,7 +36,7 @@ use yii\widgets\LinkPager;
             <div class="text-center">
                 <?= LinkPager::widget([
                     'pagination' => $pagination,
-                    'route' => 'news/index',
+                    // Не нашкодити: route задається у Pagination, тому не дублюємо тут.
                 ]); ?>
             </div>
         <?php else: ?>

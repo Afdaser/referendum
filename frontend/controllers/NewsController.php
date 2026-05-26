@@ -13,7 +13,12 @@ class NewsController extends Controller
 {
     public function actionIndex(int $page = 1)
     {
-        $page = max(1, (int) $page);
+        // Не нашкодити: не маскуємо невалідні page=0/000 як першу сторінку, а повертаємо 404.
+        $rawPage = (int) $page;
+        if ($rawPage < 1) {
+            throw new NotFoundHttpException('Сторінку новин не знайдено.');
+        }
+        $page = $rawPage;
 
         // Не нашкодити: показуємо тільки опубліковані новини, дата яких вже настала.
         $baseQuery = News::find()

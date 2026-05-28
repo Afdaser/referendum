@@ -14,6 +14,7 @@ use yii\helpers\Inflector;
  * @property string $slug
  * @property string|null $excerpt
  * @property string|null $content
+ * @property string|null $image_url
  * @property string|null $h1
  * @property string|null $desc
  * @property string|null $published_at
@@ -52,6 +53,7 @@ class News extends ActiveRecord
             [['published_at'], 'safe'],
             [['is_published', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['title', 'h1'], 'string', 'max' => 255],
+            [['image_url'], 'string', 'max' => 1024],
             [['slug'], 'string', 'max' => 128],
             [['slug'], 'unique'],
             [['is_published'], 'default', 'value' => 0],
@@ -67,6 +69,7 @@ class News extends ActiveRecord
             'slug' => 'Slug',
             'excerpt' => 'Короткий опис',
             'content' => 'Контент',
+            'image_url' => 'Зображення (URL)',
             'h1' => 'H1',
             'desc' => 'meta-description',
             'published_at' => 'Дата публікації',

@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   `slug` varchar(128) NOT NULL,
   `excerpt` text DEFAULT NULL,
   `content` mediumtext DEFAULT NULL,
+  `image_url` varchar(1024) DEFAULT NULL,
   `published_at` datetime DEFAULT NULL,
   `is_published` tinyint(1) NOT NULL DEFAULT '0',
   `desc` text DEFAULT NULL,

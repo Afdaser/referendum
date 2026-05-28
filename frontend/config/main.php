@@ -197,6 +197,7 @@ return [
 
                 'updates' => 'page/updates',
                 'news/page/<page:\d+>' => 'news/index',
+                // Детальна сторінка новини: slug у URL має стояти вище за універсальний page/view.
                 'news/<slug:[\w-]+>' => 'news/view',
                 'news' => 'news/index',
                 // ВАЖЛИВО: ці "людські" URL мають бути вище за універсальне правило <page:[\w-]+>,

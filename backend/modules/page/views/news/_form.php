@@ -19,6 +19,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'desc')->textarea(['rows' => 2]) ?>
     <?= $form->field($model, 'excerpt')->textarea(['rows' => 3]) ?>
     <?= $form->field($model, 'content')->textarea(['rows' => 8]) ?>
+    <?php // Не нашкодити: зберігаємо лише URL, без завантаження файлів у цій формі. ?>
+    <?= $form->field($model, 'image_url')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'published_at')->textInput(['type' => 'datetime-local']) ?>
     <?= $form->field($model, 'is_published')->dropDownList(News::getPublishedItems()) ?>
 

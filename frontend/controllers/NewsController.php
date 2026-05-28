@@ -66,14 +66,15 @@ class NewsController extends Controller
 
     public function actionView(string $slug)
     {
-        // Не нашкодити: відкриваємо лише публічні матеріали, доступні за датою.
+        // Не нашкодити: шукаємо slug тільки серед опублікованих матеріалів, доступних за датою.
         $model = News::find()
-            ->where(['slug' => $slug, 'is_published' => 1])
+            ->where(['slug' => $slug])
+            ->published()
             ->andWhere(['<=', 'published_at', date('Y-m-d H:i:s')])
             ->one();
 
         if ($model === null) {
-            throw new \yii\web\NotFoundHttpException('Новину не знайдено.');
+            throw new NotFoundHttpException('Новину не знайдено.');
         }
 
         $canonicalUrl = Url::to(['/news/view', 'slug' => $model->slug], true);
@@ -85,6 +86,18 @@ class NewsController extends Controller
         $pageTitle = trim((string) $model->title) . ' | Новини Referendum';
         Yii::$app->page->setTitle($pageTitle);
         Yii::$app->page->setDescription(trim((string) ($model->desc ?: $model->excerpt)));
+        $imageUrl = $model->getImageUrl();
+        if ($imageUrl !== null) {
+            // Передаємо hero-зображення в OG/Twitter мета-дані без зміни глобального fallback.
+            Yii::$app->page->establish([
+                'image' => [
+                    'uri' => $imageUrl,
+                    'width' => '',
+                    'height' => '',
+                    'mime' => 'image/jpeg',
+                ],
+            ]);
+        }
         $this->view->title = $pageTitle;
 
         return $this->render('view', ['model' => $model]);

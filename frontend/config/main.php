@@ -197,7 +197,12 @@ return [
 
                 'updates' => 'page/updates',
                 'news/page/<page:\d+>' => 'news/index',
-                'news/<slug:[\w-]+>' => 'news/view',
+                [
+                    // Детальна новина має канонічний URL із кінцевим слешем: /news/<slug>/.
+                    'pattern' => 'news/<slug:[\w-]+>',
+                    'route' => 'news/view',
+                    'suffix' => '/',
+                ],
                 'news' => 'news/index',
                 // ВАЖЛИВО: ці "людські" URL мають бути вище за універсальне правило <page:[\w-]+>,
                 // інакше їх перехопить page/view.

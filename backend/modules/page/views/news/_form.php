@@ -17,6 +17,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'h1')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'desc')->textarea(['rows' => 2]) ?>
+    <?php // URL або шлях до hero-зображення; файл не завантажуємо тут, щоб не змінювати існуючий медіа-процес. ?>
+    <?= $form->field($model, 'image')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'excerpt')->textarea(['rows' => 3]) ?>
     <?= $form->field($model, 'content')->textarea(['rows' => 8]) ?>
     <?= $form->field($model, 'published_at')->textInput(['type' => 'datetime-local']) ?>

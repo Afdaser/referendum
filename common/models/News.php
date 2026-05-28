@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use common\components\ActiveRecord;
 use yii\helpers\Inflector;
+use yii\helpers\Url;
 
 /**
  * Модель новин/статей для контентного розділу.
@@ -16,6 +17,7 @@ use yii\helpers\Inflector;
  * @property string|null $content
  * @property string|null $h1
  * @property string|null $desc
+ * @property string|null $image
  * @property string|null $published_at
  * @property int $is_published
  * @property int|null $created_at
@@ -49,6 +51,7 @@ class News extends ActiveRecord
         return [
             [['title', 'slug'], 'required'],
             [['excerpt', 'content', 'desc'], 'string'],
+            [['image'], 'string', 'max' => 255],
             [['published_at'], 'safe'],
             [['is_published', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['title', 'h1'], 'string', 'max' => 255],
@@ -69,6 +72,7 @@ class News extends ActiveRecord
             'content' => 'Контент',
             'h1' => 'H1',
             'desc' => 'meta-description',
+            'image' => 'Зображення',
             'published_at' => 'Дата публікації',
             'is_published' => 'Опубліковано',
             'created_at' => 'Створено',
@@ -76,6 +80,35 @@ class News extends ActiveRecord
             'created_by' => 'Створив',
             'updated_by' => 'Оновив',
         ];
+    }
+
+
+    /**
+     * Повертає абсолютний URL зображення для публічної сторінки новини.
+     */
+    public function getImageUrl(): ?string
+    {
+        $image = trim((string) $this->image);
+        if ($image === '') {
+            return null;
+        }
+
+        // Не нашкодити: підтримуємо і повні URL, і локальні шляхи з адмінки.
+        if (preg_match('~^https?://~i', $image) === 1) {
+            return $image;
+        }
+
+        return Url::to('/' . ltrim($image, '/'), true);
+    }
+
+    /**
+     * Формує безпечний alt для hero-зображення новини.
+     */
+    public function getImageAlt(): string
+    {
+        $title = trim((string) ($this->h1 ?: $this->title));
+
+        return $title !== '' ? $title : 'Зображення новини';
     }
 
     public static function getPublishedItems(): array

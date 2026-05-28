@@ -7,6 +7,7 @@ use common\models\search\NewsSearch;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class NewsController extends Controller
 {
@@ -40,12 +41,18 @@ class NewsController extends Controller
     {
         $model = new News();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            // Спершу валідовуємо разом із файлом, потім зберігаємо файл і фінально запис у БД.
+            if ($model->validate() && $model->uploadImage() && $model->save(false)) {
+                return $this->redirect(['index']);
+            }
         }
 
-        // Для нової форми підтягуємо значення за замовчуванням (чернетка), щоб не опублікувати новину випадково.
-        $model->loadDefaultValues();
+        if (!$this->request->isPost) {
+            // Для нової форми підтягуємо значення за замовчуванням (чернетка), щоб не опублікувати новину випадково.
+            $model->loadDefaultValues();
+        }
 
         return $this->render('create', ['model' => $model]);
     }
@@ -54,8 +61,12 @@ class NewsController extends Controller
     {
         $model = $this->findModel((int)$id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            // Не видаляємо старе зображення автоматично: якщо файл не вибрано, поточний URL лишається без змін.
+            if ($model->validate() && $model->uploadImage() && $model->save(false)) {
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('update', ['model' => $model]);

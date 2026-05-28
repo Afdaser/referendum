@@ -10,7 +10,7 @@ use yii\helpers\Url;
     <div class="row right_cut_row">
         <article class="chart_b user_page_b news-detail">
             <?php if (!empty($model->image_url)): ?>
-                <?php // Не нашкодити: показуємо зображення тільки коли редактор явно задав URL. ?>
+                <?php // Не нашкодити: показуємо одне завантажене зображення адаптивно, без генерації різних розмірів. ?>
                 <div class="news-detail__image-wrap" style="margin: 0 0 18px 0;">
                     <?= Html::img($model->image_url, [
                         'class' => 'news-detail__image',

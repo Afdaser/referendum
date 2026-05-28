@@ -11,16 +11,30 @@ use yii\widgets\ActiveForm;
 
 <div class="news-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'h1')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'desc')->textarea(['rows' => 2]) ?>
     <?= $form->field($model, 'excerpt')->textarea(['rows' => 3]) ?>
-    <?= $form->field($model, 'content')->textarea(['rows' => 8]) ?>
-    <?php // Не нашкодити: зберігаємо лише URL, без завантаження файлів у цій формі. ?>
-    <?= $form->field($model, 'image_url')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'content')->widget(ashch\tinymce\TinyMce::class); ?>
+
+    <?php if (!empty($model->image_url)): ?>
+        <?php // Показуємо поточне зображення перед вибором нового файлу, щоб редактор не замінив його випадково. ?>
+        <div class="form-group">
+            <label class="control-label">Поточне зображення</label>
+            <div>
+                <?= Html::img($model->image_url, [
+                    'alt' => $model->title,
+                    'style' => 'max-width: 320px; width: 100%; height: auto;',
+                ]) ?>
+            </div>
+            <p class="help-block">Новий файл замінить URL зображення після збереження.</p>
+        </div>
+    <?php endif; ?>
+
+    <?= $form->field($model, 'imageFile')->fileInput(['accept' => 'image/jpeg,image/png']) ?>
     <?= $form->field($model, 'published_at')->textInput(['type' => 'datetime-local']) ?>
     <?= $form->field($model, 'is_published')->dropDownList(News::getPublishedItems()) ?>
 

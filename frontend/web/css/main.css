@@ -3949,46 +3949,34 @@ div.item_list_poll {
     width: 100%;
 }
 
-.list_polls .item_list_poll__title-link {
-    /* Не нашкодити: зберігаємо вигляд заголовка, але робимо його явним посиланням на новину. */
-    color: #058f42;
-    text-decoration: none;
-}
-
-.list_polls .item_list_poll__title-link:hover,
-.list_polls .item_list_poll__title-link:focus {
-    color: #046f34;
-    text-decoration: underline;
-}
-
-.list_polls .item_list_poll__image-link {
-    display: block;
-    margin: 0 0 10px 0;
-    text-decoration: none;
-}
 
 .list_polls .item_list_poll__image {
-    /* Не нашкодити: не обрізаємо зображення примусово, лише вписуємо його в ширину картки. */
+    /* Не нашкодити: зображення не є посиланням, лише візуально відділяємо його від заголовка. */
     display: block;
     width: 100%;
     height: auto;
+    margin: 0 0 10px 0;
     border-radius: 3px;
 }
 
 .list_polls .item_list_poll__read-more {
+    /* Не нашкодити: кнопку читання тримаємо справа, окремо від неклікабельного зображення. */
     display: flex;
     justify-content: flex-end;
 }
 
 a.btn_read_next_var {
+    /* Не нашкодити: не чіпаємо базову .btn_prev_var, а тільки розвертаємо кнопку читання вправо. */
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-width: 96px;
+    width: auto;
+    box-sizing: border-box;
     background: none;
     margin-left: 0;
-    padding-left: 0;
-    padding-right: 10px;
+    padding: 0 14px 0 10px;
     overflow: hidden;
 }
 
@@ -4011,4 +3999,5 @@ a.btn_read_next_var:hover::before {
 a.btn_read_next_var span {
     position: relative;
     z-index: 1;
+    white-space: nowrap;
 }

@@ -16,6 +16,7 @@ Registration on the site is required not only to see the results of surveys, but
         'Назад'=>'Back',
         // Тексти кнопок новин перекладаємо тут, щоб не змішувати мови у шаблонах.
         'До новин' => 'Back to news',
+        'Читати далі' => 'Read more',
         'Читати' => 'Read',
         'Новини' => 'News',
         'Поки що новин немає' => 'No news yet',

@@ -11,6 +11,11 @@ Registration on the site is required not only to see the results of surveys, but
         'Це опитування вам не підходить, тому ви бачите одразу результати.'=>'This poll does not suit you, so you can immediately see the results.',
         'Відповісти'=>'Reply',
         'Назад'=>'Back',
+        // Тексти кнопок новин перекладаємо тут, щоб не змішувати мови у шаблонах.
+        'До новин' => 'Back to news',
+        'Читати' => 'Read',
+        'Новини' => 'News',
+        'Поки що новин немає' => 'No news yet',
         'Опитування: {title}' => 'Poll: {title}',
         'Побачити результати' => 'See results',
         'Показати голоси'=>'Show votes',
@@ -91,4 +96,12 @@ Registration on the site is required not only to see the results of surveys, but
         'This online poll was created on {date}. It has collected {votes} votes so far, including {reg} from registered users and {guest} from guests, along with {comments} comments, reflecting current public opinion and voting results.',
     'Як видно з опитування «{title}» найбільше вибрали варіант «{answer}». За нього проголосували {votes} голосів і це {percent}% від всього голосування.' =>
         'As seen from the poll "{title}", the option "{answer}" was chosen the most. It received {votes} votes, which is {percent}% of the total.',
+
+    // Не нашкодити: додаткові тексти сторінок новин тримаємо українськими ключами, а значення перекладаємо для поточної локалі.
+    'Перейти до новини «{title}»' => 'Open news “{title}”',
+    'Новини | Referendum' => 'News | Referendum',
+    'Останні новини Referendum: актуальні публікації, огляди та оновлення.' => 'Latest Referendum news: current publications, reviews, and updates.',
+    '{title} | Новини Referendum' => '{title} | Referendum News',
+    'Сторінку новин не знайдено.' => 'News page not found.',
+    'Новину не знайдено.' => 'News item not found.',
 );

@@ -35,7 +35,7 @@ use yii\helpers\Url;
 
                 <div class="news-detail__back" style="margin-top: 24px;">
                     <a class="btn_prev_var" href="<?= Url::to(['/news/index']); ?>">
-                        <?= Yii::t('poll', 'Назад'); ?> до новин
+                        <?= Yii::t('poll', 'До новин'); ?>
                     </a>
                 </div>
             </div>

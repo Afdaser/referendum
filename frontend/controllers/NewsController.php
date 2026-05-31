@@ -16,7 +16,7 @@ class NewsController extends Controller
         // Не нашкодити: не маскуємо невалідні page=0/000 як першу сторінку, а повертаємо 404.
         $rawPage = (int) $page;
         if ($rawPage < 1) {
-            throw new NotFoundHttpException('Сторінку новин не знайдено.');
+            throw new NotFoundHttpException(Yii::t('poll', 'Сторінку новин не знайдено.'));
         }
         $page = $rawPage;
 
@@ -40,7 +40,7 @@ class NewsController extends Controller
         // Для порожнього списку допускаємо лише першу сторінку; для непорожнього — 0..(pageCount-1).
         $maxAllowedPageZeroBased = $pageCount > 0 ? $pageCount - 1 : 0;
         if ($requestedPageZeroBased < 0 || $requestedPageZeroBased > $maxAllowedPageZeroBased) {
-            throw new NotFoundHttpException('Сторінку новин не знайдено.');
+            throw new NotFoundHttpException(Yii::t('poll', 'Сторінку новин не знайдено.'));
         }
         $pagination->setPage($requestedPageZeroBased, true);
 
@@ -54,9 +54,11 @@ class NewsController extends Controller
         $currentPage = $pagination->page + 1;
         $this->registerPaginationMeta($pagination, $currentPage);
 
-        Yii::$app->page->setTitle('Новини | Referendum');
-        Yii::$app->page->setDescription('Останні новини Referendum: актуальні публікації, огляди та оновлення.');
-        $this->view->title = 'Новини | Referendum';
+        $newsPageTitle = Yii::t('poll', 'Новини | Referendum');
+        $newsPageDescription = Yii::t('poll', 'Останні новини Referendum: актуальні публікації, огляди та оновлення.');
+        Yii::$app->page->setTitle($newsPageTitle);
+        Yii::$app->page->setDescription($newsPageDescription);
+        $this->view->title = $newsPageTitle;
 
         return $this->render('index', [
             'items' => $items,
@@ -73,7 +75,7 @@ class NewsController extends Controller
             ->one();
 
         if ($model === null) {
-            throw new \yii\web\NotFoundHttpException('Новину не знайдено.');
+            throw new \yii\web\NotFoundHttpException(Yii::t('poll', 'Новину не знайдено.'));
         }
 
         $canonicalUrl = Url::to(['/news/view', 'slug' => $model->slug], true);
@@ -82,7 +84,9 @@ class NewsController extends Controller
             'href' => $canonicalUrl,
         ]);
 
-        $pageTitle = trim((string) $model->title) . ' | Новини Referendum';
+        $pageTitle = Yii::t('poll', '{title} | Новини Referendum', [
+            'title' => trim((string) $model->title),
+        ]);
         Yii::$app->page->setTitle($pageTitle);
         Yii::$app->page->setDescription(trim((string) ($model->desc ?: $model->excerpt)));
         $this->view->title = $pageTitle;

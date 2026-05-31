@@ -10,6 +10,12 @@ return array(
 		'Це опитування вам не підходить, тому ви бачите одразу результати.'=>'Denne avstemningen passer ikke for deg, så du kan umiddelbart se resultatene.',
         'Відповісти'=>'Svare',
         'Назад'=>'Tilbake',
+        // Тексти кнопок новин перекладаємо тут, щоб не змішувати мови у шаблонах.
+        'До новин' => 'Til nyheter',
+        'Читати далі' => 'Les mer',
+        'Читати' => 'Les',
+        'Новини' => 'Nyheter',
+        'Поки що новин немає' => 'Ingen nyheter ennå',
         'Опитування: {title}' => 'Poll: {title}',
         'Побачити результати' => 'Se resultater',
         'Показати голоси'=>'Vis stemmer',
@@ -89,4 +95,12 @@ return array(
         'Denne nettbaserte avstemningen ble opprettet {date}. Den har for øyeblikket samlet {votes} stemmer, inkludert {reg} registrerte brukere og {guest} ikke-registrerte brukere, og {comments} kommentarer, som gjenspeiler gjeldende opinion og avstemningsresultater.',
     'Як видно з опитування «{title}» найбільше вибрали варіант «{answer}». За нього проголосували {votes} голосів і це {percent}% від всього голосування.' =>
         'Som det fremgår av avstemningen «{title}» ble alternativet «{answer}» valgt flest ganger. Det fikk {votes} stemmer, noe som utgjør {percent}% av totalen.',
+
+    // Не нашкодити: додаткові тексти сторінок новин тримаємо українськими ключами, а значення перекладаємо для поточної локалі.
+    'Перейти до новини «{title}»' => 'Åpne nyheten «{title}»',
+    'Новини | Referendum' => 'Nyheter | Referendum',
+    'Останні новини Referendum: актуальні публікації, огляди та оновлення.' => 'Siste nytt fra Referendum: aktuelle publikasjoner, omtaler og oppdateringer.',
+    '{title} | Новини Referendum' => '{title} | Referendum-nyheter',
+    'Сторінку новин не знайдено.' => 'Nyhetssiden ble ikke funnet.',
+    'Новину не знайдено.' => 'Nyheten ble ikke funnet.',
 );

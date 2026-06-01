@@ -32,6 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Заголовок',
             ],
             [
+                'attribute' => 'language_id',
+                'label' => 'Піддомен',
+                'filter' => News::getSubdomainItems(),
+                // Показуємо у гріді той самий підпис, що і в формі редагування.
+                'value' => static fn(News $model): string => News::getSubdomainItems()[$model->language_id] ?? '—',
+            ],
+            [
                 'attribute' => 'is_published',
                 'label' => 'Статус',
                 'filter' => News::getPublishedItems(),

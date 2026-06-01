@@ -15,6 +15,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+    <?php // Не нашкодити: редактор явно вибирає піддомен, щоб новина не з'явилась у неправильній мовній версії. ?>
+    <?= $form->field($model, 'language_id')->dropDownList(News::getSubdomainItems(), ['prompt' => 'Оберіть піддомен']) ?>
     <?= $form->field($model, 'h1')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'desc')->textarea(['rows' => 2]) ?>
     <?= $form->field($model, 'excerpt')->textarea(['rows' => 3]) ?>

@@ -11,7 +11,7 @@ class NewsSearch extends News
     public function rules(): array
     {
         return [
-            [['id', 'is_published', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'language_id', 'is_published', 'created_at', 'updated_at'], 'integer'],
             [['title', 'slug', 'excerpt', 'content', 'image_url', 'h1', 'desc', 'published_at'], 'safe'],
         ];
     }
@@ -37,6 +37,7 @@ class NewsSearch extends News
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'language_id' => $this->language_id,
             'is_published' => $this->is_published,
             'published_at' => $this->published_at,
         ]);

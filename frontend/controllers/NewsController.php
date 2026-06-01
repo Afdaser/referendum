@@ -20,10 +20,16 @@ class NewsController extends Controller
         }
         $page = $rawPage;
 
-        // Не нашкодити: показуємо тільки опубліковані новини, дата яких вже настала.
+        $languageId = News::resolveCurrentLanguageId();
+
+        // Не нашкодити: показуємо тільки опубліковані новини поточного піддомену, дата яких вже настала.
         $baseQuery = News::find()
             ->where(['is_published' => 1])
             ->andWhere(['<=', 'published_at', date('Y-m-d H:i:s')]);
+        if ($languageId !== null) {
+            // Фільтр за піддоменом не дає новинам з інших мовних версій потрапити у список.
+            $baseQuery->andWhere(['language_id' => $languageId]);
+        }
 
         $totalCount = (int) (clone $baseQuery)->count();
         $pagination = new Pagination([
@@ -68,11 +74,17 @@ class NewsController extends Controller
 
     public function actionView(string $slug)
     {
-        // Не нашкодити: відкриваємо лише публічні матеріали, доступні за датою.
-        $model = News::find()
+        $languageId = News::resolveCurrentLanguageId();
+
+        // Не нашкодити: відкриваємо лише публічні матеріали поточного піддомену, доступні за датою.
+        $query = News::find()
             ->where(['slug' => $slug, 'is_published' => 1])
-            ->andWhere(['<=', 'published_at', date('Y-m-d H:i:s')])
-            ->one();
+            ->andWhere(['<=', 'published_at', date('Y-m-d H:i:s')]);
+        if ($languageId !== null) {
+            // Такий самий фільтр, як у списку, щоб однакові slug могли існувати на різних піддоменах.
+            $query->andWhere(['language_id' => $languageId]);
+        }
+        $model = $query->one();
 
         if ($model === null) {
             throw new \yii\web\NotFoundHttpException(Yii::t('poll', 'Новину не знайдено.'));

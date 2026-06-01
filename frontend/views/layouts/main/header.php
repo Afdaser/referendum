@@ -36,12 +36,15 @@ use yii\helpers\Html;
                         <a class="header_menu_link" href="<?= Url::to(['/news/index']); ?>">
                             <?= Html::encode(Yii::t('poll', 'Новини')); ?>
                         </a>
-                        <a class="header_menu_link" href="<?= Url::to(['/site/login']); ?>">
-                            <?= Html::encode(Yii::t('main', 'Увійти')); ?>
-                        </a>
-                        <a class="header_menu_link header_menu_link_accent toggle_modal_registrtion" href="#">
-                            <?= Html::encode(Yii::t('main', 'Зареєструватись')); ?>
-                        </a>
+                        <?php if (Yii::$app->user->isGuest): ?>
+                            <?php // Гостьові дії показуємо тільки гостям: у залогіненого користувача немає модалки #registrtion_step_1. ?>
+                            <a class="header_menu_link" href="<?= Url::to(['/site/login']); ?>">
+                                <?= Html::encode(Yii::t('main', 'Увійти')); ?>
+                            </a>
+                            <a class="header_menu_link header_menu_link_accent toggle_modal_registrtion" href="#">
+                                <?= Html::encode(Yii::t('main', 'Зареєструватись')); ?>
+                            </a>
+                        <?php endif; ?>
 
                         <div class="search_b header_menu_search">
                             <?php // Пошук перенесено з відкритої частини хедера всередину бургер-меню. ?>

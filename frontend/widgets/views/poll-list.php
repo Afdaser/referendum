@@ -324,12 +324,12 @@ if ($category === 'own') {
 </span>
 <span class="links_share">
     <span class="inner_b_share">
-        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No I doubt ')">
+        <button type="button" class="facebook icon_share" aria-label="Поділитися у Facebook" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No I doubt ')">
             <i class="fa fa-facebook"></i>
-        </a>
-        <a href="javascript:void(0)" class="twitter icon_share" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ')">
+        </button>
+        <button type="button" class="twitter icon_share" aria-label="Поділитися у Twitter" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/382','Do you think that Trump is Traitor? ')">
             <i class="fa fa-twitter"></i>
-        </a>
+        </button>
     </span>
 </span>                </span>
 
@@ -379,12 +379,12 @@ if ($category === 'own') {
 </span>
 <span class="links_share">
     <span class="inner_b_share">
-        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No ')">
+        <button type="button" class="facebook icon_share" aria-label="Поділитися у Facebook" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No ')">
             <i class="fa fa-facebook"></i>
-        </a>
-        <a href="javascript:void(0)" class="twitter icon_share" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?')">
+        </button>
+        <button type="button" class="twitter icon_share" aria-label="Поділитися у Twitter" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/383','Do you think, that Trump Will go to Prison?')">
             <i class="fa fa-twitter"></i>
-        </a>
+        </button>
     </span>
 </span>                </span>
 
@@ -452,12 +452,12 @@ if ($category === 'own') {
 </span>
 <span class="links_share">
     <span class="inner_b_share">
-        <a href="javascript:void(0)" class="facebook icon_share" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No ')">
+        <button type="button" class="facebook icon_share" aria-label="Поділитися у Facebook" onclick="Share.facebook('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ','<?= Html::encode($socialLogoUrl); ?>','Варіанти відповіді: Yes No ')">
             <i class="fa fa-facebook"></i>
-        </a>
-        <a href="javascript:void(0)" class="twitter icon_share" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ')">
+        </button>
+        <button type="button" class="twitter icon_share" aria-label="Поділитися у Twitter" onclick="Share.twitter('http://en.online-statistics.org.local/#P#/poll/401','Do you stand with Steve Bannon? ')">
             <i class="fa fa-twitter"></i>
-        </a>
+        </button>
     </span>
 </span>                </span>
 

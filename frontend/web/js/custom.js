@@ -219,11 +219,13 @@ $(document).ready(function(){
         });
     });
 
-    $('a.arrow_rating_top,a.rating_btn_up').click(function(){
+    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
+    $('.arrow_rating_top,a.rating_btn_up').click(function(){
         changePollRating($(this).data("id"),1);
     });
 
-    $('a.arrow_rating_down,a.rating_btn_down').click(function(){
+    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
+    $('.arrow_rating_down,a.rating_btn_down').click(function(){
         changePollRating($(this).data("id"),-1);
     });
 

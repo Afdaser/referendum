@@ -25,9 +25,10 @@
             <?php $pie = StringHelper::formatForPie($chartData); ?>
             <div class="poll_heading_b clearfix">
                 <div class="left_rating_b">
-                    <a href="javascript:void(0)" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>"></a><br>
+                    <?php // Кнопки рейтингу лишають класи та data-id для наявних jQuery-обробників. ?>
+                    <button type="button" class="arrow_rating_top" data-id="<?php echo $poll->id; ?>" aria-label="<?php echo Yii::t('poll', 'Підняти рейтинг опитування'); ?>"></button><br>
                     <span class="poll_rating" data-id="<?php echo $poll->id; ?>"><?php echo $poll->rating; ?></span><br>
-                    <a href="javascript:void(0)" class="arrow_rating_down" data-id="<?php echo $poll->id; ?>"></a>
+                    <button type="button" class="arrow_rating_down" data-id="<?php echo $poll->id; ?>" aria-label="<?php echo Yii::t('poll', 'Знизити рейтинг опитування'); ?>"></button>
                 </div>
                 <div class="middle_title_b">
                     <div class="title_poll">

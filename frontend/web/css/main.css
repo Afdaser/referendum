@@ -182,6 +182,107 @@ a.logo, div.logo {
     position: relative;
     width: 100%;
 }
+
+.header_menu {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+.header_menu__toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+.header_menu__button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 46px;
+    height: 42px;
+    padding: 0 11px;
+    border: 1px solid rgba(232, 247, 238, 0.9);
+    border-radius: 10px;
+    background: rgba(238, 248, 241, 0.16);
+    box-shadow: 0 2px 8px rgba(5, 50, 25, 0.18);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.header_menu__button:hover,
+.header_menu__button:focus,
+.header_menu__toggle:focus + .header_menu__button {
+    background: rgba(238, 248, 241, 0.28);
+    outline: none;
+}
+.header_menu__line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: #fff;
+}
+.header_menu__panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 50;
+    display: none;
+    width: 330px;
+    max-width: calc(100vw - 30px);
+    padding: 14px;
+    border: 1px solid #d4e5dc;
+    border-radius: 12px;
+    background: #f6fbf8;
+    box-shadow: 0 14px 30px rgba(7, 63, 33, 0.28);
+    box-sizing: border-box;
+}
+/* Керуємо відкриттям меню через checkbox, щоб не додавати зайвий JavaScript у критичну шапку. */
+.header_menu__toggle:checked ~ .header_menu__panel {
+    display: block;
+}
+.header_menu__search {
+    margin-bottom: 12px;
+}
+.header_menu__search form {
+    position: relative;
+}
+.header_menu__link {
+    display: block;
+    min-height: 42px;
+    line-height: 42px;
+    margin-top: 8px;
+    padding: 0 14px;
+    border: 1px solid #d4e5dc;
+    border-radius: 10px;
+    background: #fff;
+    color: #0a522a;
+    font-size: 15px;
+    font-family: 'ArimoBold', Arial, sans-serif;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+.header_menu__link:hover,
+.header_menu__link:focus {
+    border-color: #3ac469;
+    color: #05662f;
+    text-decoration: none;
+}
+.header_menu__link--primary {
+    background: #e8f7ee;
+}
+.header_menu__link--accent {
+    border-color: #0f5e31;
+    background: linear-gradient(180deg, #3ac469 0%, #058f42 100%);
+    color: #fff;
+}
+.header_menu__link--accent:hover,
+.header_menu__link--accent:focus {
+    color: #fff;
+    background: linear-gradient(180deg, #45d475 0%, #0a9f4c 100%);
+}
 .search_input {
     display: block;
     width: 320px;
@@ -207,9 +308,11 @@ a.logo, div.logo {
     position: absolute;
     width: 20px;
     height: 20px;
+    border: 0;
     background: url(/img/layout/search_icon.png) center center no-repeat;
     top: 11px;
     right: 12px;
+    cursor: pointer;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
@@ -3583,6 +3686,22 @@ a.pass_on_main_page {
     .right_header_b {
         margin-left: 0;
         align-items: stretch;
+    }
+    .header_menu {
+        justify-content: stretch;
+    }
+    .header_menu__button {
+        width: 100%;
+        align-items: center;
+    }
+    .header_menu__line {
+        width: 24px;
+    }
+    .header_menu__panel {
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
     }
     /* На мобільних розтягуємо лише селект мови; інпут лишаємо з базовою шириною + max-width. */
     .language_select {

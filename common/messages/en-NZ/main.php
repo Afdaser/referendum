@@ -90,4 +90,10 @@ return array(
     // переменная к title опроса
     'опрос' => 'Public opinion poll | Referendum',
 
+    // Тексти бургер-меню в шапці сайту.
+    'Головне меню' => 'Main menu',
+    'Відкрити меню' => 'Open menu',
+    'Увійти' => 'Log in',
+    'Зареєструватись' => 'Sign up',
+
 );

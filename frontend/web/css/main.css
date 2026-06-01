@@ -154,8 +154,9 @@ a.logo, div.logo {
 .right_header_b {
     margin-left: auto;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
     gap: 10px;
 }
 .language_select {
@@ -215,6 +216,144 @@ a.logo, div.logo {
 .search_input:focus ~ .search_btn {
     background: url(/img/layout/search_icon_hover.png);
 }
+
+/* Бургер-меню шапки: тримаємо навігацію, авторизацію та пошук праворуч від логотипа. */
+.site_burger_menu {
+    position: relative;
+    width: auto;
+}
+.site_burger_toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 40px;
+    padding: 0 13px;
+    border: 1px solid rgba(232, 247, 238, 0.55);
+    border-radius: 10px;
+    background: rgba(238, 248, 241, 0.14);
+    color: #f4fff7;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 40px;
+    cursor: pointer;
+    list-style: none;
+    box-sizing: border-box;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.site_burger_toggle::-webkit-details-marker {
+    display: none;
+}
+.site_burger_toggle:hover,
+.site_burger_toggle:focus {
+    background: #eef8f1;
+    border-color: #eef8f1;
+    color: #114f2c;
+    outline: none;
+}
+.site_burger_icon,
+.site_burger_icon::before,
+.site_burger_icon::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    content: '';
+}
+.site_burger_icon {
+    position: relative;
+}
+.site_burger_icon::before,
+.site_burger_icon::after {
+    position: absolute;
+    left: 0;
+}
+.site_burger_icon::before {
+    top: -6px;
+}
+.site_burger_icon::after {
+    top: 6px;
+}
+.site_burger_panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 50;
+    width: 320px;
+    max-width: calc(100vw - 30px);
+    padding: 14px;
+    border: 1px solid #b7d8c4;
+    border-radius: 14px;
+    background: #f8fcf9;
+    box-shadow: 0 12px 30px rgba(5, 92, 43, 0.25);
+    box-sizing: border-box;
+}
+.site_burger_panel::before {
+    position: absolute;
+    top: -7px;
+    right: 22px;
+    width: 14px;
+    height: 14px;
+    border-left: 1px solid #b7d8c4;
+    border-top: 1px solid #b7d8c4;
+    background: #f8fcf9;
+    transform: rotate(45deg);
+    content: '';
+}
+.site_menu_link {
+    display: block;
+    margin-bottom: 8px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: #114f2c;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.site_menu_link:hover,
+.site_menu_link:focus {
+    background: #e8f7ee;
+    border-color: #9bd7ae;
+    color: #05662F;
+    text-decoration: none;
+    outline: none;
+}
+.site_menu_link_accent {
+    background: #1c7d3f;
+    border-color: #116232;
+    color: #fff;
+    text-align: center;
+}
+.site_menu_link_accent:hover,
+.site_menu_link_accent:focus {
+    background: #3ac469;
+    border-color: #1c7d3f;
+    color: #fff;
+}
+.site_menu_search {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #d7e8dd;
+}
+.site_menu_search_label {
+    display: block;
+    margin-bottom: 6px;
+    color: #476454;
+    font-size: 13px;
+    font-weight: normal;
+}
+.site_menu_search_box .search_input {
+    width: 100%;
+}
+.site_menu_search_box .search_btn {
+    border: 0;
+    padding: 0;
+    text-indent: -9999px;
+    cursor: pointer;
+}
+
 .sub_header_slider_b {
     height: 81px;
     border-bottom: 1px solid #b7c8ca;
@@ -3566,27 +3705,73 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 991px) {
-    /* Робимо елементи хедера сенсорно-дружніми й складаємо їх у колонку для телефонів. */
+    /* На планшетах і телефонах логотип лишається ліворуч, а селект піддомену та бургер — праворуч. */
     .header_row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
     }
     a.logo,
     div.logo {
-        align-items: center;
+        align-items: flex-start;
+        flex: 0 1 auto;
     }
     .sub_text_logo {
         margin-left: 0;
-        text-align: center;
+        text-align: left;
     }
     .right_header_b {
-        margin-left: 0;
-        align-items: stretch;
+        margin-left: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
     }
-    /* На мобільних розтягуємо лише селект мови; інпут лишаємо з базовою шириною + max-width. */
     .language_select {
-        width: 100%;
+        width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Стискаємо шапку без приховування функціоналу на малих телефонах. */
+    a.logo img,
+    div.logo img {
+        width: 135px;
+        height: auto;
+    }
+    .sub_text_logo {
+        max-width: 135px;
+        font-size: 11px;
+        line-height: 16px;
+    }
+    .language_select {
+        width: 112px;
+        min-height: 38px;
+        padding-left: 8px;
+        padding-right: 26px;
+        font-size: 12px;
+    }
+    .site_burger_toggle {
+        min-height: 38px;
+        padding: 0 10px;
+        line-height: 38px;
+    }
+    .site_burger_text {
+        display: none;
+    }
+    .site_burger_panel {
+        right: -2px;
+    }
+}
+
+@media (max-width: 360px) {
+    /* Не шкодимо малим телефонам: переносимо правий блок на новий рядок, щоб селект і бургер не створювали горизонтальний скрол. */
+    .header_row {
+        flex-wrap: wrap;
+    }
+    .right_header_b {
+        flex: 1 0 100%;
+        justify-content: flex-end;
     }
 }
 

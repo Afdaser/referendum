@@ -322,6 +322,20 @@ a.logo, div.logo {
     height: 52px;
     transform: none;
 }
+.header_login_modal .modal-dialog {
+    width: min(360px, calc(100vw - 32px));
+}
+.header_login_modal_body {
+    /* Модалка входу повторює готову форму сайдбара, але без зайвих зовнішніх блоків сторінки логіну. */
+    padding: 24px 30px;
+}
+.header_login_modal_body .btn_block {
+    margin-top: 5px;
+}
+.header_login_modal_body .refresh_password_block_for_ankor {
+    clear: both;
+    padding-top: 12px;
+}
 .language_select {
     display: inline-block;
     width: 170px;

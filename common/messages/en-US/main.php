@@ -88,7 +88,6 @@ return array(
     'опрос' => 'Public opinion poll | Referendum',
 
     // Нові короткі підписи для бургер-меню у шапці сайту.
-    'Меню' => 'Menu',
     'Меню сайту' => 'Site menu',
     'Увійти' => 'Log in',
     'Зареєструватись' => 'Sign up',

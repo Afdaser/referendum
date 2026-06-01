@@ -29,9 +29,8 @@ use yii\helpers\Html;
             <div class="right_header_b">
                 <details class="header_menu">
                     <summary class="header_menu_toggle" aria-label="<?= Html::encode(Yii::t('main', 'Меню сайту')); ?>">
-                        <?php // Бургер-іконка стоїть над вибором піддомену й відкриває всі додаткові дії шапки. ?>
+                        <?php // Іконка бургера сама позначає меню; текст не дублюємо, щоб кнопка була компактною у правому куті. ?>
                         <span class="header_menu_icon" aria-hidden="true"><span></span><span></span><span></span></span>
-                        <span class="header_menu_toggle_text"><?= Html::encode(Yii::t('main', 'Меню')); ?></span>
                     </summary>
                     <nav class="header_menu_panel" aria-label="<?= Html::encode(Yii::t('main', 'Меню сайту')); ?>">
                         <a class="header_menu_link" href="<?= Url::to(['/news/index']); ?>">

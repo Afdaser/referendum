@@ -161,25 +161,22 @@ a.logo, div.logo {
 
 .header_menu {
     position: relative;
-    width: 100%;
-    max-width: 320px;
+    width: 52px;
+    max-width: 100%;
+    align-self: flex-end;
 }
 .header_menu_toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    width: 170px;
+    width: 52px;
     min-height: 42px;
     margin-left: auto;
-    padding: 0 14px;
+    padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.45);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.12);
     color: #f4fff7;
-    font-family: "ArimoBold", Arial, sans-serif;
-    font-size: 14px;
-    text-transform: uppercase;
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
     box-sizing: border-box;
@@ -218,12 +215,17 @@ a.logo, div.logo {
     top: calc(100% + 8px);
     right: 0;
     z-index: 50;
-    width: 320px;
+    width: min(320px, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
     padding: 14px;
     border: 1px solid #0f5e31;
     border-radius: 14px;
     background: #f8fcf9;
     box-shadow: 0 12px 28px rgba(4, 64, 31, 0.28);
+    box-sizing: border-box;
+}
+.header_menu_panel * {
+    /* Не даємо пошуку та кнопкам розширювати випадаюче меню за межі контейнера. */
     box-sizing: border-box;
 }
 .header_menu_panel:before {
@@ -271,9 +273,17 @@ a.logo, div.logo {
 }
 .header_menu_search {
     margin-top: 12px;
+    max-width: 100%;
+    overflow: hidden;
+}
+.header_menu_search form {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
 }
 .header_menu_search .search_input {
     width: 100%;
+    min-width: 0;
 }
 .language_select {
     display: inline-block;
@@ -3701,23 +3711,24 @@ a.pass_on_main_page {
         text-align: center;
     }
     .right_header_b {
+        width: 100%;
         margin-left: 0;
-        align-items: stretch;
+        align-items: flex-end;
     }
     .header_menu {
-        max-width: none;
-    }
-    .header_menu_toggle {
-        width: 100%;
+        width: 52px;
+        max-width: 52px;
+        margin-left: auto;
     }
     .header_menu_panel {
-        left: 0;
         right: 0;
-        width: 100%;
+        left: auto;
+        width: min(320px, calc(100vw - 32px));
     }
-    /* На мобільних розтягуємо селект мови й бургер-меню на всю ширину хедера. */
+    /* На мобільних лишаємо бургер у правому куті, а селект — під ним без розтягування пошуку назовні. */
     .language_select {
-        width: 100%;
+        width: 170px;
+        max-width: 100%;
     }
 }
 

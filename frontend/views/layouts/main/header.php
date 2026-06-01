@@ -2,6 +2,7 @@
 
 use frontend\widgets\WLanguageSelector;
 use frontend\widgets\WSearchForm;
+use yii\helpers\Url;
 
 /** @var $this Controller */ ?>
 <!-- ~/frontend/views/layouts/main/header.php -->
@@ -26,6 +27,14 @@ use frontend\widgets\WSearchForm;
             <?php endif; ?>
 
             <div class="right_header_b">
+                <?php // Основне меню тримаємо праворуч від логотипа, щоб не змінювати звичну структуру шапки. ?>
+                <nav class="header_nav" aria-label="<?= Yii::t('main', 'Основне меню'); ?>">
+                    <a class="header_nav_link" href="<?= Url::to(['/news/index']); ?>"><?= Yii::t('poll', 'Новини'); ?></a>
+                    <?php if (Yii::$app->user->isGuest): ?>
+                        <a class="header_nav_link header_nav_link_secondary" href="<?= Url::to(['/site/login']); ?>"><?= Yii::t('main', 'Увійти'); ?></a>
+                        <a class="header_nav_link header_nav_link_primary" href="<?= Url::to(['/site/signup']); ?>"><?= Yii::t('main', 'Зареєструватись'); ?></a>
+                    <?php endif; ?>
+                </nav>
                 <?= WLanguageSelector::widget(); ?>
 <?php /* * / ?>
                 <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>

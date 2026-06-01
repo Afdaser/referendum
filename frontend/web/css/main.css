@@ -158,6 +158,56 @@ a.logo, div.logo {
     align-items: flex-end;
     gap: 10px;
 }
+
+.header_nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+}
+.header_nav_link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 7px 13px;
+    border: 1px solid rgba(232, 247, 238, 0.45);
+    border-radius: 999px;
+    color: #e8f7ee;
+    font-size: 14px;
+    line-height: 1.2;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    /* Кнопки меню мають той самий зелений стиль, але лишаються достатньо великими для дотику. */
+    box-sizing: border-box;
+}
+.header_nav_link:hover,
+.header_nav_link:focus {
+    color: #fff;
+    text-decoration: none;
+    border-color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 8px rgba(7, 58, 31, 0.2);
+}
+.header_nav_link_secondary {
+    background: rgba(255, 255, 255, 0.08);
+}
+.header_nav_link_primary {
+    border-color: #d7f3df;
+    background: #eef8f1;
+    color: #114f2c;
+    font-weight: 600;
+}
+.header_nav_link_primary:hover,
+.header_nav_link_primary:focus {
+    color: #0f5e31;
+    background: #fff;
+    border-color: #fff;
+}
+
 .language_select {
     display: inline-block;
     width: 170px;
@@ -1518,6 +1568,16 @@ a.btn_prev_var:hover {
     font-size: 110%;
     line-height: 1.6;
 }
+@media (max-width: 520px) {
+    .header_nav {
+        gap: 7px;
+    }
+    .header_nav_link {
+        flex-basis: 100%;
+        min-height: 38px;
+    }
+}
+
 @media (max-width: 768px) {
     .desc_my_chart {
         /* На мобільних прибираємо надлишкові бічні відступи, щоб текст не "плив". */
@@ -3583,6 +3643,13 @@ a.pass_on_main_page {
     .right_header_b {
         margin-left: 0;
         align-items: stretch;
+    }
+    .header_nav {
+        justify-content: center;
+    }
+    .header_nav_link {
+        flex: 1 1 auto;
+        min-width: 128px;
     }
     /* На мобільних розтягуємо лише селект мови; інпут лишаємо з базовою шириною + max-width. */
     .language_select {

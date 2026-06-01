@@ -4,7 +4,9 @@ $(document).ready(function () {
     try {
         // Реєстраційна модалка використовується не лише на /site/myPolls,
         // тому ініціалізуємо її окремим легким скриптом.
-        $('.toggle_modal_registrtion').click(function () {
+        $('.toggle_modal_registrtion').click(function (event) {
+            // Не даємо службовому href="#" прокручувати сторінку при відкритті модалки.
+            event.preventDefault();
             $('#registrtion_step_1').children('.modal-dialog')
                 .load(window.rfrndm.routes.ajax.registrtion_step_one, function (responseTxt, statusTxt, xhr) {
                     if (statusTxt == 'error') {

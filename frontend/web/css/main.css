@@ -718,6 +718,11 @@ a.link_poll:hover {
     min-width: 44px;
 }
 .arrow_rating_top {
+    /* Скидаємо стилі button, щоб заміна посилань не змінила вигляд стрілок рейтингу. */
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent;
     display: inline-block;
     vertical-align: middle;
     width: 15px;
@@ -728,6 +733,11 @@ a.link_poll:hover {
     background: url(/img/layout/arrow_top_rating_hover.png);
 }
 .arrow_rating_down {
+    /* Скидаємо стилі button, щоб заміна посилань не змінила вигляд стрілок рейтингу. */
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent;
     display: inline-block;
     vertical-align: middle;
     width: 15px;

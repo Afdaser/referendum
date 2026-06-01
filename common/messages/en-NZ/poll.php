@@ -82,6 +82,12 @@ Registration on the site is required not only to see the results of surveys, but
         'до'=>'to',
         'Закрите до кількості голосів'=>'Closed until the number of votes:',
         'Посилання скопійовано' => 'Link copied',
+        // aria-label для кнопок поширення, щоб англомовні сторінки не показували український текст.
+        'Поділитися у Facebook' => 'Share on Facebook',
+        'Поділитися у VK' => 'Share on VK',
+        'Поділитися у Twitter' => 'Share on Twitter',
+        'Поділитися у Google Plus' => 'Share on Google Plus',
+        'Скопіювати посилання' => 'Copy link',
         'ЗБЕРЕГТИ'=>'SAVE',
     'Рейтинг користувача' => 'User rating',
     'Всього опитувань' => 'Total polls',

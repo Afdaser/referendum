@@ -642,11 +642,18 @@ a.link_poll:hover {
     display: inline-block;
     vertical-align: middle;
     width: 100%;
+    /* Прибираємо стандартний вигляд button, щоб заміна посилань не змінила дизайн. */
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
     /* Масштабуємо іконки всередині списку на 25%. */
     height: 35px;
     font-size: 17.5px;
     color: #000;
-    padding-top: 6.25px;
+    padding: 6.25px 0 0;
+    box-sizing: border-box;
 }
 .icon_share.facebook {
     color: #3b5998;

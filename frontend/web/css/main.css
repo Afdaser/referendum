@@ -223,6 +223,15 @@ a.logo, div.logo {
     background: #f8fcf9;
     box-shadow: 0 12px 28px rgba(4, 64, 31, 0.28);
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.header_menu_panel > * {
+    /* Дочірні елементи меню не можуть бути ширшими за внутрішню ширину панелі. */
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 .header_menu_panel * {
     /* Не даємо пошуку та кнопкам розширювати випадаюче меню за межі контейнера. */
@@ -275,28 +284,43 @@ a.logo, div.logo {
     margin-top: 12px;
     width: 100%;
     max-width: 100%;
-    overflow: visible;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #0f5e31;
+    border-radius: 10px;
+    background: #f8fcf9;
 }
 .header_menu_search form {
+    /* Робимо пошук окремим flex-рядком: інпут стискається, кнопка не додає ширину поверх 100%. */
     position: relative;
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-}
-.header_menu_search .search_input {
-    /* Пошук у меню рахує ширину тільки від панелі меню, а не від старих глобальних стилів поля пошуку. */
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     margin: 0;
-    padding-right: 48px;
+}
+.header_menu_search .search_input {
+    /* Ізолюємо поле від глобальної ширини .search_input: воно займає тільки доступне місце до кнопки. */
+    flex: 1 1 auto;
+    display: block;
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    min-height: 52px;
+    margin: 0;
+    padding: 0 12px 0 16px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
 }
 .header_menu_search .search_btn {
-    top: 50%;
-    right: 14px;
-    transform: translateY(-50%);
+    position: static;
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    transform: none;
 }
 .language_select {
     display: inline-block;
@@ -3709,23 +3733,30 @@ a.pass_on_main_page {
     }
 }
 @media (max-width: 991px) {
-    /* На мобільних логотип лишається по центру, а меню закріплюємо у правому верхньому куті хедера. */
+    /* На мобільних логотип відводимо ліворуч, щоб селект піддомену справа не заходив на нього. */
     .header_row {
         position: relative;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         gap: 14px;
+        min-height: 120px;
         padding-top: 10px;
-        padding-right: 72px;
-        padding-left: 72px;
+        padding-right: 190px;
+        padding-left: 0;
     }
     a.logo,
     div.logo {
-        align-items: center;
+        align-items: flex-start;
+        max-width: calc(100vw - 230px);
+    }
+    a.logo img,
+    div.logo img {
+        max-width: 100%;
+        height: auto;
     }
     .sub_text_logo {
         margin-left: 0;
-        text-align: center;
+        text-align: left;
     }
     .right_header_b {
         position: absolute;
@@ -3754,6 +3785,18 @@ a.pass_on_main_page {
     .language_select {
         width: 170px;
         max-width: calc(100vw - 32px);
+    }
+}
+@media (max-width: 480px) {
+    .header_row {
+        padding-right: 166px;
+    }
+    a.logo,
+    div.logo {
+        max-width: calc(100vw - 196px);
+    }
+    .language_select {
+        width: 150px;
     }
 }
 

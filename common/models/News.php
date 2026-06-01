@@ -14,6 +14,7 @@ use yii\web\UploadedFile;
  * @property int $id
  * @property string $title
  * @property string $slug
+ * @property int $language_id
  * @property string|null $excerpt
  * @property string|null $content
  * @property string|null $image_url
@@ -25,6 +26,8 @@ use yii\web\UploadedFile;
  * @property int|null $updated_at
  * @property int|null $created_by
  * @property int|null $updated_by
+ *
+ * @property Language $language
  */
 class News extends ActiveRecord
 {
@@ -55,10 +58,10 @@ class News extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['title', 'slug'], 'required'],
+            [['title', 'slug', 'language_id'], 'required'],
             [['excerpt', 'content', 'desc'], 'string'],
             [['published_at'], 'safe'],
-            [['is_published', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['language_id', 'is_published', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['title', 'h1'], 'string', 'max' => 255],
             [['image_url'], 'string', 'max' => 1024],
             [
@@ -70,7 +73,9 @@ class News extends ActiveRecord
                 'skipOnEmpty' => true,
             ],
             [['slug'], 'string', 'max' => 128],
-            [['slug'], 'unique'],
+            // Slug має бути унікальним тільки в межах вибраного піддомену, щоб різні локалі не блокували одна одну.
+            [['slug', 'language_id'], 'unique', 'targetAttribute' => ['slug', 'language_id']],
+            [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['language_id' => 'id']],
             [['is_published'], 'default', 'value' => 0],
             [['is_published'], 'in', 'range' => [0, 1]],
         ];
@@ -82,6 +87,7 @@ class News extends ActiveRecord
             'id' => 'ID',
             'title' => 'Заголовок',
             'slug' => 'Slug',
+            'language_id' => 'Піддомен',
             'excerpt' => 'Короткий опис',
             'content' => 'Контент',
             'image_url' => 'Зображення (URL)',
@@ -95,6 +101,50 @@ class News extends ActiveRecord
             'created_by' => 'Створив',
             'updated_by' => 'Оновив',
         ];
+    }
+
+    /**
+     * Повертає мову/піддомен, для якого призначена новина.
+     */
+    public function getLanguage()
+    {
+        return $this->hasOne(Language::class, ['id' => 'language_id']);
+    }
+
+    /**
+     * Формує список піддоменів для адмінки з урахуванням поточних мов у БД.
+     */
+    public static function getSubdomainItems(): array
+    {
+        $items = [];
+        $domains = Yii::$app->params['langDomains'] ?? [];
+        $languages = Language::find()->orderBy(['id' => SORT_ASC])->all();
+
+        foreach ($languages as $language) {
+            $domain = $domains[$language->id] ?? ($language->name . '.' . (defined('SITE_DOMAIN') ? SITE_DOMAIN : 'referendum.social'));
+            // Показуємо і піддомен, і країну, щоб редактор не переплутав мовну версію.
+            $items[$language->id] = $domain . ' — ' . Language::getCountryTitle($language);
+        }
+
+        return $items;
+    }
+
+    /**
+     * Визначає мовну версію поточного фронтенд-запиту для фільтрації новин.
+     */
+    public static function resolveCurrentLanguageId(): ?int
+    {
+        $request = Yii::$app->has('request') ? Yii::$app->request : null;
+        if ($request !== null && property_exists($request, 'languageId') && (int) $request->languageId > 0) {
+            return (int) $request->languageId;
+        }
+
+        $language = Language::find()->where(['locale' => Yii::$app->language])->one();
+        if ($language !== null) {
+            return (int) $language->id;
+        }
+
+        return null;
     }
 
 

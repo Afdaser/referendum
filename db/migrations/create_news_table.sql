@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `news` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `slug` varchar(128) NOT NULL,
+  `language_id` int unsigned NOT NULL DEFAULT 1,
   `excerpt` text DEFAULT NULL,
   `content` mediumtext DEFAULT NULL,
   `image_url` varchar(1024) DEFAULT NULL,
@@ -14,7 +15,9 @@ CREATE TABLE IF NOT EXISTS `news` (
   `created_by` int DEFAULT NULL,
   `updated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ux_news_slug` (`slug`),
+  UNIQUE KEY `ux_news_slug_language_id` (`slug`, `language_id`),
+  KEY `idx_news_language_id` (`language_id`),
   KEY `idx_news_published_at` (`published_at`),
-  KEY `idx_news_is_published` (`is_published`)
+  KEY `idx_news_is_published` (`is_published`),
+  CONSTRAINT `fk_news_language_id` FOREIGN KEY (`language_id`) REFERENCES `language` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

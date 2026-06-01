@@ -52,6 +52,8 @@ class NewsController extends Controller
         if (!$this->request->isPost) {
             // Для нової форми підтягуємо значення за замовчуванням (чернетка), щоб не опублікувати новину випадково.
             $model->loadDefaultValues();
+            // Не нашкодити: якщо схема ще не віддала default, явно ставимо український піддомен як історичний базовий варіант.
+            $model->language_id = $model->language_id ?: 1;
         }
 
         return $this->render('create', ['model' => $model]);

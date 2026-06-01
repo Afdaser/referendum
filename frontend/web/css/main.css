@@ -154,9 +154,10 @@ a.logo, div.logo {
 .right_header_b {
     margin-left: auto;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    position: relative;
 }
 .language_select {
     display: inline-block;
@@ -177,6 +178,139 @@ a.logo, div.logo {
 .language_select:hover,
 .language_select:focus {
     background: #fff;
+}
+/* Бургер-меню збирає навігацію та пошук праворуч, щоб у хедері напряму лишився тільки вибір піддомену. */
+.header_menu {
+    position: relative;
+    z-index: 20;
+}
+.header_menu summary {
+    list-style: none;
+}
+.header_menu summary::-webkit-details-marker {
+    display: none;
+}
+.header_menu_toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    border-radius: 10px;
+    background: rgba(238, 248, 241, 0.96);
+    color: #114f2c;
+    cursor: pointer;
+    font-family: "ArimoBold", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 0 14px;
+    box-shadow: 0 4px 12px rgba(3, 63, 29, 0.18);
+    box-sizing: border-box;
+}
+.header_menu_toggle:hover,
+.header_menu_toggle:focus {
+    background: #fff;
+    outline: none;
+}
+.header_menu_icon,
+.header_menu_icon:before,
+.header_menu_icon:after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: #116232;
+    content: "";
+}
+.header_menu_icon {
+    position: relative;
+}
+.header_menu_icon:before,
+.header_menu_icon:after {
+    position: absolute;
+    left: 0;
+}
+.header_menu_icon:before {
+    top: -6px;
+}
+.header_menu_icon:after {
+    top: 6px;
+}
+.header_menu[open] .header_menu_icon {
+    background: transparent;
+}
+.header_menu[open] .header_menu_icon:before {
+    top: 0;
+    transform: rotate(45deg);
+}
+.header_menu[open] .header_menu_icon:after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+.header_menu_panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 320px;
+    padding: 14px;
+    border: 1px solid rgba(12, 79, 40, 0.18);
+    border-radius: 14px;
+    background: #f8fcf9;
+    box-shadow: 0 14px 32px rgba(3, 63, 29, 0.28);
+    box-sizing: border-box;
+}
+.header_menu_panel:before {
+    position: absolute;
+    top: -7px;
+    right: 24px;
+    width: 14px;
+    height: 14px;
+    background: #f8fcf9;
+    border-left: 1px solid rgba(12, 79, 40, 0.18);
+    border-top: 1px solid rgba(12, 79, 40, 0.18);
+    content: "";
+    transform: rotate(45deg);
+}
+.header_menu_nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.header_menu_link {
+    display: block;
+    min-height: 40px;
+    border: 1px solid #c7d9cf;
+    border-radius: 9px;
+    background: #f0f4f4;
+    color: #055C2B;
+    font-family: "ArimoBold", Arial, sans-serif;
+    line-height: 40px;
+    padding: 0 12px;
+    text-align: center;
+    text-decoration: none;
+}
+.header_menu_link:hover,
+.header_menu_link:focus {
+    background: #3ac469;
+    border-color: #3ac469;
+    color: #fff;
+    text-decoration: none;
+}
+.header_menu_link--primary {
+    background: #f5c356;
+    border-color: #e29b14;
+    color: #333333;
+}
+.header_menu_link--primary:hover,
+.header_menu_link--primary:focus {
+    background: #ffdf7b;
+    border-color: #e29b14;
+    color: #333333;
+}
+.header_menu_search {
+    position: relative;
+    margin: 0;
 }
 .search_b {
     position: relative;
@@ -207,9 +341,12 @@ a.logo, div.logo {
     position: absolute;
     width: 20px;
     height: 20px;
+    border: 0;
     background: url(/img/layout/search_icon.png) center center no-repeat;
     top: 11px;
     right: 12px;
+    padding: 0;
+    cursor: pointer;
 }
 .search_input:hover ~ .search_btn,
 .search_input:focus ~ .search_btn {
@@ -3582,9 +3719,27 @@ a.pass_on_main_page {
     }
     .right_header_b {
         margin-left: 0;
+        flex-direction: column;
         align-items: stretch;
+        justify-content: flex-start;
     }
-    /* На мобільних розтягуємо лише селект мови; інпут лишаємо з базовою шириною + max-width. */
+    .header_menu {
+        width: 100%;
+    }
+    .header_menu_toggle {
+        justify-content: center;
+        width: 100%;
+    }
+    .header_menu_panel {
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+    .header_menu_panel:before {
+        right: 50%;
+        margin-right: -7px;
+    }
+    /* На мобільних розтягуємо лише селект мови й меню; інпут пошуку живе всередині бургер-панелі. */
     .language_select {
         width: 100%;
     }

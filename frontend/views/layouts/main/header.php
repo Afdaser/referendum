@@ -1,7 +1,7 @@
 <?php
 
 use frontend\widgets\WLanguageSelector;
-use frontend\widgets\WSearchForm;
+use yii\helpers\Url;
 
 /** @var $this Controller */ ?>
 <!-- ~/frontend/views/layouts/main/header.php -->
@@ -26,18 +26,33 @@ use frontend\widgets\WSearchForm;
             <?php endif; ?>
 
             <div class="right_header_b">
+                <?php // У хедері лишаємо перемикач піддомену, а пошук і навігацію переносимо у компактне бургер-меню. ?>
                 <?= WLanguageSelector::widget(); ?>
-<?php /* * / ?>
-                <div class="search_b" style="border:1px dashed red;"><?= WSearchForm::widget([]); ?></div>
-<?php /* */ ?>
-                <div class="search_b">
-                    <form method="post" action="/site/search" name="HeaderSearch">
-                        <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
-                        <input class="search_input" type="search" name="SearchForm[text]" value="" placeholder="<?= Yii::t("main", 'Пошук'); ?>...">
-                        <a href="#" class="search_btn" onclick="document.forms['HeaderSearch'].submit()"></a>
-                        <input type="checkbox" name="SearchForm[search_in_title]" checked hidden value="1">
-                    </form>
-                </div>
+
+                <details class="header_menu">
+                    <summary class="header_menu_toggle" aria-label="<?= Yii::t('main', 'Меню'); ?>">
+                        <span class="header_menu_icon" aria-hidden="true"></span>
+                        <span class="header_menu_text"><?= Yii::t('main', 'Меню'); ?></span>
+                    </summary>
+
+                    <div class="header_menu_panel">
+                        <nav class="header_menu_nav" aria-label="<?= Yii::t('main', 'Меню'); ?>">
+                            <a class="header_menu_link" href="<?= Url::to(['/news/index']); ?>"><?= Yii::t('poll', 'Новини'); ?></a>
+                            <?php if (Yii::$app->user->isGuest): ?>
+                                <a class="header_menu_link header_menu_link--primary" href="<?= Url::to(['/site/login']); ?>"><?= Yii::t('main', 'Увійти'); ?></a>
+                                <a class="header_menu_link" href="<?= Url::to(['/site/signup']); ?>"><?= Yii::t('main', 'Зареєструватись'); ?></a>
+                            <?php endif; ?>
+                        </nav>
+
+                        <form class="header_menu_search" method="post" action="<?= Url::to(['/site/search']); ?>" name="HeaderSearch">
+                            <?php // CSRF лишаємо у формі пошуку, бо вона відправляється POST-запитом. ?>
+                            <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                            <input class="search_input" type="search" name="SearchForm[text]" value="" placeholder="<?= Yii::t('main', 'Пошук'); ?>...">
+                            <button class="search_btn" type="submit" aria-label="<?= Yii::t('main', 'Пошук'); ?>"></button>
+                            <input type="checkbox" name="SearchForm[search_in_title]" checked hidden value="1">
+                        </form>
+                    </div>
+                </details>
             </div>
         </div>
     </div>

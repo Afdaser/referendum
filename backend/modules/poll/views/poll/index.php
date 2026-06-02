@@ -95,7 +95,13 @@ CSS);
             //'votes_count_close',
             
             'date_add:datetime',
-            //'date_update:datetime',
+            [
+                'attribute' => 'updated_at',
+                'label' => $searchModel->getAttributeLabel('date_update'),
+                'format' => 'datetime',
+                // Беремо Unix-час `updated_at`, бо sitemap рахує оновлення опису опитувань саме з цього поля.
+                'value' => 'updated_at',
+            ],
 
             //'created_by',
             //'updated_by',

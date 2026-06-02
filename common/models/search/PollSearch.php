@@ -192,8 +192,8 @@ class PollSearch extends Poll
                     'status',
                     'show_on_slider',
                     'date_add',
-                    // Даємо колонці дати оновлення такий самий функціонал сортування, як і даті додавання.
-                    'date_update',
+                    // Сортуємо за тим самим полем, яке використовує sitemap для lastmod опитування.
+                    'updated_at',
                     'voteCount' => [
                         'asc' => ['pvc.vote_count' => SORT_ASC],
                         'desc' => ['pvc.vote_count' => SORT_DESC],

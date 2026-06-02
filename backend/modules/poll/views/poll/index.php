@@ -95,7 +95,8 @@ CSS);
             //'votes_count_close',
             
             'date_add:datetime',
-            //'date_update:datetime',
+            // Показуємо дату останнього оновлення поруч із датою додавання з тим самим форматуванням і фільтром GridView.
+            'date_update:datetime',
 
             //'created_by',
             //'updated_by',

@@ -133,4 +133,14 @@ function refreshChart(popUpNum) {
     renderChart('bar', 'new_poll' + popUpNum + ' #horizontal_b_chart', title, series, pie);
     renderChart('column', 'new_poll' + popUpNum + ' #vertical_b_chart', title, series, pie);
     renderChart('pie', 'new_poll' + popUpNum + ' #pie_chart', title, series, pie);
+
+    // Прев'ю лінійного графіка імітує зміну відсотків у часі без збереження тестових голосів.
+    var line = {categories: ['День 1', 'День 2', 'День 3', 'День 4'], series: []};
+    for (var j = 0; j < series.length; ++j) {
+        line.series[j] = {
+            name: series[j].name,
+            data: [getRandomInt(), getRandomInt(), getRandomInt(), getRandomInt()]
+        };
+    }
+    renderChart('line', 'new_poll' + popUpNum + ' #line_chart', title, series, pie, line);
 }

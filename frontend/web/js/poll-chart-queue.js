@@ -25,7 +25,7 @@
                 continue;
             }
 
-            renderChart(item.category, item.id, item.title || '', item.series || [], item.pie || []);
+            renderChart(item.category, item.id, item.title || '', item.series || [], item.pie || [], item.line || {});
         }
     });
 })(jQuery);

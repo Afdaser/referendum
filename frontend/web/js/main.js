@@ -95,12 +95,16 @@ function animationForZilla() {
                 $(this).css({
                     'background-image' : 'none'
                 });
+            } else if ($(this).hasClass('line_chart active')) {
+                // Для нового лінійного типу лишаємо CSS-іконку, бо окремого PNG немає.
+                elementBg = null;
+                elementChosen = $(this);
             }
         });
         $(".chosen_graph_b").bind("DOMSubtreeModified", function() {
             if(!$(this).hasClass('animated_b')) {
                 elementChosen.css({
-                    'background-image': 'url(../img/layout/'+elementBg+'_white.png)'
+                    'background-image': elementBg ? 'url(../img/layout/'+elementBg+'_white.png)' : ''
                 });
             } else {
                 elementChosen.css({

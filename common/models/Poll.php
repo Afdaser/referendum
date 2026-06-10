@@ -7,6 +7,7 @@ use common\components\ActiveRecord;
 use common\helpers\StringHelper;
 use yii\bootstrap\Html;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * This is the model class for table "{{%poll}}".
@@ -1091,6 +1092,142 @@ class Poll extends ActiveRecord
                 $pollTag->save();
             }
         }
+    }
+
+    /**
+     * Return cumulative percentage history for the Highcharts line chart.
+     *
+     * Лінійний графік показує, як змінювалась частка кожного варіанта за днями голосування.
+     * Для демографічних фільтрів беремо тільки зареєстрованих користувачів, бо гостьові голоси
+     * не мають профілю з країною, статтю або віком.
+     */
+    public function getLineChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0)
+    {
+        $options = $this->pollOptions;
+        $optionTitles = [];
+        $dailyVotes = [];
+        $dates = [];
+
+        foreach ($options as $option) {
+            $optionTitles[(int)$option->id] = $option->title;
+            $dailyVotes[(int)$option->id] = [];
+        }
+
+        if (empty($optionTitles)) {
+            return ['categories' => [], 'series' => []];
+        }
+
+        if ($ageInterval) {
+            $age = User::getAgesByIntervalIndex($ageInterval);
+        }
+
+        $hasProfileFilters = $sex || isset($age) || $country;
+        $optionIds = array_keys($optionTitles);
+
+        if ($registration !== 2) {
+            $registeredQuery = (new Query())
+                ->select([
+                    'option_id' => 'ov.option_id',
+                    'vote_date' => new Expression('DATE(ov.date_add)'),
+                    'votes' => new Expression('COUNT(*)'),
+                ])
+                ->from(['ov' => OptionVote::tableName()])
+                ->leftJoin(['p' => Profile::tableName()], 'p.user_id = ov.user_id')
+                ->where(['ov.option_id' => $optionIds])
+                ->andWhere(['not', ['ov.user_id' => null]]);
+
+            if ($country) {
+                $registeredQuery->andWhere(['p.country_id' => $country]);
+            }
+
+            if ($sex) {
+                $registeredQuery->andWhere(['p.gender' => $sex]);
+            }
+
+            if (isset($age)) {
+                $registeredQuery->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
+                    ':min' => $age['min'],
+                    ':max' => $age['max'],
+                ]));
+            }
+
+            $this->appendLineChartRows($registeredQuery
+                ->groupBy(['ov.option_id', new Expression('DATE(ov.date_add)')])
+                ->all(), $dailyVotes, $dates);
+        }
+
+        if (!$hasProfileFilters && $registration !== 1) {
+            $guestQuery = (new Query())
+                ->select([
+                    'option_id' => 'ogv.option_id',
+                    'vote_date' => new Expression('DATE(ogv.date_add)'),
+                    'votes' => new Expression('COUNT(*)'),
+                ])
+                ->from(['ogv' => OptionGuestVote::tableName()])
+                ->where(['ogv.option_id' => $optionIds])
+                ->groupBy(['ogv.option_id', new Expression('DATE(ogv.date_add)')]);
+
+            $this->appendLineChartRows($guestQuery->all(), $dailyVotes, $dates);
+        }
+
+        sort($dates);
+
+        return $this->buildLineChartPercentSeries($optionTitles, $dailyVotes, $dates);
+    }
+
+    /**
+     * Додає згруповані голоси у спільний масив, щоб зареєстровані й гостьові голоси сумувались.
+     */
+    private function appendLineChartRows(array $rows, array &$dailyVotes, array &$dates)
+    {
+        foreach ($rows as $row) {
+            $optionId = (int)$row['option_id'];
+            $date = (string)$row['vote_date'];
+
+            if ($date === '' || !isset($dailyVotes[$optionId])) {
+                continue;
+            }
+
+            if (!isset($dailyVotes[$optionId][$date])) {
+                $dailyVotes[$optionId][$date] = 0;
+            }
+
+            $dailyVotes[$optionId][$date] += (int)$row['votes'];
+            $dates[$date] = $date;
+        }
+    }
+
+    /**
+     * Перетворює щоденні голоси на накопичувальні відсотки для Highcharts line.
+     */
+    private function buildLineChartPercentSeries(array $optionTitles, array $dailyVotes, array $dates)
+    {
+        $series = [];
+        $runningTotals = array_fill_keys(array_keys($optionTitles), 0);
+
+        foreach ($optionTitles as $optionId => $title) {
+            $series[$optionId] = ['name' => $title, 'data' => []];
+        }
+
+        foreach ($dates as $date) {
+            $totalForDate = 0;
+
+            foreach ($optionTitles as $optionId => $title) {
+                $runningTotals[$optionId] += $dailyVotes[$optionId][$date] ?? 0;
+                $totalForDate += $runningTotals[$optionId];
+            }
+
+            foreach ($optionTitles as $optionId => $title) {
+                $series[$optionId]['data'][] = $totalForDate > 0
+                    ? round($runningTotals[$optionId] * 100 / $totalForDate, 1)
+                    : 0;
+            }
+        }
+
+        return [
+            'categories' => array_values($dates),
+            'series' => array_values($series),
+        ];
     }
 
     /*

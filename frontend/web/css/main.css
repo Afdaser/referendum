@@ -4265,3 +4265,44 @@ a.btn_read_next_var span {
     z-index: 1;
     white-space: nowrap;
 }
+/* Лінійний графік додано як четвертий тип, тому перемикач розкривається на чотири іконки. */
+.chosen_graph_b:hover {
+    height: 102px;
+}
+.vertical_chart_img,
+.horizontal_chart_img,
+.pie_chart_img,
+.line_chart_img {
+    position: absolute;
+    width: 24px;
+    height: 25px;
+    opacity: 0;
+}
+.line_chart_img {
+    background: linear-gradient(135deg, transparent 39%, #3ac469 40%, #3ac469 47%, transparent 48%),
+        linear-gradient(25deg, transparent 48%, #3ac469 49%, #3ac469 55%, transparent 56%);
+}
+.inner_chosen_graph .line_chart,
+.tabs_graphs .line_chart {
+    background-image: linear-gradient(135deg, transparent 39%, #99a3a1 40%, #99a3a1 47%, transparent 48%),
+        linear-gradient(25deg, transparent 48%, #99a3a1 49%, #99a3a1 55%, transparent 56%);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.inner_chosen_graph .line_chart:hover,
+.tabs_graphs .line_chart:hover {
+    background-color: #3ac469;
+    background-image: linear-gradient(135deg, transparent 39%, #fff 40%, #fff 47%, transparent 48%),
+        linear-gradient(25deg, transparent 48%, #fff 49%, #fff 55%, transparent 56%);
+}
+.inner_chosen_graph .line_chart.active,
+.tabs_graphs .active .line_chart,
+.tabs_graphs .active .line_chart:hover {
+    background-image: linear-gradient(135deg, transparent 39%, #3ac469 40%, #3ac469 47%, transparent 48%),
+        linear-gradient(25deg, transparent 48%, #3ac469 49%, #3ac469 55%, transparent 56%);
+}
+.inner_chosen_graph .line_chart.active:hover,
+.chosen_graph_b:hover .line_chart.active {
+    background-image: linear-gradient(135deg, transparent 39%, #fff 40%, #fff 47%, transparent 48%),
+        linear-gradient(25deg, transparent 48%, #fff 49%, #fff 55%, transparent 56%);
+}

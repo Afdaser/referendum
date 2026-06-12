@@ -4301,3 +4301,93 @@ a.btn_read_next_var span {
 .chosen_graph_b:hover .line_chart.active {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+
+/* Перемикач графіків: активна кнопка плавно "дихає" між усіма доступними іконками без різкого перемикання background-image. */
+.animated_b .inner_chosen_graph a.active {
+    background-image: none;
+}
+
+.animated_b .inner_chosen_graph a.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.active .line_chart_img {
+    animation: chartToggleBreath 16s infinite ease-in-out;
+    opacity: 0;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .line_chart_img {
+    animation-delay: 0s;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .pie_chart_img {
+    animation-delay: 4s;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .vertical_chart_img {
+    animation-delay: 8s;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .horizontal_chart_img {
+    animation-delay: 12s;
+}
+
+@keyframes chartToggleBreath {
+    0%, 16% {
+        opacity: 1;
+    }
+    25%, 91% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* При наведенні зупиняємо "дихання": поточний вибір фіксується внизу, а решта кнопок показуються вище з інверсією кольору при hover. */
+.chosen_graph_b:hover .animated_b .inner_chosen_graph a.active,
+.animated_b.chosen_graph_b:hover .inner_chosen_graph a.active {
+    background-color: #3ac469;
+}
+
+.chosen_graph_b:hover .animated_b .inner_chosen_graph a.active span,
+.animated_b.chosen_graph_b:hover .inner_chosen_graph a.active span {
+    animation: none;
+    opacity: 0;
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .pie_chart.active {
+    background-image: url(/img/layout/pie_chart_white.png);
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .horizontal_b_chart.active {
+    background-image: url(/img/layout/horizontal_chart_white.png);
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .vertical_b_chart.active {
+    background-image: url(/img/layout/vertical_chart_white.png);
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .line_chart.active {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Вимикаємо стару анімацію background-image на самій кнопці, бо вона давала ривок наприкінці циклу. */
+.animated_b .inner_chosen_graph a.pie_chart.active,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active,
+.animated_b .inner_chosen_graph a.line_chart.active {
+    -webkit-animation: none;
+    animation: none;
+}

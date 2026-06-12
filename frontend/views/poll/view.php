@@ -71,26 +71,31 @@ if (!empty($poll->pollLanguage)) {
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
                                 <span class="inner_chosen_graph">
-                                    <?php // Додаємо четвертий перемикач для лінійного графіка та синхронізуємо active з result_type. ?>
-                                    <a href="javascript:void(0)" class="pie_chart <?php echo ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie">
+                                    <?php // Додаємо доступні назви: вони потрібні і для скрінрідерів, і як підказки при наведенні. ?>
+                                    <?php $pieChartLabel = Yii::t("poll", 'Показати кругову діаграму'); ?>
+                                    <?php $horizontalChartLabel = Yii::t("poll", 'Показати горизонтальний графік'); ?>
+                                    <?php $verticalChartLabel = Yii::t("poll", 'Показати вертикальний графік'); ?>
+                                    <?php $lineChartLabel = Yii::t("poll", 'Показати лінійний графік'); ?>
+                                    <?php // Кожна кнопка містить усі іконки, щоб активний пункт міг плавно "дихати" між типами графіків. ?>
+                                    <a href="javascript:void(0)" class="pie_chart <?php echo ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie" aria-label="<?php echo $pieChartLabel; ?>" title="<?php echo $pieChartLabel; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
                                     </a>
-                                    <a href="javascript:void(0)" class="horizontal_b_chart <?php echo (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar">
+                                    <a href="javascript:void(0)" class="horizontal_b_chart <?php echo (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar" aria-label="<?php echo $horizontalChartLabel; ?>" title="<?php echo $horizontalChartLabel; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
                                     </a>
-                                    <a href="javascript:void(0)" class="vertical_b_chart <?php echo ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column">
+                                    <a href="javascript:void(0)" class="vertical_b_chart <?php echo ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column" aria-label="<?php echo $verticalChartLabel; ?>" title="<?php echo $verticalChartLabel; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
                                     </a>
-                                    <a href="javascript:void(0)" class="line_chart <?php echo ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line">
+                                    <a href="javascript:void(0)" class="line_chart <?php echo ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line" aria-label="<?php echo $lineChartLabel; ?>" title="<?php echo $lineChartLabel; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
@@ -306,6 +311,8 @@ if (!empty($poll->pollLanguage)) {
 */
 
     jQuery(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart',function(){
+        // Після вибору одразу фіксуємо активну кнопку внизу перемикача, щоб hover-стан не показував порожній квадрат.
+        jQuery(this).addClass('active').siblings('.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart').removeClass('active');
         jQuery('#container<?php echo $poll->id; ?>').removeClass('pie').removeClass('bar').removeClass('column').removeClass('line');
         jQuery('#container<?php echo $poll->id; ?>').addClass(jQuery(this).attr('data-id'));
         filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');

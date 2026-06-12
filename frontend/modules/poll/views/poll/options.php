@@ -20,7 +20,7 @@ use yii\helpers\Json;
 } else {
     $result_type = 'bar';
 } ?>
-<?php if(!$poll->isShowResult()):?>
+<?php if (!$poll->isShowResult() && empty($showChart)): ?>
     <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
         <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
         <?php foreach($poll->pollOptions as $option):?>
@@ -58,5 +58,6 @@ use yii\helpers\Json;
         class="inner_container_graph"
         id="container<?= $poll->id; ?>"
         data-chart-config='<?= $chartConfigJson; ?>'
+        <?php if (!empty($lazyChart)): ?>data-chart-lazy="1"<?php endif; ?>
     ></div>
 <?php endif;?>

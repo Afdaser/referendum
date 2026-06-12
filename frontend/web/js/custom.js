@@ -425,6 +425,26 @@ function renderChart(category,id,text,series,pie,line){
         });
     } else if(category == 'line'){
         var lineConfig = line || {};
+        var lineCategories = lineConfig.categories || [];
+        var firstDate = lineCategories.length ? Date.parse(lineCategories[0]) : NaN;
+        var lastDate = lineCategories.length ? Date.parse(lineCategories[lineCategories.length - 1]) : NaN;
+        var isLongPeriod = !isNaN(firstDate) && !isNaN(lastDate) && (lastDate - firstDate) > 365 * 24 * 60 * 60 * 1000;
+        var tickEvery = Math.max(1, Math.ceil(lineCategories.length / 8));
+
+        function formatLineDateLabel(value) {
+            var parsedDate = new Date(value);
+            if (isNaN(parsedDate.getTime())) {
+                return value;
+            }
+
+            // Для старих опитувань скорочуємо підписи до місяця й року, щоб вісь не перетворювалась на «килим» дат.
+            if (isLongPeriod) {
+                return parsedDate.toLocaleDateString(undefined, {month: 'short', year: 'numeric'});
+            }
+
+            return parsedDate.toLocaleDateString(undefined, {day: '2-digit', month: 'short'});
+        }
+
         // Готуємо окрему конфігурацію для лінійного графіка Highcharts: одна лінія = один варіант відповіді.
         $('#'+id).highcharts({
             colors: highchartColors,
@@ -438,10 +458,20 @@ function renderChart(category,id,text,series,pie,line){
                 text: null
             },
             xAxis: {
-                categories: lineConfig.categories || [],
+                categories: lineCategories,
+                tickInterval: tickEvery,
                 tickmarkPlacement: 'on',
                 title: {
                     text: null
+                },
+                labels: {
+                    formatter: function () {
+                        return formatLineDateLabel(this.value);
+                    },
+                    rotation: 0,
+                    style: {
+                        whiteSpace: 'nowrap'
+                    }
                 }
             },
             yAxis: {

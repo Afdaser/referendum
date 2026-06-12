@@ -3187,329 +3187,6 @@ a.search_btn_inner:hover {
 .bottom_select_b_search .right_select_sort select {
     margin-right: 0;
 }
-.chosen_graph_b a {
-    position: relative;
-}
-.vertical_chart_img,
-.horizontal_chart_img,
-.pie_chart_img {
-    position: absolute;
-    width: 24px;
-    height: 25px;
-    opacity: 0;
-}
-.vertical_chart_img {
-    background: url(/img/layout/vertical_chart_green.png) no-repeat center;
-}
-.horizontal_chart_img {
-    background: url(/img/layout/horizontal_chart_green.png) no-repeat center;
-}
-.pie_chart_img {
-    background: url(/img/layout/pie_chart_green.png) no-repeat center;
-}
-.animated_b .inner_chosen_graph a.pie_chart.active {
-    -webkit-animation: animatedBgGraphPie 15s infinite linear;
-    animation: animatedBgGraphPie 15s infinite linear;
-}
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active {
-    -webkit-animation: animatedBgGraphHorizontal 15s infinite linear;
-    animation: animatedBgGraphHorizontal 15s infinite linear;
-}
-.animated_b .inner_chosen_graph a.vertical_b_chart.active {
-    -webkit-animation: animatedBgGraphVertical 15s infinite linear;
-    animation: animatedBgGraphVertical 15s infinite linear;
-}
-.animated_b .inner_chosen_graph a.pie_chart.active .pie_chart_img {
-    -moz-animation: animationPieChartPie 15s infinite linear;
-}
-@-moz-keyframes animationPieChartPie {
-    0% {
-        opacity: 1;
-    }
-    28% {
-        opacity: 0;
-    }
-    67% {
-        opacity: 0;
-    }
-    95% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-.animated_b .inner_chosen_graph a.pie_chart.active .vertical_chart_img {
-    -moz-animation: animationPieChartVertical 15s infinite linear;
-}
-@-moz-keyframes animationPieChartVertical {
-    0% {
-        opacity: 0;
-    }
-    28% {
-        opacity: 1;
-    }
-    33% {
-        opacity: 1;
-    }
-    67% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-.animated_b .inner_chosen_graph a.pie_chart.active .horizontal_chart_img {
-    -moz-animation: animationPieChartHorizontal 15s infinite linear;
-}
-@-moz-keyframes animationPieChartHorizontal {
-    33% {
-        opacity: 0;
-    }
-    62% {
-        opacity: 1;
-    }
-    67% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .horizontal_chart_img {
-    -moz-animation: animationHorizontalChartHorizontal 15s infinite linear;
-}
-@-moz-keyframes animationHorizontalChartHorizontal {
-    0% {
-        opacity: 1;
-    }
-    28% {
-        opacity: 0;
-    }
-    67% {
-        opacity: 0;
-    }
-    95% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .vertical_chart_img {
-    -moz-animation: animationHorizontalChartVertical 15s infinite linear;
-}
-@-moz-keyframes animationHorizontalChartVertical {
-    0% {
-        opacity: 0;
-    }
-    28% {
-        opacity: 1;
-    }
-    33% {
-        opacity: 1;
-    }
-    67% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .pie_chart_img {
-    -moz-animation: animationHorizontalChartPie 15s infinite linear;
-}
-@-moz-keyframes animationHorizontalChartPie {
-    33% {
-        opacity: 0;
-    }
-    62% {
-        opacity: 1;
-    }
-    67% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .vertical_chart_img {
-    -moz-animation: animationVerticalChartVertical 15s infinite linear;
-}
-@-moz-keyframes animationVerticalChartVertical {
-    0% {
-        opacity: 1;
-    }
-    28% {
-        opacity: 0;
-    }
-    67% {
-        opacity: 0;
-    }
-    95% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .pie_chart_img {
-    -moz-animation: animationVerticalChartPie 15s infinite linear;
-}
-@-moz-keyframes animationVerticalChartPie {
-    0% {
-        opacity: 0;
-    }
-    28% {
-        opacity: 1;
-    }
-    33% {
-        opacity: 1;
-    }
-    67% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .horizontal_chart_img {
-    -moz-animation: animationVerticalChartHorizontal 15s infinite linear;
-}
-@-moz-keyframes animationVerticalChartHorizontal {
-    33% {
-        opacity: 0;
-    }
-    62% {
-        opacity: 1;
-    }
-    67% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-@-webkit-keyframes animatedBgGraphPie {
-    28% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    33% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    62% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    67% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    95% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    100% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-}
-@keyframes animatedBgGraphPie {
-    28% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    33% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    62% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    67% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    95% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    100% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-}
-@-webkit-keyframes animatedBgGraphHorizontal {
-    28% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    33% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    62% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    67% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    95% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    100% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-}
-@keyframes animatedBgGraphHorizontal {
-    28% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    33% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    62% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    67% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    95% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    100% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-}
-@-webkit-keyframes animatedBgGraphVertical {
-    28% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    33% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    62% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    67% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    95% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    100% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-}
-@keyframes animatedBgGraphVertical {
-    28% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    33% {
-        background-image: url(/img/layout/horizontal_chart_green.png);
-    }
-    62% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    67% {
-        background-image: url(/img/layout/pie_chart_green.png);
-    }
-    95% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-    100% {
-        background-image: url(/img/layout/vertical_chart_green.png);
-    }
-}
 .main_green_bg {
     background: #3ac469;
     background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzNhYzQ2OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjklIiBzdG9wLWNvbG9yPSIjM2FjNDY5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTIlIiBzdG9wLWNvbG9yPSIjMzZjMDY2IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjMjhiMjVjIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMzAlIiBzdG9wLWNvbG9yPSIjMTA5YTRhIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMzglIiBzdG9wLWNvbG9yPSIjMDU4ZjQyIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA1OGY0MiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
@@ -4269,18 +3946,6 @@ a.btn_read_next_var span {
 .chosen_graph_b:hover {
     height: 102px;
 }
-.vertical_chart_img,
-.horizontal_chart_img,
-.pie_chart_img,
-.line_chart_img {
-    position: absolute;
-    width: 24px;
-    height: 25px;
-    opacity: 0;
-}
-.line_chart_img {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%233ac469' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%233ac469' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
-}
 .inner_chosen_graph .line_chart,
 .tabs_graphs .line_chart {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%2399a3a1' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%2399a3a1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
@@ -4299,5 +3964,115 @@ a.btn_read_next_var span {
 }
 .inner_chosen_graph .line_chart.active:hover,
 .chosen_graph_b:hover .line_chart.active {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Перемикач графіків: один стабільний цикл opacity без старих background-image/keyframes, які давали ривок після першого кола. */
+.chosen_graph_b a {
+    position: relative;
+}
+
+.animated_b .inner_chosen_graph a.active {
+    background-image: none;
+}
+
+.vertical_chart_img,
+.horizontal_chart_img,
+.pie_chart_img,
+.line_chart_img {
+    position: absolute;
+    width: 24px;
+    height: 25px;
+    opacity: 0;
+}
+
+.vertical_chart_img {
+    background: url(/img/layout/vertical_chart_green.png) no-repeat center;
+}
+
+.horizontal_chart_img {
+    background: url(/img/layout/horizontal_chart_green.png) no-repeat center;
+}
+
+.pie_chart_img {
+    background: url(/img/layout/pie_chart_green.png) no-repeat center;
+}
+
+.line_chart_img {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%233ac469' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%233ac469' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
+}
+
+.animated_b .inner_chosen_graph a.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.active .line_chart_img {
+    animation: chartToggleBreath 24s infinite ease-in-out;
+    opacity: 0;
+}
+
+/* Негативні затримки тримають цикл синхронним і після першого повного кола, без накопичення зсуву. */
+.animated_b .inner_chosen_graph a.pie_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .line_chart_img {
+    animation-delay: 0s;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .pie_chart_img {
+    animation-delay: -18s;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .vertical_chart_img {
+    animation-delay: -12s;
+}
+
+.animated_b .inner_chosen_graph a.pie_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph a.horizontal_b_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph a.vertical_b_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph a.line_chart.active .horizontal_chart_img {
+    animation-delay: -6s;
+}
+
+@keyframes chartToggleBreath {
+    0%, 10% {
+        opacity: 1;
+    }
+    18%, 96% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* При наведенні зупиняємо "дихання": поточний вибір фіксується внизу, а решта кнопок показуються вище з інверсією кольору при hover. */
+.animated_b.chosen_graph_b:hover .inner_chosen_graph a.active {
+    background-color: #3ac469;
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph a.active span {
+    animation: none;
+    opacity: 0;
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .pie_chart.active {
+    background-image: url(/img/layout/pie_chart_white.png);
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .horizontal_b_chart.active {
+    background-image: url(/img/layout/horizontal_chart_white.png);
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .vertical_b_chart.active {
+    background-image: url(/img/layout/vertical_chart_white.png);
+}
+
+.animated_b.chosen_graph_b:hover .inner_chosen_graph .line_chart.active {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }

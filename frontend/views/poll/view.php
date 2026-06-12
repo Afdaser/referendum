@@ -48,6 +48,11 @@ if (!empty($poll->pollLanguage)) {
                             <div class="inner_block_chosen">
                                 <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie)); ?>
                             </div>
+                            <div class="clearfix"></div>
+                            <div class="container_graph poll_chart_on_demand" style="display: none;">
+                                <?php // Графік уже має дані, але ліниво малюється лише після кліку на перемикач типу. ?>
+                                <?php $this->renderPartial('//poll/options', array('poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie,'showChart'=>true,'lazyChart'=>true)); ?>
+                            </div>
                         <?php endif;?>
                         <?php if($poll->isShowResult()):?>
                             <div class="clearfix"></div>

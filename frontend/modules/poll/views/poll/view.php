@@ -103,6 +103,11 @@ JS
                             <div>
                                 <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
                             </div>
+                            <div class="clearfix"></div>
+                            <div class="container_graph poll_chart_on_demand" style="display: none;">
+                                <?php // Графік не показуємо одразу, але відкриваємо його після кліку на будь-який тип. ?>
+                                <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie,'showChart'=>true,'lazyChart'=>true]); ?>
+                            </div>
                         <?php endif;?>
                         <?php if($poll->isShowResult()):?>
                             <div class="clearfix"></div>

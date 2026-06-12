@@ -4279,30 +4279,25 @@ a.btn_read_next_var span {
     opacity: 0;
 }
 .line_chart_img {
-    background: linear-gradient(135deg, transparent 39%, #3ac469 40%, #3ac469 47%, transparent 48%),
-        linear-gradient(25deg, transparent 48%, #3ac469 49%, #3ac469 55%, transparent 56%);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%233ac469' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%233ac469' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
 }
 .inner_chosen_graph .line_chart,
 .tabs_graphs .line_chart {
-    background-image: linear-gradient(135deg, transparent 39%, #99a3a1 40%, #99a3a1 47%, transparent 48%),
-        linear-gradient(25deg, transparent 48%, #99a3a1 49%, #99a3a1 55%, transparent 56%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%2399a3a1' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%2399a3a1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
 }
 .inner_chosen_graph .line_chart:hover,
 .tabs_graphs .line_chart:hover {
     background-color: #3ac469;
-    background-image: linear-gradient(135deg, transparent 39%, #fff 40%, #fff 47%, transparent 48%),
-        linear-gradient(25deg, transparent 48%, #fff 49%, #fff 55%, transparent 56%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .inner_chosen_graph .line_chart.active,
 .tabs_graphs .active .line_chart,
 .tabs_graphs .active .line_chart:hover {
-    background-image: linear-gradient(135deg, transparent 39%, #3ac469 40%, #3ac469 47%, transparent 48%),
-        linear-gradient(25deg, transparent 48%, #3ac469 49%, #3ac469 55%, transparent 56%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%233ac469' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%233ac469' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .inner_chosen_graph .line_chart.active:hover,
 .chosen_graph_b:hover .line_chart.active {
-    background-image: linear-gradient(135deg, transparent 39%, #fff 40%, #fff 47%, transparent 48%),
-        linear-gradient(25deg, transparent 48%, #fff 49%, #fff 55%, transparent 56%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }

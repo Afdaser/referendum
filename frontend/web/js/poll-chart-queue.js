@@ -7,7 +7,7 @@
 
         $('.inner_container_graph[data-chart-config]').each(function () {
             var rawConfig = $(this).attr('data-chart-config');
-            if (!rawConfig) {
+            if (!rawConfig || $(this).data('chart-lazy')) {
                 return;
             }
 
@@ -26,6 +26,7 @@
             }
 
             renderChart(item.category, item.id, item.title || '', item.series || [], item.pie || [], item.line || {});
+            $('#' + item.id).data('chart-rendered', true);
         }
     });
 })(jQuery);

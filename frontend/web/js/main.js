@@ -67,8 +67,29 @@ function hoverGraphBtn(){
 }
 function toggleGraph() {
 	$('.inner_chosen_graph a').click(function(e){
-		$('.inner_chosen_graph a').removeClass('active');
-		$(this).addClass('active');
+        var graphLink = $(this);
+        var pollBlock = graphLink.closest('.poll_block');
+        var chartBox = pollBlock.find('.inner_container_graph[data-chart-config]').first();
+        var chartWrapper = chartBox.closest('.container_graph');
+
+        graphLink.closest('.inner_chosen_graph').find('a').removeClass('active');
+		graphLink.addClass('active');
+
+        if (chartBox.length && typeof renderChart === 'function') {
+            try {
+                // Малюємо потрібний тип графіка одразу після кліку, навіть якщо користувач не натискав "Побачити результати".
+                var chartConfig = JSON.parse(chartBox.attr('data-chart-config'));
+                var chartType = graphLink.data('id') || chartConfig.category;
+
+                chartWrapper.show();
+                renderChart(chartType, chartConfig.id, chartConfig.title || '', chartConfig.series || [], chartConfig.pie || [], chartConfig.line || {});
+                chartBox.data('chart-rendered', true);
+            } catch (error) {
+                // Якщо JSON пошкоджений, не ламаємо вибір кнопки та лишаємо діагностику для розробника.
+                console.error('Не вдалося перемкнути графік опитування:', error);
+            }
+        }
+
 		e.preventDefault();
 	});
 }

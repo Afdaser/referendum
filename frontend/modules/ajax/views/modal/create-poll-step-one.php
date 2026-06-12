@@ -134,12 +134,15 @@ $model = $pollModel;
                             <li class="<?php if (!$model->result_type || $model->result_type == 1): ?>active<?php endif; ?>"><input id="type_1" type="radio" name="Poll[type]" value="1" <?php if (!$model->result_type || $model->result_type == 1): ?>checked<?php endif; ?> hidden><a href="#horizontal_b_chart" class="horizontal_b_chart" role="tab" data-toggle="tab"></a></li>
                             <li class="<?php if ($model->result_type == 2): ?>active<?php endif; ?>"><input id="type_2" type="radio" name="Poll[type]" value="2" <?php if ($model->result_type == 2): ?>checked<?php endif; ?> hidden><a href="#vertical_b_chart" class="vertical_b_chart" role="tab" data-toggle="tab"></a></li>
                             <li class="<?php if ($model->result_type == 3): ?>active<?php endif; ?>"><input id="type_3" type="radio" name="Poll[type]" value="3" <?php if ($model->result_type == 3): ?>checked<?php endif; ?> hidden><a href="#pie_chart" class="pie_chart" role="tab" data-toggle="tab"></a></li>
+                            <?php // Додаємо лінійний графік як четвертий тип результатів опитування. ?>
+                            <li class="<?php if ($model->result_type == 4): ?>active<?php endif; ?>"><input id="type_4" type="radio" name="Poll[type]" value="4" <?php if ($model->result_type == 4): ?>checked<?php endif; ?> hidden><a href="#line_chart" class="line_chart" role="tab" data-toggle="tab"></a></li>
                         </ul>
                     </div>
                     <div class="tab-content tab_visual">
                         <div id="horizontal_b_chart" class="tab-pane <?php if (!$model->result_type || $model->result_type == 1): ?>active<?php endif; ?>" style="width:500px; height:400px;"></div>
                         <div id="vertical_b_chart" class="tab-pane <?php if ($model->result_type == 2): ?>active<?php endif; ?>" style="width:500px; height:400px;"></div>
                         <div id="pie_chart" class="tab-pane <?php if ($model->result_type == 3): ?>active<?php endif; ?>" style="width:500px; height:400px;"></div>
+                        <div id="line_chart" class="tab-pane <?php if ($model->result_type == 4): ?>active<?php endif; ?>" style="width:500px; height:400px;"></div>
                     </div>
                 </div>
             </div>
@@ -361,8 +364,8 @@ JS_POLL_ONE;
   filterDataChart({$poll->id},'{$poll->title}');
   });
 
-  $(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart',function(){
-  $('#container{$poll->id}').removeClass('pie').removeClass('bar').removeClass('column');
+  $(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart',function(){
+  $('#container{$poll->id}').removeClass('pie').removeClass('bar').removeClass('column').removeClass('line');
   $('#container{$poll->id}').addClass($(this).attr('data-id'));
   filterDataChart({$poll->id},'{$poll->title}');
   });

@@ -300,7 +300,7 @@ function arrayTotal(data)
     return dataSum;
 }
 
-function renderChart(category,id,text,series,pie){
+function renderChart(category,id,text,series,pie,line){
     function htmlDecode(value){
         return $('<div/>').html(value).text();
     }
@@ -310,10 +310,20 @@ function renderChart(category,id,text,series,pie){
     }
 
     for(var i in pie){
-        pie[i][0] = htmlDecode(pie[i][0]);
+        if (pie[i][0]) {
+            pie[i][0] = htmlDecode(pie[i][0]);
+        } else if (pie[i].name) {
+            pie[i].name = htmlDecode(pie[i].name);
+        }
     }
 
-    $('#'+id).removeClass('pie').removeClass('bar').removeClass('column');
+    if (line && line.series) {
+        for (var lineIndex in line.series) {
+            line.series[lineIndex].name = htmlDecode(line.series[lineIndex].name);
+        }
+    }
+
+    $('#'+id).removeClass('pie').removeClass('bar').removeClass('column').removeClass('line');
     $('#'+id).addClass(category);
     if(category == 'bar'){
         $('#'+id).highcharts({
@@ -413,6 +423,59 @@ function renderChart(category,id,text,series,pie){
             },
             series: series
         });
+    } else if(category == 'line'){
+        var lineConfig = line || {};
+        // Готуємо окрему конфігурацію для лінійного графіка Highcharts: одна лінія = один варіант відповіді.
+        $('#'+id).highcharts({
+            colors: highchartColors,
+            chart: {
+                type: 'line',
+                plotBackgroundColor: '#f4fbf4',
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: lineConfig.categories || [],
+                tickmarkPlacement: 'on',
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    text: null
+                },
+                labels: {
+                    format: '{value}%'
+                }
+            },
+            tooltip: {
+                shared: true,
+                valueSuffix: '%'
+            },
+            plotOptions: {
+                line: {
+                    marker: {
+                        enabled: false
+                    },
+                    dataLabels: {
+                        enabled: false
+                    }
+                },
+                series: {
+                    lineWidth: 3
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: lineConfig.series || []
+        });
     } else {
         $('#'+id).highcharts({
             colors: highchartColors,
@@ -473,11 +536,13 @@ function filterDataChart(id,title){
             }
 
             if($('#container'+id).hasClass('pie')){
-                renderChart('pie','container'+id,title,data.bar.series,data.pie);
+                renderChart('pie','container'+id,title,data.bar.series,data.pie,data.line);
             } else if($('#container'+id).hasClass('bar')){
-                renderChart('bar','container'+id,title,data.bar.series,data.pie);
+                renderChart('bar','container'+id,title,data.bar.series,data.pie,data.line);
+            } else if($('#container'+id).hasClass('line')){
+                renderChart('line','container'+id,title,data.bar.series,data.pie,data.line);
             } else {
-                renderChart('column','container'+id,title,data.bar.series,data.pie);
+                renderChart('column','container'+id,title,data.bar.series,data.pie,data.line);
             }
         }
     });

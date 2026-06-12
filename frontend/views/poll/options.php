@@ -6,10 +6,13 @@ use yii\helpers\Json;
 
 if ($poll->result_type == 2) {
     $result_type = 'column';
-} elseif ($poll->result_type == 1) {
-    $result_type = 'bar';
-} else {
+} elseif ($poll->result_type == 3) {
     $result_type = 'pie';
+} elseif ($poll->result_type == 4) {
+    // Лінійний тип показує накопичувальну динаміку голосування у відсотках.
+    $result_type = 'line';
+} else {
+    $result_type = 'bar';
 }
 
 ?>
@@ -44,6 +47,7 @@ if ($poll->result_type == 2) {
         'title' => (string)$poll->title,
         'series' => StringHelper::formatForBarAjax($chartData)['series'] ?? [],
         'pie' => StringHelper::formatForPieAjax($chartData),
+        'line' => $poll->getLineChartData(),
     ]);
     ?>
     <div

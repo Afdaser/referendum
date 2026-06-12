@@ -12,10 +12,13 @@ use yii\helpers\Json;
 ?>
 <?php if ($poll->result_type == 2) {
     $result_type = 'column';
-} elseif ($poll->result_type == 1) {
-    $result_type = 'bar';
-} else {
+} elseif ($poll->result_type == 3) {
     $result_type = 'pie';
+} elseif ($poll->result_type == 4) {
+    // Новий тип відповідає лінійному графіку Highcharts із динамікою відсотків у часі.
+    $result_type = 'line';
+} else {
+    $result_type = 'bar';
 } ?>
 <?php if(!$poll->isShowResult()):?>
     <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
@@ -48,6 +51,7 @@ use yii\helpers\Json;
         'title' => (string)$poll->title,
         'series' => StringHelper::formatForBarAjax($chartData)['series'] ?? [],
         'pie' => StringHelper::formatForPieAjax($chartData),
+        'line' => $poll->getLineChartData(),
     ]);
     ?>
     <div

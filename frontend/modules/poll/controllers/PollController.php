@@ -446,6 +446,8 @@ class PollController extends \yii\web\Controller
                     $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration);
                     $result['bar'] = StringHelper::formatForBarAjax($chartData);
                     $result['pie'] = StringHelper::formatForPieAjax($chartData);
+                    // Лінійний графік використовує ті самі фільтри, але повертає історію часток за датами.
+                    $result['line'] = $poll->getLineChartData($gender,$ageInterval,$country,$registration);
 
                     echo json_encode($result);
                 }

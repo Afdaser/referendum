@@ -1553,6 +1553,9 @@ class Poll extends ActiveRecord
             '@date_month' => 'Місяць створення опитування (MM).',
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
+            '@votes_last_month' => 'Кількість голосів за останній місяць.',
+            '@votes_this_year' => 'Кількість голосів за цей рік.',
+            '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@comments' => 'Кількість коментарів.',
             '@options_count' => 'Кількість варіантів відповіді.',
             '@options_titles' => 'Перелік варіантів відповіді через кому.',
@@ -1580,6 +1583,9 @@ class Poll extends ActiveRecord
             '@author_name' => 'Імʼя автора опитування.',
             '@author_id' => 'ID автора опитування.',
             '@votes_total' => 'Загальна кількість голосів.',
+            '@votes_last_month' => 'Кількість голосів за останній місяць.',
+            '@votes_this_year' => 'Кількість голосів за цей рік.',
+            '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
             '@votes_guest' => 'Кількість голосів від гостей.',
             '@comments' => 'Кількість коментарів.',
@@ -1669,6 +1675,9 @@ class Poll extends ActiveRecord
 
         $commentsCount = count($this->pollComments);
 
+        // Рахуємо часові зрізи голосів окремо, щоб адміністратор міг виводити динаміку в статичному блоці.
+        $periodVotes = $this->getStaticPeriodVotes();
+
         // Формуємо HTML-список варіантів з голосами, щоб можна було вставляти у шаблон.
         $optionsListHtml = '';
         if (!empty($stats)) {
@@ -1723,6 +1732,9 @@ class Poll extends ActiveRecord
             'tagsPlain' => $tagsPlain,
             'tagsCount' => $tagsCount,
             'votesTotal' => (int) $this->countPollOptionsVoters,
+            'votesLastMonth' => $periodVotes['lastMonth'],
+            'votesThisYear' => $periodVotes['thisYear'],
+            'votesPreviousYear' => $periodVotes['previousYear'],
             'optionsCount' => count($stats),
             'date' => $dateParts['date'],
             'dateIso' => $dateParts['dateIso'],
@@ -1736,6 +1748,48 @@ class Poll extends ActiveRecord
             'languageId' => (string) $this->poll_language_id,
             'authorName' => $authorName,
             'authorId' => (string) $this->user_id,
+        ];
+    }
+
+
+    /**
+     * Рахує голоси опитування у потрібному часовому проміжку для статичних змінних.
+     */
+    private function countStaticVotesBetween(string $from, ?string $to = null): int
+    {
+        // Зареєстровані й гостьові голоси лежать у різних таблицях, тому об'єднуємо їх без зміни існуючої логіки голосування.
+        $registeredQuery = (new Query())
+            ->from('{{%option_vote}} ov')
+            ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
+            ->where(['po.poll_id' => (int) $this->id])
+            ->andWhere(['>=', 'ov.date_add', $from]);
+
+        $guestQuery = (new Query())
+            ->from('{{%option_guest_vote}} ogv')
+            ->where(['ogv.poll_id' => (int) $this->id])
+            ->andWhere(['>=', 'ogv.date_add', $from]);
+
+        if ($to !== null) {
+            $registeredQuery->andWhere(['<', 'ov.date_add', $to]);
+            $guestQuery->andWhere(['<', 'ogv.date_add', $to]);
+        }
+
+        return (int) $registeredQuery->count() + (int) $guestQuery->count();
+    }
+
+    /**
+     * Готує календарні та rolling-періоди для змінних статичного тексту опитування.
+     */
+    private function getStaticPeriodVotes(): array
+    {
+        $thisYearStart = date('Y-01-01 00:00:00');
+        $nextYearStart = date('Y-01-01 00:00:00', strtotime('+1 year'));
+        $previousYearStart = date('Y-01-01 00:00:00', strtotime('-1 year'));
+
+        return [
+            'lastMonth' => $this->countStaticVotesBetween(date('Y-m-d H:i:s', strtotime('-1 month'))),
+            'thisYear' => $this->countStaticVotesBetween($thisYearStart, $nextYearStart),
+            'previousYear' => $this->countStaticVotesBetween($previousYearStart, $thisYearStart),
         ];
     }
 
@@ -1777,6 +1831,8 @@ class Poll extends ActiveRecord
         }, $this->pollOptions);
         $authorName = $this->user_id ? User::getUserName($this->user_id) : '';
         $commentsCount = count($this->pollComments);
+        // Для мета-тегів використовуємо ті самі межі періодів, що й у статичному HTML-блоці.
+        $periodVotes = $this->getStaticPeriodVotes();
 
         return [
             '@title' => $this->title,
@@ -1797,6 +1853,9 @@ class Poll extends ActiveRecord
             '@date_month' => $dateMonth,
             '@date_year' => $dateYear,
             '@votes_total' => (string) $this->countPollOptionsVoters,
+            '@votes_last_month' => (string) $periodVotes['lastMonth'],
+            '@votes_this_year' => (string) $periodVotes['thisYear'],
+            '@votes_previous_year' => (string) $periodVotes['previousYear'],
             '@comments' => (string) $commentsCount,
             '@options_count' => (string) count($this->pollOptions),
             '@options_titles' => implode(', ', $optionsTitles),
@@ -1828,6 +1887,9 @@ class Poll extends ActiveRecord
             '@author_name' => $data['authorName'],
             '@author_id' => $data['authorId'],
             '@votes_total' => (string) $data['votesTotal'],
+            '@votes_last_month' => (string) $data['votesLastMonth'],
+            '@votes_this_year' => (string) $data['votesThisYear'],
+            '@votes_previous_year' => (string) $data['votesPreviousYear'],
             '@votes_registered' => (string) $data['registeredVotes'],
             '@votes_guest' => (string) $data['guestVotes'],
             '@comments' => (string) $data['commentsCount'],

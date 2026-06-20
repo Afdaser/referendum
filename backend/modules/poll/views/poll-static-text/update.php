@@ -13,6 +13,23 @@ use yii\widgets\ActiveForm;
 $this->title = 'Статичний текст для опитувань: ' . $language->title;
 $this->params['breadcrumbs'][] = ['label' => 'Статичний текст для опитувань', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $language->title;
+
+// Локальний CSS без втручання в інші сторінки адмінки.
+$this->registerCss(<<<CSS
+.poll-static-token-list {
+    column-count: 2;
+    column-gap: 32px;
+}
+.poll-static-token-list li {
+    break-inside: avoid;
+}
+@media (max-width: 767px) {
+    .poll-static-token-list {
+        column-count: 1;
+    }
+}
+CSS
+);
 ?>
 <div class="poll-static-text-update">
     <h1><?= Html::encode($this->title); ?></h1>
@@ -21,7 +38,8 @@ $this->params['breadcrumbs'][] = $language->title;
         Тут можна налаштувати статичний HTML-блок зі статистикою та мета-теги сторінок опитувань.
         Нижче наведено змінні, які можна використовувати у статичному тексті:
     </p>
-    <ul>
+    <ul class="poll-static-token-list">
+        <?php // Розбиваємо довгий список змінних на два стовпці, щоб адмінка лишалася зручною. ?>
         <?php foreach ($infoTokens as $token => $description): ?>
             <li><code><?= Html::encode($token); ?></code> — <?= Html::encode($description); ?></li>
         <?php endforeach; ?>
@@ -47,7 +65,8 @@ $this->params['breadcrumbs'][] = $language->title;
                 <p>
                     Доступні змінні для цих полів:
                 </p>
-                <ul>
+                <ul class="poll-static-token-list">
+                    <?php // Такий самий двоколонковий вигляд для змінних мета-тегів. ?>
                     <?php foreach ($metaTokens as $token => $description): ?>
                         <li><code><?= Html::encode($token); ?></code> — <?= Html::encode($description); ?></li>
                     <?php endforeach; ?>

@@ -1554,6 +1554,7 @@ class Poll extends ActiveRecord
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
             '@votes_last_month' => 'Кількість голосів за останній місяць.',
+            '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@comments' => 'Кількість коментарів.',
@@ -1584,6 +1585,7 @@ class Poll extends ActiveRecord
             '@author_id' => 'ID автора опитування.',
             '@votes_total' => 'Загальна кількість голосів.',
             '@votes_last_month' => 'Кількість голосів за останній місяць.',
+            '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
@@ -1733,6 +1735,7 @@ class Poll extends ActiveRecord
             'tagsCount' => $tagsCount,
             'votesTotal' => (int) $this->countPollOptionsVoters,
             'votesLastMonth' => $periodVotes['lastMonth'],
+            'votesThisMonth' => $periodVotes['thisMonth'],
             'votesThisYear' => $periodVotes['thisYear'],
             'votesPreviousYear' => $periodVotes['previousYear'],
             'optionsCount' => count($stats),
@@ -1782,12 +1785,16 @@ class Poll extends ActiveRecord
      */
     private function getStaticPeriodVotes(): array
     {
+        $thisMonthStart = date('Y-m-01 00:00:00');
+        $nextMonthStart = date('Y-m-01 00:00:00', strtotime('+1 month'));
         $thisYearStart = date('Y-01-01 00:00:00');
         $nextYearStart = date('Y-01-01 00:00:00', strtotime('+1 year'));
         $previousYearStart = date('Y-01-01 00:00:00', strtotime('-1 year'));
 
         return [
             'lastMonth' => $this->countStaticVotesBetween(date('Y-m-d H:i:s', strtotime('-1 month'))),
+            // Цей місяць рахуємо як календарний період від першого дня поточного місяця.
+            'thisMonth' => $this->countStaticVotesBetween($thisMonthStart, $nextMonthStart),
             'thisYear' => $this->countStaticVotesBetween($thisYearStart, $nextYearStart),
             'previousYear' => $this->countStaticVotesBetween($previousYearStart, $thisYearStart),
         ];
@@ -1854,6 +1861,7 @@ class Poll extends ActiveRecord
             '@date_year' => $dateYear,
             '@votes_total' => (string) $this->countPollOptionsVoters,
             '@votes_last_month' => (string) $periodVotes['lastMonth'],
+            '@votes_this_month' => (string) $periodVotes['thisMonth'],
             '@votes_this_year' => (string) $periodVotes['thisYear'],
             '@votes_previous_year' => (string) $periodVotes['previousYear'],
             '@comments' => (string) $commentsCount,
@@ -1888,6 +1896,7 @@ class Poll extends ActiveRecord
             '@author_id' => $data['authorId'],
             '@votes_total' => (string) $data['votesTotal'],
             '@votes_last_month' => (string) $data['votesLastMonth'],
+            '@votes_this_month' => (string) $data['votesThisMonth'],
             '@votes_this_year' => (string) $data['votesThisYear'],
             '@votes_previous_year' => (string) $data['votesPreviousYear'],
             '@votes_registered' => (string) $data['registeredVotes'],

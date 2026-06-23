@@ -445,6 +445,34 @@ function renderChart(category,id,text,series,pie,line){
             return parsedDate.toLocaleDateString(undefined, {day: '2-digit', month: 'short'});
         }
 
+        function calculateLineAxisMax(lineSeries) {
+            var maxPoint = 0;
+
+            for (var seriesIndex in lineSeries) {
+                var points = lineSeries[seriesIndex].data || [];
+
+                for (var pointIndex in points) {
+                    var pointValue = parseFloat(points[pointIndex]);
+
+                    if (!isNaN(pointValue)) {
+                        maxPoint = Math.max(maxPoint, pointValue);
+                    }
+                }
+            }
+
+            if (!maxPoint || maxPoint >= 90) {
+                return 100;
+            }
+
+            var paddedMax = maxPoint * 1.15 + 2;
+            var step = paddedMax <= 20 ? 5 : (paddedMax <= 50 ? 10 : 20);
+
+            // Підлаштовуємо верхню межу під фактичні дані, щоб графік не стискався внизу порожньої шкали 0–100%.
+            return Math.min(100, Math.max(10, Math.ceil(paddedMax / step) * step));
+        }
+
+        var lineAxisMax = calculateLineAxisMax(lineConfig.series || []);
+
         // Готуємо окрему конфігурацію для лінійного графіка Highcharts: одна лінія = один варіант відповіді.
         $('#'+id).highcharts({
             colors: highchartColors,
@@ -476,7 +504,7 @@ function renderChart(category,id,text,series,pie,line){
             },
             yAxis: {
                 min: 0,
-                max: 100,
+                max: lineAxisMax,
                 title: {
                     text: null
                 },

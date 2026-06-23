@@ -1209,6 +1209,8 @@ class Poll extends ActiveRecord
             $series[$optionId] = ['name' => $title, 'data' => []];
         }
 
+        $displayDates = [];
+
         foreach ($dates as $date) {
             $totalForDate = 0;
 
@@ -1216,6 +1218,14 @@ class Poll extends ActiveRecord
                 $runningTotals[$optionId] += $dailyVotes[$optionId][$date] ?? 0;
                 $totalForDate += $runningTotals[$optionId];
             }
+
+            if (empty($displayDates) && $totalForDate === 1) {
+                // Не показуємо стартову точку з одним голосом: вона завжди дає 100% одному варіанту
+                // і спотворює масштаб лінійного графіка, але сам голос лишається у накопиченні наступних днів.
+                continue;
+            }
+
+            $displayDates[] = $date;
 
             foreach ($optionTitles as $optionId => $title) {
                 $series[$optionId]['data'][] = $totalForDate > 0
@@ -1225,7 +1235,7 @@ class Poll extends ActiveRecord
         }
 
         return [
-            'categories' => array_values($dates),
+            'categories' => $displayDates,
             'series' => array_values($series),
         ];
     }

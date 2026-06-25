@@ -1563,7 +1563,7 @@ class Poll extends ActiveRecord
             '@date_month' => 'Місяць створення опитування (MM).',
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
-            '@votes_last_month' => 'Кількість голосів за останній місяць.',
+            '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
@@ -1594,7 +1594,7 @@ class Poll extends ActiveRecord
             '@author_name' => 'Імʼя автора опитування.',
             '@author_id' => 'ID автора опитування.',
             '@votes_total' => 'Загальна кількість голосів.',
-            '@votes_last_month' => 'Кількість голосів за останній місяць.',
+            '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
@@ -1796,13 +1796,15 @@ class Poll extends ActiveRecord
     private function getStaticPeriodVotes(): array
     {
         $thisMonthStart = date('Y-m-01 00:00:00');
+        $lastMonthStart = date('Y-m-01 00:00:00', strtotime('first day of previous month'));
         $nextMonthStart = date('Y-m-01 00:00:00', strtotime('+1 month'));
         $thisYearStart = date('Y-01-01 00:00:00');
         $nextYearStart = date('Y-01-01 00:00:00', strtotime('+1 year'));
         $previousYearStart = date('Y-01-01 00:00:00', strtotime('-1 year'));
 
         return [
-            'lastMonth' => $this->countStaticVotesBetween(date('Y-m-d H:i:s', strtotime('-1 month'))),
+            // @votes_last_month — це саме попередній календарний місяць, а не rolling 30 днів.
+            'lastMonth' => $this->countStaticVotesBetween($lastMonthStart, $thisMonthStart),
             // Цей місяць рахуємо як календарний період від першого дня поточного місяця.
             'thisMonth' => $this->countStaticVotesBetween($thisMonthStart, $nextMonthStart),
             'thisYear' => $this->countStaticVotesBetween($thisYearStart, $nextYearStart),

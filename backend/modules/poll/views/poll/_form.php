@@ -16,7 +16,7 @@ use common\models\PollFaq;
 
 <div class="poll-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
     <div class="panel panel-default">
@@ -32,6 +32,24 @@ use common\models\PollFaq;
         </div>
     </div>
     <?= $form->field($model, 'describe')->widget(ashch\tinymce\TinyMce::class); ?>
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Зображення опитування</strong></div>
+        <div class="panel-body">
+            <?php // Завантажуємо тільки один файл; поточне зображення лишається, якщо новий файл не вибрано. ?>
+            <?= $form->field($model, 'imageFile')->fileInput(['accept' => 'image/jpeg,image/png']) ?>
+            <?= $form->field($model, 'image_alt')->textInput(['maxlength' => true]) ?>
+            <?php if (!empty($model->image_url)): ?>
+                <div class="poll-current-image">
+                    <?= Html::img($model->image_url, [
+                        'alt' => $model->image_alt ?: $model->title,
+                        'class' => 'img-responsive',
+                        'style' => 'max-width: 320px;',
+                    ]); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
     <?php
     // Завантажуємо індивідуальні FAQ для цього опитування (або показуємо 2 порожні рядки для нового).
     $pollFaqItems = $model->isNewRecord ? [] : PollFaq::find()->where(['poll_id' => $model->id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();

@@ -2,11 +2,13 @@
 
 namespace backend\modules\poll\controllers;
 
+use Yii;
 use common\models\PollFaq;
 use common\models\Poll;
 use common\models\search\PollSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 
 /**
@@ -74,11 +76,16 @@ class PollController extends Controller
         $model = new Poll();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
-                $model->syncTags($model->tagNames);
-                $this->savePollFaq($model);
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                // Отримуємо файл після load(), щоб валідація моделі врахувала завантажене зображення.
+                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+                // Спершу валідуємо всі поля, потім переносимо файл і зберігаємо URL разом з опитуванням.
+                if ($model->validate() && $model->uploadImage() && $model->save(false)) {
+                    // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
+                    $model->syncTags($model->tagNames);
+                    $this->savePollFaq($model);
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
@@ -100,11 +107,16 @@ class PollController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
-            $model->syncTags($model->tagNames);
-            $this->savePollFaq($model);
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            // Отримуємо новий файл, якщо редактор замінює зображення опитування.
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            // uploadImage() не змінює image_url, якщо файл не було вибрано, тож наявне зображення зберігається.
+            if ($model->validate() && $model->uploadImage() && $model->save(false)) {
+                // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
+                $model->syncTags($model->tagNames);
+                $this->savePollFaq($model);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [

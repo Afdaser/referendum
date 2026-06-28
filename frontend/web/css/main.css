@@ -4076,3 +4076,13 @@ a.btn_read_next_var span {
 .animated_b.chosen_graph_b:hover .inner_chosen_graph .line_chart.active {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
+
+
+/* Зображення опитування розміщуємо під заголовком, не змінюючи блоки графіків. */
+.poll-view-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 12px 0 16px;
+    border-radius: 4px;
+}

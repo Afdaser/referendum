@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $poll \common\models\Poll */
@@ -33,6 +34,10 @@ if (!empty($poll->pollLanguage)) {
                             <div class="title_poll poll_view_title_row">
                                 <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
                                 <h1><?php echo Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                                <?php if (!empty($poll->image_url)): ?>
+                                    <?php // Alt береться з поля опитування, а за відсутності безпечно підставляємо назву. ?>
+                                    <?php echo Html::img($poll->image_url, ['alt' => $poll->image_alt ?: $poll->title, 'class' => 'poll-view-image']); ?>
+                                <?php endif; ?>
                                 <span class="right_block_share_icon poll_view_share">
                                     <?php // Переміщаємо кнопку поширення ближче до заголовка для органічного вигляду. ?>
                                     <?php $this->renderPartial('//site/polls/_shareSocial', array('poll' => $poll)); ?>

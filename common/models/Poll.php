@@ -6,8 +6,11 @@ use Yii;
 use common\components\ActiveRecord;
 use common\helpers\StringHelper;
 use yii\bootstrap\Html;
+use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%poll}}".
@@ -18,6 +21,8 @@ use yii\db\Query;
  * @property string|null $meta_h1 Meta H1
  * @property string|null $meta_title Meta title
  * @property string|null $meta_description Meta description
+ * @property string|null $image_url Image URL
+ * @property string|null $image_alt Image alt
  * @property int $user_id User
  * @property int $rating Rating
  * @property int $status Status
@@ -70,6 +75,10 @@ class Poll extends ActiveRecord
     const TIME_TO_EDIT = 5;
     public $editable = false;
 
+    /**
+     * @var UploadedFile|null Тимчасове зображення з форми адмінки; у БД зберігаємо тільки URL.
+     */
+    public $imageFile;
 
     public $showResultOnMainPage = NULL;
 
@@ -115,12 +124,22 @@ class Poll extends ActiveRecord
         return [
             [['title', 'user_id', 'status'], 'required'],
             [['describe', 'meta_description'], 'string'],
+            [['image_url'], 'string', 'max' => 1024],
+            [['image_alt'], 'string', 'max' => 255],
+            [
+                ['imageFile'],
+                'image',
+                'extensions' => ['jpg', 'jpeg', 'png'],
+                'mimeTypes' => ['image/jpeg', 'image/png'],
+                'maxSize' => 5 * 1024 * 1024,
+                'skipOnEmpty' => true,
+            ],
             [['user_id', 'rating', 'status', 'views', 'result_type', 'poll_language_id', 'show_for_all_languages', 'poll_sex', 'poll_country_id', 'poll_region_id', 'poll_city_id', 'poll_min_age', 'poll_max_age', 'votes_count_close', 'show_on_slider', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add', 'date_update'], 'safe'],
             // Дозволяємо масове присвоєння тегів як масиву назв.
             [['tagNames'], 'safe'],
             // Дозволяємо редагувати індивідуальні мета-поля опитування.
-            [['meta_h1', 'meta_title', 'meta_description'], 'default', 'value' => null],
+            [['meta_h1', 'meta_title', 'meta_description', 'image_url', 'image_alt'], 'default', 'value' => null],
             [['title', 'meta_h1', 'meta_title'], 'string', 'max' => 255],
             [['poll_language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['poll_language_id' => 'id']],
         ];
@@ -138,6 +157,9 @@ class Poll extends ActiveRecord
             'meta_h1' => 'Meta H1',
             'meta_title' => 'Meta title',
             'meta_description' => 'Meta description',
+            'image_url' => 'Зображення (URL)',
+            'image_alt' => 'Alt-текст зображення',
+            'imageFile' => 'Зображення опитування',
             'user_id' => Yii::t('app', 'User'),
             'author.name' => Yii::t('app', 'Author'),
             'rating' => Yii::t('app', 'Rating'),
@@ -163,6 +185,57 @@ class Poll extends ActiveRecord
             'updated_at' => Yii::t('app', 'Updated at:'),
             'tagNames' => Yii::t('app', 'Tags'),
         ];
+    }
+
+
+    /**
+     * Зберігає завантажене зображення у публічну папку фронтенда й оновлює image_url.
+     */
+    public function uploadImage(): bool
+    {
+        if (!$this->imageFile instanceof UploadedFile) {
+            return true;
+        }
+
+        $directory = $this->getImagesDirectory();
+        if (!FileHelper::createDirectory($directory)) {
+            $this->addError('imageFile', 'Не вдалося створити папку для зображень опитувань.');
+            return false;
+        }
+
+        $extension = strtolower($this->imageFile->extension);
+        $baseName = pathinfo($this->imageFile->baseName, PATHINFO_FILENAME);
+        $safeBaseName = Inflector::slug($baseName) ?: 'poll-image';
+        // Додаємо випадковий суфікс, щоб новий файл не перезаписав наявні зображення опитувань.
+        $fileName = $safeBaseName . '-' . Yii::$app->security->generateRandomString(10) . '.' . $extension;
+        $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+
+        // Фізично переносимо файл із тимчасової папки PHP у публічну папку фронтенда.
+        if (!$this->imageFile->saveAs($filePath)) {
+            $this->addError('imageFile', 'Не вдалося зберегти завантажене зображення.');
+            return false;
+        }
+
+        // У БД зберігаємо тільки URL, щоб не прив’язувати записи до абсолютного шляху сервера.
+        $this->image_url = $this->getImagesUrlPrefix() . $fileName;
+
+        return true;
+    }
+
+    /**
+     * Папка всередині frontend/web доступна за прямим URL /uploads/polls/*.
+     */
+    public function getImagesDirectory(): string
+    {
+        return Yii::getAlias('@frontend/web/uploads/polls');
+    }
+
+    /**
+     * URL-префікс для зображень опитувань на фронтенді.
+     */
+    public function getImagesUrlPrefix(): string
+    {
+        return '/uploads/polls/';
     }
 
     /**

@@ -79,10 +79,18 @@ JS
                                 <?php if (!empty($pageHeading)): ?>
                                     <?php // Переносимо itemprop="headline" безпосередньо на h1. ?>
                                     <h1 itemprop="headline"><?= $pageHeading; ?></h1>
+                                    <?php if (!empty($poll->image_url)): ?>
+                                        <?php // Alt береться з поля опитування, а за відсутності безпечно підставляємо назву. ?>
+                                        <?= Html::img($poll->image_url, ['alt' => $poll->image_alt ?: $poll->title, 'class' => 'poll-view-image', 'itemprop' => 'image']); ?>
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     <?php // Додаємо префікс "Poll:" до заголовка опитування. ?>
                                     <?php // Переносимо itemprop="headline" безпосередньо на h1. ?>
                                     <h1 itemprop="headline"><?= Yii::t('poll', 'Опитування: {title}', ['title' => $poll->title]); ?></h1>
+                                    <?php if (!empty($poll->image_url)): ?>
+                                        <?php // Alt береться з поля опитування, а за відсутності безпечно підставляємо назву. ?>
+                                        <?= Html::img($poll->image_url, ['alt' => $poll->image_alt ?: $poll->title, 'class' => 'poll-view-image', 'itemprop' => 'image']); ?>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                                 <span class="right_block_share_icon poll_view_share">
                                    <?php // Переміщаємо кнопку поширення ближче до заголовка для кращої читабельності. ?>

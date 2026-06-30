@@ -295,10 +295,8 @@ return [
                 ],
 
 //                    '/tag/<tag:\w+>' => '/poll/tag/index',
-                    // Сумісність зі старими URL залишаємо нижче.
+                    // Сторінка "Мої опитування" має відкриватися тільки за новою публічною адресою /my-polls.
                     'site/actualPolls' => 'poll/site/actual-polls',
-                    'site/myPolls' => 'poll/site/my-polls',
-                    'site/myPolls/<sorting:(desc|asc|default)>/<period:\w+>/<limit:(2|5|10)>' => 'poll/site/my-polls',
                 // TODO
                 // DEV:
                 [

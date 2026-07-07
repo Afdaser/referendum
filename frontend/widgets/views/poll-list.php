@@ -26,7 +26,8 @@ $socialLogoUrl = Yii::$app->request->hostInfo . '/img/layout/logo_social.png';
 Menu::widget([
     'items' => $this->context->menu,
     'encodeLabels' => false,
-    'options' => ['class' => 'nav nav-tabs', 'role' => 'tablist'],
+    // Окремий клас дає змогу оновити головні вкладки без впливу на вкладки профілю чи графіків.
+    'options' => ['class' => 'nav nav-tabs main-polls-tabs', 'role' => 'tablist'],
 ]);
 ?>
 <?php /*

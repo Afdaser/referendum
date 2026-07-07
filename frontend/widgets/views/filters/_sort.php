@@ -233,7 +233,8 @@ use common\models\User;
 
         }
         ?>
-    <div class="sort_b">
+    <?php // Додаємо окремий клас для сучасного вигляду фільтрів на головній стрічці без зміни логіки сортування. ?>
+    <div class="sort_b main-polls-sort">
         <?php if ($category == 'own'): ?>
             <span class="left_btn_b">
 <?php /* New Error ajax loading modal* / ?>

@@ -147,7 +147,7 @@ a.logo, div.logo {
 .sub_text_logo {
     color: #e8f7ee;
     display: inline-block;
-    margin-left: 37px;
+    margin-left: 18px;
     line-height: 22px;
     font-size: 13px;
 }
@@ -3446,7 +3446,7 @@ a.pass_on_main_page {
         height: auto;
     }
     .sub_text_logo {
-        margin-left: 0;
+        margin-left: 18px;
         text-align: left;
     }
     .right_header_b {

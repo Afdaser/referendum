@@ -67,6 +67,25 @@ SQL1;
             $data['monthly_totals']['previous'] = (int)$dataVotes[$previousMonthIndex]['user_votes']
                 + (int)$dataVotes[$previousMonthIndex]['guest_votes'];
         }
+
+        // Рахуємо коментарі окремо від голосів, щоб не змінювати існуючу SQL-логіку діаграми.
+        $commentPeriodsQuery = <<<SQL2
+SELECT
+    SUM(CASE WHEN `date_add` >= DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01') THEN 1 ELSE 0 END) AS current_comments,
+    SUM(CASE
+        WHEN `date_add` >= DATE_FORMAT(DATE_ADD(CURRENT_DATE(), INTERVAL -1 MONTH), '%Y-%m-01')
+            AND `date_add` < DATE_FORMAT(CURRENT_DATE(), '%Y-%m-01')
+        THEN 1 ELSE 0
+    END) AS previous_comments
+FROM `poll_comment`
+WHERE `date_add` >= DATE_FORMAT(DATE_ADD(CURRENT_DATE(), INTERVAL -1 MONTH), '%Y-%m-01')
+SQL2;
+        $commentPeriods = Yii::$app->db->createCommand($commentPeriodsQuery)->queryOne();
+        $data['comments_monthly_totals'] = [
+            'current' => (int)($commentPeriods['current_comments'] ?? 0),
+            'previous' => (int)($commentPeriods['previous_comments'] ?? 0),
+        ];
+
         return $this->render('index', ['data' => $data]);
     }
 

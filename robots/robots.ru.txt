@@ -1,6 +1,6 @@
 User-agent: *
 Disallow: /user/newAnswers
-Disallow: /user/newComments
+Disallow: /new-comments
 Disallow: /user/passwordRecovery
 Disallow: /site/myPolls
 Disallow: /*vote?option

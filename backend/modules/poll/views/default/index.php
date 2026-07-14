@@ -1,6 +1,7 @@
 <?php
 
 use dosamigos\chartjs\ChartJs;
+use yii\helpers\Html;
 use yii\web\JsExpression;
 
 $this->title = Yii::t('app', 'Dashboard');
@@ -37,6 +38,39 @@ $this->title = Yii::t('app', 'Dashboard');
                         </div>
                         <div style="font-size: 14px; color: #6c757d; margin-top: 6px;">
                             <?= Yii::t('app', 'голосів в опитуваннях') ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Другий рядок показує динаміку коментарів з клікабельними числами для швидкого переходу до модерації. -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-warning">
+                    <div class="box-body text-center" style="padding: 22px 16px;">
+                        <div style="font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #f39c12;">
+                            <?= Yii::t('app', 'КОМЕНТАРІ ЦЬОГО МІСЯЦЯ') ?>
+                        </div>
+                        <div style="font-size: 48px; line-height: 1.1; font-weight: 800; margin-top: 8px;">
+                            <?= Html::a(number_format((int)($data['comments_monthly_totals']['current'] ?? 0), 0, '.', ' '), ['/poll/poll-comment/index'], ['style' => 'color: #1f2d3d; text-decoration: underline;']) ?>
+                        </div>
+                        <div style="font-size: 14px; color: #6c757d; margin-top: 6px;">
+                            <?= Yii::t('app', 'коментарів в опитуваннях') ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="box box-warning">
+                    <div class="box-body text-center" style="padding: 22px 16px;">
+                        <div style="font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #f39c12;">
+                            <?= Yii::t('app', 'КОМЕНТАРІ МИНУЛОГО МІСЯЦЯ') ?>
+                        </div>
+                        <div style="font-size: 48px; line-height: 1.1; font-weight: 800; margin-top: 8px;">
+                            <?= Html::a(number_format((int)($data['comments_monthly_totals']['previous'] ?? 0), 0, '.', ' '), ['/poll/poll-comment/index'], ['style' => 'color: #1f2d3d; text-decoration: underline;']) ?>
+                        </div>
+                        <div style="font-size: 14px; color: #6c757d; margin-top: 6px;">
+                            <?= Yii::t('app', 'коментарів в опитуваннях') ?>
                         </div>
                     </div>
                 </div>

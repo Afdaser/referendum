@@ -172,16 +172,10 @@ return [
 //                    'route' => '/user/profilex/new-answers'
                 ],
                 [
-                    // Канонічний Yii2 URL для сторінки нових коментарів у кабінеті: /user/new-comments.
-                    // Старий /user/newComments лишаємо нижче як сумісний fallback для закладок та індексованих посилань.
-                    'pattern' => '/user/new-comments',
+                    // Канонічний публічний шлях для сторінки нових коментарів: /new-comments.
+                    // Має виглядати так само просто, як /my-polls.
+                    'pattern' => 'new-comments',
                     'route' => '/user/new/new-comments',
-                ],
-                [
-                    'pattern' => '/user/newComments',
-                    'route' => '/user/new/new-comments',
-//                    'route' => '/user/registrationx/new-comments'
-//                    'route' => '/user/profilex/new-comments'
                 ],
                 [
                     'pattern' => '/user/readAllComments',

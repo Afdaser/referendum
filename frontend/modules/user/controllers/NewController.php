@@ -59,7 +59,7 @@ class NewController extends \yii\web\Controller
             ],
             [
                 'label' => Yii::t('main', 'Нові коментарі') . '<span class="count_poll">' . $commentsCount . '</span>',
-                // Меню має генерувати канонічний шлях /user/new-comments через правило в urlManager.
+                // Меню має генерувати канонічний шлях /new-comments через правило в urlManager.
                 'url' => Url::toRoute(['/user/new/new-comments']),
                 'active' => ($section == self::SECTION_COMMENTS),
             ],

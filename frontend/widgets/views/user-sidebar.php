@@ -30,13 +30,13 @@ $identity = Yii::$app->user->identity;
     <div class="text_authorized_b">
 <?php /* * // Yii1 remove:
         <?php echo Yii::t("user", 'Мій рейтинг'); ?>: <?php echo User::getUserRating(Yii::app()->user->id);?><br>
-        <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="<?php echo Yii::app()->createUrl('/user/newComments/')?>"><?php echo Poll::getNewCommentsCount(Yii::app()->user->id);?></a>
+        <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="/new-comments"><?php echo Poll::getNewCommentsCount(Yii::app()->user->id);?></a>
  */
 ?>
         <?php echo Yii::t("user", 'Мій рейтинг'); ?>: <?= $identity ? User::getUserRating($identity->id) : 0;?><br>
         <?php // Нова логіка URL: користувацьке посилання має вести тільки на чистий публічний шлях /my-polls. ?>
         <?php echo Yii::t("user", 'Мої опитування'); ?>: <a href="/my-polls"><?= $identity ? User::getPollsCount($identity->id) : 0;?></a><br>
-        <?php // Канонічний шлях для кнопки: /user/new-comments; старий /user/newComments лишився тільки fallback-роутом. ?>
+        <?php // Канонічний шлях для кнопки: /new-comments. ?>
         <?php echo Yii::t("user", 'Нові коментарі'); ?>: <a href="<?= Url::toRoute(['/user/new/new-comments']) ?>"><?= $identity ? Poll::getNewCommentsCount($identity->id) : 0;?></a>
     </div>
     <a href="<?= Url::toRoute('/user/profile');?>" class="my_profile" role="tablist">

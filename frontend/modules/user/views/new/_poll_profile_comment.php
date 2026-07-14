@@ -33,10 +33,11 @@ use common\models\User;
     <?php endif; ?>
 
     <?php if ($isNew): ?>
-        <?php if (count($comment->commentChilds(['has_new' => 1]))): ?>
+        <?php $childNewComments = $comment->commentChilds(['has_new' => 1]); ?>
+        <?php if (count($childNewComments)): ?>
             <div class="review_comment">
-                <?php // Yii2 View не має renderPartial(); render() безпечно підключає partial і не ламає сторінку нових коментарів. ?>
-                <?= $this->render('/poll/comments', ['comments' => $comment->commentChilds(['has_new' => 1]), 'isNew' => isset($isNew) ? true : false]); ?>
+                <?php // Рекурсивно рендеримо partial із поточного модуля user/new, щоб Yii2 не шукав неіснуючий frontend/modules/user/views/poll/comments.php. ?>
+                <?= $this->render('_poll_comments_block', ['comments' => $childNewComments, 'isNew' => true]); ?>
             </div>
         <?php endif; ?>
     <?php endif; ?>

@@ -323,8 +323,8 @@ h1.title {
 @media (max-width: 991px) {
     .homepage_text {
         box-sizing: border-box;
-        padding-right: 1.5%;
-        padding-left: 1.5%;
+        padding-right: 2%;
+        padding-left: 2%;
     }
 }
 

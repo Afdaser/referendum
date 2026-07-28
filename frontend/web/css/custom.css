@@ -319,6 +319,15 @@ h1.title {
     letter-spacing: .04em;
 }
 
+/* На мобільних і планшетах додаємо тексту головної сторінки невеликі бічні відступи. */
+@media (max-width: 991px) {
+    .homepage_text {
+        box-sizing: border-box;
+        padding-right: 1.5%;
+        padding-left: 1.5%;
+    }
+}
+
 /*
  * Базовий cookie banner у стилі "як на більшості сайтів США":
  * - фіксований блок унизу;

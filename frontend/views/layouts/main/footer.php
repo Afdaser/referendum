@@ -11,23 +11,42 @@ use yii\helpers\Html;
 $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? '' : 'https://en.online-statistics.org';
 // Отримуємо набір посилань для поточної мови + глобальні посилання для всіх мов.
 $footerLinks = FooterLink::getForLanguage((string) Yii::$app->language);
+// Розподіляємо довгий список максимум на чотири рівномірні стовпці.
+$footerColumnCount = min(4, max(1, (int) ceil(count($footerLinks) / 4)));
+$footerLinkColumns = [];
+$footerLinkOffset = 0;
+$footerLinksPerColumn = intdiv(count($footerLinks), $footerColumnCount);
+$footerColumnsWithExtraLink = count($footerLinks) % $footerColumnCount;
+for ($columnIndex = 0; $columnIndex < $footerColumnCount; $columnIndex++) {
+    // Перші стовпці отримують по одному залишковому посиланню, тому різниця не перевищує одного пункту.
+    $footerColumnSize = $footerLinksPerColumn + ($columnIndex < $footerColumnsWithExtraLink ? 1 : 0);
+    if ($footerColumnSize > 0) {
+        $footerLinkColumns[] = array_slice($footerLinks, $footerLinkOffset, $footerColumnSize);
+        $footerLinkOffset += $footerColumnSize;
+    }
+}
+$footerColumnClass = 'col-xs-12 col-sm-' . (12 / $footerColumnCount);
 ?>
 <!-- Footer
 ================================================== -->
 <footer class="footer">
     <div class="container">
+        <nav class="row foot_links" aria-label="Footer navigation">
+            <?php foreach ($footerLinkColumns as $footerLinkColumn): ?>
+                <ul class="<?= $footerColumnClass; ?> list-unstyled">
+                    <?php foreach ($footerLinkColumn as $footerLink): ?>
+                        <?php
+                        // Не нашкодь: виводимо дані безпечно, а URL приводимо до валідного виду.
+                        $url = preg_match('/^https?:\/\//i', (string) $footerLink->url)
+                            ? $footerLink->url
+                            : Url::to($footerLink->url);
+                        ?>
+                        <li><a href="<?= Html::encode($url); ?>"><?= Html::encode($footerLink->anchor); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endforeach; ?>
+        </nav>
         <div class="row">
-            <span class="foot_links">
-                <?php foreach ($footerLinks as $footerLink): ?>
-                    <?php
-                    // Не нашкодь: виводимо дані безпечно, а URL приводимо до валідного виду.
-                    $url = preg_match('/^https?:\/\//i', (string) $footerLink->url)
-                        ? $footerLink->url
-                        : Url::to($footerLink->url);
-                    ?>
-                    <a href="<?= Html::encode($url); ?>"><?= Html::encode($footerLink->anchor); ?></a>
-                <?php endforeach; ?>
-            </span>
             <span class="copyright">All Rights Reserved | <?= date('Y'); ?></span>
         </div>
 <?php /*                 * / ?>

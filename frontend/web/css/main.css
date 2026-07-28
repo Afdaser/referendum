@@ -1520,27 +1520,45 @@ span.item_list_poll:hover {
     height: 19px;
 }
 .footer {
-    height: 80px;
+    /* Автоматична висота дає футеру безпечно зростати разом із кількістю сторінок. */
+    min-height: 80px;
     background: #dce6e4;
     border-top: 3px solid #c4cfcd;
     padding-top: 20px;
+    padding-bottom: 15px;
 }
 .copyright {
     float: right;
     color: #0A3D20;
     padding-right: 3%;
 }
+.foot_links ul {
+    /* Використовуємо наявну Bootstrap-сітку, додаючи лише вертикальний ритм списків. */
+    margin-bottom: 10px;
+}
 .foot_links a {
-    float: left;
-    margin-right: 25px;
+    display: inline-block;
     color: #0A522A;
     text-decoration: underline;
+    padding: 5px 0;
 }
 .foot_links a:hover {
     color: #3ac469;
 }
-.foot_links a:last-child {
-    margin-right: 0;
+@media (max-width: 767px) {
+    /* На вузьких екранах великі зони натискання та один стовпець полегшують навігацію. */
+    .footer {
+        padding-top: 15px;
+    }
+    .foot_links a {
+        display: block;
+        padding: 7px 0;
+    }
+    .copyright {
+        float: none;
+        display: block;
+        padding: 5px 15px 0;
+    }
 }
 .left_auth_name {
     float: left;

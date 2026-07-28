@@ -1521,6 +1521,7 @@ span.item_list_poll:hover {
 }
 .footer {
     /* Автоматична висота дає футеру безпечно зростати разом із кількістю сторінок. */
+    height: auto;
     min-height: 80px;
     background: #dce6e4;
     border-top: 3px solid #c4cfcd;

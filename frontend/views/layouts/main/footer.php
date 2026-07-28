@@ -13,7 +13,18 @@ $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? 
 $footerLinks = FooterLink::getForLanguage((string) Yii::$app->language);
 // Розподіляємо довгий список максимум на чотири рівномірні стовпці.
 $footerColumnCount = min(4, max(1, (int) ceil(count($footerLinks) / 4)));
-$footerLinkColumns = array_chunk($footerLinks, max(1, (int) ceil(count($footerLinks) / $footerColumnCount)));
+$footerLinkColumns = [];
+$footerLinkOffset = 0;
+$footerLinksPerColumn = intdiv(count($footerLinks), $footerColumnCount);
+$footerColumnsWithExtraLink = count($footerLinks) % $footerColumnCount;
+for ($columnIndex = 0; $columnIndex < $footerColumnCount; $columnIndex++) {
+    // Перші стовпці отримують по одному залишковому посиланню, тому різниця не перевищує одного пункту.
+    $footerColumnSize = $footerLinksPerColumn + ($columnIndex < $footerColumnsWithExtraLink ? 1 : 0);
+    if ($footerColumnSize > 0) {
+        $footerLinkColumns[] = array_slice($footerLinks, $footerLinkOffset, $footerColumnSize);
+        $footerLinkOffset += $footerColumnSize;
+    }
+}
 $footerColumnClass = 'col-xs-12 col-sm-' . (12 / $footerColumnCount);
 ?>
 <!-- Footer

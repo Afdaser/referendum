@@ -37,6 +37,7 @@ use dmstr\widgets\Alert;
     </section>
 
     <section class="content">
+        <?php // Усі flash-повідомлення адмінки показуємо лише тут, щоб сторінки не дублювали їх. ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </section>

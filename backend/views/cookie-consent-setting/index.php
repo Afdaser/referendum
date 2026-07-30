@@ -15,12 +15,6 @@ $this->title = 'Cookie consent';
 <div class="cookie-consent-setting-index">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php if (Yii::$app->session->hasFlash('success')): ?>
-        <div class="alert alert-success">
-            <?= Html::encode(Yii::$app->session->getFlash('success')) ?>
-        </div>
-    <?php endif; ?>
-
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">Нове правило</h3>
@@ -84,4 +78,3 @@ $this->title = 'Cookie consent';
         </div>
     </div>
 </div>
-

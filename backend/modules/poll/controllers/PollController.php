@@ -4,9 +4,13 @@ namespace backend\modules\poll\controllers;
 
 use common\models\PollFaq;
 use common\models\Poll;
+use common\models\User;
 use common\models\search\PollSearch;
+use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 
 /**
@@ -14,6 +18,12 @@ use yii\filters\VerbFilter;
  */
 class PollController extends Controller
 {
+    /** Мінімальна кількість символів у запиті пошуку користувачів. */
+    public const USER_SEARCH_MIN_LENGTH = 2;
+
+    /** Максимальна кількість користувачів на одній сторінці результатів. */
+    public const USER_SEARCH_PAGE_SIZE = 20;
+
     /**
      * @inheritDoc
      */
@@ -22,6 +32,15 @@ class PollController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['user-search'],
+                    // Пошук доступний лише авторизованому адміністратору backend.
+                    'rules' => [[
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ]],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -30,6 +49,47 @@ class PollController extends Controller
                 ],
             ]
         );
+    }
+
+    /**
+     * Повертає сторінку користувачів для AJAX-поля Select2.
+     *
+     * @return array
+     */
+    public function actionUserSearch(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $term = trim((string)$this->request->get('q', ''));
+        $page = max(1, (int)$this->request->get('page', 1));
+
+        if (mb_strlen($term) < self::USER_SEARCH_MIN_LENGTH) {
+            return ['results' => [], 'pagination' => ['more' => false]];
+        }
+
+        $query = User::find()->select(['id', 'username']);
+        if (ctype_digit($term)) {
+            $query->andWhere(['or', ['id' => (int)$term], ['like', 'username', $term]]);
+        } else {
+            $query->andWhere(['like', 'username', $term]);
+        }
+
+        // Навмисно беремо лише одну обмежену сторінку, а не повний список користувачів, задля швидкодії.
+        $users = $query
+            ->orderBy(['username' => SORT_ASC, 'id' => SORT_ASC])
+            ->offset(($page - 1) * self::USER_SEARCH_PAGE_SIZE)
+            ->limit(self::USER_SEARCH_PAGE_SIZE + 1)
+            ->asArray()
+            ->all();
+        $hasMore = count($users) > self::USER_SEARCH_PAGE_SIZE;
+        $users = array_slice($users, 0, self::USER_SEARCH_PAGE_SIZE);
+
+        return [
+            'results' => array_map(static function (array $user): array {
+                return ['id' => (string)$user['id'], 'text' => $user['username']];
+            }, $users),
+            'pagination' => ['more' => $hasMore],
+        ];
     }
 
     /**

@@ -123,6 +123,8 @@ class Poll extends ActiveRecord
             [['meta_h1', 'meta_title', 'meta_description'], 'default', 'value' => null],
             [['title', 'meta_h1', 'meta_title'], 'string', 'max' => 255],
             [['poll_language_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::class, 'targetAttribute' => ['poll_language_id' => 'id']],
+            // Не дозволяємо зберегти вручну підмінений або вже видалений ID автора.
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 

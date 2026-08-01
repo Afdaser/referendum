@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 use kartik\select2\Select2;
@@ -66,11 +67,28 @@ use common\models\PollFaq;
             ]);
             ?>
 
+    <?php
+    // Для редагування передаємо тільки поточного автора, не завантажуючи решту користувачів.
+    $currentUser = $model->user_id ? User::findOne((int)$model->user_id) : null;
+    $currentUserItems = $currentUser ? [(string)$currentUser->id => $currentUser->username] : [];
+    ?>
     <?= $form->field($model, 'user_id')->widget(Select2::classname(), [
-                'data' => User::dropDownAllItems(),
+                'data' => $currentUserItems,
                 'language' => Yii::$app->language,
                 'options' => ['placeholder' => Yii::t('app', 'Select user...')],
-                'pluginOptions' => ['allowClear' => true,],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumInputLength' => \backend\modules\poll\controllers\PollController::USER_SEARCH_MIN_LENGTH,
+                    // Select2 навмисно шукає сторінками через AJAX і не завантажує повний список користувачів задля швидкодії.
+                    'ajax' => [
+                        'url' => Url::to(['user-search']),
+                        'dataType' => 'json',
+                        'delay' => 300,
+                        'data' => new \yii\web\JsExpression('function (params) { return {q: params.term, page: params.page || 1}; }'),
+                        'processResults' => new \yii\web\JsExpression('function (data) { return data; }'),
+                        'cache' => true,
+                    ],
+                ],
             ]);
             ?>
 

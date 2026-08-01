@@ -4,9 +4,12 @@ namespace backend\modules\poll\controllers;
 
 use common\models\PollFaq;
 use common\models\Poll;
+use common\models\User;
 use common\models\search\PollSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 
 /**
@@ -30,6 +33,17 @@ class PollController extends Controller
                 ],
             ]
         );
+    }
+
+    public function actionUserSearch(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        // Увесь список завантажується лише після відкриття поля, а не разом зі сторінкою форми.
+        return [
+            'results' => array_map(static function (array $user): array {
+                return ['id' => (string)$user['id'], 'text' => $user['username']];
+            }, User::find()->select(['id', 'username'])->orderBy('username')->asArray()->all()),
+        ];
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 use kartik\select2\Select2;
@@ -66,11 +67,13 @@ use common\models\PollFaq;
             ]);
             ?>
 
+    <?php $currentUser = $model->user_id ? User::findOne((int)$model->user_id) : null; ?>
     <?= $form->field($model, 'user_id')->widget(Select2::classname(), [
-                'data' => User::dropDownAllItems(),
+                'data' => $currentUser ? [$currentUser->id => $currentUser->username] : [],
                 'language' => Yii::$app->language,
                 'options' => ['placeholder' => Yii::t('app', 'Select user...')],
-                'pluginOptions' => ['allowClear' => true,],
+                // Повний список завантажується через AJAX лише після відкриття поля, щоб форма відкривалася швидко.
+                'pluginOptions' => ['allowClear' => true, 'ajax' => ['url' => Url::to(['user-search']), 'dataType' => 'json']],
             ]);
             ?>
 

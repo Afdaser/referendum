@@ -1534,8 +1534,14 @@ span.item_list_poll:hover {
     padding-right: 3%;
 }
 .foot_links ul {
-    /* Використовуємо наявну Bootstrap-сітку, додаючи лише вертикальний ритм списків. */
+    /* На широких екранах компактно заповнюємо футер чотирма рівномірними стовпцями. */
+    column-count: 4;
+    column-gap: 30px;
     margin-bottom: 10px;
+}
+.foot_links li {
+    /* Не розриваємо окреме посилання між стовпцями. */
+    break-inside: avoid;
 }
 .foot_links a {
     display: inline-block;
@@ -1546,10 +1552,14 @@ span.item_list_poll:hover {
 .foot_links a:hover {
     color: #3ac469;
 }
-@media (max-width: 767px) {
-    /* На вузьких екранах великі зони натискання та один стовпець полегшують навігацію. */
+@media (max-width: 991px) {
+    /* На телефонах і планшетах два стовпці прибирають зайву висоту, не зменшуючи зони натискання. */
     .footer {
         padding-top: 15px;
+    }
+    .foot_links ul {
+        column-count: 2;
+        column-gap: 20px;
     }
     .foot_links a {
         display: block;

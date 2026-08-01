@@ -39,10 +39,14 @@ class PollController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         // Увесь список завантажується лише після відкриття поля, а не разом зі сторінкою форми.
+        $query = User::find()->select(['id', 'username'])->orderBy('username');
+        if ($term = trim((string)$this->request->get('q', ''))) {
+            $query->andWhere(['like', 'username', $term]);
+        }
         return [
             'results' => array_map(static function (array $user): array {
                 return ['id' => (string)$user['id'], 'text' => $user['username']];
-            }, User::find()->select(['id', 'username'])->orderBy('username')->asArray()->all()),
+            }, $query->asArray()->all()),
         ];
     }
 

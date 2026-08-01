@@ -73,7 +73,7 @@ use common\models\PollFaq;
                 'language' => Yii::$app->language,
                 'options' => ['placeholder' => Yii::t('app', 'Select user...')],
                 // Повний список завантажується через AJAX лише після відкриття поля, щоб форма відкривалася швидко.
-                'pluginOptions' => ['allowClear' => true, 'ajax' => ['url' => Url::to(['user-search']), 'dataType' => 'json']],
+                'pluginOptions' => ['allowClear' => true, 'ajax' => ['url' => Url::to(['user-search']), 'dataType' => 'json', 'delay' => 300]],
             ]);
             ?>
 

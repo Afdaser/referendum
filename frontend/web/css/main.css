@@ -1728,6 +1728,44 @@ a.btn_prev_var:hover {
     font-size: 110%;
     line-height: 1.6;
 }
+.poll_description_toggle {
+    /* Лишаємо CSS-перемикач доступним із клавіатури, але візуально ховаємо його. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+.poll_description_toggle:not(:checked) + .desc_my_chart > p:nth-of-type(n+3) {
+    /* У згорнутому описі показуємо лише перші два абзаци; текст залишається в HTML. */
+    display: none;
+}
+.poll_description_more {
+    display: inline-block;
+    margin: 0 0 18px;
+    padding: 7px 14px;
+    border: 1px solid #058f42;
+    border-radius: 3px;
+    color: #058f42;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.poll_description_more:hover,
+.poll_description_toggle:focus + .desc_my_chart + .poll_description_more {
+    /* Однаковий відгук кнопки для миші та клавіатурної навігації. */
+    color: #fff;
+    background: #058f42;
+}
+.poll_description_toggle:checked + .desc_my_chart + .poll_description_more {
+    /* Після розгортання прибираємо кнопку, щоб не відволікати від опитування. */
+    display: none;
+}
 @media (max-width: 768px) {
     .desc_my_chart {
         /* На мобільних прибираємо надлишкові бічні відступи, щоб текст не "плив". */

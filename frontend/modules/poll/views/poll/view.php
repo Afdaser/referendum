@@ -93,9 +93,22 @@ JS
                     </div>
                     <div class="middle_name_poll_b clearfix page">
                         <?php // Виносимо опис опитування в окремий блок для точнішого керування відступами. ?>
+                        <?php
+                        $pollDescription = $poll->getClearedDescribe();
+                        // Згортання вмикаємо лише для описів, у яких справді є більше двох абзаців.
+                        $isLongDescription = preg_match_all('/<p(?:\s[^>]*)?>/i', $pollDescription) > 2;
+                        $descriptionToggleId = 'poll-description-toggle-' . $poll->id;
+                        ?>
+                        <?php if ($isLongDescription): ?>
+                            <?php // Прихований перемикач дає змогу розгортати текст лише засобами CSS, без посилання чи JavaScript. ?>
+                            <input type="checkbox" id="<?= $descriptionToggleId; ?>" class="poll_description_toggle">
+                        <?php endif; ?>
                         <div class="desc_my_chart" itemprop="text">
-                            <?= $poll->getClearedDescribe() ?>
+                            <?= $pollDescription ?>
                         </div>
+                        <?php if ($isLongDescription): ?>
+                            <label for="<?= $descriptionToggleId; ?>" class="poll_description_more"><?= Yii::t('poll', 'Читати далі'); ?></label>
+                        <?php endif; ?>
                         <?php $chartData = $poll->getChartData();?>
                         <?php $bar = StringHelper::formatForBar($chartData); ?>
                         <?php $pie = StringHelper::formatForPie($chartData); ?>

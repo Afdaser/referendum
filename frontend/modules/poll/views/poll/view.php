@@ -113,7 +113,8 @@ JS
                         <?php $bar = StringHelper::formatForBar($chartData); ?>
                         <?php $pie = StringHelper::formatForPie($chartData); ?>
                         <?php if(!$poll->isShowResult()):?>
-                            <div>
+                            <?php // Окремий рядок не дає варіантам відповіді ставати поруч із кнопкою опису у flex-контейнері. ?>
+                            <div class="poll_options_block">
                                 <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
                             </div>
                             <div class="clearfix"></div>

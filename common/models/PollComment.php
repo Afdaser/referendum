@@ -4,7 +4,6 @@ namespace common\models;
 
 use Yii;
 use yii\helpers\Html;
-use yii\db\IntegrityException;
 use common\components\ActiveRecord;
 
 /**
@@ -158,41 +157,80 @@ class PollComment extends ActiveRecord
     }
 
     /**
-     * Записує один голос користувача та атомарно змінює рейтинг коментаря.
+     * Записує, змінює або скасовує голос та атомарно змінює рейтинг коментаря.
      *
      * @param int $rating Напрям голосу: додатне значення або від'ємне.
      * @param int $userId Ідентифікатор авторизованого користувача.
-     * @return int|null Новий рейтинг або null, якщо користувач уже голосував.
+     * @return array{rating:int,vote:int} Новий загальний рейтинг і поточний голос користувача.
      * @throws \Throwable Якщо транзакцію не вдалося виконати з іншої причини.
      */
     public function changeRating($rating, $userId)
     {
-        $change = $rating > 0 ? 1 : -1;
         $transaction = static::getDb()->beginTransaction();
 
         try {
-            $vote = new PollCommentRating();
-            $vote->poll_comment_id = $this->id;
-            $vote->user_id = $userId;
-            $vote->rating = $change;
+            $vote = PollCommentRating::find()
+                ->where(['poll_comment_id' => $this->id, 'user_id' => $userId])
+                ->one();
+            $previousVote = $vote === null ? 0 : (int) $vote->rating;
+            $transition = self::resolveRatingVote($previousVote, (int) $rating);
 
-            if (!$vote->save()) {
-                throw new \RuntimeException('Не вдалося зберегти голос за коментар.');
+            if ($transition['vote'] === 0) {
+                // Повторне натискання тієї самої кнопки скасовує власний голос.
+                PollCommentRating::deleteAll([
+                    'poll_comment_id' => $this->id,
+                    'user_id' => $userId,
+                ]);
+            } elseif ($vote === null) {
+                // Прямий insert не залежить від застарілих AR-валідаторів production-схеми.
+                static::getDb()->createCommand()->insert(PollCommentRating::tableName(), [
+                    'poll_comment_id' => $this->id,
+                    'user_id' => $userId,
+                    'rating' => $transition['vote'],
+                    'date_add' => date('Y-m-d H:i:s'),
+                    'created_by' => $userId,
+                    'updated_by' => $userId,
+                    'created_at' => time(),
+                    'updated_at' => time(),
+                ])->execute();
+            } else {
+                // Протилежна кнопка змінює +1 на -1 або навпаки в тому самому записі.
+                PollCommentRating::updateAll([
+                    'rating' => $transition['vote'],
+                    'updated_by' => $userId,
+                    'updated_at' => time(),
+                ], ['id' => $vote->id]);
             }
 
             // updateCounters формує атомарний SQL-вираз і не губить паралельні голоси.
-            $this->updateCounters(['rating' => $change]);
+            $this->updateCounters(['rating' => $transition['delta']]);
             $transaction->commit();
 
-            return (int) $this->rating;
-        } catch (IntegrityException $exception) {
-            $transaction->rollBack();
-            // Унікальний індекс (коментар, користувач) безпечно відсікає повторний голос.
-            return null;
+            return [
+                'rating' => (int) $this->rating,
+                'vote' => $transition['vote'],
+            ];
         } catch (\Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
         }
+    }
+
+    /**
+     * Обчислює новий стан голосу та зміну загального рейтингу.
+     *
+     * @return array{vote:int,delta:int}
+     */
+    public static function resolveRatingVote($previousVote, $requestedVote)
+    {
+        $previousVote = $previousVote <=> 0;
+        $requestedVote = $requestedVote <=> 0;
+        $newVote = $previousVote === $requestedVote ? 0 : $requestedVote;
+
+        return [
+            'vote' => $newVote,
+            'delta' => $newVote - $previousVote,
+        ];
     }
 
     /**

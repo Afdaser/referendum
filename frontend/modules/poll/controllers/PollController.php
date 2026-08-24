@@ -289,11 +289,13 @@ class PollController extends \yii\web\Controller
         }
 
         // Модель і унікальний індекс гарантують лише один голос навіть за паралельних запитів.
-        $newRating = $comment->changeRating($rating, (int) Yii::$app->user->id);
+        $result = $comment->changeRating($rating, (int) Yii::$app->user->id);
 
         return [
-            'success' => $newRating !== null,
-            'rating' => $newRating ?? (int) $comment->rating,
+            'success' => true,
+            'rating' => $result['rating'],
+            // Повертаємо стан голосу для подальшого візуального позначення без зміни поточного дизайну.
+            'vote' => $result['vote'],
         ];
     }
 

@@ -21,11 +21,14 @@ use common\models\User;
     <?php endif; ?>
     <span class="date_writing"><?= StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat" itemprop="userInteractionCount">
-        <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $comment->id; ?>"></a>
+        <?php // Радіокнопки не створюють посилань, за якими міг би переходити пошуковий бот. ?>
+        <input type="radio" class="comment-rating-input" id="comment-rating-up-<?= $comment->id; ?>" name="comment-rating-<?= $comment->id; ?>" value="1" data-id="<?= $comment->id; ?>">
+        <label for="comment-rating-up-<?= $comment->id; ?>" class="rating_btn_up" aria-label="<?= Yii::t('poll', 'Підняти рейтинг коментаря'); ?>"></label>
         <span class="rating" data-id="<?= $comment->id; ?>">
             <?= $comment->rating; ?>
         </span>
-        <a href="javascript:void(0)" class="rating_btn_down" data-id="<?= $comment->id; ?>"></a>
+        <input type="radio" class="comment-rating-input" id="comment-rating-down-<?= $comment->id; ?>" name="comment-rating-<?= $comment->id; ?>" value="-1" data-id="<?= $comment->id; ?>">
+        <label for="comment-rating-down-<?= $comment->id; ?>" class="rating_btn_down" aria-label="<?= Yii::t('poll', 'Знизити рейтинг коментаря'); ?>"></label>
     </span>
 </div>
 <div class="inner_text_comment" itemprop="text">

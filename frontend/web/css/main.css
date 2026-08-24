@@ -2212,6 +2212,12 @@ a.send_btn:hover {
     color: #058f42;
     font-size: 14px;
 }
+.comment-rating-input {
+    /* Залишаємо radio доступним для клавіатури, але візуально зберігаємо старі стрілки. */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
 .rating_btn_up {
     display: inline-block;
     vertical-align: middle;
@@ -2219,6 +2225,7 @@ a.send_btn:hover {
     height: 5px;
     background: url(/img/layout/btn_up_rat.png) no-repeat center;
     margin-right: 4px;
+    cursor: pointer;
 }
 .rating_btn_up:hover {
     width: 12px;
@@ -2233,6 +2240,11 @@ a.send_btn:hover {
     height: 5px;
     background: url(/img/layout/btn_down_rat.png) no-repeat center;
     margin-left: 4px;
+    cursor: pointer;
+}
+.comment-rating-input:focus + .rating_btn_up,
+.comment-rating-input:focus + .rating_btn_down {
+    outline: 1px dotted currentColor;
 }
 .rating_btn_down:hover {
     width: 12px;

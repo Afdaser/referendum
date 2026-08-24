@@ -11,6 +11,7 @@ use common\models\PollOption;
 use common\models\PollComment;
 use common\models\OptionGuestVote;
 use common\models\User;
+use yii\web\Response;
 
 class PollController extends \yii\web\Controller
 {
@@ -267,25 +268,27 @@ class PollController extends \yii\web\Controller
     /*
      * Change poll`s comment rating
      */
-    public function actionChangeCommentRating(){
-        if (Yii::$app->request->isAjax && !Yii::$app->user->isGuest) {
-            $id = intval(Yii::$app->request->post('id'));
-            $rating = intval(Yii::$app->request->post('rating'));
-            $comment = PollComment::find()->where(['id' => $id])->one();
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* Yii1 coe: * / 
-            $comment = PollComment::model()->findByPk($id);
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* */
+    public function actionChangeCommentRating()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!Yii::$app->request->isPost || Yii::$app->user->isGuest) {
+            Yii::$app->response->statusCode = Yii::$app->user->isGuest ? 401 : 405;
+            return ['success' => false, 'message' => Yii::t('poll', 'Увійдіть, щоб оцінити коментар.')];
         }
+
+        $comment = PollComment::findOne((int) Yii::$app->request->post('id'));
+        $rating = (int) Yii::$app->request->post('rating');
+        if (!$comment || !in_array($rating, [-1, 0, 1], true)) {
+            Yii::$app->response->statusCode = 422;
+            return ['success' => false, 'message' => Yii::t('poll', 'Некоректна оцінка коментаря.')];
+        }
+
+        // API повертає і суму, і поточний голос, щоб інтерфейс точно відобразив скасування.
+        return [
+            'success' => true,
+            'rating' => $comment->setUserRating(Yii::$app->user->id, $rating),
+            'vote' => $rating,
+        ];
     }
 
 

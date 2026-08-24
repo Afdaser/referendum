@@ -184,23 +184,33 @@ $(document).ready(function(){
         }
     };
 
-    $("a.rating_btn_up").click(function(){
-        changeCommentRating($(this).data("id"),1);
+    // Повторне натискання скасовує вибір; протилежна кнопка змінює голос.
+    $(document).on('click', '.comment-rating-input', function () {
+        var input = this;
+        var previousVote = Number($(input).data('vote') || 0);
+        var requestedVote = previousVote === Number(input.value) ? 0 : Number(input.value);
+        changeCommentRating($(input).data('id'), requestedVote, input);
     });
 
-    $("a.rating_btn_down").click(function(){
-       changeCommentRating($(this).data("id"),-1);
-    });
-
-    function changeCommentRating(id,rating){
+    function changeCommentRating(id, rating, input){
         $.ajax({
             type: 'POST',
             url: '/poll/ChangeCommentRating',
             data: {id: id, rating: rating},
             success: function (data) {
-                if(data){
-                    $('span.rating[data-id="'+id+'"]').html(data);
+                if (data.success) {
+                    var inputs = $('.comment-rating-input[data-id="' + id + '"]');
+                    inputs.prop('checked', false).data('vote', data.vote);
+                    inputs.filter('[value="' + data.vote + '"]').prop('checked', true);
+                    $('span.rating[data-id="'+id+'"]').text(data.rating);
                 }
+            },
+            error: function () {
+                // Повертаємо радіокнопки до стану, підтвердженого сервером.
+                var inputs = $('.comment-rating-input[data-id="' + id + '"]');
+                var previousVote = Number($(input).data('vote') || 0);
+                inputs.prop('checked', false);
+                inputs.filter('[value="' + previousVote + '"]').prop('checked', true);
             }
         });
     }
@@ -219,13 +229,11 @@ $(document).ready(function(){
         });
     });
 
-    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
-    $('.arrow_rating_top,a.rating_btn_up').click(function(){
+    $('.arrow_rating_top').click(function(){
         changePollRating($(this).data("id"),1);
     });
 
-    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
-    $('.arrow_rating_down,a.rating_btn_down').click(function(){
+    $('.arrow_rating_down').click(function(){
         changePollRating($(this).data("id"),-1);
     });
 

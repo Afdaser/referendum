@@ -265,6 +265,53 @@ class PollComment extends ActiveRecord
         return (bool) $this->is_guest;
     }
 
+    /**
+     * Встановлює оцінку поточного користувача та синхронізує загальний рейтинг.
+     * Значення 0 скасовує попередню оцінку, тому випадковий голос можна повернути.
+     *
+     * @param int $userId
+     * @param int $rating -1, 0 або 1
+     * @return int Новий загальний рейтинг коментаря
+     * @throws \InvalidArgumentException
+     * @throws \Throwable
+     */
+    public function setUserRating($userId, $rating)
+    {
+        $rating = (int) $rating;
+        if (!in_array($rating, [-1, 0, 1], true)) {
+            throw new \InvalidArgumentException('Оцінка коментаря має дорівнювати -1, 0 або 1.');
+        }
+
+        return static::getDb()->transaction(function () use ($userId, $rating) {
+            $vote = PollCommentRating::findOne([
+                'poll_comment_id' => $this->id,
+                'user_id' => (int) $userId,
+            ]);
+            $previousRating = $vote ? (int) $vote->rating : 0;
+
+            if ($rating === 0) {
+                if ($vote && $vote->delete() === false) {
+                    throw new \RuntimeException('Не вдалося скасувати оцінку коментаря.');
+                }
+            } else {
+                $vote = $vote ?: new PollCommentRating();
+                $vote->poll_comment_id = $this->id;
+                $vote->user_id = (int) $userId;
+                $vote->rating = $rating;
+                if (!$vote->save()) {
+                    throw new \RuntimeException('Не вдалося зберегти оцінку коментаря.');
+                }
+            }
+
+            $difference = $rating - $previousRating;
+            if ($difference !== 0 && !$this->updateCounters(['rating' => $difference])) {
+                throw new \RuntimeException('Не вдалося оновити рейтинг коментаря.');
+            }
+
+            return (int) $this->rating;
+        });
+    }
+
     public function readCommentAnswers()
     {
         if ($comments = $this->commentChilds(['read_by_parent' => 0])) {

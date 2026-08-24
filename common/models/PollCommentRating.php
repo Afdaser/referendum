@@ -43,7 +43,25 @@ class PollCommentRating extends ActiveRecord
             [['poll_comment_id', 'user_id', 'rating', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add'], 'safe'],
             [['guest_key'], 'string', 'max' => 67],
-            [['poll_comment_id', 'user_id'], 'unique', 'targetAttribute' => ['poll_comment_id', 'user_id']],
+            // Для зареєстрованих унікальність визначається користувачем, а не порожнім IP-ключем.
+            [['poll_comment_id', 'user_id'], 'unique',
+                'targetAttribute' => ['poll_comment_id', 'user_id'],
+                'when' => static function (self $model) {
+                    return $model->user_id !== null;
+                },
+            ],
+            // Для гостей перевіряємо пару «коментар + IP», щоб різні гості не конфліктували через NULL user_id.
+            [['poll_comment_id', 'guest_key'], 'unique',
+                'targetAttribute' => ['poll_comment_id', 'guest_key'],
+                'when' => static function (self $model) {
+                    return $model->user_id === null;
+                },
+            ],
+            [['guest_key'], 'required',
+                'when' => static function (self $model) {
+                    return $model->user_id === null;
+                },
+            ],
             [['poll_comment_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollComment::class, 'targetAttribute' => ['poll_comment_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];

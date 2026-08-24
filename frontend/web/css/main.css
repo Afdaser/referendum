@@ -2213,6 +2213,11 @@ a.send_btn:hover {
     font-size: 14px;
 }
 .rating_btn_up {
+    /* Скидаємо браузерне оформлення button, зберігаючи точний вигляд колишнього посилання. */
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
     display: inline-block;
     vertical-align: middle;
     width: 12px;
@@ -2227,6 +2232,11 @@ a.send_btn:hover {
     margin-right: 4px;
 }
 .rating_btn_down {
+    /* Обидві кнопки повинні мати однакову геометрію без системної рамки. */
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
     display: inline-block;
     vertical-align: middle;
     width: 12px;

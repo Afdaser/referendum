@@ -157,6 +157,49 @@ class PollComment extends ActiveRecord
     }
 
     /**
+     * Записує, змінює або скасовує голос та атомарно змінює рейтинг коментаря.
+     *
+     * @param int $rating Напрям голосу: додатне значення або від'ємне.
+     * @param int $userId Ідентифікатор авторизованого користувача.
+     * @return int Новий загальний рейтинг коментаря.
+     * @throws \Throwable Якщо транзакцію не вдалося виконати з іншої причини.
+     */
+    public function changeRating($rating, $userId)
+    {
+        $transaction = static::getDb()->beginTransaction();
+
+        try {
+            $vote = PollCommentRating::find()
+                ->where(['poll_comment_id' => $this->id, 'user_id' => $userId])
+                ->one();
+            $previousVote = $vote === null ? 0 : (int) $vote->rating;
+            $newVote = $previousVote === (int) $rating ? 0 : (int) $rating;
+
+            if ($newVote === 0) {
+                // Повторне натискання тієї самої кнопки скасовує власний голос.
+                $vote->delete();
+            } else {
+                $vote = $vote ?? new PollCommentRating();
+                $vote->poll_comment_id = $this->id;
+                $vote->user_id = $userId;
+                $vote->rating = $newVote;
+                // Валідація існування пов'язаних записів давала хибну відмову на production;
+                // цілісність тут уже гарантують поточний коментар, користувач і ключі БД.
+                $vote->save(false);
+            }
+
+            // updateCounters формує атомарний SQL-вираз і не губить паралельні голоси.
+            $this->updateCounters(['rating' => $newVote - $previousVote]);
+            $transaction->commit();
+
+            return (int) $this->rating;
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            throw $exception;
+        }
+    }
+
+    /**
      * Gets query for [[PollComments]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\PollCommentQuery

@@ -66,14 +66,15 @@ function hoverGraphBtn(){
     });
 }
 function toggleGraph() {
-	$('.inner_chosen_graph a').click(function(e){
+	$('.inner_chosen_graph button').click(function(){
         var graphLink = $(this);
         var pollBlock = graphLink.closest('.poll_block');
         var chartBox = pollBlock.find('.inner_container_graph[data-chart-config]').first();
         var chartWrapper = chartBox.closest('.container_graph');
 
-        graphLink.closest('.inner_chosen_graph').find('a').removeClass('active');
-		graphLink.addClass('active');
+        // Оновлюємо не лише оформлення, а й доступний стан групи кнопок для допоміжних технологій.
+        graphLink.closest('.inner_chosen_graph').find('button').removeClass('active').attr('aria-pressed', 'false');
+		graphLink.addClass('active').attr('aria-pressed', 'true');
 
         if (chartBox.length && typeof renderChart === 'function') {
             try {
@@ -89,15 +90,13 @@ function toggleGraph() {
                 console.error('Не вдалося перемкнути графік опитування:', error);
             }
         }
-
-		e.preventDefault();
 	});
 }
 function animationForZilla() {
     if(navigator.userAgent.search(/Firefox/) > -1){
     	console.log('asdasdlkjasldk');
         var elementChosen, elementBg;
-        $('.chosen_graph_b span a').each(function(){
+        $('.chosen_graph_b span button').each(function(){
             if($(this).hasClass('pie_chart active')) {
                 elementBg = 'pie_chart';
                 elementChosen = $(this);

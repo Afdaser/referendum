@@ -21,11 +21,12 @@ use common\models\User;
     <?php endif; ?>
     <span class="date_writing"><?= StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat" itemprop="userInteractionCount">
-        <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $comment->id; ?>"></a>
+        <?php // Кнопки не є посиланнями, тому пошукові роботи не намагаються переходити за ними. ?>
+        <button type="button" class="rating_btn_up" data-id="<?= $comment->id; ?>" aria-label="<?= Yii::t('poll', 'Позитивна оцінка коментаря'); ?>"></button>
         <span class="rating" data-id="<?= $comment->id; ?>">
             <?= $comment->rating; ?>
         </span>
-        <a href="javascript:void(0)" class="rating_btn_down" data-id="<?= $comment->id; ?>"></a>
+        <button type="button" class="rating_btn_down" data-id="<?= $comment->id; ?>" aria-label="<?= Yii::t('poll', 'Негативна оцінка коментаря'); ?>"></button>
     </span>
 </div>
 <div class="inner_text_comment" itemprop="text">

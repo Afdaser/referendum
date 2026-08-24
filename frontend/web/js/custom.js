@@ -184,11 +184,11 @@ $(document).ready(function(){
         }
     };
 
-    $("a.rating_btn_up").click(function(){
+    $("button.rating_btn_up").click(function(){
         changeCommentRating($(this).data("id"),1);
     });
 
-    $("a.rating_btn_down").click(function(){
+    $("button.rating_btn_down").click(function(){
        changeCommentRating($(this).data("id"),-1);
     });
 
@@ -198,8 +198,8 @@ $(document).ready(function(){
             url: '/poll/ChangeCommentRating',
             data: {id: id, rating: rating},
             success: function (data) {
-                if(data){
-                    $('span.rating[data-id="'+id+'"]').html(data);
+                if(data && typeof data.rating !== 'undefined'){
+                    $('span.rating[data-id="'+id+'"]').text(data.rating);
                 }
             }
         });
@@ -219,13 +219,13 @@ $(document).ready(function(){
         });
     });
 
-    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
-    $('.arrow_rating_top,a.rating_btn_up').click(function(){
+    // Рейтинг опитування обробляємо окремо, щоб клік по коментарю не змінював опитування.
+    $('.arrow_rating_top').click(function(){
         changePollRating($(this).data("id"),1);
     });
 
-    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
-    $('.arrow_rating_down,a.rating_btn_down').click(function(){
+    // Рейтинг опитування обробляємо окремо, щоб клік по коментарю не змінював опитування.
+    $('.arrow_rating_down').click(function(){
         changePollRating($(this).data("id"),-1);
     });
 

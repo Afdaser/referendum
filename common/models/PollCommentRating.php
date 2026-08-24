@@ -11,7 +11,8 @@ use common\components\ActiveRecord;
  *
  * @property int $id ID
  * @property int $poll_comment_id Poll comment
- * @property int $user_id User
+ * @property int|null $user_id User
+ * @property string|null $guest_key Guest IP key
  * @property int $rating Rrating
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
@@ -38,9 +39,10 @@ class PollCommentRating extends ActiveRecord
     public function rules()
     {
         return [
-            [['poll_comment_id', 'user_id', 'rating'], 'required'],
+            [['poll_comment_id', 'rating'], 'required'],
             [['poll_comment_id', 'user_id', 'rating', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add'], 'safe'],
+            [['guest_key'], 'string', 'max' => 67],
             [['poll_comment_id', 'user_id'], 'unique', 'targetAttribute' => ['poll_comment_id', 'user_id']],
             [['poll_comment_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollComment::class, 'targetAttribute' => ['poll_comment_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -56,6 +58,7 @@ class PollCommentRating extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'poll_comment_id' => Yii::t('app', 'Poll comment'),
             'user_id' => Yii::t('app', 'User'),
+            'guest_key' => Yii::t('app', 'Guest IP key'),
             'rating' => Yii::t('app', 'Rrating'),
             'date_add' => Yii::t('app', 'Date add'),
             'created_by' => Yii::t('app', 'Created by:'),

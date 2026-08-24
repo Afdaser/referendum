@@ -2213,6 +2213,10 @@ a.send_btn:hover {
     font-size: 14px;
 }
 .rating_btn_up {
+    /* Скидаємо стандартне оформлення button, зберігаючи попередній вигляд стрілки. */
+    border: 0;
+    padding: 0;
+    cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     width: 12px;
@@ -2227,6 +2231,10 @@ a.send_btn:hover {
     margin-right: 4px;
 }
 .rating_btn_down {
+    /* Скидаємо стандартне оформлення button, зберігаючи попередній вигляд стрілки. */
+    border: 0;
+    padding: 0;
+    cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     width: 12px;

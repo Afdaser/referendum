@@ -205,6 +205,60 @@ class PollComment extends ActiveRecord
         return new \common\models\query\PollCommentQuery(get_called_class());
     }
 
+    /**
+     * Застосовує голос: повторний клік скасовує його, а протилежний змінює напрямок.
+     */
+    public function applyRatingVote(int $rating, ?int $userId, ?string $guestKey): int
+    {
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            // Блокуємо коментар, щоб паралельні кліки не розсинхронізували сумарний рейтинг.
+            $table = static::getDb()->quoteTableName(static::tableName());
+            static::getDb()->createCommand(
+                "SELECT [[id]] FROM {$table} WHERE [[id]] = :id FOR UPDATE",
+                [':id' => $this->id]
+            )->queryScalar();
+            $comment = static::findOne($this->id);
+            $identity = $userId !== null
+                ? ['user_id' => $userId]
+                : ['guest_key' => $guestKey];
+            $vote = PollCommentRating::find()->where(array_merge([
+                'poll_comment_id' => $this->id,
+            ], $identity))->one();
+
+            if ($vote === null) {
+                $vote = new PollCommentRating();
+                $vote->poll_comment_id = $this->id;
+                $vote->user_id = $userId;
+                $vote->guest_key = $guestKey;
+                $vote->rating = $rating;
+                $change = $rating;
+                if (!$vote->save()) {
+                    throw new \RuntimeException('Не вдалося зберегти оцінку коментаря.');
+                }
+            } elseif ((int) $vote->rating === $rating) {
+                $change = -$rating;
+                if (!$vote->delete()) {
+                    throw new \RuntimeException('Не вдалося скасувати оцінку коментаря.');
+                }
+            } else {
+                $change = $rating - (int) $vote->rating;
+                $vote->rating = $rating;
+                if (!$vote->save()) {
+                    throw new \RuntimeException('Не вдалося змінити оцінку коментаря.');
+                }
+            }
+
+            $comment->updateCounters(['rating' => $change]);
+            $comment->refresh();
+            $transaction->commit();
+            return (int) $comment->rating;
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            throw $exception;
+        }
+    }
+
     /*
      * set attributes and return model
      */

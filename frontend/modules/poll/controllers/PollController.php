@@ -267,25 +267,30 @@ class PollController extends \yii\web\Controller
     /*
      * Change poll`s comment rating
      */
-    public function actionChangeCommentRating(){
-        if (Yii::$app->request->isAjax && !Yii::$app->user->isGuest) {
-            $id = intval(Yii::$app->request->post('id'));
-            $rating = intval(Yii::$app->request->post('rating'));
-            $comment = PollComment::find()->where(['id' => $id])->one();
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* Yii1 coe: * / 
-            $comment = PollComment::model()->findByPk($id);
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* */
+    public function actionChangeCommentRating()
+    {
+        $request = Yii::$app->request;
+        if (!$request->isAjax || !$request->isPost) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
+
+        $id = (int) $request->post('id');
+        $rating = (int) $request->post('rating');
+        $comment = PollComment::findOne($id);
+        if ($comment === null || !in_array($rating, [-1, 1], true)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        // Для гостя використовуємо той самий простий IP-ключ, що й у голосуванні опитувань.
+        $userId = Yii::$app->user->isGuest ? null : (int) Yii::$app->user->id;
+        $guestKey = $userId === null ? trim((string) $request->getUserIP()) : null;
+        if ($userId === null && $guestKey === '') {
+            return $this->asJson(['rating' => (int) $comment->rating]);
+        }
+
+        return $this->asJson([
+            'rating' => $comment->applyRatingVote($rating, $userId, $guestKey),
+        ]);
     }
 
 

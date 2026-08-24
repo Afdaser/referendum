@@ -4066,6 +4066,9 @@ a.btn_read_next_var span {
 .pie_chart_img,
 .line_chart_img {
     position: absolute;
+    /* Явно прив'язуємо анімовані іконки до кнопки: їхня позиція більше не залежить від браузерного вирівнювання вмісту button. */
+    top: 0;
+    left: 0;
     width: 24px;
     height: 25px;
     opacity: 0;

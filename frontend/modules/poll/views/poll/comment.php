@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
 use common\helpers\StringHelper;
 use common\models\User;
 
@@ -10,6 +11,7 @@ use common\models\User;
  *
  * /Profile
  */
+$viewerRating = $comment->viewerRating;
 ?>
 <div class="title_comment_item_b clearfix" itemprop="author" itemtype="https://schema.org/Person" itemscope>
     <?php if ($comment->isGuestComment): ?>
@@ -21,11 +23,21 @@ use common\models\User;
     <?php endif; ?>
     <span class="date_writing"><?= StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat" itemprop="userInteractionCount">
-        <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $comment->id; ?>"></a>
+        <button type="button"
+                class="rating_btn_up comment-rating-button<?= $viewerRating === 1 ? ' is-active' : ''; ?>"
+                data-id="<?= $comment->id; ?>"
+                data-rating="1"
+                aria-label="<?= Html::encode(Yii::t('poll', 'Підвищити оцінку коментаря')); ?>"
+                aria-pressed="<?= $viewerRating === 1 ? 'true' : 'false'; ?>"></button>
         <span class="rating" data-id="<?= $comment->id; ?>">
             <?= $comment->rating; ?>
         </span>
-        <a href="javascript:void(0)" class="rating_btn_down" data-id="<?= $comment->id; ?>"></a>
+        <button type="button"
+                class="rating_btn_down comment-rating-button<?= $viewerRating === -1 ? ' is-active' : ''; ?>"
+                data-id="<?= $comment->id; ?>"
+                data-rating="-1"
+                aria-label="<?= Html::encode(Yii::t('poll', 'Знизити оцінку коментаря')); ?>"
+                aria-pressed="<?= $viewerRating === -1 ? 'true' : 'false'; ?>"></button>
     </span>
 </div>
 <div class="inner_text_comment" itemprop="text">

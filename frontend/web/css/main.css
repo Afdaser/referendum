@@ -1948,10 +1948,15 @@ a.send_btn:hover {
     vertical-align: middle;
     width: 12px;
     height: 5px;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
     background: url(/img/layout/btn_up_rat.png) no-repeat center;
     margin-right: 4px;
 }
-.rating_btn_up:hover {
+.rating_btn_up:hover,
+.rating_btn_up.is-active {
     width: 12px;
     height: 12px;
     background: url(/img/layout/btn_up_rat_hover.png);
@@ -1962,10 +1967,15 @@ a.send_btn:hover {
     vertical-align: middle;
     width: 12px;
     height: 5px;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    appearance: none;
     background: url(/img/layout/btn_down_rat.png) no-repeat center;
     margin-left: 4px;
 }
-.rating_btn_down:hover {
+.rating_btn_down:hover,
+.rating_btn_down.is-active {
     width: 12px;
     height: 12px;
     background: url(/img/layout/btn_down_rat_hover.png);

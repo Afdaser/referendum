@@ -265,6 +265,93 @@ class PollComment extends ActiveRecord
         return (bool) $this->is_guest;
     }
 
+    /**
+     * Поточна оцінка цього коментаря від відвідувача: -1, 0 або 1.
+     */
+    public function getViewerRating(): int
+    {
+        $vote = $this->findViewerRatingVote();
+        return $vote ? (int) $vote->rating : 0;
+    }
+
+    /**
+     * Ставить, змінює або скасовує оцінку та повертає актуальний стан.
+     */
+    public function changeRating(int $rating): array
+    {
+        if (!in_array($rating, [-1, 1], true)) {
+            throw new \InvalidArgumentException('Comment rating must be -1 or 1.');
+        }
+
+        $guestIpKey = Yii::$app->user->isGuest
+            ? OptionGuestVote::resolveGuestVoteKey()
+            : null;
+
+        // Без IP неможливо гарантувати гостю правило "один голос на коментар".
+        if (Yii::$app->user->isGuest && $guestIpKey === null) {
+            return ['rating' => (int) $this->rating, 'vote' => 0];
+        }
+
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $vote = $this->findViewerRatingVote();
+            $currentVote = $vote ? (int) $vote->rating : 0;
+
+            if ($currentVote === $rating) {
+                // Повторний клік по тій самій кнопці скасовує голос.
+                $vote->delete();
+                $newVote = 0;
+            } elseif ($vote !== null) {
+                // Перемикання між +1 та -1 змінює суму рейтингу одразу на 2.
+                $vote->rating = $rating;
+                $vote->date_add = date('Y-m-d H:i:s');
+                $vote->save(false);
+                $newVote = $rating;
+            } else {
+                $vote = new PollCommentRating();
+                $vote->poll_comment_id = (int) $this->id;
+                $vote->user_id = Yii::$app->user->isGuest ? null : (int) Yii::$app->user->id;
+                $vote->guest_ip_key = $guestIpKey;
+                $vote->rating = $rating;
+                $vote->date_add = date('Y-m-d H:i:s');
+                if (!$vote->save()) {
+                    throw new \RuntimeException('Unable to save comment rating.');
+                }
+                $newVote = $rating;
+            }
+
+            $delta = $newVote - $currentVote;
+            if ($delta !== 0) {
+                $this->updateCounters(['rating' => $delta]);
+            }
+
+            $transaction->commit();
+            return ['rating' => (int) $this->rating, 'vote' => $newVote];
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            throw $exception;
+        }
+    }
+
+    /**
+     * Знаходить єдиний голос поточного акаунта або IP гостя.
+     */
+    private function findViewerRatingVote(): ?PollCommentRating
+    {
+        $query = PollCommentRating::find()->where(['poll_comment_id' => (int) $this->id]);
+
+        if (!Yii::$app->user->isGuest) {
+            return $query->andWhere(['user_id' => (int) Yii::$app->user->id])->one();
+        }
+
+        $guestIpKey = OptionGuestVote::resolveGuestVoteKey();
+        if ($guestIpKey === null) {
+            return null;
+        }
+
+        return $query->andWhere(['guest_ip_key' => $guestIpKey])->one();
+    }
+
     public function readCommentAnswers()
     {
         if ($comments = $this->commentChilds(['read_by_parent' => 0])) {

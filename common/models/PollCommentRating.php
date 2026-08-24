@@ -11,7 +11,8 @@ use common\components\ActiveRecord;
  *
  * @property int $id ID
  * @property int $poll_comment_id Poll comment
- * @property int $user_id User
+ * @property int|null $user_id User
+ * @property string|null $guest_ip_key Guest IP key
  * @property int $rating Rrating
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
@@ -38,10 +39,17 @@ class PollCommentRating extends ActiveRecord
     public function rules()
     {
         return [
-            [['poll_comment_id', 'user_id', 'rating'], 'required'],
+            [['poll_comment_id', 'rating'], 'required'],
             [['poll_comment_id', 'user_id', 'rating', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add'], 'safe'],
-            [['poll_comment_id', 'user_id'], 'unique', 'targetAttribute' => ['poll_comment_id', 'user_id']],
+            [['guest_ip_key'], 'string', 'max' => 67],
+            [['rating'], 'in', 'range' => [-1, 1]],
+            ['user_id', 'unique', 'targetAttribute' => ['poll_comment_id', 'user_id'], 'when' => static function (self $model) {
+                return $model->user_id !== null;
+            }],
+            ['guest_ip_key', 'unique', 'targetAttribute' => ['poll_comment_id', 'guest_ip_key'], 'when' => static function (self $model) {
+                return $model->guest_ip_key !== null;
+            }],
             [['poll_comment_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollComment::class, 'targetAttribute' => ['poll_comment_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -56,6 +64,7 @@ class PollCommentRating extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'poll_comment_id' => Yii::t('app', 'Poll comment'),
             'user_id' => Yii::t('app', 'User'),
+            'guest_ip_key' => Yii::t('app', 'Guest IP key'),
             'rating' => Yii::t('app', 'Rrating'),
             'date_add' => Yii::t('app', 'Date add'),
             'created_by' => Yii::t('app', 'Created by:'),

@@ -4,6 +4,8 @@ namespace frontend\modules\poll\controllers;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\MethodNotAllowedHttpException;
+use yii\web\Response;
 use yii\helpers\Html;
 
 use common\models\Poll;
@@ -267,25 +269,26 @@ class PollController extends \yii\web\Controller
     /*
      * Change poll`s comment rating
      */
-    public function actionChangeCommentRating(){
-        if (Yii::$app->request->isAjax && !Yii::$app->user->isGuest) {
-            $id = intval(Yii::$app->request->post('id'));
-            $rating = intval(Yii::$app->request->post('rating'));
-            $comment = PollComment::find()->where(['id' => $id])->one();
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* Yii1 coe: * / 
-            $comment = PollComment::model()->findByPk($id);
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* */
+    public function actionChangeCommentRating()
+    {
+        $request = Yii::$app->request;
+        if (!$request->isPost) {
+            throw new MethodNotAllowedHttpException('Comment rating accepts POST requests only.');
         }
+
+        $id = (int) $request->post('id');
+        $rating = (int) $request->post('rating');
+        if (!in_array($rating, [-1, 1], true)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        $comment = PollComment::findOne(['id' => $id]);
+        if ($comment === null) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $comment->changeRating($rating);
     }
 
 

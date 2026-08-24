@@ -184,23 +184,29 @@ $(document).ready(function(){
         }
     };
 
-    $("a.rating_btn_up").click(function(){
-        changeCommentRating($(this).data("id"),1);
-    });
-
-    $("a.rating_btn_down").click(function(){
-       changeCommentRating($(this).data("id"),-1);
+    $(document).on("click", ".comment-rating-button", function(){
+        changeCommentRating($(this).data("id"), $(this).data("rating"));
     });
 
     function changeCommentRating(id,rating){
+        var $buttons = $('.comment-rating-button[data-id="'+id+'"]');
+        $buttons.prop('disabled', true);
+
         $.ajax({
             type: 'POST',
             url: '/poll/ChangeCommentRating',
             data: {id: id, rating: rating},
             success: function (data) {
-                if(data){
-                    $('span.rating[data-id="'+id+'"]').html(data);
+                if(data && typeof data.rating !== 'undefined'){
+                    $('span.rating[data-id="'+id+'"]').text(data.rating);
+                    $buttons.removeClass('is-active').attr('aria-pressed', 'false');
+                    if(data.vote){
+                        $buttons.filter('[data-rating="'+data.vote+'"]').addClass('is-active').attr('aria-pressed', 'true');
+                    }
                 }
+            },
+            complete: function () {
+                $buttons.prop('disabled', false);
             }
         });
     }
@@ -219,11 +225,11 @@ $(document).ready(function(){
         });
     });
 
-    $('a.arrow_rating_top,a.rating_btn_up').click(function(){
+    $('a.arrow_rating_top,a.rating_btn_up:not(.comment-rating-button)').click(function(){
         changePollRating($(this).data("id"),1);
     });
 
-    $('a.arrow_rating_down,a.rating_btn_down').click(function(){
+    $('a.arrow_rating_down,a.rating_btn_down:not(.comment-rating-button)').click(function(){
         changePollRating($(this).data("id"),-1);
     });
 

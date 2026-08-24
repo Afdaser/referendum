@@ -252,6 +252,10 @@ return [
                     'route' => 'poll/poll/change-poll-rating'
                 ],
                 [
+                    'pattern' => '/poll/ChangeCommentRating',
+                    'route' => 'poll/poll/change-comment-rating'
+                ],
+                [
                     'pattern' => '/poll/UpAnswerRating',
                     'route' => 'poll/ajax/up-answer-rating'
                 ],

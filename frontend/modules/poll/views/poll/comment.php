@@ -21,11 +21,20 @@ use common\models\User;
     <?php endif; ?>
     <span class="date_writing"><?= StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat" itemprop="userInteractionCount">
-        <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $comment->id; ?>"></a>
+        <?php // Це справжні кнопки дії: голосування не повинно залежати від фіктивних JS-посилань. ?>
+        <button type="button"
+                class="rating_btn_up comment-rating-button"
+                data-id="<?= $comment->id; ?>"
+                data-url="<?= Url::toRoute(['/poll/poll/change-comment-rating']); ?>"
+                aria-label="<?= Yii::t('poll', 'Підвищити рейтинг коментаря'); ?>"></button>
         <span class="rating" data-id="<?= $comment->id; ?>">
             <?= $comment->rating; ?>
         </span>
-        <a href="javascript:void(0)" class="rating_btn_down" data-id="<?= $comment->id; ?>"></a>
+        <button type="button"
+                class="rating_btn_down comment-rating-button"
+                data-id="<?= $comment->id; ?>"
+                data-url="<?= Url::toRoute(['/poll/poll/change-comment-rating']); ?>"
+                aria-label="<?= Yii::t('poll', 'Знизити рейтинг коментаря'); ?>"></button>
     </span>
 </div>
 <div class="inner_text_comment" itemprop="text">

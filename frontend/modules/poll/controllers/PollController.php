@@ -4,6 +4,8 @@ namespace frontend\modules\poll\controllers;
 
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 use yii\helpers\Html;
 
 use common\models\Poll;
@@ -267,25 +269,32 @@ class PollController extends \yii\web\Controller
     /*
      * Change poll`s comment rating
      */
-    public function actionChangeCommentRating(){
-        if (Yii::$app->request->isAjax && !Yii::$app->user->isGuest) {
-            $id = intval(Yii::$app->request->post('id'));
-            $rating = intval(Yii::$app->request->post('rating'));
-            $comment = PollComment::find()->where(['id' => $id])->one();
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* Yii1 coe: * / 
-            $comment = PollComment::model()->findByPk($id);
-            $isVoted = User::isVotedForComment($id);
-            if($comment && !$isVoted && $rating){
-               $newRating = $comment->changeRating($rating);
-                echo json_encode($newRating);
-            }
-            /* */
+    public function actionChangeCommentRating()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
+            throw new BadRequestHttpException(Yii::t('poll', 'Голосувати можуть лише авторизовані користувачі.'));
         }
+
+        $id = (int) Yii::$app->request->post('id');
+        $rating = (int) Yii::$app->request->post('rating');
+        if ($id <= 0 || !in_array($rating, [-1, 1], true)) {
+            throw new BadRequestHttpException(Yii::t('poll', 'Некоректні дані голосу.'));
+        }
+
+        $comment = PollComment::findOne($id);
+        if ($comment === null) {
+            throw new NotFoundHttpException(Yii::t('poll', 'Коментар не знайдено.'));
+        }
+
+        // Модель і унікальний індекс гарантують лише один голос навіть за паралельних запитів.
+        $newRating = $comment->changeRating($rating, (int) Yii::$app->user->id);
+
+        return [
+            'success' => $newRating !== null,
+            'rating' => $newRating ?? (int) $comment->rating,
+        ];
     }
 
 

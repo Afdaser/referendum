@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\helpers\Html;
+use yii\db\IntegrityException;
 use common\components\ActiveRecord;
 
 /**
@@ -154,6 +155,44 @@ class PollComment extends ActiveRecord
     public function getPollCommentRatings()
     {
         return $this->hasMany(PollCommentRating::class, ['poll_comment_id' => 'id']);
+    }
+
+    /**
+     * Записує один голос користувача та атомарно змінює рейтинг коментаря.
+     *
+     * @param int $rating Напрям голосу: додатне значення або від'ємне.
+     * @param int $userId Ідентифікатор авторизованого користувача.
+     * @return int|null Новий рейтинг або null, якщо користувач уже голосував.
+     * @throws \Throwable Якщо транзакцію не вдалося виконати з іншої причини.
+     */
+    public function changeRating($rating, $userId)
+    {
+        $change = $rating > 0 ? 1 : -1;
+        $transaction = static::getDb()->beginTransaction();
+
+        try {
+            $vote = new PollCommentRating();
+            $vote->poll_comment_id = $this->id;
+            $vote->user_id = $userId;
+            $vote->rating = $change;
+
+            if (!$vote->save()) {
+                throw new \RuntimeException('Не вдалося зберегти голос за коментар.');
+            }
+
+            // updateCounters формує атомарний SQL-вираз і не губить паралельні голоси.
+            $this->updateCounters(['rating' => $change]);
+            $transaction->commit();
+
+            return (int) $this->rating;
+        } catch (IntegrityException $exception) {
+            $transaction->rollBack();
+            // Унікальний індекс (коментар, користувач) безпечно відсікає повторний голос.
+            return null;
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            throw $exception;
+        }
     }
 
     /**

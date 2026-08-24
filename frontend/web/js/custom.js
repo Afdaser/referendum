@@ -184,23 +184,29 @@ $(document).ready(function(){
         }
     };
 
-    $("a.rating_btn_up").click(function(){
-        changeCommentRating($(this).data("id"),1);
+    // Обробляємо тільки кнопки коментарів, щоб один клік не запускав також голосування за опитування.
+    $('.comment-rating-button').click(function(){
+        var button = $(this);
+        var rating = button.hasClass('rating_btn_up') ? 1 : -1;
+
+        changeCommentRating(button.data('id'), rating, button.data('url'), button);
     });
 
-    $("a.rating_btn_down").click(function(){
-       changeCommentRating($(this).data("id"),-1);
-    });
-
-    function changeCommentRating(id,rating){
+    function changeCommentRating(id, rating, url, button){
+        // Блокуємо повторний клік, доки сервер атомарно записує єдиний голос користувача.
+        button.prop('disabled', true);
         $.ajax({
             type: 'POST',
-            url: '/poll/ChangeCommentRating',
+            url: url,
+            dataType: 'json',
             data: {id: id, rating: rating},
             success: function (data) {
-                if(data){
-                    $('span.rating[data-id="'+id+'"]').html(data);
+                if(data && data.success){
+                    $('span.rating[data-id="'+id+'"]').text(data.rating);
                 }
+            },
+            complete: function () {
+                button.prop('disabled', false);
             }
         });
     }
@@ -219,13 +225,12 @@ $(document).ready(function(){
         });
     });
 
-    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
-    $('.arrow_rating_top,a.rating_btn_up').click(function(){
+    // Кнопки рейтингу опитування мають окрему дію від кнопок біля коментарів.
+    $('.arrow_rating_top').click(function(){
         changePollRating($(this).data("id"),1);
     });
 
-    // Підтримуємо і нові <button>, і старі посилання коментарів без зміни логіки голосування.
-    $('.arrow_rating_down,a.rating_btn_down').click(function(){
+    $('.arrow_rating_down').click(function(){
         changePollRating($(this).data("id"),-1);
     });
 

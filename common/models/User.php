@@ -597,21 +597,6 @@ class User extends BaseModelUser
     }
 
     /*
-     * Return true if user already voted by comment
-     * @commentId
-     */
-
-    public static function isVotedForComment($commentId)
-    {
-        $result = false;
-        if (PollCommentRating::model()->countByAttributes(array('user_id' => Yii::$app->user->identity->id, 'poll_comment_id' => $commentId))) {
-            $result = true;
-        }
-
-        return $result;
-    }
-
-    /*
      * Return true if user already voted by answer
      * @answerId
      */

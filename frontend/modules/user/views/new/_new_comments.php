@@ -21,9 +21,10 @@ use common\models\PollComment;
                     </span>
                     <span class="item_bottom_poll">
                         <span class="right_b_rat">
-                            <a href="javascript:void(0)" class="rating_btn_up" data-id="<?= $poll->id; ?>"></a>
+                            <?php // Це кнопки рейтингу опитування, а не голосування за вкладений коментар. ?>
+                            <button type="button" class="rating_btn_up poll_rating_btn_up" data-id="<?= $poll->id; ?>" aria-label="<?= Yii::t('poll', 'Підняти рейтинг опитування'); ?>"></button>
                             <span class="poll_rating" data-id="<?= $poll->id; ?>"><?= $poll->rating; ?></span>
-                            <a href="javascript:void(0)" class="rating_btn_down" data-id="<?= $poll->id; ?>"></a>
+                            <button type="button" class="rating_btn_down poll_rating_btn_down" data-id="<?= $poll->id; ?>" aria-label="<?= Yii::t('poll', 'Знизити рейтинг опитування'); ?>"></button>
                         </span>
                     </span>
                     <span class="item_bottom_poll right_border_del"><?= Yii::t('poll', 'голосів'); ?>: <?= $poll->countPollOptionsVoters; ?></span>

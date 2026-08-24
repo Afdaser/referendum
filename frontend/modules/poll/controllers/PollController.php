@@ -47,11 +47,6 @@ class PollController extends \yii\web\Controller
         );
     }
 /*
-    public function actionChangeCommentRating()
-    {
-        return $this->render('change-comment-rating');
-    }
-
     public function actionChangePollRating()
     {
         return $this->render('change-poll-rating');

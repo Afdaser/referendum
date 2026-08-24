@@ -184,11 +184,11 @@ $(document).ready(function(){
         }
     };
 
-    $("button.rating_btn_up").click(function(){
+    $(".comment_rating_btn_up").click(function(){
         changeCommentRating($(this).data("id"),1);
     });
 
-    $("button.rating_btn_down").click(function(){
+    $(".comment_rating_btn_down").click(function(){
        changeCommentRating($(this).data("id"),-1);
     });
 
@@ -220,12 +220,12 @@ $(document).ready(function(){
     });
 
     // Рейтинг опитування обробляємо окремо, щоб клік по коментарю не змінював опитування.
-    $('.arrow_rating_top').click(function(){
+    $('.arrow_rating_top, .poll_rating_btn_up').click(function(){
         changePollRating($(this).data("id"),1);
     });
 
     // Рейтинг опитування обробляємо окремо, щоб клік по коментарю не змінював опитування.
-    $('.arrow_rating_down').click(function(){
+    $('.arrow_rating_down, .poll_rating_btn_down').click(function(){
         changePollRating($(this).data("id"),-1);
     });
 

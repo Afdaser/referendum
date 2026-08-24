@@ -252,11 +252,6 @@ return [
                     'route' => 'poll/poll/change-poll-rating'
                 ],
                 [
-                    // Зберігаємо сумісний публічний endpoint для AJAX-голосування за коментар.
-                    'pattern' => '/poll/ChangeCommentRating',
-                    'route' => 'poll/poll/change-comment-rating'
-                ],
-                [
                     'pattern' => '/poll/UpAnswerRating',
                     'route' => 'poll/ajax/up-answer-rating'
                 ],

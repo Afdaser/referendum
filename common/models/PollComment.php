@@ -161,7 +161,7 @@ class PollComment extends ActiveRecord
      *
      * @param int $rating Напрям голосу: додатне значення або від'ємне.
      * @param int $userId Ідентифікатор авторизованого користувача.
-     * @return array{rating:int,vote:int} Новий загальний рейтинг і поточний голос користувача.
+     * @return int Новий загальний рейтинг коментаря.
      * @throws \Throwable Якщо транзакцію не вдалося виконати з іншої причини.
      */
     public function changeRating($rating, $userId)
@@ -173,64 +173,30 @@ class PollComment extends ActiveRecord
                 ->where(['poll_comment_id' => $this->id, 'user_id' => $userId])
                 ->one();
             $previousVote = $vote === null ? 0 : (int) $vote->rating;
-            $transition = self::resolveRatingVote($previousVote, (int) $rating);
+            $newVote = $previousVote === (int) $rating ? 0 : (int) $rating;
 
-            if ($transition['vote'] === 0) {
+            if ($newVote === 0) {
                 // Повторне натискання тієї самої кнопки скасовує власний голос.
-                PollCommentRating::deleteAll([
-                    'poll_comment_id' => $this->id,
-                    'user_id' => $userId,
-                ]);
-            } elseif ($vote === null) {
-                // Прямий insert не залежить від застарілих AR-валідаторів production-схеми.
-                static::getDb()->createCommand()->insert(PollCommentRating::tableName(), [
-                    'poll_comment_id' => $this->id,
-                    'user_id' => $userId,
-                    'rating' => $transition['vote'],
-                    'date_add' => date('Y-m-d H:i:s'),
-                    'created_by' => $userId,
-                    'updated_by' => $userId,
-                    'created_at' => time(),
-                    'updated_at' => time(),
-                ])->execute();
+                $vote->delete();
             } else {
-                // Протилежна кнопка змінює +1 на -1 або навпаки в тому самому записі.
-                PollCommentRating::updateAll([
-                    'rating' => $transition['vote'],
-                    'updated_by' => $userId,
-                    'updated_at' => time(),
-                ], ['id' => $vote->id]);
+                $vote = $vote ?? new PollCommentRating();
+                $vote->poll_comment_id = $this->id;
+                $vote->user_id = $userId;
+                $vote->rating = $newVote;
+                // Валідація існування пов'язаних записів давала хибну відмову на production;
+                // цілісність тут уже гарантують поточний коментар, користувач і ключі БД.
+                $vote->save(false);
             }
 
             // updateCounters формує атомарний SQL-вираз і не губить паралельні голоси.
-            $this->updateCounters(['rating' => $transition['delta']]);
+            $this->updateCounters(['rating' => $newVote - $previousVote]);
             $transaction->commit();
 
-            return [
-                'rating' => (int) $this->rating,
-                'vote' => $transition['vote'],
-            ];
+            return (int) $this->rating;
         } catch (\Throwable $exception) {
             $transaction->rollBack();
             throw $exception;
         }
-    }
-
-    /**
-     * Обчислює новий стан голосу та зміну загального рейтингу.
-     *
-     * @return array{vote:int,delta:int}
-     */
-    public static function resolveRatingVote($previousVote, $requestedVote)
-    {
-        $previousVote = $previousVote <=> 0;
-        $requestedVote = $requestedVote <=> 0;
-        $newVote = $previousVote === $requestedVote ? 0 : $requestedVote;
-
-        return [
-            'vote' => $newVote,
-            'delta' => $newVote - $previousVote,
-        ];
     }
 
     /**

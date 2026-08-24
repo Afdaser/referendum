@@ -78,6 +78,9 @@ return array(
         'до'=>'til',
         'Закрите до кількості голосів'=>'Stengt til antall stemmer:',
         'Посилання скопійовано' => 'Lenke kopiert',
+        // Локалізовані aria-label дають доступні назви обом кнопкам рейтингу коментаря.
+        'Підвищити рейтинг коментаря' => 'Øk vurderingen av kommentaren',
+        'Знизити рейтинг коментаря' => 'Senk vurderingen av kommentaren',
         'ЗБЕРЕГТИ'=>'LAGRE',
     'Рейтинг користувача' => 'Brukervurdering',
     'Всього опитувань' => 'Totalt antall avstemninger',

@@ -82,6 +82,9 @@ Registration on the site is required not only to see the results of surveys, but
         'до'=>'to',
         'Закрите до кількості голосів'=>'Closed until the number of votes:',
         'Посилання скопійовано' => 'Link copied',
+        // Локалізовані aria-label дають доступні назви обом кнопкам рейтингу коментаря.
+        'Підвищити рейтинг коментаря' => 'Increase comment rating',
+        'Знизити рейтинг коментаря' => 'Decrease comment rating',
         // aria-label для кнопок рейтингу опитувань після заміни javascript-посилань на button.
         'Підняти рейтинг опитування' => 'Increase poll rating',
         'Знизити рейтинг опитування' => 'Decrease poll rating',

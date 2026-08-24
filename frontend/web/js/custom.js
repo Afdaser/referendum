@@ -185,32 +185,33 @@ $(document).ready(function(){
     };
 
     // Повторне натискання скасовує вибір; протилежна кнопка змінює голос.
-    $(document).on('click', '.comment-rating-input', function () {
-        var input = this;
-        var previousVote = Number($(input).data('vote') || 0);
-        var requestedVote = previousVote === Number(input.value) ? 0 : Number(input.value);
-        changeCommentRating($(input).data('id'), requestedVote, input);
+    $(document).on('click', '.comment-rating-button', function () {
+        var button = this;
+        var previousVote = Number($(button).data('vote') || 0);
+        var requestedVote = previousVote === Number(button.value) ? 0 : Number(button.value);
+        changeCommentRating($(button).data('id'), requestedVote);
     });
 
-    function changeCommentRating(id, rating, input){
+    function changeCommentRating(id, rating){
+        var buttons = $('.comment-rating-button[data-id="' + id + '"]');
+        buttons.prop('disabled', true);
         $.ajax({
             type: 'POST',
-            url: '/poll/ChangeCommentRating',
+            url: '/poll/change-comment-rating',
             data: {id: id, rating: rating},
             success: function (data) {
                 if (data.success) {
-                    var inputs = $('.comment-rating-input[data-id="' + id + '"]');
-                    inputs.prop('checked', false).data('vote', data.vote);
-                    inputs.filter('[value="' + data.vote + '"]').prop('checked', true);
+                    buttons.data('vote', data.vote).removeClass('selected');
+                    buttons.filter('[value="' + data.vote + '"]').addClass('selected');
                     $('span.rating[data-id="'+id+'"]').text(data.rating);
                 }
             },
-            error: function () {
-                // Повертаємо радіокнопки до стану, підтвердженого сервером.
-                var inputs = $('.comment-rating-input[data-id="' + id + '"]');
-                var previousVote = Number($(input).data('vote') || 0);
-                inputs.prop('checked', false);
-                inputs.filter('[value="' + previousVote + '"]').prop('checked', true);
+            error: function (xhr) {
+                // Не змінюємо рейтинг у розмітці, доки сервер не підтвердив запис.
+                alert((xhr.responseJSON && xhr.responseJSON.message) || 'Не вдалося змінити рейтинг коментаря.');
+            },
+            complete: function () {
+                buttons.prop('disabled', false);
             }
         });
     }

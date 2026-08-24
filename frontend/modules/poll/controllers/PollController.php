@@ -283,25 +283,27 @@ class PollController extends \yii\web\Controller
             return ['success' => false, 'message' => Yii::t('poll', 'Некоректна оцінка коментаря.')];
         }
 
-        if (Yii::$app->user->isGuest) {
-            // Для гостя тримаємо вибір у сесії: таблиця оцінок пов'язана лише з зареєстрованими user_id.
-            $guestRatings = Yii::$app->session->get('pollCommentRatings', []);
-            $previousRating = (int) ($guestRatings[$comment->id] ?? 0);
-            $newRating = $comment->setGuestRating($previousRating, $rating);
-            if ($rating === 0) {
-                unset($guestRatings[$comment->id]);
-            } else {
-                $guestRatings[$comment->id] = $rating;
-            }
-            Yii::$app->session->set('pollCommentRatings', $guestRatings);
-        } else {
-            $newRating = $comment->setUserRating(Yii::$app->user->id, $rating);
+        // Нам достатньо сесії: так однаково працюють гості й зареєстровані користувачі
+        // та немає залежності від окремої таблиці оцінок коментарів.
+        $ratings = Yii::$app->session->get('pollCommentRatings', []);
+        $previousRating = (int) ($ratings[$comment->id] ?? 0);
+        $difference = $rating - $previousRating;
+        if ($difference !== 0 && !$comment->updateCounters(['rating' => $difference])) {
+            Yii::$app->response->statusCode = 500;
+            return ['success' => false, 'message' => Yii::t('poll', 'Не вдалося оновити рейтинг коментаря.')];
         }
+
+        if ($rating === 0) {
+            unset($ratings[$comment->id]);
+        } else {
+            $ratings[$comment->id] = $rating;
+        }
+        Yii::$app->session->set('pollCommentRatings', $ratings);
 
         // Відповідь потрібна AJAX-інтерфейсу для точного відображення скасування.
         return [
             'success' => true,
-            'rating' => $newRating,
+            'rating' => (int) $comment->rating,
             'vote' => $rating,
         ];
     }

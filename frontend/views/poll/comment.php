@@ -2,11 +2,12 @@
     <a href="<?php echo Yii::app()->createUrl('/poll/site/user-profile',array('id'=>$comment->user_id));?>" class="name_link"><?php echo User::getUserName($comment->user_id); ?></a>
     <span class="date_writing"><?php echo StringHelper::relative_date($comment->date_add); ?></span>
     <span class="right_b_rat">
-        <a href="javascript:void(0)" class="rating_btn_up" data-id="<?php echo $comment->id; ?>"></a>
+        <?php // Кнопка зберігає стару стрілку, але не є посиланням для пошукового бота. ?>
+        <button type="button" class="rating_btn_up comment-rating-button" value="1" data-id="<?php echo $comment->id; ?>" aria-label="Підняти рейтинг коментаря"></button>
         <span class="rating" data-id="<?php echo $comment->id; ?>">
             <?php echo $comment->rating; ?>
         </span>
-        <a href="javascript:void(0)" class="rating_btn_down" data-id="<?php echo $comment->id; ?>"></a>
+        <button type="button" class="rating_btn_down comment-rating-button" value="-1" data-id="<?php echo $comment->id; ?>" aria-label="Знизити рейтинг коментаря"></button>
     </span>
 </div>
 <div class="inner_text_comment">
@@ -23,4 +24,3 @@
         <?php $this->renderPartial('/poll/comments',array('comments'=>$comment->commentChilds)); ?>
     </div>
 <?php endif;?>
-

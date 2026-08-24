@@ -249,7 +249,7 @@ return [
                 ],                
                 [
                     // Голосування приймаємо лише через POST, без GET-посилань для пошукових ботів.
-                    'pattern' => 'POST /poll/ChangeCommentRating',
+                    'pattern' => 'POST poll/change-comment-rating',
                     'route' => 'poll/poll/change-comment-rating'
                 ],
                 [

@@ -70,37 +70,38 @@ if (!empty($poll->pollLanguage)) {
                         </div>
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
-                                <span class="inner_chosen_graph">
+                                <span class="inner_chosen_graph" role="group" aria-label="<?php echo Yii::t("poll", 'Тип діаграми результатів'); ?>">
                                     <?php // Додаємо доступні назви: вони потрібні і для скрінрідерів, і як підказки при наведенні. ?>
                                     <?php $pieChartLabel = Yii::t("poll", 'Показати кругову діаграму'); ?>
                                     <?php $horizontalChartLabel = Yii::t("poll", 'Показати горизонтальний графік'); ?>
                                     <?php $verticalChartLabel = Yii::t("poll", 'Показати вертикальний графік'); ?>
                                     <?php $lineChartLabel = Yii::t("poll", 'Показати лінійний графік'); ?>
+                                    <?php // Семантичні кнопки не створюють фальшивих посилань для пошукових роботів; aria-pressed повідомляє поточний вибір. ?>
                                     <?php // Кожна кнопка містить усі іконки, щоб активний пункт міг плавно "дихати" між типами графіків. ?>
-                                    <a href="javascript:void(0)" class="pie_chart <?php echo ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie" aria-label="<?php echo $pieChartLabel; ?>" title="<?php echo $pieChartLabel; ?>">
+                                    <button type="button" class="pie_chart <?php echo ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie" aria-label="<?php echo $pieChartLabel; ?>" title="<?php echo $pieChartLabel; ?>" aria-pressed="<?php echo ($poll->result_type == 3) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="horizontal_b_chart <?php echo (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar" aria-label="<?php echo $horizontalChartLabel; ?>" title="<?php echo $horizontalChartLabel; ?>">
+                                    </button>
+                                    <button type="button" class="horizontal_b_chart <?php echo (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar" aria-label="<?php echo $horizontalChartLabel; ?>" title="<?php echo $horizontalChartLabel; ?>" aria-pressed="<?php echo (!$poll->result_type || $poll->result_type == 1) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="vertical_b_chart <?php echo ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column" aria-label="<?php echo $verticalChartLabel; ?>" title="<?php echo $verticalChartLabel; ?>">
+                                    </button>
+                                    <button type="button" class="vertical_b_chart <?php echo ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column" aria-label="<?php echo $verticalChartLabel; ?>" title="<?php echo $verticalChartLabel; ?>" aria-pressed="<?php echo ($poll->result_type == 2) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="line_chart <?php echo ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line" aria-label="<?php echo $lineChartLabel; ?>" title="<?php echo $lineChartLabel; ?>">
+                                    </button>
+                                    <button type="button" class="line_chart <?php echo ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line" aria-label="<?php echo $lineChartLabel; ?>" title="<?php echo $lineChartLabel; ?>" aria-pressed="<?php echo ($poll->result_type == 4) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
+                                    </button>
                                 </span>
                             </span>
                         </div>

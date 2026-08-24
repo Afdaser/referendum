@@ -1813,29 +1813,33 @@ a.btn_prev_var:hover {
     bottom: 0;
     padding-bottom: 25px;
 }
-.chosen_graph_b a {
+.chosen_graph_b button {
     display: block;
+    width: 100%;
     height: 25px;
+    padding: 0;
+    border: 0;
     border-bottom: 1px solid #dce6e4;
     background-color: #fff;
+    cursor: pointer;
 }
-.chosen_graph_b a.active {
+.chosen_graph_b button.active {
     width: 100%;
     height: 25px;
     bottom: 0;
     position: absolute;
     border-bottom: none;
 }
-.chosen_graph_b a {
+.chosen_graph_b button {
     border-bottom: 1px solid #dce6e4;
 }
-.chosen_graph_b a:hover {
+.chosen_graph_b button:hover {
     background-color: #3ac469;
 }
-.chosen_graph_b a.active:hover {
+.chosen_graph_b button.active:hover {
     background-color: #dce6e4;
 }
-.chosen_graph_b:hover a.active {
+.chosen_graph_b:hover button.active {
     background-color: #dce6e4;
 }
 .inner_chosen_graph .pie_chart {
@@ -4049,11 +4053,11 @@ a.btn_read_next_var span {
 }
 
 /* Перемикач графіків: один стабільний цикл opacity без старих background-image/keyframes, які давали ривок після першого кола. */
-.chosen_graph_b a {
+.chosen_graph_b button {
     position: relative;
 }
 
-.animated_b .inner_chosen_graph a.active {
+.animated_b .inner_chosen_graph button.active {
     background-image: none;
 }
 
@@ -4062,6 +4066,9 @@ a.btn_read_next_var span {
 .pie_chart_img,
 .line_chart_img {
     position: absolute;
+    /* Явно прив'язуємо анімовані іконки до кнопки: їхня позиція більше не залежить від браузерного вирівнювання вмісту button. */
+    top: 0;
+    left: 0;
     width: 24px;
     height: 25px;
     opacity: 0;
@@ -4083,40 +4090,40 @@ a.btn_read_next_var span {
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='25' viewBox='0 0 24 25'%3E%3Cpath d='M4 20.5h16M4 20.5V4.5' fill='none' stroke='%233ac469' stroke-width='2' stroke-linecap='round'/%3E%3Cpolyline points='5,17 10,12 14,14 20,7' fill='none' stroke='%233ac469' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center;
 }
 
-.animated_b .inner_chosen_graph a.active .pie_chart_img,
-.animated_b .inner_chosen_graph a.active .vertical_chart_img,
-.animated_b .inner_chosen_graph a.active .horizontal_chart_img,
-.animated_b .inner_chosen_graph a.active .line_chart_img {
+.animated_b .inner_chosen_graph button.active .pie_chart_img,
+.animated_b .inner_chosen_graph button.active .vertical_chart_img,
+.animated_b .inner_chosen_graph button.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph button.active .line_chart_img {
     animation: chartToggleBreath 24s infinite ease-in-out;
     opacity: 0;
 }
 
 /* Негативні затримки тримають цикл синхронним і після першого повного кола, без накопичення зсуву. */
-.animated_b .inner_chosen_graph a.pie_chart.active .pie_chart_img,
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .horizontal_chart_img,
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .vertical_chart_img,
-.animated_b .inner_chosen_graph a.line_chart.active .line_chart_img {
+.animated_b .inner_chosen_graph button.pie_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph button.horizontal_b_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph button.vertical_b_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph button.line_chart.active .line_chart_img {
     animation-delay: 0s;
 }
 
-.animated_b .inner_chosen_graph a.pie_chart.active .vertical_chart_img,
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .vertical_chart_img,
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .horizontal_chart_img,
-.animated_b .inner_chosen_graph a.line_chart.active .pie_chart_img {
+.animated_b .inner_chosen_graph button.pie_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph button.horizontal_b_chart.active .vertical_chart_img,
+.animated_b .inner_chosen_graph button.vertical_b_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph button.line_chart.active .pie_chart_img {
     animation-delay: -18s;
 }
 
-.animated_b .inner_chosen_graph a.pie_chart.active .horizontal_chart_img,
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .pie_chart_img,
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .pie_chart_img,
-.animated_b .inner_chosen_graph a.line_chart.active .vertical_chart_img {
+.animated_b .inner_chosen_graph button.pie_chart.active .horizontal_chart_img,
+.animated_b .inner_chosen_graph button.horizontal_b_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph button.vertical_b_chart.active .pie_chart_img,
+.animated_b .inner_chosen_graph button.line_chart.active .vertical_chart_img {
     animation-delay: -12s;
 }
 
-.animated_b .inner_chosen_graph a.pie_chart.active .line_chart_img,
-.animated_b .inner_chosen_graph a.horizontal_b_chart.active .line_chart_img,
-.animated_b .inner_chosen_graph a.vertical_b_chart.active .line_chart_img,
-.animated_b .inner_chosen_graph a.line_chart.active .horizontal_chart_img {
+.animated_b .inner_chosen_graph button.pie_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph button.horizontal_b_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph button.vertical_b_chart.active .line_chart_img,
+.animated_b .inner_chosen_graph button.line_chart.active .horizontal_chart_img {
     animation-delay: -6s;
 }
 
@@ -4133,11 +4140,11 @@ a.btn_read_next_var span {
 }
 
 /* При наведенні зупиняємо "дихання": поточний вибір фіксується внизу, а решта кнопок показуються вище з інверсією кольору при hover. */
-.animated_b.chosen_graph_b:hover .inner_chosen_graph a.active {
+.animated_b.chosen_graph_b:hover .inner_chosen_graph button.active {
     background-color: #3ac469;
 }
 
-.animated_b.chosen_graph_b:hover .inner_chosen_graph a.active span {
+.animated_b.chosen_graph_b:hover .inner_chosen_graph button.active span {
     animation: none;
     opacity: 0;
 }

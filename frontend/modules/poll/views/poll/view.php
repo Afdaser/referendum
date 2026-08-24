@@ -138,32 +138,33 @@ JS
                         </div>
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
-                                <span class="inner_chosen_graph">
-                                    <?php // Активний перемикач синхронізуємо з result_type, зокрема для нового лінійного графіка. ?>
-                                    <a href="javascript:void(0)" class="pie_chart <?= ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie">
+                                <span class="inner_chosen_graph" role="group" aria-label="<?= Yii::t('poll', 'Тип діаграми результатів'); ?>">
+                                    <?php // Семантичні кнопки не виглядають для пошукового робота як навігаційні посилання. ?>
+                                    <?php // Активний перемикач синхронізуємо з result_type та повідомляємо про вибір через aria-pressed. ?>
+                                    <button type="button" class="pie_chart <?= ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie" aria-label="<?= Yii::t('poll', 'Показати кругову діаграму'); ?>" title="<?= Yii::t('poll', 'Показати кругову діаграму'); ?>" aria-pressed="<?= ($poll->result_type == 3) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="horizontal_b_chart <?= (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar">
+                                    </button>
+                                    <button type="button" class="horizontal_b_chart <?= (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar" aria-label="<?= Yii::t('poll', 'Показати горизонтальний графік'); ?>" title="<?= Yii::t('poll', 'Показати горизонтальний графік'); ?>" aria-pressed="<?= (!$poll->result_type || $poll->result_type == 1) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="vertical_b_chart <?= ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column">
+                                    </button>
+                                    <button type="button" class="vertical_b_chart <?= ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column" aria-label="<?= Yii::t('poll', 'Показати вертикальний графік'); ?>" title="<?= Yii::t('poll', 'Показати вертикальний графік'); ?>" aria-pressed="<?= ($poll->result_type == 2) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="line_chart <?= ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line">
+                                    </button>
+                                    <button type="button" class="line_chart <?= ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line" aria-label="<?= Yii::t('poll', 'Показати лінійний графік'); ?>" title="<?= Yii::t('poll', 'Показати лінійний графік'); ?>" aria-pressed="<?= ($poll->result_type == 4) ? 'true' : 'false'; ?>">
                                         <span class="pie_chart_img"></span>
                                         <span class="vertical_chart_img"></span>
                                         <span class="horizontal_chart_img"></span>
                                         <span class="line_chart_img"></span>
-                                    </a>
+                                    </button>
                                 </span>
                             </span>
                         </div>

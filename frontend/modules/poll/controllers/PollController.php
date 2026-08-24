@@ -271,9 +271,9 @@ class PollController extends \yii\web\Controller
     public function actionChangeCommentRating()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        if (!Yii::$app->request->isPost || Yii::$app->user->isGuest) {
-            Yii::$app->response->statusCode = Yii::$app->user->isGuest ? 401 : 405;
-            return ['success' => false, 'message' => Yii::t('poll', 'Увійдіть, щоб оцінити коментар.')];
+        if (!Yii::$app->request->isPost) {
+            Yii::$app->response->statusCode = 405;
+            return ['success' => false, 'message' => Yii::t('poll', 'Для оцінки коментаря потрібен POST-запит.')];
         }
 
         $comment = PollComment::findOne((int) Yii::$app->request->post('id'));
@@ -283,10 +283,25 @@ class PollController extends \yii\web\Controller
             return ['success' => false, 'message' => Yii::t('poll', 'Некоректна оцінка коментаря.')];
         }
 
-        // API повертає і суму, і поточний голос, щоб інтерфейс точно відобразив скасування.
+        if (Yii::$app->user->isGuest) {
+            // Для гостя тримаємо вибір у сесії: таблиця оцінок пов'язана лише з зареєстрованими user_id.
+            $guestRatings = Yii::$app->session->get('pollCommentRatings', []);
+            $previousRating = (int) ($guestRatings[$comment->id] ?? 0);
+            $newRating = $comment->setGuestRating($previousRating, $rating);
+            if ($rating === 0) {
+                unset($guestRatings[$comment->id]);
+            } else {
+                $guestRatings[$comment->id] = $rating;
+            }
+            Yii::$app->session->set('pollCommentRatings', $guestRatings);
+        } else {
+            $newRating = $comment->setUserRating(Yii::$app->user->id, $rating);
+        }
+
+        // Відповідь потрібна AJAX-інтерфейсу для точного відображення скасування.
         return [
             'success' => true,
-            'rating' => $comment->setUserRating(Yii::$app->user->id, $rating),
+            'rating' => $newRating,
             'vote' => $rating,
         ];
     }

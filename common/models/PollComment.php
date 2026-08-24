@@ -312,6 +312,30 @@ class PollComment extends ActiveRecord
         });
     }
 
+    /**
+     * Змінює рейтинг для гостя, голос якого контролюється поточною сесією.
+     * Окремий запис у poll_comment_rating не створюємо, бо таблиця вимагає user_id.
+     *
+     * @param int $previousRating Попередній голос у сесії
+     * @param int $rating Новий голос: -1, 0 або 1
+     * @return int Новий загальний рейтинг коментаря
+     */
+    public function setGuestRating($previousRating, $rating)
+    {
+        $previousRating = (int) $previousRating;
+        $rating = (int) $rating;
+        if (!in_array($previousRating, [-1, 0, 1], true) || !in_array($rating, [-1, 0, 1], true)) {
+            throw new \InvalidArgumentException('Оцінка коментаря має дорівнювати -1, 0 або 1.');
+        }
+
+        $difference = $rating - $previousRating;
+        if ($difference !== 0 && !$this->updateCounters(['rating' => $difference])) {
+            throw new \RuntimeException('Не вдалося оновити рейтинг коментаря.');
+        }
+
+        return (int) $this->rating;
+    }
+
     public function readCommentAnswers()
     {
         if ($comments = $this->commentChilds(['read_by_parent' => 0])) {

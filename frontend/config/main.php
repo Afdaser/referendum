@@ -248,7 +248,7 @@ return [
                     'route' => 'poll/poll/add-answer'
                 ],                
                 [
-                    // Голосування за коментар доступне лише через POST API, без URL для ботів.
+                    // Голосування приймаємо лише через POST, без GET-посилань для пошукових ботів.
                     'pattern' => 'POST /poll/ChangeCommentRating',
                     'route' => 'poll/poll/change-comment-rating'
                 ],

@@ -20,6 +20,12 @@ Registration on the site is required not only to see the results of surveys, but
         'Опитування: {title}' => 'Poll: {title}',
         'Побачити результати' => 'See results',
         'Показати голоси'=>'Show votes',
+        // Доступні назви кнопок перемикання діаграм мають відображатися мовою поточної локалі.
+        'Тип діаграми результатів' => 'Result chart type',
+        'Показати кругову діаграму' => 'Show pie chart',
+        'Показати горизонтальний графік' => 'Show horizontal bar chart',
+        'Показати вертикальний графік' => 'Show vertical bar chart',
+        'Показати лінійний графік' => 'Show line chart',
         'Очистити'=>'Clear',
         'Всі'=>'All',
         'Чол'=>'Male',

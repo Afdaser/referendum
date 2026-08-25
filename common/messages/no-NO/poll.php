@@ -19,6 +19,12 @@ return array(
         'Опитування: {title}' => 'Poll: {title}',
         'Побачити результати' => 'Se resultater',
         'Показати голоси'=>'Vis stemmer',
+        // Доступні назви кнопок перемикання діаграм мають відображатися мовою поточної локалі.
+        'Тип діаграми результатів' => 'Type resultatdiagram',
+        'Показати кругову діаграму' => 'Vis sektordiagram',
+        'Показати горизонтальний графік' => 'Vis horisontalt stolpediagram',
+        'Показати вертикальний графік' => 'Vis vertikalt stolpediagram',
+        'Показати лінійний графік' => 'Vis linjediagram',
         'Очистити'=>'Klar',
         'Всі'=>'Alle',
         'Чол'=>'Mann',

@@ -1934,17 +1934,25 @@ a.btn_prev_var:hover {
     height: 7px;
     background: url(/img/layout/clear_btn_icon.png);
 }
-.right_clear_btn a {
+.right_clear_btn .clear_btn {
+    /* Зберігаємо вигляд текстового елемента, використовуючи семантичну кнопку. */
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: #055C2B;
+    font: inherit;
+    cursor: pointer;
     text-decoration: none;
 }
-.right_clear_btn a span {
+.right_clear_btn .clear_btn span {
     text-decoration: underline;
 }
-.right_clear_btn a:hover {
+.right_clear_btn .clear_btn:hover,
+.right_clear_btn .clear_btn:focus {
     color: #058f42;
 }
-.right_clear_btn a:hover .clear_btn_ico {
+.right_clear_btn .clear_btn:hover .clear_btn_ico,
+.right_clear_btn .clear_btn:focus .clear_btn_ico {
     background: url(/img/layout/clear_btn_icon_hover.png);
 }
 .select_blocks {
@@ -1957,6 +1965,10 @@ a.btn_prev_var:hover {
     display: inline-block;
     vertical-align: middle;
     font-size: 13px;
+    font-weight: normal;
+}
+.item_show > span {
+    display: block;
 }
 .item_show select,
 .item_show input {

@@ -1511,10 +1511,41 @@ span.item_list_poll:hover {
 .social_grey_b {
     margin-bottom: 20px;
     background: #f0f4f4;
-    padding: 5px;
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
-.social_grey_b img {
-    width: 100%;
+.social-grey-link {
+    /* Стримана палітра блока наслідує зелені акценти чинного макета. */
+    align-items: center;
+    background: #dce6e4;
+    border: 1px solid #c4cfcd;
+    border-radius: 50%;
+    color: #0a3d20;
+    display: inline-flex;
+    font-size: 20px;
+    height: 42px;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease, transform .2s ease;
+    width: 42px;
+}
+.social-grey-link:hover,
+.social-grey-link:focus {
+    background: #0a3d20;
+    color: #fff;
+    outline: none;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+.social-grey-link:focus-visible {
+    box-shadow: 0 0 0 3px rgba(10, 61, 32, .3);
+}
+.social-x-icon {
+    font-family: Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 700;
 }
 .space_some {
     height: 19px;

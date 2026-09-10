@@ -2,6 +2,7 @@
 
 use frontend\widgets\WPollsSidebar;
 use frontend\widgets\WUserSidebar;
+use yii\helpers\Html;
 
 /** @var $this Controller */ ?>
 
@@ -43,14 +44,38 @@ use frontend\widgets\WUserSidebar;
 		</div>
 		<?= WPollsSidebar::widget(); ?>
 			<?php /* $this->widget('PollsSidebar'); /* */  ?>
-			<div class="social_grey_b">
-				<?php
-				// Для девелопера: fb-root блоки повністю вимкнені, щоб не потрапляли у фінальний HTML сторінки.
-				/*
-				<div id="fb-root"></div>
-				<div id="fb-root"></div>
-				*/
-				?>
+			<?php
+			// Офіційні сторінки проєкту; за потреби посилання можна оновити без зміни розмітки блока.
+			$socialLinks = [
+				'Facebook' => ['url' => 'https://www.facebook.com/online.statistic', 'icon' => 'facebook'],
+				'LinkedIn' => ['url' => 'https://www.linkedin.com/company/referendum-social/', 'icon' => 'linkedin'],
+				'Instagram' => ['url' => 'https://www.instagram.com/referendum.social/', 'icon' => 'instagram'],
+				'Reddit' => ['url' => 'https://www.reddit.com/r/Surveys_and_statistic/', 'icon' => 'reddit'],
+				'X.com' => ['url' => 'https://x.com/O_Statistics', 'icon' => 'x'],
+			];
+			?>
+			<div class="social_grey_b" aria-label="Social media">
+				<?php foreach ($socialLinks as $label => $socialLink): ?>
+					<?php if ($socialLink['url'] === '') { continue; } ?>
+					<?php
+					// Використовуємо наявні іконки Font Awesome; у цій версії бібліотеки ще немає X.
+					$icon = $socialLink['icon'] === 'x'
+						? Html::tag('span', 'X', ['class' => 'social-x-icon', 'aria-hidden' => 'true'])
+						: Html::tag('i', '', ['class' => 'fa fa-' . $socialLink['icon'], 'aria-hidden' => 'true']);
+					?>
+					<?= Html::a(
+						$icon,
+						$socialLink['url'],
+						[
+							'class' => 'social-grey-link',
+							'title' => $label,
+							'aria-label' => $label,
+							'target' => '_blank',
+							// Не передаємо зовнішньому сервісу доступ до вкладки та referrer.
+							'rel' => 'noopener noreferrer',
+						]
+					) ?>
+				<?php endforeach; ?>
 			</div>
 	        <?php // Блок з повідомленням про помилки на сайті свідомо видалено. ?>
 		</div>

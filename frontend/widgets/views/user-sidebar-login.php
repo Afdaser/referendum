@@ -11,6 +11,7 @@ use frontend\helpers\Url;
 </div>
 <div class="inner_auth_b">
 
+    <?php // Вхід навмисно доступний лише через локальний обліковий запис, без зовнішніх соцмереж. ?>
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
         'action' => Url::toRoute('/site/login'),

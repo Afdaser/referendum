@@ -8,13 +8,6 @@ use common\models\Poll;
 //use common\models\Country;
 //use common\models\Language;
 
-/*
- * // Yii1 remove:
-    <div class="left_auth_name"><?php echo User::getUserName(Yii::app()->user->id); ?></div>
-    <a href="<?php echo Yii::app()->createUrl('/Ulogin/logout/');?>" class="right_leave_btn">
-    </a> 
- */
-
 ?>
 <?php
 // Додатковий захист: якщо сайдбар випадково рендериться для гостя, не падаємо на null identity.

@@ -4,28 +4,6 @@ window.highchartColors = ['#e0923e','#f5c356','#058f42','#3ac469','#59d9c8','#63
 
 $(document).ready(function(){
     try {
-        // Робимо невеликий відкладений виклик, щоб нічого не блокувало рендер і preload-стилі.
-        setTimeout(function(){
-            $('#uLogin div').attr('style','');
-            // Обмежуємо декорування контейнером авторизації, щоб не змінювати звичайні посилання на соцмережі.
-            var arr = document.querySelectorAll('#uLogin [title="Facebook"]');
-            $(arr).attr('style','cursor: pointer;');
-            $(arr).addClass('social_auth facebook');
-            $(arr).prepend('<i class="fa fa-facebook"></i>');
-            arr = document.querySelectorAll('#uLogin [title="VK"]');
-            $(arr).attr('style','cursor: pointer;');
-            $(arr).addClass('social_auth vk');
-            $(arr).prepend('<i class="fa fa-vk"></i>');
-            arr = document.querySelectorAll('#uLogin [title="Twitter"]');
-            $(arr).attr('style','cursor: pointer;');
-            $(arr).addClass('social_auth twitter');
-            $(arr).prepend('<i class="fa fa-twitter"></i>');
-            arr = document.querySelectorAll('#uLogin [title="Google"]');
-            $(arr).attr('style','cursor: pointer;');
-            $(arr).addClass('social_auth google');
-            $(arr).prepend('<i class="fa fa-google-plus"></i>');
-        },0);
-
         // Базова логіка cookie-consent:
         // - зберігаємо вибір у cookie на 180 днів (та дублюємо у localStorage як fallback),
         // - не використовуємо IP для рішення, бо стандартно це прив'язка до браузера/пристрою.

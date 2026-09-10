@@ -7,19 +7,20 @@ $(document).ready(function(){
         // Робимо невеликий відкладений виклик, щоб нічого не блокувало рендер і preload-стилі.
         setTimeout(function(){
             $('#uLogin div').attr('style','');
-            var arr = document.querySelectorAll('[title="Facebook"]');
+            // Обмежуємо декорування контейнером авторизації, щоб не змінювати звичайні посилання на соцмережі.
+            var arr = document.querySelectorAll('#uLogin [title="Facebook"]');
             $(arr).attr('style','cursor: pointer;');
             $(arr).addClass('social_auth facebook');
             $(arr).prepend('<i class="fa fa-facebook"></i>');
-            arr = document.querySelectorAll('[title="VK"]');
+            arr = document.querySelectorAll('#uLogin [title="VK"]');
             $(arr).attr('style','cursor: pointer;');
             $(arr).addClass('social_auth vk');
             $(arr).prepend('<i class="fa fa-vk"></i>');
-            arr = document.querySelectorAll('[title="Twitter"]');
+            arr = document.querySelectorAll('#uLogin [title="Twitter"]');
             $(arr).attr('style','cursor: pointer;');
             $(arr).addClass('social_auth twitter');
             $(arr).prepend('<i class="fa fa-twitter"></i>');
-            arr = document.querySelectorAll('[title="Google"]');
+            arr = document.querySelectorAll('#uLogin [title="Google"]');
             $(arr).attr('style','cursor: pointer;');
             $(arr).addClass('social_auth google');
             $(arr).prepend('<i class="fa fa-google-plus"></i>');

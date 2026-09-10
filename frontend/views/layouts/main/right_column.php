@@ -45,13 +45,13 @@ use yii\helpers\Html;
 		<?= WPollsSidebar::widget(); ?>
 			<?php /* $this->widget('PollsSidebar'); /* */  ?>
 			<?php
-			// ВСТАВТЕ посилання на акаунти сайту між лапками. Порожні посилання не відображаються.
+			// Офіційні сторінки проєкту; за потреби посилання можна оновити без зміни розмітки блока.
 			$socialLinks = [
-				'Facebook' => ['url' => '', 'icon' => 'facebook'],
-				'LinkedIn' => ['url' => '', 'icon' => 'linkedin'],
-				'Instagram' => ['url' => '', 'icon' => 'instagram'],
-				'Reddit' => ['url' => '', 'icon' => 'reddit'],
-				'X.com' => ['url' => '', 'icon' => 'x'],
+				'Facebook' => ['url' => 'https://www.facebook.com/online.statistic', 'icon' => 'facebook'],
+				'LinkedIn' => ['url' => 'https://www.linkedin.com/company/referendum-social/', 'icon' => 'linkedin'],
+				'Instagram' => ['url' => 'https://www.instagram.com/referendum.social/', 'icon' => 'instagram'],
+				'Reddit' => ['url' => 'https://www.reddit.com/r/Surveys_and_statistic/', 'icon' => 'reddit'],
+				'X.com' => ['url' => 'https://x.com/O_Statistics', 'icon' => 'x'],
 			];
 			?>
 			<div class="social_grey_b" aria-label="Social media">

@@ -38,7 +38,6 @@ return array(
         'Авторизація'=>'Autorisasjon',
         'UserName'=>'Brukernavn',
         'Вхід'=>'Logg Inn',
-        'Увійти через соціальну мережу'=>'Logg på med sosiale nettverk',
         'сайту'=>'Nettstedet',
         'Введіть'=>'Tast inn',
         'Введіть email коректного формату!'=>'Skriv inn riktig e-post',

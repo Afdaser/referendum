@@ -47,6 +47,7 @@ use yii\helpers\Html;
 			<?php
 			// Офіційні сторінки проєкту; за потреби посилання можна оновити без зміни розмітки блока.
 			$socialLinks = [
+				// Показуємо фірмову іконку; скрипт авторизації більше не додає до цього посилання другий значок.
 				'Facebook' => ['url' => 'https://www.facebook.com/online.statistic', 'icon' => 'facebook'],
 				'LinkedIn' => ['url' => 'https://www.linkedin.com/company/referendum-social/', 'icon' => 'linkedin'],
 				'Instagram' => ['url' => 'https://www.instagram.com/referendum.social/', 'icon' => 'instagram'],

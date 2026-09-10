@@ -13,7 +13,6 @@ return array(
         'Авторизація'=>'Authorization',
         'Не вірний e-mail або пароль'=>'Wrong email, or password',
         'Реєстрація'=>'Registration',
-        'Увійти через соціальну мережу'=>'Login with social network',
         'Мій рейтинг'=>'My rating',
         'Мої опитування'=>'My polls',
         'Нові коментарі'=>'New comments',

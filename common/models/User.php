@@ -452,16 +452,6 @@ class User extends BaseModelUser
     }
 
     /**
-     * Gets query for [[SocialAccounts]].
-     *
-     * @return \yii\db\ActiveQuery|\common\models\query\SocialAccountQuery
-     */
-    public function getSocialAccounts()
-    {
-        return $this->hasMany(SocialAccount::class, ['user_id' => 'id']);
-    }
-
-    /**
      * Gets query for [[Tokens]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\TokenQuery

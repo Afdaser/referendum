@@ -41,7 +41,6 @@ return array(
         'Авторизація'=>'Authorization',
         'UserName'=>'User name',
         'Вхід'=>'Login',
-        'Увійти через соціальну мережу'=>'Sign in with social network',
         'сайту'=>'Site',
         'Введіть'=>'Enter',
         'Введіть email коректного формату!'=>'Enter correct email',

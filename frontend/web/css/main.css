@@ -1318,40 +1318,6 @@ button.radio_link:active .radio_indicator {
     font-size: 14px;
     text-align: center;
 }
-.social_auth_b {
-    text-align: center;
-    font-size: 0;
-    margin-top: 5px;
-    padding-bottom: 25px;
-}
-a.social_auth {
-    display: inline-block;
-    vertical-align: middle;
-    width: 30px;
-    height: 30px;
-    border-radius: 18px;
-    background: #3b5998;
-    text-decoration: none;
-    margin: 0 5px;
-    padding-top: 4px;
-    font-size: 15px;
-    color: #fff;
-}
-a.social_auth.vk {
-    background: #597da3;
-}
-a.social_auth.twitter {
-    background: #55acee;
-}
-a.social_auth.google {
-    background: #d73d32;
-    padding-left: 2px;
-}
-.social_auth:hover {
-    -webkit-box-shadow: 0px 0px 0px 3px rgba(255, 255, 255, 1);
-    -moz-box-shadow:    0px 0px 0px 3px rgba(255, 255, 255, 1);
-    box-shadow:         0px 0px 0px 3px rgba(255, 255, 255, 1);
-}
 .list_poll_b {
     margin-bottom: 0;
 }

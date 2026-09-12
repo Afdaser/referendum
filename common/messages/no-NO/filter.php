@@ -3,6 +3,8 @@ return array(
 	'Опитувань на сторінку'=>'Avstemninger på siden',
 	'Cтворити нове'=>'Lag ny',
 	'Сортування'=>'Sortere',
+	'Період опитувань'=>'Avstemningsperiode',
+	'Сортування опитувань'=>'Sortering av avstemninger',
 	'Рейтинг по спаданню'=>'Vurdering ved å redusere',
 	'Рейтинг по зростанню'=>'Vurdering ved å øke',
 	'За замовчуванням'=>'Som standard',

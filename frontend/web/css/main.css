@@ -4271,18 +4271,41 @@ a.btn_read_next_var span {
     margin-left: 0;
 }
 @media (max-width: 640px) {
-    .main-polls-tabs.nav-tabs,
-    .main-polls-sort.sort_b {
+    .main-polls-tabs.nav-tabs {
         border-radius: 10px;
     }
-    .main-polls-tabs.nav-tabs,
-    .main-polls-sort.sort_b,
-    .main-polls-sort .right_select_sort {
+    .main-polls-tabs.nav-tabs {
         flex-direction: column;
         align-items: stretch;
     }
-    .main-polls-tabs.nav-tabs>li,
+    .main-polls-tabs.nav-tabs>li {
+        width: 100%;
+    }
+    /* На мобільних залишаємо обидва фільтри в одному рядку й віддаємо більше місця довшому списку сортування. */
+    .main-polls-sort.sort_b {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+        gap: 8px;
+        min-height: 48px;
+        padding: 8px;
+        border-radius: 10px;
+    }
+    .main-polls-sort .right_select_sort {
+        display: block;
+        min-width: 0;
+    }
+    /* У власних опитуваннях першим елементом є дія створення, тож не стискаємо її в колонці для фільтра. */
+    .main-polls-sort > .left_btn_b,
+    .main-polls-sort > .left_btn_b + .right_select_sort {
+        grid-column: 1 / -1;
+    }
+    .main-polls-sort .main-polls-sort__label {
+        display: none;
+    }
     .main-polls-sort .right_select_sort select {
         width: 100%;
+        min-width: 0;
+        padding-left: 10px;
+        font-size: 14px;
     }
 }

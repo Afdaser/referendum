@@ -252,8 +252,9 @@ use common\models\User;
                     onchange='document.location.href = "<?= Url::toRoute('/site') . '/' .  Yii::$app->controller->action->id; ?>/<?php echo $sort;?>" + "/" + $(this).val() + "/" + "<?php echo $limit; ?>" + "?click=true"'>
  *
  */ ?>
-                <?php /* Ущільнили HTML-розмітку select/options: менше переносів рядків без змін DOM/CSS-класів. */ ?>
-                <select onchange='document.location.href = "<?= "{$uriPrefix}/{$sort}/"; ?>" + $(this).val() + "<?= "/{$limit}?click=true"; ?>"'>
+                <?php /* Залишаємо нативну семантику select (не role="button"), а aria-label пояснює призначення керування періодом. */ ?>
+                <select aria-label="<?= Html::encode(Yii::t("filter", 'Період опитувань')); ?>"
+                        onchange='document.location.href = "<?= "{$uriPrefix}/{$sort}/"; ?>" + $(this).val() + "<?= "/{$limit}?click=true"; ?>"'>
                     <?php /* Опція "за весь час" потрібна для показу всіх опитувань за замовчуванням. */ ?>
                     <option value="all" <?php if ($period == 'all'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за весь час'); ?></option>
                     <option value="day" <?php if ($period == 'day'): ?>selected<?php endif; ?>><?= Yii::t("filter", 'за день'); ?></option>
@@ -269,8 +270,10 @@ use common\models\User;
             <select class="sort"
                    onchange='document.location.href = "<?= Url::toRoute('/site') . '/' .  Yii::$app->controller->action->id; ?>" + "/" + $(this).val() + "/" + "<?php echo $period; ?>/<?php echo $limit; ?>"'>
  */ ?>
-            <?= Yii::t("filter", 'Сортування'); ?>:
-            <select class="sort"
+            <?php /* Окремий елемент дозволяє сховати підпис лише на вузькому екрані та зберегти обидва фільтри в одному рядку. */ ?>
+            <span class="main-polls-sort__label"><?= Yii::t("filter", 'Сортування'); ?>:</span>
+            <?php /* aria-label залишає назву керування доступною, коли видимий підпис сховано на мобільному. */ ?>
+            <select class="sort" aria-label="<?= Html::encode(Yii::t("filter", 'Сортування опитувань')); ?>"
                    onchange='document.location.href = "<?= "{$uriPrefix}/"; ?>" + $(this).val() + "<?= "/{$period}/{$limit}"; ?>"'>
                 <?php if ($category == 'own'): ?>
                     <option value="default" <?= ($sort == 'default') ? 'selected' : ''; ?>><?= Yii::t("filter", 'За замовчуванням'); ?></option>

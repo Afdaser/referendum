@@ -6,6 +6,8 @@ return array(
 	'Опитувань на сторінку'=>'Polls on the page',
 	'Cтворити нове'=>'Create new',
 	'Сортування'=>'Sort',
+	'Період опитувань'=>'Poll period',
+	'Сортування опитувань'=>'Poll sorting',
 	'Рейтинг по спаданню'=>'Rating by decreasing',
 	'Рейтинг по зростанню'=>'Rating by increasing',
 	'За замовчуванням'=>'By default',

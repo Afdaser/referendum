@@ -4294,6 +4294,11 @@ a.btn_read_next_var span {
         display: block;
         min-width: 0;
     }
+    /* У власних опитуваннях першим елементом є дія створення, тож не стискаємо її в колонці для фільтра. */
+    .main-polls-sort > .left_btn_b,
+    .main-polls-sort > .left_btn_b + .right_select_sort {
+        grid-column: 1 / -1;
+    }
     .main-polls-sort .main-polls-sort__label {
         display: none;
     }

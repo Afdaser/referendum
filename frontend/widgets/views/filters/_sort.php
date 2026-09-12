@@ -269,7 +269,8 @@ use common\models\User;
             <select class="sort"
                    onchange='document.location.href = "<?= Url::toRoute('/site') . '/' .  Yii::$app->controller->action->id; ?>" + "/" + $(this).val() + "/" + "<?php echo $period; ?>/<?php echo $limit; ?>"'>
  */ ?>
-            <?= Yii::t("filter", 'Сортування'); ?>:
+            <?php /* Окремий елемент дозволяє сховати підпис лише на вузькому екрані та зберегти обидва фільтри в одному рядку. */ ?>
+            <span class="main-polls-sort__label"><?= Yii::t("filter", 'Сортування'); ?>:</span>
             <select class="sort"
                    onchange='document.location.href = "<?= "{$uriPrefix}/"; ?>" + $(this).val() + "<?= "/{$period}/{$limit}"; ?>"'>
                 <?php if ($category == 'own'): ?>

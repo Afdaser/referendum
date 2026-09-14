@@ -200,8 +200,9 @@ class SiteController extends Controller
     public function actionUserProfile($id) {
         if($user = User::findByPk($id)){
             $this->menu = [];
-            // Дозволяємо індексацію публічної сторінки профілю.
-            Yii::$app->page->setRobots('index, follow');
+            // Не індексуємо профіль і будь-які його URL з пагінацією/параметрами,
+            // але дозволяємо пошуковим роботам переходити за посиланнями зі сторінки.
+            Yii::$app->page->setRobots('noindex, follow');
 
             // Формуємо правильні SEO-метадані для публічного профілю користувача.
             $langDomains = Yii::$app->params['langDomains'] ?? [];

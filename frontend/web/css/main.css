@@ -44,13 +44,6 @@ textarea {
     resize: vertical;
 }
 
-.chromeframe {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
-}
-
 .clearfix:before, 
 .clearfix:after {
     content: "";
@@ -1314,10 +1307,6 @@ button.radio_link:active .radio_indicator {
     border-bottom: 1px solid #dce6e4;
     margin-bottom: 13px;
 }
-.title_auth_bottom {
-    font-size: 14px;
-    text-align: center;
-}
 .list_poll_b {
     margin-bottom: 0;
 }
@@ -1512,9 +1501,6 @@ span.item_list_poll:hover {
     font-family: Arial, sans-serif;
     font-size: 19px;
     font-weight: 700;
-}
-.space_some {
-    height: 19px;
 }
 .footer {
     /* Автоматична висота дає футеру безпечно зростати разом із кількістю сторінок. */
@@ -2907,15 +2893,6 @@ a.skip_btn:hover {
     top: 50%;
     margin-top: -7px;
 }
-.large_rating {
-    font-size: 34px;
-    color: #3ac469;
-    text-align: center;
-    line-height: 25px;
-    border-bottom: 1px solid #dce6e4;
-    margin: 0 -30px 20px -30px;
-    padding-bottom: 20px;
-}
 .small_sub_rat_text {
     color: #058f42;
     font-size: 12px;
@@ -3446,9 +3423,6 @@ a.search_btn_inner:hover {
     font-size: 12px;
     float: right;
 }
-._white_color {
-    color: #fff;
-}
 .top_text_refresh_pass {
     font-family: "ArimoRegular", Arial, sans-serif;
     font-size: 14px;
@@ -3468,10 +3442,6 @@ a.search_btn_inner:hover {
 .refresh_password a.search_btn_inner {
     width: auto;
     padding: 0 20px;
-}
-.warning_input {
-    color: #d37171 !important;
-    border-color: #d37171 !important;
 }
 .bottom_warning_block {
     height: 30px;

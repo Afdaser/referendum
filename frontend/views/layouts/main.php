@@ -55,7 +55,6 @@ $isMainIndexPage = (
 
     <?= Yii::$app->page->faviconHtml ?>
 
-    <?= $this->render('main/meta'); ?>
     <?php
     // Вставляємо індивідуальні скрипти конкретної сторінки без додаткового обгортання,
     // щоб уникнути вкладених <script>-тегів (напр. для JSON-LD).
@@ -92,9 +91,7 @@ $isMainIndexPage = (
 
 <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
-    <?php
-    // Віджет шапки сайту рендериться одразу, без попереджувальних банерів про застарілий браузер.
-    ?>
+    <?php // Віджет шапки рендериться одразу, без зайвих службових коментарів у HTML для краулерів. ?>
     <?= $this->render('main/header'); ?>
 
             <div class="sub_header_slider_b">

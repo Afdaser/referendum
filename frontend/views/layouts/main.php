@@ -3,18 +3,11 @@
 /** @var \yii\web\View $this */
 /** @var string $content */
 
-use common\widgets\Alert;
 use frontend\assets\AppAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
 
-//use yii\bootstrap4\Breadcrumbs;
-use yii\widgets\Breadcrumbs;
-use yii\bootstrap\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-
-$bundle = AppAsset::register($this);
+AppAsset::register($this);
 $this->registerCssFile('/css/bootstrap.min.css');
 
 $locale = Yii::$app->language;
@@ -31,8 +24,6 @@ $isMainIndexPage = (
 <!DOCTYPE html>
 <html lang="<?= $locale ?>" class="no-js">
 <head>
-    <!-- Meta tags
-    ================================================== -->
     <meta charset="<?= Yii::$app->charset ?>">
     <?= Yii::$app->page->robotsHtml; ?>
     <?= Yii::$app->page->metaDescriptionHtml; ?>
@@ -53,35 +44,14 @@ $isMainIndexPage = (
         <link rel="alternate" hreflang="x-default" href="https://referendum.social/" />
     <?php endif; ?>
 
-<?php /*
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-/* */ ?>
     <meta name="viewport" content="width=device-width">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <?php $this->registerCsrfMetaTags() ?>
 
-    <!-- Site title
-    ================================================== -->
     <title><?= Yii::$app->page->title ?></title>
 
-    <!-- Styles
-    ================================================== -->
-    <?php
-    // AppAsset підставляє preload-лінки зі службовим атрибутом data-rel, тому після завантаження
-    // браузер одразу перемикає їх у звичайні stylesheet без HTML-екранізації у JS-виразі onload.
-    ?>
+    <?php // AssetBundle формує по одному стандартному посиланню для кожного CSS-файлу. ?>
     <?php $this->head() ?>
-    <noscript>
-        <?php
-        // Якщо JavaScript вимкнено (або зламаний), даємо браузеру стандартні stylesheet-посилання.
-        // Так Googlebot і користувачі без JS все одно отримують ідентичний вигляд сторінки.
-        ?>
-        <?= Html::cssFile('/css/bootstrap.min.css', ['rel' => 'stylesheet']) ?>
-        <?php foreach ($bundle->css as $cssFile): ?>
-            <?= Html::cssFile(rtrim($bundle->baseUrl, '/') . '/' . ltrim($cssFile, '/'), ['rel' => 'stylesheet']) ?>
-        <?php endforeach; ?>
-    </noscript>
 
     <?= Yii::$app->page->faviconHtml ?>
 
@@ -213,63 +183,6 @@ if ($isMainIndexPage) :
         </div>
 <?= $this->render('main/footer'); ?>
 <?= $this->render('main/cookie-consent'); ?>
-<!-- Javascript
-================================================== -->
-<?php /* Yii2 base layout: * / ?>
-<header>
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        // Ссилкуємося на слаг "about", щоб меню вказувало на чисту адресу без /site.
-        ['label' => 'About', 'url' => ['/page/view', 'page' => 'about']],
-        ['label' => 'Contact', 'url' => ['/site/contact']],
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-    }
-
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
-        'items' => $menuItems,
-    ]);
-    if (Yii::$app->user->isGuest) {
-        echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
-    } else {
-        echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout text-decoration-none']
-            )
-            . Html::endForm();
-    }
-    NavBar::end();
-    ?>
-</header>
-
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
-
-<footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
-    </div>
-</footer>
-<?php /* /END of Yii2 base layout */ ?>
 <?php $this->endBody() ?>
 <?php if(YII_ENV == 'prod'): ?>
 <script type="text/javascript">//<![CDATA[

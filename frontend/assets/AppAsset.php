@@ -16,15 +16,11 @@ class AppAsset extends AssetBundle
         'css/site.css',
         // Referendum social
         '/css/normalize.min.css',
-        '/css/bootstrap-theme.min.css',
         // Стилі плагіна outdatedBrowser більше не підключаємо, адже банер прибрано з макету.
         '/css/jquery.bxslider.css',
-        '/css/font-awesome.css',
         '/css/main.css',
         '/css/custom.css',
     ];
-    // CSS підключаємо звичайними stylesheet-посиланнями: це не дублює їх у <noscript>
-    // і гарантує коректний перший рендер навіть до виконання JavaScript.
     public $js = [
 //        '/js/vendor/jquery-1.10.1.min.js',
 

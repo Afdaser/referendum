@@ -8,6 +8,13 @@ use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
 
 AppAsset::register($this);
+$decorativeCssOptions = [
+    'media' => 'print',
+    'onload' => "this.onload=null;this.media='all'",
+];
+// Це лише декоративні стилі, тому вони не повинні блокувати перший рендер.
+$this->registerCssFile('/css/font-awesome.css', $decorativeCssOptions);
+$this->registerCssFile('/css/bootstrap-theme.min.css', $decorativeCssOptions);
 $this->registerCssFile('/css/bootstrap.min.css');
 
 $locale = Yii::$app->language;
@@ -52,6 +59,10 @@ $isMainIndexPage = (
 
     <?php // AssetBundle формує по одному стандартному посиланню для кожного CSS-файлу. ?>
     <?php $this->head() ?>
+    <noscript>
+        <link rel="stylesheet" href="/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    </noscript>
 
     <?= Yii::$app->page->faviconHtml ?>
 

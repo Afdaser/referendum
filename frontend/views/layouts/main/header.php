@@ -8,9 +8,6 @@ use yii\widgets\ActiveForm;
 
 /** @var $this Controller */ ?>
 <?php $headerLoginModel = Yii::$app->user->isGuest ? new LoginForm() : null; ?>
-<!-- ~/frontend/views/layouts/main/header.php -->
-<!-- Header
-================================================== -->
 <header class="header">
     <div class="container">
         <div class="header_row">

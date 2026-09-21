@@ -6,8 +6,6 @@ use yii\helpers\Html;
 
 /** @var $this Controller */ ?>
 
-<!-- ~/frontend/views/layouts/main/right_column.php -->
-
 <div class="col-md-4">
 	<div class="row left_cut_row">
 		<div class="auth_b">
@@ -22,7 +20,6 @@ use yii\helpers\Html;
 <?php /* OLD.adsbygoogle :
 			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <?php /* /OLD.adsbygoogle */?>
-<!-- right -->
 <?php if(YII_ENV == 'prod'): ?>
 <ins class="adsbygoogle"
      style="display:block"

@@ -1,4 +1,3 @@
-<!-- ~/frontend/views/layouts/main/footer.php -->
 <?php
 
 use common\models\FooterLink;
@@ -12,12 +11,10 @@ $prefix =  ('https://online-statistics.org' !=  Yii::$app->request->hostinfo) ? 
 // Отримуємо набір посилань для поточної мови + глобальні посилання для всіх мов.
 $footerLinks = FooterLink::getForLanguage((string) Yii::$app->language);
 ?>
-<!-- Footer
-================================================== -->
 <footer class="footer">
     <div class="container">
         <nav class="row foot_links" aria-label="Footer navigation">
-            <!-- Єдиний список дає CSS змогу рівномірно розкласти посилання на кожній ширині екрана. -->
+            <?php // Єдиний список дає CSS змогу рівномірно розкласти посилання без службового HTML для краулерів. ?>
             <ul class="col-xs-12 list-unstyled">
                 <?php foreach ($footerLinks as $footerLink): ?>
                     <?php

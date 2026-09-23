@@ -112,4 +112,8 @@ return array(
     '{title} | Новини Referendum' => '{title} | Referendum-nyheter',
     'Сторінку новин не знайдено.' => 'Nyhetssiden ble ikke funnet.',
     'Новину не знайдено.' => 'Nyheten ble ikke funnet.',
+    // Приховані підписи полів форми залишаються зрозумілими для допоміжних технологій.
+    'Текст коментаря' => 'Kommentartekst',
+    'Текст варіанта відповіді' => 'Tekst til svarforslag',
+
 );

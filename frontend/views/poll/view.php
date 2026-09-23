@@ -196,13 +196,14 @@ if (!empty($poll->pollLanguage)) {
 		<?php } ?>
 		<div class="comments_add-answer_b">
             <ul class="nav nav-tabs" role="tablist">
-                <li>
-                    <a href="#middle_comments_list_b" role="tab" data-toggle="tab"><?php echo Yii::t("poll", 'Коментарі'); ?>
+                <?php // role="presentation" залишає посилання-вкладки прямими елементами ARIA tablist. ?>
+                <li role="presentation">
+                    <a href="#middle_comments_list_b" role="tab" aria-controls="middle_comments_list_b" data-toggle="tab"><?php echo Yii::t("poll", 'Коментарі'); ?>
                         <span class="count_poll"><?php echo count($poll->pollComments); ?></span>
                     </a>
                 </li>
-                <li class="active">
-                    <a href="#inner_add-answer_b" role="tab" data-toggle="tab"><?php echo Yii::t("poll", 'Запропоновані відповіді'); ?>
+                <li class="active" role="presentation">
+                    <a href="#inner_add-answer_b" role="tab" aria-controls="inner_add-answer_b" data-toggle="tab"><?php echo Yii::t("poll", 'Запропоновані відповіді'); ?>
                         <span class="count_poll"><?php echo count($poll->pollAnswers); ?></span>
                     </a>
                 </li>
@@ -217,13 +218,15 @@ if (!empty($poll->pollLanguage)) {
             </div>
             <div class="comments_block_bottom">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li class="active"><a href="#middle_text_input__comment_b" role="tab" data-toggle="tab"><?php echo Yii::t("poll", 'Додати коментар'); ?></a></li>
-                    <li><a href=" #middle_text_input_b" role="tab" data-toggle="tab"><?php echo Yii::t("poll", 'Додати варіант відповіді'); ?></a></li>
+                    <?php // Презентаційні li виправляють ARIA-ієрархію та не змінюють стилі Bootstrap. ?>
+                    <li class="active" role="presentation"><a href="#middle_text_input__comment_b" role="tab" aria-controls="middle_text_input__comment_b" data-toggle="tab"><?php echo Yii::t("poll", 'Додати коментар'); ?></a></li>
+                    <li role="presentation"><a href="#middle_text_input_b" role="tab" aria-controls="middle_text_input_b" data-toggle="tab"><?php echo Yii::t("poll", 'Додати варіант відповіді'); ?></a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="middle_text_input_b" class="middle_text_input_b tab-pane">
                         <form method="POST" action="<?= Url::to(['/poll/addAnswer']) ?>">
                         <input name="Profile[answer][poll_id]" type="text" class="autocomplete" value="<?php echo $poll->id;?>" hidden>
+                        <label class="sr-only" for="answer_text"><?php echo Yii::t('poll', 'Текст варіанта відповіді'); ?></label>
                         <textarea id="answer_text" maxlength="60" name="Profile[answer][title]"><?php echo $answerModel->title;?></textarea>
                         <div class="count_symbols">
                             <?php echo Yii::t("poll", 'Залишилось'); ?>: <span id="textareaFeedback">60</span> <?php echo Yii::t("poll", 'символів'); ?>
@@ -237,7 +240,9 @@ if (!empty($poll->pollLanguage)) {
                         <form method="POST" action="<?= Url::to(['/poll/addComment']) ?>">
                             <input name="Profile[comment][poll_id]" type="text" class="autocomplete" value="<?php echo $poll->id;?>" hidden>
                             <input name="Profile[comment][parent_id]" type="text" class="autocomplete" value="<?php echo isset($commentModel->parent_id)?$commentModel->parent_id:'';?>" hidden>
-                            <textarea name="Profile[comment][content]"><?php echo $commentModel->content;?></textarea>
+                            <?php // Прихований підпис надає полю коментаря доступну локалізовану назву. ?>
+                            <label class="sr-only" for="comment_text"><?php echo Yii::t('poll', 'Текст коментаря'); ?></label>
+                            <textarea id="comment_text" name="Profile[comment][content]"><?php echo $commentModel->content;?></textarea>
                             <div class="bottom_btn_b">
                                 <button type="submit" class="send_btn"><?php echo Yii::t("poll", 'Надіслати'); ?><i class="send_icon"></i></button>
                             </div>

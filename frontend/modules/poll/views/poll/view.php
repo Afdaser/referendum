@@ -278,14 +278,15 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
 
                     <div class="comments_add-answer_b">
     <ul class="nav nav-tabs" role="tablist">
-        <li class="active"> <!-- ТЕПЕР активна вкладка "Коментарі" -->
-            <a href="#middle_comments_list_b" role="tab" data-toggle="tab">
+        <?php // role="presentation" прибирає службовий li з ARIA-ієрархії, щоб вкладки були дочірніми для tablist. ?>
+        <li class="active" role="presentation"> <!-- ТЕПЕР активна вкладка "Коментарі" -->
+            <a href="#middle_comments_list_b" role="tab" aria-controls="middle_comments_list_b" data-toggle="tab">
                 <?= Yii::t('poll', 'Коментарі'); ?>
                 <span class="count_poll" itemprop="commentCount"><?= count($poll->pollComments); ?></span>
             </a>
         </li>
-        <li>
-            <a href="#inner_add-answer_b" role="tab" data-toggle="tab">
+        <li role="presentation">
+            <a href="#inner_add-answer_b" role="tab" aria-controls="inner_add-answer_b" data-toggle="tab">
                 <?= Yii::t('poll', 'Запропоновані відповіді'); ?>
                 <span class="count_poll"><?= count($poll->pollAnswers); ?></span>
             </a>
@@ -301,14 +302,16 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
     </div>
     <div class="comments_block_bottom">
         <ul class="nav nav-tabs" role="tablist">
-            <li class="active"><a href="#middle_text_input__comment_b" role="tab" data-toggle="tab"><?= Yii::t('poll', 'Додати коментар'); ?></a></li>
-            <li><a href="#middle_text_input_b" role="tab" data-toggle="tab"><?= Yii::t('poll', 'Додати варіант відповіді'); ?></a></li>
+            <?php // Презентаційні обгортки зберігають Bootstrap-розмітку без порушення дерева доступності. ?>
+            <li class="active" role="presentation"><a href="#middle_text_input__comment_b" role="tab" aria-controls="middle_text_input__comment_b" data-toggle="tab"><?= Yii::t('poll', 'Додати коментар'); ?></a></li>
+            <li role="presentation"><a href="#middle_text_input_b" role="tab" aria-controls="middle_text_input_b" data-toggle="tab"><?= Yii::t('poll', 'Додати варіант відповіді'); ?></a></li>
         </ul>
         <div class="tab-content">
             <div id="middle_text_input_b" class="middle_text_input_b tab-pane">
                 <form method="post" action="<?= Url::toRoute(['/poll/poll/add-answer']); ?>">
                     <?= yii\helpers\Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken); ?>
                     <input name="Profile[answer][poll_id]" type="text" class="autocomplete" value="<?= $poll->id;?>" hidden>
+                    <label class="sr-only" for="answer_text"><?= Yii::t('poll', 'Текст варіанта відповіді'); ?></label>
                     <textarea id="answer_text" maxlength="60" name="Profile[answer][title]"><?= $answerModel->title;?></textarea>
                     <div class="count_symbols">
                         <?= Yii::t('poll', 'Залишилось'); ?>: <span id="textareaFeedback">60</span> <?= Yii::t('poll', 'символів'); ?>
@@ -339,7 +342,9 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                             <p class="guest-comment-author-hint"><?= Yii::t('poll', 'Вкажіть нікнейм, під яким буде опубліковано коментар.'); ?></p>
                         </div>
                     <?php endif; ?>
-                    <textarea name="Profile[comment][content]"><?= $commentModel->content;?></textarea>
+                    <?php // Видима форма не змінюється, а прихований підпис надає textarea доступну назву. ?>
+                    <label class="sr-only" for="comment_text"><?= Yii::t('poll', 'Текст коментаря'); ?></label>
+                    <textarea id="comment_text" name="Profile[comment][content]"><?= $commentModel->content;?></textarea>
                     <div class="bottom_btn_b">
                         <button type="submit" class="send_btn"><?= Yii::t('poll', 'Надіслати'); ?><i class="send_icon"></i></button>
                     </div>

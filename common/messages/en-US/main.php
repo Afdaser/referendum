@@ -2,10 +2,10 @@
 // Это я добавил для теста, переводить будет заказчик
 return array(
 		'Online-statistic.com найкращі опитування за день'=>'Online-statistic.com best poll for day',// tags
-        'Гарячі теми'=>'Hot topics',
+        'Гарячі теми'=>'Hot polls',
         'Сайт зроблений як унікальна платформа для опитувань. Кожен може створити опитування на любу тему яку він забажає, та відповісти на опитування інших.'=>'The site is made as a unique platform for the polls. Everyone can create a poll on any topic they want and answer the polls of others.',
         'соцопрос, соцопросы, соцопитування'=>'poll, question, vote, poll, divide, ballot',
-        'Актуальні для вас теми'=>'Topics relevant to you',
+        'Актуальні для вас теми'=>'Polls relevant to you',
         'Ваші опитування'=>'Your polls',
         'Опис'=>'Recent polls to you',
         'Опис1'=>'Polls that you created, Polls user-created',
@@ -38,6 +38,7 @@ return array(
         'Авторизація'=>'Authorization',
         'UserName'=>'User name',
         'Вхід'=>'Login',
+        'Увійти через соціальну мережу'=>'Sign in with social network',
         'сайту'=>'Site',
         'Введіть'=>'Enter',
         'Введіть email коректного формату!'=>'Enter correct email',

@@ -1,12 +1,15 @@
 <?php
-
-// Містить лише повідомлення, які використовує застосунок; український текст є джерельним.
-return [
-    'про авторів' => '
+return array(
+    //страница "Авторы"
+	StringHelper::AUTHORS => '
                     <ul>
                         <li>Slava Svyatoslav</li>
                         <li>support@online-statistics.org</li>
                     </ul>',
-    'про партнерів' => '<ul> </ul>',
-    'про спонсорів' => '<ul> </ul>',
-];
+
+    //страница "Партнеры"
+    StringHelper::PARTNERS => '<ul> </ul>',
+
+    //страница "Помощь"
+    StringHelper::SPONSORS => '<ul> </ul>',
+);

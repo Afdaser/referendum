@@ -1,6 +1,4 @@
 <?php
-
-// Містить лише повідомлення, які використовує застосунок; український текст є джерельним.
 return [
     'Найцікавіші опитування на тему "{tag}"' => 'De mest interessante avstemningene om "{tag}"',
     'Опитування на тему "{tag}" були створені {date}, і відтоді колекція думок {tag} зросла до {count} опитувань.' => 'Avstemninger om "{tag}" ble først opprettet på nettstedet vårt {date}, og siden den gang har samlingen av meninger om {tag} vokst til {count} avstemninger.',
@@ -13,3 +11,4 @@ return [
     'Опитування та думки щодо {tag}: беріть участь у {count} захопливих опитуваннях, висловлюйте свої думки, коментуйте актуальні питання, спілкуйтеся з іншими та досліджуйте результати.' => '{tag}-avstemninger og meninger: delta i {count} spennende undersøkelser, si din mening, kommenter aktuelle saker, få kontakt med andre og utforsk resultatene.',
     'Часті запитання про опитування на тему {tag}' => 'Ofte stilte spørsmål om undersøkelsen {tag}',
 ];
+

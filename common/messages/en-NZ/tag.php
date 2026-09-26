@@ -1,7 +1,6 @@
 <?php
 
-// Переклад для локалі en-NZ (може уточнюватись окремо).
-
+// Містить лише повідомлення, які використовує застосунок; український текст є джерельним.
 return [
     'Найцікавіші опитування на тему "{tag}"' => 'Opinions {tag} polling',
     'Опитування на тему "{tag}" були створені {date}, і відтоді колекція думок {tag} зросла до {count} опитувань.' => 'Polls on the topic "{tag}" were first created on our website on {date}, and since then the collection of opinions {tag} polling has grown to {count} polls in total.',
@@ -14,4 +13,3 @@ return [
     'Опитування та думки щодо {tag}: беріть участь у {count} захопливих опитуваннях, висловлюйте свої думки, коментуйте актуальні питання, спілкуйтеся з іншими та досліджуйте результати.' => '{tag} polls and opinions: take part in {count} exciting surveys, voice your thoughts, comment on hot issues, connect with others, and explore results.',
     'Часті запитання про опитування на тему {tag}' => 'Frequently asked questions about the {tag} survey',
 ];
-

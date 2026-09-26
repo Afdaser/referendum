@@ -1,27 +1,24 @@
 <?php
 
-// Переклад для локалі en-NZ (може уточнюватись окремо).
-
-return array(
-	'Опитувань на сторінку'=>'Polls on the page',
-	'Cтворити нове'=>'Create new',
-	'Сортування'=>'Sort',
-	'Період опитувань'=>'Poll period',
-	'Сортування опитувань'=>'Poll sorting',
-	'Рейтинг по спаданню'=>'Rating by decreasing',
-	'Рейтинг по зростанню'=>'Rating by increasing',
-	'За замовчуванням'=>'By default',
-	'Головна'=>'Main page',
-	'Пошук'=>'Search',
-	'Пошук по назві опитування'=>'Search by poll name',
-	'Пошук по тегах'=>'Search by tags',
-	'Країна'=>'Country',
-	'Регіон'=>'Region',
-        'Знайдено результатів'=>'Results found',
-        'за весь час'=>'all time',
-        'за день'=>'daily',
-        'за неділю'=>'weekly',
-        'за місяць'=>'monthly',
-        'за півроку'=>'half-year',
-        'за рік'=>'yearly',
-);
+// Містить лише повідомлення, які використовує застосунок; український текст є джерельним.
+return [
+    'Опитувань на сторінку' => 'Polls on the page',
+    'Cтворити нове' => 'Create new',
+    'Сортування' => 'Sort',
+    'Період опитувань' => 'Poll period',
+    'Сортування опитувань' => 'Poll sorting',
+    'Рейтинг по спаданню' => 'Rating by decreasing',
+    'Рейтинг по зростанню' => 'Rating by increasing',
+    'За замовчуванням' => 'By default',
+    'Головна' => 'Main page',
+    'Пошук' => 'Search',
+    'Пошук по назві опитування' => 'Search by poll name',
+    'Пошук по тегах' => 'Search by tags',
+    'Знайдено результатів' => 'Results found',
+    'за весь час' => 'all time',
+    'за день' => 'daily',
+    'за неділю' => 'weekly',
+    'за місяць' => 'monthly',
+    'за півроку' => 'half-year',
+    'за рік' => 'yearly',
+];

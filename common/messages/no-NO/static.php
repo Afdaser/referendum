@@ -1,15 +1,12 @@
 <?php
-return array(
-    //страница "Авторы"
-	StringHelper::AUTHORS => '
+
+// Містить лише повідомлення, які використовує застосунок; український текст є джерельним.
+return [
+    'про авторів' => '
                     <ul>
                         <li>Slava Svyatoslav</li>
                         <li>support@online-statistics.org</li>
                     </ul>',
-
-    //страница "Партнеры"
-    StringHelper::PARTNERS => '<ul> </ul>',
-
-    //страница "Помощь"
-    StringHelper::SPONSORS => '<ul> </ul>',
-);
+    'про партнерів' => '<ul> </ul>',
+    'про спонсорів' => '<ul> </ul>',
+];

@@ -1,25 +1,20 @@
 <?php
 
-// Это я добавил для теста, переводить будет заказчик
-return array(
-    'Online-statistic.com найкращі опитування за день' => 'Online-statistic.com best poll for day', // tags
+// Містить лише повідомлення, які використовує застосунок; український текст є джерельним.
+return [
+    'Online-statistic.com найкращі опитування за день' => 'Online-statistic.com best poll for day',
     'Гарячі теми' => 'Hot topics',
     'Сайт зроблений як унікальна платформа для опитувань. Кожен може створити опитування на любу тему яку він забажає, та відповісти на опитування інших.' => 'The site is made as a unique platform for the polls. Everyone can create a poll on any topic they want and answer the polls of others.',
     'соцопрос, соцопросы, соцопитування' => 'poll, question, vote, poll, divide, ballot',
     'Актуальні для вас теми' => 'Topics relevant to you',
     'Ваші опитування' => 'Your polls',
     'Опис' => 'Recent polls to you',
-    'Опис1' => 'Polls that you created, Polls user-created',
     'слова моїх опитувань' => 'sociological survey, polls',
-    'Помилка' => 'Error',
-    'Статистика онлайн' => 'Statistic on-line',
-    'Сторінку не знайдено' => 'Page not found',
     'ЗАРЕЄСТРУВАТИСЯ' => 'SIGN UP',
     'Скасувати' => 'Cancel',
     'Погоджуюсь з' => 'I agree with',
     'Правилами та умовами' => 'Terms and Conditions',
     'Close' => 'Close',
-    'соцопросы, соцопрос, соцопитування' => 'social surveys that are appropriate for the user, the appropriate social surveys',
     'Реєстрація' => 'Registration',
     'Логін' => 'Login',
     'Email' => 'Email',
@@ -57,9 +52,7 @@ return array(
     'Освіта' => 'Education',
     'Кар’єра' => 'Career',
     'Пропустити' => 'Skip',
-    'Автори' => 'Authors',
     'Партнери' => 'Partners',
-    'Допомога' => 'Donation',
     'кожен голос важливий' => 'Every vote is important',
     'Правила та умови сайту' => 'Terms and Conditions of the website',
     'Сховати' => 'Hide',
@@ -73,14 +66,6 @@ return array(
                             <li>It is prohibited for on-line users to place advertisement in the form of surveys and comments, also spam is banned.
 </li>
                         </ul>',
-    // ошибка на сайте
-    'Спасибо! Сообщение об ошибке отправлено' => 'Thanks! Error message sent',
-    'Сообщение об ошибке' => 'Error message',
-    'Страница' => 'Page',
-    'Выделенный текст' => 'The selected text',
-    // переменная к title опроса
     'опрос' => 'Poll',
-    // Доступна назва пояснює, що перелік країн перемикає країну піддомену.
     'Країна піддомену' => 'Страна поддомена',
-
-);
+];

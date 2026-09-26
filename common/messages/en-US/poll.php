@@ -123,4 +123,8 @@ Registration on the site is required not only to see the results of surveys, but
     '{title} | Новини Referendum' => '{title} | Referendum News',
     'Сторінку новин не знайдено.' => 'News page not found.',
     'Новину не знайдено.' => 'News item not found.',
+    // Приховані підписи полів форми залишаються зрозумілими для допоміжних технологій.
+    'Текст коментаря' => 'Comment text',
+    'Текст варіанта відповіді' => 'Suggested answer text',
+
 );

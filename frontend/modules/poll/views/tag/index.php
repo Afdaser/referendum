@@ -57,10 +57,12 @@ $latestActivityBlock = $tagModel->getLatestActivityBlockHtml();
                 <?= $tagDescription; ?>
             </div>
         <?php endif; ?>
-        <div class="info_block">
-            <h2><?= Yii::t('tag', 'Найцікавіші опитування на тему "{tag}"', ['tag' => $tagModel->name]); ?></h2>
-            <p><?= $tagModel->getInfoText(); ?></p>
-        </div>
+        <?php if ($infoText = trim((string) $tagModel->getInfoText())) : ?>
+            <div class="info_block">
+                <?php // Виводимо HTML без додаткової обгортки, щоб структура повністю задавалася в адмінці. ?>
+                <?= $infoText; ?>
+            </div>
+        <?php endif; ?>
         <?php if ($latestActivityBlock !== '') : ?>
             <div class="info_block tag-latest-activity">
                 <?php // Блок активності показуємо лише коли адміністратор явно задав шаблон. ?>

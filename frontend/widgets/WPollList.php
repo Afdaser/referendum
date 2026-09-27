@@ -41,7 +41,6 @@ class WPollList extends BaseWidget
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].
      * - `{items}`: the list items. See [[renderItems()]].
-     * - `{sorter}`: the sorter. See [[renderSorter()]].
      * - `{pager}`: the pager. See [[renderPager()]].
      */
 //    public $layout = "{summary}\n{items}\n{pager}";
@@ -55,10 +54,10 @@ class WPollList extends BaseWidget
             ? "<div style=\"border:0px dashed blue; width:96%;\">\n{debug}\n</div>\n"
             : '';
 
+        // У нижньому блоці залишаємо лише навігацію між сторінками без керування кількістю опитувань.
         $this->layout = <<<LAYOUT
 {$debugSection}{summary}\n{items}\n
 <div class="bottom_pagination_b clearfix">
-{sorter}\n
 {pager}
 </div>
 
@@ -107,8 +106,6 @@ LAYOUT;
                 return $this->renderItems();
             case '{pager}':
                 return $this->renderPager();
-            case '{sorter}':
-                return $this->renderSorter();
             case '{debug}':
                 return $this->renderDebug();
             default:
@@ -138,20 +135,6 @@ Polls debug:
 <br>Yii::app -> request -> languageId => [{$yiiLanguageId}]
 </div>
 HTML;
-    }
-
-    /**
-     * Renders the sorter.
-     * @return string the rendering result
-     */
-    public function renderSorter()
-    {
-        if ($this->shouldHideRestrictedGuestContent()) {
-            // На закритих для гостей сторінках не показуємо жодні елементи керування списком.
-            return '';
-        }
-
-        return $this->render('poll-list-soter', $this->data);
     }
 
     public function renderSummary()

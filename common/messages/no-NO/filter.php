@@ -1,6 +1,5 @@
 <?php
 return array(
-	'Опитувань на сторінку'=>'Avstemninger på siden',
 	'Cтворити нове'=>'Lag ny',
 	'Сортування'=>'Sortere',
 	'Період опитувань'=>'Avstemningsperiode',

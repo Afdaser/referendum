@@ -171,18 +171,6 @@
 
 
             <div class="bottom_pagination_b clearfix">
-                <div style="border:2px dashed red;">#DEV03:block04 [~/frontend/widgets/views/poll-list-soter.php]</div>
-                <div class="right_count_select">
-                    Опитувань на сторінку:
-                    <select class="count_article" onchange="document.location.href = & quot; /site/hotPolls / desc / month / & quot; + $(this).val() + & quot; ?click = true & quot;">
-                        <option value="10" selected="">10</option>
-                        <option value="5">5</option>
-                        <option value="2">2</option>
-                    </select>
-                </div>
-
-
-
             </div>
         </div>
     </div>

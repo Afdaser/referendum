@@ -1205,21 +1205,6 @@ button.radio_link:active .radio_indicator {
     background-color: #b7c8ca;
     color: #fff;
 }
-.right_count_select {
-    float: right;
-    margin-right: 20px;
-}
-.count_article {
-    display: inline-block;
-    vertical-align: middle;
-    height: 22px;
-    width: 50px;
-    background: #fff;
-    border: none;
-    border-radius: 2px;
-    margin-left: 6px;
-    margin-bottom: 5px;
-}
 .auth_b {
     background: #f0f4f4;
     margin-bottom: 0;

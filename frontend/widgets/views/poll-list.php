@@ -296,11 +296,6 @@ if ($category === 'own') {
                 document.forms['Search'].submit();
             });
 
-            $(document).on('change','.count_article',function(){
-                document.forms['Search'].action = "/site/search/desc/"+$(this).val();
-                document.forms['Search'].submit();
-            });
-
             $(document).on('click','.pagination a',function(){
                 document.forms['Search'].action = $(this).attr('href');
                 document.forms['Search'].submit();
@@ -515,14 +510,6 @@ if ($category === 'own') {
 
                                 <div class="bottom_pagination_b clearfix">
     
-    <div class="right_count_select">
-        Polls on the page:
-                    <select class="count_article">
-                <option value="10" selected="">10</option>
-                <option value="5">5</option>
-                <option value="2">2</option>
-            </select>
-            </div>
 </div>                                <!-- Modal -->
 <div class="modal new_poll" id="new_poll0" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">

@@ -199,11 +199,6 @@ use common\models\User;
                 document.forms['SearchForm'].submit();
             });
 
-            $(document).on('change','.count_article',function(){
-                document.forms['SearchForm'].action = "/site/search/<?php echo $sort?>/"+$(this).val();
-                document.forms['SearchForm'].submit();
-            });
-
             $(document).on('click','.pagination a',function(){
                 document.forms['SearchForm'].action = $(this).attr('href');
                 document.forms['SearchForm'].submit();

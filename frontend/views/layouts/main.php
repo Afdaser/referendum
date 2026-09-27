@@ -7,7 +7,15 @@ use frontend\assets\AppAsset;
 use frontend\widgets\WTopPollsSlider;
 use frontend\helpers\Url;
 
-AppAsset::register($this);
+$appAsset = AppAsset::register($this);
+// Інформаційні матеріали з футера обслуговує PageController, а список і матеріали новин — NewsController.
+// На цих сторінках немає графіків опитувань, тому не завантажуємо їхні два окремі JS-файли.
+if (in_array(Yii::$app->controller->id, ['page', 'news'], true)) {
+    $appAsset->js = array_values(array_diff($appAsset->js, [
+        '/js/highCharts/highcharts.js',
+        '/js/poll-chart-queue.js',
+    ]));
+}
 $this->registerCssFile('/css/bootstrap.min.css');
 
 $locale = Yii::$app->language;

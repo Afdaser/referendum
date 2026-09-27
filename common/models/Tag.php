@@ -451,53 +451,20 @@ class Tag extends ActiveRecord
 
     /**
      * Формує короткий текстовий опис тегу.
-     * Якщо адміністратор додав шаблон, використовуємо його та підставляємо змінні.
-     * Інакше повертаємо стандартний текст.
+     * Показуємо лише явно налаштований шаблон: порожнє поле не має прихованого fallback-тексту.
      *
      * @return string
      */
     public function getInfoText()
     {
+        $staticText = $this->getStaticTextRecord();
+        if (!$staticText || trim((string) $staticText->content) === '') {
+            return '';
+        }
+
         $data = $this->getStaticContentData();
 
-        $staticText = $this->getStaticTextRecord();
-
-        if ($staticText && trim((string)$staticText->content) !== '') {
-            return strtr($staticText->content, $data['replacements']);
-        }
-
-        $parts = [];
-        $parts[] = Yii::t('tag', 'Опитування на тему "{tag}" були створені {date}, і відтоді колекція думок {tag} зросла до {count} опитувань.', [
-            'tag' => $this->name,
-            'date' => $data['created'],
-            'count' => $data['pollCount'],
-        ]);
-
-        if ($data['popularPoll']) {
-            $parts[] = Yii::t('tag', 'Найпопулярніше серед них — {title}, який набрав {votes} голосів.', [
-                'title' => Html::a(Html::encode($data['popularPoll']->title), $data['popularPoll']->getUrl()),
-                'votes' => $data['popularPoll']->countPollOptionsVoters,
-            ]);
-        }
-
-        if ($data['topRatedPoll']) {
-            $parts[] = Yii::t('tag', 'Опитування з найбільшим рейтингом — {title} має рейтинг {rating}.', [
-                'title' => Html::a(Html::encode($data['topRatedPoll']->title), $data['topRatedPoll']->getUrl()),
-                'rating' => $data['topRatedPoll']->rating,
-            ]);
-            $parts[] = Yii::t('tag', 'Рейтинг присвоюється користувачами сайту до кожного опитування.', [
-                'tag' => $this->name,
-            ]);
-        }
-
-        if ($data['latestPoll']) {
-            $parts[] = Yii::t('tag', 'Останнє опитування по темі {tag} було додано {date}.', [
-                'tag' => $this->name,
-                'date' => $data['latestDate'],
-            ]);
-        }
-
-        return implode(' ', $parts);
+        return strtr($staticText->content, $data['replacements']);
     }
 
     /**

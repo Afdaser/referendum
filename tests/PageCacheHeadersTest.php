@@ -29,6 +29,7 @@ class PageCacheHeadersTest extends TestCase
 
         PageCacheHeaders::apply($request, $response, true);
 
+        self::assertContains('Cookie', $response->headers->get('Vary', [], false));
         self::assertSame('private, max-age=604800', $response->headers->get('Cache-Control'));
         $expires = strtotime($response->headers->get('Expires'));
         // Даємо одну секунду допуску на перехід системного часу між обчисленнями.

@@ -23,7 +23,8 @@ final class PageCacheHeaders
             && $response->statusCode < 300;
 
         if ($isGuest && $isPageRequest) {
-            // private не дозволяє CDN або проксі змішувати сторінки різних відвідувачів.
+            // Cookie відокремлює гостьову копію від сторінки після входу користувача.
+            $response->headers->add('Vary', 'Cookie');
             $response->headers->set('Cache-Control', 'private, max-age=' . self::MAX_AGE);
             $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + self::MAX_AGE) . ' GMT');
             return;

@@ -102,6 +102,18 @@ return [
         'session' => [
             // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
+            // Вимикаємо застарілі PHP-заголовки з датою 1981 року; ними керує response нижче.
+            'cacheLimiter' => '',
+        ],
+        'response' => [
+            'on beforeSend' => function ($event) {
+                // Кешуємо лише звичайні HTML-сторінки та не послаблюємо захист приватних відповідей.
+                \frontend\components\PageCacheHeaders::apply(
+                    Yii::$app->request,
+                    $event->sender,
+                    Yii::$app->user->isGuest
+                );
+            },
         ],
         'page' => [
             'class' => 'frontend\components\PageMetaData',

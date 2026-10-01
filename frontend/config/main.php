@@ -55,7 +55,6 @@ return [
                 'app' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@common/messages',
-                    'forceTranslation' => true,
 //                    'sourceLanguage' => 'en-TT',
                     'fileMap' => [
                         'app' => 'app.php',
@@ -64,7 +63,6 @@ return [
                 'user' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@common/messages',
-                    'forceTranslation' => true,
 //                    'sourceLanguage' => 'en-TT',
                     'fileMap' => [
                         'app' => 'user.php',
@@ -73,7 +71,6 @@ return [
                 '*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@common/messages',
-                    'forceTranslation' => true,
 //                    'sourceLanguage' => 'en-TT',
                     'fileMap' => [
                         'main' => 'main.php',

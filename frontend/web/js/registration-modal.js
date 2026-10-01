@@ -28,6 +28,26 @@ $(document).ready(function () {
                     $('#registrtion_step_1').modal('show');
                 });
         });
+
+        $(document).on('submit', '#registrtion_step_1 form', function (event) {
+            // Реєстрація є модальним flow: помилки показуємо тут, а не відкриваємо endpoint окремою сторінкою.
+            event.preventDefault();
+
+            var form = $(this);
+            $.post(form.attr('action'), form.serialize()).done(function (result) {
+                if (result.redirectUrl) {
+                    window.location.assign(result.redirectUrl);
+                    return;
+                }
+
+                // Сервер повертає лише безпечні текстові повідомлення валідатора.
+                alert($.map(result, function (message) { return message; }).join('\n'));
+                // Після невдалої перевірки CAPTCHA серверний код уже використаний — оновлюємо зображення.
+                form.find('.right_captcha_b img').trigger('click');
+            }).fail(function () {
+                alert('Не вдалося надіслати форму. Спробуйте ще раз.');
+            });
+        });
     } catch (error) {
         console.error('Помилка в registration-modal.js. Ініціалізація модалки реєстрації призупинена.', error);
     }

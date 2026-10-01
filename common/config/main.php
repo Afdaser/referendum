@@ -20,6 +20,8 @@ if (SITE_PROTOCOL == 'https://') {
 /* */
 return [
     'name' => 'Referendum Social',
+    // Повідомлення в коді українські, тому для uk-UA не шукаємо окремий каталог перекладів.
+    'sourceLanguage' => 'uk-UA',
     'bootstrap' => [
         'dektrium\user\Bootstrap',
         'dektrium\rbac\Bootstrap',

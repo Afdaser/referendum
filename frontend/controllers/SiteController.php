@@ -185,15 +185,28 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && ($user = $model->registerUser())) {
             if (Yii::$app->user->login($user)) {
                 // Не показуємо success-flash після signup, щоб повідомлення не "подорожувало" між сторінками.
+                if (Yii::$app->request->isAjax) {
+                    return $this->asJson(['redirectUrl' => Yii::$app->urlManager->createUrl(['/user/profile'])]);
+                }
+
                 return $this->redirect(['/user/profile']);
             }
 
             // Якщо автологін не вдався — не ведемо на profile, щоб уникнути циклу редіректів для гостя.
             Yii::$app->session->setFlash('warning', 'Реєстрація успішна, але автоматичний вхід не вдався. Увійдіть, будь ласка, вручну.');
+            if (Yii::$app->request->isAjax) {
+                return $this->asJson(['redirectUrl' => Yii::$app->urlManager->createUrl(['/site/login'])]);
+            }
+
             return $this->redirect(['/site/login']);
         }
 
         if (Yii::$app->request->isPost) {
+            if (Yii::$app->request->isAjax) {
+                // Ajax-відповідь залишає користувача в модалці та повертає конкретні помилки полів.
+                return $this->asJson($model->getFirstErrors());
+            }
+
             // Повертаємо узагальнену помилку, щоб користувач не втрачав контекст модального flow.
             Yii::$app->session->setFlash('error', 'Перевірте правильність заповнення полів реєстрації.');
         }

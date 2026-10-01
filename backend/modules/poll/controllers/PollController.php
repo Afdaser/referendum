@@ -118,11 +118,18 @@ class PollController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
-            $model->syncTags($model->tagNames);
-            $this->savePollFaq($model);
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            $post = $this->request->post();
+            // Порожній Select2 надсилає рядок, а при зміні мови старі теги не можна переносити.
+            $languageChanged = (int)($post['Poll']['poll_language_id'] ?? 0) !== (int)$model->poll_language_id;
+            $post['Poll']['tagNames'] = $languageChanged ? [] : (array)($post['Poll']['tagNames'] ?? []);
+
+            if ($model->load($post) && $model->save()) {
+                // Оновлюємо теги після збереження, щоб відобразити всі зміни зі сторінки редагування.
+                $model->syncTags($model->tagNames);
+                $this->savePollFaq($model);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [

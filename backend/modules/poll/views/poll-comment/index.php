@@ -38,7 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'poll_id',
                 'filter' => Poll::dropDownAllItems(),
-                'value' => 'poll.title',
+                'format' => 'raw',
+                'value' => static function (PollComment $model) {
+                    // Ведемо адміністратора саме на публічну сторінку опитування.
+                    return $model->poll
+                        ? Html::a(Html::encode($model->poll->title), $model->poll->absoluteUrl)
+                        : null;
+                },
             ],
             'user_id',
             'content',

@@ -86,4 +86,14 @@ return array(
     // Доступна назва пояснює, що перелік країн перемикає країну піддомену.
     'Країна піддомену' => 'Underdomenets land',
 
+
+    // Підписи інфографіки головної сторінки.
+    'Зареєстровані користувачі' => 'Registrerte brukere',
+    'Створені опитування' => 'Opprettede avstemninger',
+    'Віддані голоси' => 'Avgitte stemmer',
+    'Referendum у цифрах' => 'Referendum i tall',
+    'Спільнота, що висловлює свою думку' => 'Et fellesskap som sier sin mening',
+    'Долучайтеся до відкритих опитувань, створюйте власні та голосуйте за важливе.' => 'Delta i åpne avstemninger, lag dine egne og stem på det som betyr noe.',
+    'Дані оновлено: {date}' => 'Data oppdatert: {date}',
+
 );

@@ -58,8 +58,6 @@ return [
                     'class' => 'yii\i18n\PhpMessageSource',
 //                    'basePath' => '@backend/messages',
                     'basePath' => '@common/messages',
-                    'forceTranslation' => true,
-                    'sourceLanguage' => 'en-TT',
                     'fileMap' => [
                         'back' => 'back.php',
                         'base' => 'base.php',

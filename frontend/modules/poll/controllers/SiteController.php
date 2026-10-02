@@ -146,11 +146,11 @@ class SiteController extends Controller
     public function actionMyPolls($language = null, $sorting = 'desc', $period = '', $limit = 10)
     {
         if (Yii::$app->request->isPost) {
-            $resultOfSaving = $this->processCreatePoll();
-            if ($resultOfSaving) {
+            $createdPoll = $this->processCreatePoll();
+            if ($createdPoll) {
                 Yii::$app->session->setFlash('success', 'Poll saved successfully');
-//                return Yii::$app->response->redirect(['/poll/site/my-polls',]);
-                return $this->redirect(['/poll/site/my-polls', ]);
+                // Після створення одразу показуємо користувачу його нове опитування.
+                return $this->redirect(['/poll/poll/view', 'id' => $createdPoll->id]);
             } else {
                 $this->forcePollModal = true;
             }
@@ -416,7 +416,7 @@ class SiteController extends Controller
             if($poll->validate() && $poll->save()){
                 $poll->createNewPollOptions($options);
                 $poll->createNewPollTags($postData['tags']);
-                return true;
+                return $poll;
             }
         }
     }

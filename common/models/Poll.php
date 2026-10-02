@@ -1018,9 +1018,8 @@ class Poll extends ActiveRecord
      * @attr - data array
      */
     public function setPollAttributes($attr){
-        // Старі форми екранують уведення перед записом, але апостроф зберігаємо як звичайний символ.
-        $this->title = isset($attr['title']) ? StringHelper::normalizeApostrophes(Html::encode($attr['title'])) : '';
-        $this->describe = isset($attr['describe']) ? StringHelper::normalizeApostrophes(Html::encode($attr['describe'])) : '';
+        $this->title = isset($attr['title']) ? Html::encode($attr['title']) : '';
+        $this->describe = isset($attr['describe']) ? Html::encode($attr['describe']) : '';
         $this->user_id = Yii::$app->user->id;
         $this->rating = 0;
         $this->status = isset($attr['status']) ? intval($attr['status']) : 0;
@@ -1061,7 +1060,7 @@ class Poll extends ActiveRecord
                 if(strlen(Html::encode($option)) < 1){
                     $pollOption->title = ' ';
                 } else{
-                    $pollOption->title = StringHelper::normalizeApostrophes(Html::encode($option));
+                    $pollOption->title = Html::encode($option);
                 }
                 $pollOption->status = PollOption::OPTION_STATUS_PUBLISHED;
                 $pollOption->date_add = date('Y-m-d H:i:s');
@@ -1427,14 +1426,6 @@ class Poll extends ActiveRecord
     public function afterFind()
     {
         parent::afterFind();
-
-        // Виправляємо лише користувацькі тексти опитування, не змінюючи решту полів моделі.
-        $this->title = StringHelper::normalizeApostrophes($this->title);
-        if ($this->describe !== null) {
-            $this->describe = StringHelper::normalizeApostrophes($this->describe);
-        }
-        $this->setOldAttribute('title', $this->title);
-        $this->setOldAttribute('describe', $this->describe);
 
         // Підтягуємо поточні теги, щоб показати їх у формі редагування.
         $this->tagNames = $this->getTags()->select('name')->column();

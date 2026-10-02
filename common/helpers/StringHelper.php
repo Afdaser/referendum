@@ -21,18 +21,6 @@ class StringHelper {
     const PARTNERS = 'про партнерів';
     const SPONSORS = 'про спонсорів';
 
-    /**
-     * Повертає HTML-сутності апострофа на звичайний символ.
-     *
-     * Старі форми зберігали Html::encode() безпосередньо в базу, тому
-     * під час безпечного екранування у view відвідувач бачив `&#039;`.
-     * Навмисно декодуємо лише апостроф, щоб не відновити потенційно небезпечний HTML.
-     */
-    public static function normalizeApostrophes(string $value): string
-    {
-        return preg_replace('/&(?:#0*39|#x0*27|apos);/i', "'", $value);
-    }
-
     //Relative Date Function
     public static function relative_date($date) {
         $result = '';

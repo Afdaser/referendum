@@ -48,8 +48,25 @@ SQL1;
             'current' => 0,
             'previous' => 0,
         ];
+        // Назви місяців задаємо явно, щоб вони не залежали від англомовної локалі бази даних.
+        $monthNames = [
+            1 => 'січень',
+            2 => 'лютий',
+            3 => 'березень',
+            4 => 'квітень',
+            5 => 'травень',
+            6 => 'червень',
+            7 => 'липень',
+            8 => 'серпень',
+            9 => 'вересень',
+            10 => 'жовтень',
+            11 => 'листопад',
+            12 => 'грудень',
+        ];
         foreach ($dataVotes as $item) {
-            $data['monthly_diagram']['labels'][] = $item['the_month'];
+            $monthNumber = (int)substr($item['the_date'], 5, 2);
+            $year = substr($item['the_date'], 0, 4);
+            $data['monthly_diagram']['labels'][] = $monthNames[$monthNumber] . ' ' . $year;
             $data['monthly_diagram']['active'][] = (int)$item['user_votes'];
             $data['monthly_diagram']['inactive'][] = (int)$item['guest_votes'];
         }

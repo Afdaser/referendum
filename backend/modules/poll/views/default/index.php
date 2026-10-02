@@ -4,7 +4,8 @@ use dosamigos\chartjs\ChartJs;
 use yii\helpers\Html;
 use yii\web\JsExpression;
 
-$this->title = Yii::t('app', 'Dashboard');
+// Українські написи задаємо безпосередньо, бо українська є вихідною мовою застосунку.
+$this->title = Yii::t('app', 'Панель керування');
 
 /* @var $this yii\web\View */
 ?>
@@ -84,7 +85,7 @@ $this->title = Yii::t('app', 'Dashboard');
                 <!-- AREA CHART -->
                 <div class="box box-success">
                     <div class="box-header with-border">
-                        <h3 class="box-title"><?= Yii::t('app', 'last votes'); ?></h3>
+                        <h3 class="box-title"><?= Yii::t('app', 'Останні голоси'); ?></h3>
                     </div>
                     <div class="box-body">
                         <!-- Повертаємо розмір графіка до історичного вигляду, як до PR #294. -->
@@ -112,7 +113,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                     'labels' => $data['monthly_diagram']['labels'],
                                     'datasets' => [
                                         [
-                                            'label' => Yii::t('app', 'Total of votes `Registred`'),
+                                            'label' => Yii::t('app', 'Голоси зареєстрованих користувачів'),
                                             'backgroundColor' => "rgba(78,115,223,0.8)",
                                             'borderColor' => "rgba(68,114,196,1)",
                                             'pointBackgroundColor' => "rgba(179,181,198,1)",
@@ -122,7 +123,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                             'data' => $data['monthly_diagram']['active'],
                                         ],
                                         [
-                                            'label' => Yii::t('app', 'Total of votes `Guest`'),
+                                            'label' => Yii::t('app', 'Голоси гостей'),
                                             'backgroundColor' => "rgba(28, 200, 138, 0.9)",
                                             'borderColor' => "rgba(255,99,132,1)",
                                             'pointBackgroundColor' => "rgba(255,99,132,1)",

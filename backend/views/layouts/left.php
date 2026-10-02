@@ -19,28 +19,28 @@ use common\models\AuthItem;
             $menuItems = [
                 ['label' => Yii::t('app', 'REFERENDUM'), 'options' => ['class' => 'header']],
                 [
-                    'label' => Yii::t('app', 'Polls'), // 'Orders',
+                    'label' => Yii::t('app', 'Опитування'),
                     'icon' => 'cubes',
                     'url' => Url::toRoute(['/poll/default/index']),
                     'active' => MenuHelper::isActiveMenu(['poll'], $this->context->route),
 //                    'visible' => Yii::$app->user->can(AuthItem::P_CONTRACT_ENTER),
                     'items' => [
                         [
-                            'label' => Yii::t('app', 'Polls'),
+                            'label' => Yii::t('app', 'Опитування'),
                             'icon' => 'archive',
                             'url' => Url::toRoute(['/poll/poll/index']),
                             'active' => MenuHelper::isActiveMenu(['poll', 'poll'], $this->context->route),
 //                            'visible' => Yii::$app->user->can(AuthItem::G_ADMIN) OR Yii::$app->user->can(AuthItem::G_MANAGER),
                         ],
                         [
-                            'label' => Yii::t('app', 'Poll options'),
+                            'label' => Yii::t('app', 'Варіанти відповідей'),
                             'icon' => 'archive',
                             'url' => Url::toRoute(['/poll/poll-option/index']),
                             'active' => MenuHelper::isActiveMenu(['poll', 'poll-option'], $this->context->route),
 //                            'visible' => Yii::$app->user->can(AuthItem::G_ADMIN) OR Yii::$app->user->can(AuthItem::G_MANAGER),
                         ],
                         [
-                            'label' => Yii::t('app', 'Poll comment'),
+                            'label' => Yii::t('app', 'Коментарі до опитувань'),
                             'icon' => 'archive',
                             'url' => Url::toRoute(['/poll/poll-comment/index']),
                             'active' => MenuHelper::isActiveMenu(['poll', 'poll-comment'], $this->context->route),
@@ -56,7 +56,7 @@ use common\models\AuthItem;
 
                 ],
                 [
-                    'label' => Yii::t('app', 'Pages'), // 'Orders',
+                    'label' => Yii::t('app', 'Сторінки'),
                     'icon' => 'file-code-o ',
                     'url' => Url::toRoute(['/page/page/index']), // => Url::toRoute(['/page/default/index']),
                     'active' => MenuHelper::isActiveMenu(['page'], $this->context->route),
@@ -64,7 +64,7 @@ use common\models\AuthItem;
                     'items' => [
                         [
                             // Повертаємо доступ до класичних статичних сторінок (privacy policy, terms тощо).
-                            'label' => Yii::t('app', 'Pages'),
+                            'label' => Yii::t('app', 'Сторінки'),
                             'icon' => 'file-text-o',
                             'url' => Url::toRoute(['/page/page/index']),
                             'active' => MenuHelper::isActiveMenu(['page', 'page'], $this->context->route),
@@ -94,14 +94,14 @@ use common\models\AuthItem;
                     'items' => [],
                 ],
                 [
-                    'label' => Yii::t('app', 'Tags'),
+                    'label' => Yii::t('app', 'Теги'),
                     'icon' => 'tags',
                     'url' => Url::toRoute(['/poll/tag/index']),
                     'active' => MenuHelper::isActiveMenu(['poll', 'tag', 'tag-static-text'], $this->context->route),
                     // Перенесено зі списку опитувань, щоб теги мали окремий розділ меню.
                     'items' => [
                         [
-                            'label' => Yii::t('app', 'Tags'),
+                            'label' => Yii::t('app', 'Теги'),
                             'icon' => 'tag',
                             'url' => Url::toRoute(['/poll/tag/index']),
                             'active' => MenuHelper::isActiveMenu(['poll', 'tag'], $this->context->route),
@@ -115,25 +115,25 @@ use common\models\AuthItem;
                     ],
                 ],
                 [
-                    'label' => Yii::t('app', 'Geo'),
+                    'label' => Yii::t('app', 'Географія'),
                     'icon' => 'globe',
                     'url' => Url::toRoute(['/geo/default/index']),
                     'active' => MenuHelper::isActiveMenu(['geo'], $this->context->route),
                     'items' => [
                         [
-                            'label' => Yii::t('app', 'Countries'),
+                            'label' => Yii::t('app', 'Країни'),
                             'icon' => 'flag',
                             'url' => Url::toRoute(['/geo/country/index']),
                             'active' => MenuHelper::isActiveMenu(['geo', 'country'], $this->context->route),
                         ],
                         [
-                            'label' => Yii::t('app', 'Regions'),
+                            'label' => Yii::t('app', 'Регіони'),
                             'icon' => 'globe',
                             'url' => Url::toRoute(['/geo/region/index']),
                             'active' => MenuHelper::isActiveMenu(['geo', 'region'], $this->context->route),
                         ],
                         [
-                            'label' => Yii::t('app', 'Cities'),
+                            'label' => Yii::t('app', 'Міста'),
                             'icon' => 'building',
                             'url' => Url::toRoute(['/geo/city/index']),
                             'active' => MenuHelper::isActiveMenu(['geo', 'city'], $this->context->route),
@@ -141,7 +141,7 @@ use common\models\AuthItem;
                     ],
                 ],
                 [
-                    'label' => Yii::t('app', 'Users'),
+                    'label' => Yii::t('app', 'Користувачі'),
                     'icon' => 'users',
                     'url' => Url::toRoute(['/user/admin/index']), // (['/user/default/index']),
                     'active' => MenuHelper::isActiveMenu(['user'], $this->context->route),
@@ -169,7 +169,7 @@ use common\models\AuthItem;
                     'items' => [],
                 ],
                 [
-                    'label' => 'Cookie consent',
+                    'label' => 'Згода на файли cookie',
                     'icon' => 'shield',
                     'url' => Url::toRoute(['/cookie-consent-setting/index']),
                     'active' => MenuHelper::isActiveMenu(['cookie-consent-setting'], $this->context->route),

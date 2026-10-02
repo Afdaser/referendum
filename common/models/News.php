@@ -6,6 +6,7 @@ use Yii;
 use common\components\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 /**
@@ -127,6 +128,18 @@ class News extends ActiveRecord
         }
 
         return $items;
+    }
+
+    /**
+     * Повертає канонічний URL новини на піддомені, вибраному редактором.
+     */
+    public function getUrl(): string
+    {
+        // Використовуємо лише явно налаштований домен вибраної в адмінці мовної версії.
+        $domain = Yii::$app->params['langDomains'][$this->language_id];
+
+        // Маршрутизатор сам використає query-параметр, якщо slug не відповідає шаблону красивого URL.
+        return 'https://' . $domain . Url::to(['/news/view', 'slug' => $this->slug]);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
-use yii\helpers\Url;
 use yii\widgets\LinkPager;
 
 /** @var yii\web\View $this */
@@ -18,7 +17,8 @@ use yii\widgets\LinkPager;
                 <?php foreach ($items as $item): ?>
                     <?php
                     // Не нашкодити: URL ставимо тільки на заголовок і кнопку, зображення лишається неклікабельним.
-                    $newsUrl = Url::to(['/news/view', 'slug' => $item->slug]);
+                    // На основному домені картка веде на піддомен, для якого редактор створив новину.
+                    $newsUrl = $item->getUrl();
                     $newsTitle = trim((string) $item->title);
                     $newsTitleLabel = Yii::t('poll', 'Перейти до новини «{title}»', ['title' => $newsTitle]);
                     ?>

@@ -7,6 +7,7 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\Html;
 use yii\db\IntegrityException;
 use common\components\ActiveRecord;
+use common\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%poll_option}}".
@@ -44,6 +45,15 @@ class PollOption extends ActiveRecord
     public static function tableName()
     {
         return '{{%poll_option}}';
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        // Нормалізуємо лише назву відповіді, у якій старі форми зберігали HTML-код апострофа.
+        $this->title = StringHelper::normalizeApostrophes($this->title);
+        $this->setOldAttribute('title', $this->title);
     }
 
     /**
@@ -198,7 +208,7 @@ class PollOption extends ActiveRecord
 
         $this->poll_id = intval($attributes['poll_id']);
         $this->user_id =  Yii::$app->user->identity->id;
-        $this->title = Html::encode($attributes['title']);
+        $this->title = StringHelper::normalizeApostrophes(Html::encode($attributes['title']));
         $this->status = self::OPTION_STATUS_UNPUBLISHED;
         $this->rating = 0;
         $this->date_add = date('Y-m-d H:i:s');

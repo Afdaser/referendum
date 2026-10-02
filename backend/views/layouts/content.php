@@ -45,9 +45,9 @@ use dmstr\widgets\Alert;
 
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-        <b>Version</b> 1.0
+        <b>Версія</b> 1.0
     </div>
-    <strong>Copyright &copy; <?= date("Y"); ?> <?= Yii::$app->name; ?></strong>
+    <strong>Авторське право &copy; <?= date("Y"); ?> <?= Yii::$app->name; ?></strong>
 </footer>
 
 <?php /* * / ?>

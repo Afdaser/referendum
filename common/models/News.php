@@ -6,6 +6,7 @@ use Yii;
 use common\components\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 /**
@@ -137,8 +138,8 @@ class News extends ActiveRecord
         // Використовуємо лише явно налаштований домен вибраної в адмінці мовної версії.
         $domain = Yii::$app->params['langDomains'][$this->language_id];
 
-        // Slug уже валідований моделлю; rawurlencode додатково захищає сегмент URL.
-        return 'https://' . $domain . '/news/' . rawurlencode((string) $this->slug);
+        // Маршрутизатор сам використає query-параметр, якщо slug не відповідає шаблону красивого URL.
+        return 'https://' . $domain . Url::to(['/news/view', 'slug' => $this->slug]);
     }
 
     /**

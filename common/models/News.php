@@ -130,6 +130,18 @@ class News extends ActiveRecord
     }
 
     /**
+     * Повертає канонічний URL новини на піддомені, вибраному редактором.
+     */
+    public function getUrl(): string
+    {
+        // Використовуємо лише явно налаштований домен вибраної в адмінці мовної версії.
+        $domain = Yii::$app->params['langDomains'][$this->language_id];
+
+        // Slug уже валідований моделлю; rawurlencode додатково захищає сегмент URL.
+        return 'https://' . $domain . '/news/' . rawurlencode((string) $this->slug);
+    }
+
+    /**
      * Визначає мовну версію поточного фронтенд-запиту для фільтрації новин.
      */
     public static function resolveCurrentLanguageId(): ?int

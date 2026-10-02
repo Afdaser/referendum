@@ -90,7 +90,11 @@ class NewsController extends Controller
             throw new \yii\web\NotFoundHttpException(Yii::t('poll', 'Новину не знайдено.'));
         }
 
-        $canonicalUrl = Url::to(['/news/view', 'slug' => $model->slug], true);
+        $canonicalUrl = $model->getUrl();
+        if (strcasecmp(Yii::$app->request->hostName, (string) parse_url($canonicalUrl, PHP_URL_HOST)) !== 0) {
+            // Як і для опитувань, не залишаємо сторінку доступною на неправильному домені.
+            return $this->redirect($canonicalUrl, 301);
+        }
         Yii::$app->view->registerLinkTag([
             'rel' => 'canonical',
             'href' => $canonicalUrl,

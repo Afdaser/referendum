@@ -268,7 +268,8 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
                                         <?php // Лічильник виносимо за межі посилання, але зберігаємо попередній візуальний вигляд. ?>
                                         <span class="related-polls-score"><?= (int) $relatedPoll->countPollOptionsVoters; ?></span>
                                         <a class="related-polls-link" href="<?= Url::toRoute(['/poll/poll/view', 'id' => $relatedPoll->id]); ?>">
-                                            <span class="related-polls-link-text"><?= Html::encode($relatedPoll->title); ?></span>
+                                            <?php // Спочатку прибираємо старе кодування з БД, а потім безпечно екрануємо текст для HTML. ?>
+                                            <span class="related-polls-link-text"><?= Html::encode(Html::decode($relatedPoll->title)); ?></span>
                                         </a>
                                     </div>
                                 <?php endforeach; ?>

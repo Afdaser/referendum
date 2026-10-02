@@ -14,6 +14,7 @@ use common\models\search\PollSearch;
 use common\models\Tag;
 use common\models\Language;
 use common\models\MainPageSeoText;
+use common\models\MainPageStatistic;
 
 class SiteController extends Controller
 {
@@ -116,6 +117,11 @@ class SiteController extends Controller
         $this->view->params['mainPageHeading'] = $mainPageHeading;
         $this->view->params['mainPageText'] = $mainPageText;
         $this->view->params['isMainPageFirst'] = $currentPage <= 1;
+        // Кореневий домен показує загальний знімок, а мовний піддомен — власний.
+        $isRootDomain = empty($request->languageId);
+        $this->view->params['mainPageStatistics'] = MainPageStatistic::getSnapshot(
+            $isRootDomain ? null : (int) $request->languageId
+        );
 
         return self::renderIndex($this->category);
     }

@@ -35,6 +35,11 @@ return [
         'cache' => [
             'class' => \yii\caching\FileCache::class,
         ],
+        // Один спільний файловий кеш доступний і cron-команді, і фронтенду.
+        'statisticsCache' => [
+            'class' => \yii\caching\FileCache::class,
+            'cachePath' => '@common/runtime/statistics',
+        ],
         'authManager' => [
             'class' => \dektrium\rbac\components\DbManager::class,
             'itemTable' => '{{%auth_item}}',

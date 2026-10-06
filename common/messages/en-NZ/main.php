@@ -97,4 +97,14 @@ return array(
     // Доступна назва пояснює, що перелік країн перемикає країну піддомену.
     'Країна піддомену' => 'Subdomain country',
 
+
+    // Підписи інфографіки головної сторінки.
+    'Зареєстровані користувачі' => 'Registered users',
+    'Створені опитування' => 'Created polls',
+    'Віддані голоси' => 'Votes cast',
+    'Referendum у цифрах' => 'Referendum in numbers',
+    'Спільнота, що висловлює свою думку' => 'A community that speaks its mind',
+    'Долучайтеся до відкритих опитувань, створюйте власні та голосуйте за важливе.' => 'Join open polls, create your own, and vote on what matters.',
+    'Дані оновлено: {date}' => 'Data updated: {date}',
+
 );

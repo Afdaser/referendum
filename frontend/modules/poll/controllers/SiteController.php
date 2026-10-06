@@ -116,6 +116,12 @@ class SiteController extends Controller
         $this->view->params['mainPageHeading'] = $mainPageHeading;
         $this->view->params['mainPageText'] = $mainPageText;
         $this->view->params['isMainPageFirst'] = $currentPage <= 1;
+        // Кореневий домен показує загальний знімок, а мовний піддомен — власний.
+        $statistics = Yii::$app->statisticsCache->get('main-page-statistics') ?: [];
+        $statisticsKey = empty($request->languageId) ? 'all' : (int) $request->languageId;
+        $this->view->params['mainPageStatistics'] = $statistics[$statisticsKey] ?? [
+            'users' => 0, 'polls' => 0, 'votes' => 0, 'updatedAt' => null,
+        ];
 
         return self::renderIndex($this->category);
     }

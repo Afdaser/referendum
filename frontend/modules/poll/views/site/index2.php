@@ -25,6 +25,7 @@ use yii\helpers\Html;
         <?php
         // Виносимо головний h1 угору, як на сторінках метатегів, щоб він не губився під SEO-блоком.
         $mainPageHeading = $this->params['mainPageHeading'] ?? '';
+        $mainPageStatistics = $this->params['mainPageStatistics'] ?? null;
         ?>
         <?php if (
             Yii::$app->controller->id === 'site'
@@ -32,6 +33,13 @@ use yii\helpers\Html;
             && $mainPageHeading !== ''
         ): ?>
             <h1 class="tag-page__title"><?= Html::encode($mainPageHeading); ?></h1>
+        <?php endif; ?>
+        <?php if (
+            Yii::$app->controller->id === 'site'
+            && Yii::$app->controller->action->id === 'index'
+            && $mainPageStatistics !== null
+        ): ?>
+            <?= $this->render('_statistics', ['statistics' => $mainPageStatistics]); ?>
         <?php endif; ?>
         <?=
         WPollList::widget([

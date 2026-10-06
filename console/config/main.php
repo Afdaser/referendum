@@ -23,6 +23,14 @@ return [
           ],
     ],
     'modules' => [
+        // common\models\User успадковує Dektrium ModuleTrait, тому навіть для
+        // простого ActiveQuery консольний застосунок повинен мати модуль user.
+        'user' => [
+            'class' => \dektrium\user\Module::class,
+            'modelMap' => [
+                'User' => \common\models\User::class,
+            ],
+        ],
         'rbac' => \dektrium\rbac\RbacConsoleModule::class,
     ],
     'components' => [

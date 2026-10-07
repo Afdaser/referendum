@@ -382,4 +382,12 @@ h1.title {
 .landing-statistics__card strong { color: #183d2c; font-size: 27px; line-height: 1; }
 .landing-statistics__card > span:last-child { margin-top: 5px; color: #687a71; font-size: 13px; line-height: 1.2; }
 .landing-statistics__updated { margin: 10px 0 0; color: #76877f; font-size: 12px; text-align: right; }
-@media (max-width: 700px) { .landing-statistics { padding: 18px 16px; } .landing-statistics__grid { grid-template-columns: 1fr; } .landing-statistics__intro h2 { font-size: 22px; } }
+@media (max-width: 700px) {
+    .landing-statistics { padding: 18px 12px; }
+    .landing-statistics__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .landing-statistics__card { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; justify-items: center; gap: 6px; min-width: 0; padding: 12px 4px; text-align: center; }
+    .landing-statistics__icon { grid-row: auto; width: 34px; height: 34px; padding: 7px; box-sizing: border-box; }
+    .landing-statistics__card strong { font-size: clamp(18px, 4.5vw, 27px); white-space: nowrap; }
+    .landing-statistics__card > span:last-child { margin-top: 0; font-size: 12px; overflow-wrap: anywhere; }
+    .landing-statistics__intro h2 { font-size: 22px; }
+}

@@ -1574,21 +1574,6 @@ a.my_profile {
 a.my_profile:hover {
     background-color: #058f42;
 }
-.top_text_item_poll {
-    font-size: 11px;
-    color: #848c8f;
-    text-align: right;
-}
-.left_text_poll {
-    float: left;
-    text-align: left;
-    font-size: 14px;
-    color: #565656;
-}
-.show_rat_b {
-    height: 16px;
-    line-height: 16px;
-}
 .percent_b {
     float: left;
     width: 8.7%;
@@ -1598,26 +1583,10 @@ a.my_profile:hover {
     color: #fff;
     background: #058f42;
 }
-.right_side_show_b {
-    float: right;
-    width: 91%;
-    height: 100%;
-    background: #f2f3f4;
-}
-.percent_show_b {
-    width: 60%;
-    background: #3ac469;
-    height: 100%;
-}
 .item_chose_poll_show {
     padding-left: 52px;
     padding-right: 70px;
     margin-bottom: 10px;
-}
-.with_radio_show_b {
-    height: 16px;
-    line-height: 16px;
-    position: relative;
 }
 .with_radio_show_b .radio_link {
     position: absolute;
@@ -1626,19 +1595,9 @@ a.my_profile:hover {
     bottom: 0;
     width: 6%;
 }
-.with_radio_show_b .show_rat_b {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 94%;
-}
 .with_radio_show_b a.radio_link,
 .with_radio_show_b button.radio_link {
     line-height: 14px;
-}
-.with_radio {
-    margin-left: 6%;
 }
 .count_poll {
     padding: 1px 5px;
@@ -2878,10 +2837,6 @@ a.skip_btn:hover {
     top: 50%;
     margin-top: -7px;
 }
-.small_sub_rat_text {
-    color: #058f42;
-    font-size: 12px;
-}
 ._uppercase {
     text-transform: uppercase;
 }
@@ -3407,13 +3362,6 @@ a.search_btn_inner:hover {
     font-family: "ArimoRegular", Arial, sans-serif;
     font-size: 12px;
     float: right;
-}
-.top_text_refresh_pass {
-    font-family: "ArimoRegular", Arial, sans-serif;
-    font-size: 14px;
-    line-height: 17px;
-    color: #565656;
-    margin-bottom: 25px;
 }
 .sub_text_refresh_pass {
     font-size: 12px;

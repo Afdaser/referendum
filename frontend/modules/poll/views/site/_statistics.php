@@ -35,7 +35,10 @@ $updatedAtFormat = Yii::$app->language === 'en-US' ? 'MMM d, y, HH:mm' : 'dd MMM
                     <?php endif; ?>
                 </span>
                 <strong><?= $statisticsFormatter->asInteger($statistics[$card['key']]); ?></strong>
-                <span><?= Html::encode($card['label']); ?></span>
+                <span class="landing-statistics__label"><?= Html::encode($card['label']); ?></span>
+                <?php if (isset($statistics['daily'][$card['key']])): ?>
+                    <small class="landing-statistics__daily">+<?= $statisticsFormatter->asInteger($statistics['daily'][$card['key']]); ?></small>
+                <?php endif; ?>
             </article>
         <?php endforeach; ?>
     </div>

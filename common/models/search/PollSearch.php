@@ -338,15 +338,24 @@ class PollSearch extends Poll
     }
         $searchText = $searchForm->text;
 
-        if($searchForm->search_in_tags){
-            $query->innerJoinWith('tags')->orFilterWhere(['tag.name' => $searchText]);
-        }
-
-
-        $query->orFilterWhere(['like', 'title', $searchText]);
-
-        if(empty($searchForm->search_in_title)){
-            $query->orFilterWhere(['like', 'describe', $searchText]);
+        if ($searchText !== null && trim($searchText) !== '') {
+            $conditions = ['or'];
+            if ($searchForm->search_in_title || !$searchForm->search_in_tags) {
+                $conditions[] = ['like', 'title', $searchText];
+            }
+            if ($searchForm->search_in_tags) {
+                // A subquery keeps each poll unique when matching tags repeat.
+                $tagPolls = (new \yii\db\Query())
+                    ->select('pt.poll_id')
+                    ->from(['pt' => '{{%poll_tag}}'])
+                    ->innerJoin(['t' => '{{%tag}}'], 't.id = pt.tag_id')
+                    ->where(['t.name' => $searchText]);
+                $conditions[] = ['in', 'poll.id', $tagPolls];
+            }
+            if (!$searchForm->search_in_title && !$searchForm->search_in_tags) {
+                $conditions[] = ['like', 'describe', $searchText];
+            }
+            $query->andWhere($conditions);
         }
         if(!empty($searchForm->country)){
             $query->andFilterWhere(['poll_country_id' => $searchForm->country]);

@@ -150,7 +150,7 @@ use common\models\User;
         </div>
         <div class="bottom_content_tabs marg_bot">
             <div class="top_input_b item_param item_show">
-                <input type="text" class="autocomplete" value="<?php echo $search->text ?>" name="SearchForm[text]"
+                <input type="text" class="autocomplete" value="<?= Html::encode($search->text) ?>" name="SearchForm[text]"
                        placeholder="<?= Yii::t("filter", 'Пошук'); ?>...">
                 <a href="javascript:void(0)" class="search_btn_inner" onclick="document.forms['SearchForm'].submit()"><?= Yii::t("filter", 'Пошук'); ?></a>
             </div>

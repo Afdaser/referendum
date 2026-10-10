@@ -344,12 +344,12 @@ class PollSearch extends Poll
                 $conditions[] = ['like', 'title', $searchText];
             }
             if ($searchForm->search_in_tags) {
-                // A subquery keeps each poll unique when several tags match.
+                // A subquery keeps each poll unique when matching tags repeat.
                 $tagPolls = (new \yii\db\Query())
                     ->select('pt.poll_id')
                     ->from(['pt' => '{{%poll_tag}}'])
                     ->innerJoin(['t' => '{{%tag}}'], 't.id = pt.tag_id')
-                    ->where(['like', 't.name', ltrim(trim($searchText), '#')]);
+                    ->where(['t.name' => $searchText]);
                 $conditions[] = ['in', 'poll.id', $tagPolls];
             }
             if (!$searchForm->search_in_title && !$searchForm->search_in_tags) {

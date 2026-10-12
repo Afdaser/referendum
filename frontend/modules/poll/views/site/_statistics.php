@@ -34,11 +34,13 @@ $updatedAtFormat = Yii::$app->language === 'en-US' ? 'MMM d, y, HH:mm' : 'dd MMM
                         <svg viewBox="0 0 48 48"><path d="M7 23h34v19H7zM12 23l7-17h18l4 17"/><path d="m18 15 5 5 10-10M16 32h16"/></svg>
                     <?php endif; ?>
                 </span>
-                <strong><?= $statisticsFormatter->asInteger($statistics[$card['key']]); ?></strong>
+                <strong>
+                    <?= $statisticsFormatter->asInteger($statistics[$card['key']]); ?>
+                    <?php if (isset($statistics['daily'][$card['key']])): ?>
+                        <span class="landing-statistics__daily">+<?= $statisticsFormatter->asInteger($statistics['daily'][$card['key']]); ?></span>
+                    <?php endif; ?>
+                </strong>
                 <span class="landing-statistics__label"><?= Html::encode($card['label']); ?></span>
-                <?php if (isset($statistics['daily'][$card['key']])): ?>
-                    <small class="landing-statistics__daily">+<?= $statisticsFormatter->asInteger($statistics['daily'][$card['key']]); ?></small>
-                <?php endif; ?>
             </article>
         <?php endforeach; ?>
     </div>

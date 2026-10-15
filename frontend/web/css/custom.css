@@ -383,7 +383,7 @@ h1.title {
 .landing-statistics__card strong { display: flex; flex-wrap: wrap; justify-content: center; gap: .2em; max-width: 100%; min-width: 0; color: #183d2c; font-size: 18px; font-size: clamp(14px, 16cqi, 27px); line-height: 1.1; }
 .landing-statistics__card strong > span { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .landing-statistics__label { color: #687a71; font-size: 13px; line-height: 1.2; overflow-wrap: anywhere; }
-.landing-statistics__daily { font: inherit; color: inherit; }
+.landing-statistics__daily { order: -1; align-self: center; margin-inline-end: .25em; font-size: .6em; font-weight: 500; color: #278252; }
 .landing-statistics__updated { margin: 10px 0 0; color: #76877f; font-size: 12px; text-align: right; }
 @media (max-width: 700px) {
     .landing-statistics { padding: 18px 12px; }

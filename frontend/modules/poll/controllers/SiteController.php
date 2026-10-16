@@ -120,7 +120,7 @@ class SiteController extends Controller
         $statistics = Yii::$app->statisticsCache->get('main-page-statistics') ?: [];
         $statisticsKey = empty($request->languageId) ? 'all' : (int) $request->languageId;
         $this->view->params['mainPageStatistics'] = $statistics[$statisticsKey] ?? [
-            'users' => 0, 'polls' => 0, 'votes' => 0, 'updatedAt' => null,
+            'users' => 0, 'polls' => 0, 'votes' => 0, 'comments' => 0, 'updatedAt' => null,
         ];
 
         return self::renderIndex($this->category);

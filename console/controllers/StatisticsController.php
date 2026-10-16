@@ -6,6 +6,7 @@ use common\models\Language;
 use common\models\OptionGuestVote;
 use common\models\OptionVote;
 use common\models\Poll;
+use common\models\PollComment;
 use common\models\User;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -48,6 +49,10 @@ class StatisticsController extends Controller
     {
         $users = User::find()->alias('user');
         $polls = Poll::find()->alias('poll');
+        // Враховуємо опубліковані коментарі та відповіді, зокрема гостьові.
+        $comments = PollComment::find()->alias('comment')
+            ->innerJoin('{{%poll}} poll', 'poll.id = comment.poll_id')
+            ->andWhere(['comment.status' => PollComment::COMMENT_STATUS_PUBLISHED]);
         $registeredVotes = OptionVote::find()->alias('vote')
             ->innerJoin('{{%poll_option}} option', 'option.id = vote.option_id')
             ->innerJoin('{{%poll}} poll', 'poll.id = option.poll_id');
@@ -61,6 +66,7 @@ class StatisticsController extends Controller
                 ->innerJoin('{{%user_language}} user_language', 'user_language.user_id = user.id')
                 ->andWhere(['user_language.language_id' => $languageId]);
             $polls->andWhere(['poll.poll_language_id' => $languageId]);
+            $comments->andWhere(['poll.poll_language_id' => $languageId]);
             $registeredVotes->andWhere(['poll.poll_language_id' => $languageId]);
             $guestVotes->andWhere(['poll.poll_language_id' => $languageId]);
         }
@@ -69,6 +75,7 @@ class StatisticsController extends Controller
             'users' => (int) $users->count('DISTINCT user.id'),
             'polls' => (int) $polls->count(),
             'votes' => (int) $registeredVotes->count() + (int) $guestVotes->count(),
+            'comments' => (int) $comments->count(),
             'updatedAt' => $updatedAt,
         ];
 
@@ -80,6 +87,8 @@ class StatisticsController extends Controller
             ->andWhere(['<', 'user.created_at', $updatedAt]);
         $polls->andWhere(['>=', 'poll.date_add', $fromDate])
             ->andWhere(['<', 'poll.date_add', $toDate]);
+        $comments->andWhere(['>=', 'comment.date_add', $fromDate])
+            ->andWhere(['<', 'comment.date_add', $toDate]);
         foreach ([$registeredVotes, $guestVotes] as $votes) {
             $votes->andWhere(['>=', 'vote.date_add', $fromDate])
                 ->andWhere(['<', 'vote.date_add', $toDate]);
@@ -88,6 +97,7 @@ class StatisticsController extends Controller
             'users' => (int) $users->count('DISTINCT user.id'),
             'polls' => (int) $polls->count(),
             'votes' => (int) $registeredVotes->count() + (int) $guestVotes->count(),
+            'comments' => (int) $comments->count(),
         ];
 
         return $snapshot;

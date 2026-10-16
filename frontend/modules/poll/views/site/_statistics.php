@@ -26,22 +26,24 @@ $updatedAtFormat = Yii::$app->language === 'en-US' ? 'MMM d, y, HH:mm' : 'dd MMM
     <div class="landing-statistics__grid">
         <?php foreach ($cards as $card): ?>
             <article class="landing-statistics__card landing-statistics__card--<?= Html::encode($card['icon']); ?>">
-                <span class="landing-statistics__icon" aria-hidden="true">
-                    <?php if ($card['icon'] === 'users'): ?>
-                        <svg viewBox="0 0 48 48"><circle cx="19" cy="16" r="7"/><path d="M6 38c1-8 6-12 13-12s12 4 13 12"/><circle cx="34" cy="19" r="5"/><path d="M32 29c6-1 10 3 11 9"/></svg>
-                    <?php elseif ($card['icon'] === 'polls'): ?>
-                        <svg viewBox="0 0 48 48"><rect x="9" y="6" width="30" height="36" rx="5"/><path d="M16 17h16M16 24h16M16 31h10"/><path d="m29 32 3 3 6-7"/></svg>
-                    <?php elseif ($card['icon'] === 'votes'): ?>
-                        <svg viewBox="0 0 48 48"><path d="M7 23h34v19H7zM12 23l7-17h18l4 17"/><path d="m18 15 5 5 10-10M16 32h16"/></svg>
-                    <?php else: ?>
-                        <svg viewBox="0 0 48 48"><path d="M10 7h28a4 4 0 0 1 4 4v20a4 4 0 0 1-4 4H22L10 43v-8a4 4 0 0 1-4-4V11a4 4 0 0 1 4-4Z"/><path d="M14 17h20M14 25h14"/></svg>
+                <span class="landing-statistics__icon-wrap">
+                    <span class="landing-statistics__icon" aria-hidden="true">
+                        <?php if ($card['icon'] === 'users'): ?>
+                            <svg viewBox="0 0 48 48"><circle cx="19" cy="16" r="7"/><path d="M6 38c1-8 6-12 13-12s12 4 13 12"/><circle cx="34" cy="19" r="5"/><path d="M32 29c6-1 10 3 11 9"/></svg>
+                        <?php elseif ($card['icon'] === 'polls'): ?>
+                            <svg viewBox="0 0 48 48"><rect x="9" y="6" width="30" height="36" rx="5"/><path d="M16 17h16M16 24h16M16 31h10"/><path d="m29 32 3 3 6-7"/></svg>
+                        <?php elseif ($card['icon'] === 'votes'): ?>
+                            <svg viewBox="0 0 48 48"><path d="M7 23h34v19H7zM12 23l7-17h18l4 17"/><path d="m18 15 5 5 10-10M16 32h16"/></svg>
+                        <?php else: ?>
+                            <svg viewBox="0 0 48 48"><path d="M10 7h28a4 4 0 0 1 4 4v20a4 4 0 0 1-4 4H22L10 43v-8a4 4 0 0 1-4-4V11a4 4 0 0 1 4-4Z"/><path d="M14 17h20M14 25h14"/></svg>
+                        <?php endif; ?>
+                    </span>
+                    <?php if (($statistics['daily'][$card['key']] ?? 0) > 0): ?>
+                        <span class="landing-statistics__daily">+<?= $statisticsFormatter->asInteger($statistics['daily'][$card['key']]); ?></span>
                     <?php endif; ?>
                 </span>
                 <strong>
                     <span><?= $statisticsFormatter->asInteger($statistics[$card['key']] ?? 0); ?></span>
-                    <?php if (($statistics['daily'][$card['key']] ?? 0) > 0): ?>
-                        <span class="landing-statistics__daily">+<?= $statisticsFormatter->asInteger($statistics['daily'][$card['key']]); ?></span>
-                    <?php endif; ?>
                 </strong>
                 <span class="landing-statistics__label"><?= Html::encode($card['label']); ?></span>
             </article>

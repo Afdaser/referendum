@@ -14,7 +14,7 @@ $setting = CookieConsentSetting::resolveForRequest($host, $locale);
 // Fallback лишаємо на випадок, якщо адмін ще не створив правила в БД.
 $cookiePolicyUrl = $setting !== null
     ? (string) $setting->policy_url
-    : (string) (Yii::$app->params['cookiePolicyUrl'] ?? '/replace-with-your-cookie-policy-url');
+    : (string) (Yii::$app->params['cookiePolicyUrl'] ?? '/cookie-policy');
 $bannerText = $setting !== null
     ? (string) $setting->banner_text
     : 'We use cookies to support essential site functions, improve performance, and remember your preferences.';

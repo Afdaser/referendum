@@ -121,7 +121,7 @@ class CookieConsentSetting extends ActiveRecord
     public static function getLanguageLabel(string $languageCode): string
     {
         if ($languageCode === '') {
-            return 'Усі локалі';
+            return 'Усі локалі цього хоста';
         }
 
         return ArrayHelper::getValue(self::getLanguageOptions(), $languageCode, $languageCode);
@@ -133,11 +133,14 @@ class CookieConsentSetting extends ActiveRecord
     public static function resolveForRequest(string $host, string $locale): ?self
     {
         $host = mb_strtolower(trim($host));
+        // www — альтернативна адреса хоста, а не мовний піддомен.
+        // Окреме правило для точного хоста має вищий пріоритет.
+        $aliasHost = strpos($host, 'www.') === 0 ? substr($host, 4) : 'www.' . $host;
         $baseLocale = explode('-', $locale)[0] ?? $locale;
 
         $candidates = self::find()
             ->where(['is_active' => 1])
-            ->andWhere(['host' => [$host, '*']])
+            ->andWhere(['host' => [$host, $aliasHost, '*']])
             ->andWhere(['language_code' => [$locale, $baseLocale, '']])
             ->all();
 
@@ -150,7 +153,7 @@ class CookieConsentSetting extends ActiveRecord
         foreach ($candidates as $candidate) {
             $score = 0;
 
-            $score += ($candidate->host === $host) ? 100 : 10;
+            $score += ($candidate->host === $host) ? 100 : (($candidate->host === $aliasHost) ? 50 : 10);
 
             if ($candidate->language_code === $locale) {
                 $score += 20;

@@ -22,9 +22,9 @@ $this->title = 'Cookie consent';
         <div class="box-body">
             <?php $form = ActiveForm::begin(); ?>
             <?= $form->field($model, 'host')->textInput(['maxlength' => true])
-                ->hint('Наприклад: en.referendum.social або * для дефолтного правила.') ?>
-            <?= $form->field($model, 'language_code')->dropDownList($languageOptions, ['prompt' => 'Усі локалі'])
-                ->hint('Якщо не вибирати локаль — правило спрацює для всіх мов на цьому хості.') ?>
+                ->hint('Без мовного піддомену: referendum.social (також для www.referendum.social, якщо немає окремого правила). Для мовної версії: en.referendum.social. * — для всіх хостів.') ?>
+            <?= $form->field($model, 'language_code')->dropDownList($languageOptions, ['prompt' => CookieConsentSetting::getLanguageLabel('')])
+                ->hint('Порожня локаль — усі мови лише в межах указаного хоста. Правило для referendum.social не поширюється на мовні піддомени.') ?>
             <?= $form->field($model, 'banner_text')->textarea(['rows' => 4])
                 ->hint('Текст банера, який відобразиться користувачу.') ?>
             <?= $form->field($model, 'policy_url')->textInput(['maxlength' => true])

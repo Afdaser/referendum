@@ -49,6 +49,6 @@ return [
         'nb-NO' => '. Klikk for å delta i avstemningen, se resultater og diskutere det',
     ],
     'descriptionMaxLenth' => 156,
-    // URL сторінки Cookie Policy. Замініть на ваш реальний URL зі статичною сторінкою з адмінки.
-    'cookiePolicyUrl' => '/replace-with-your-cookie-policy-url',
+    // Резервний URL Cookie Policy, якщо для хоста немає активного правила в адмінці.
+    'cookiePolicyUrl' => '/cookie-policy',
 ];

@@ -18,8 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box box-primary">
         <div class="box-body">
             <?php $form = ActiveForm::begin(); ?>
-            <?= $form->field($model, 'host')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'language_code')->dropDownList($languageOptions, ['prompt' => 'Усі локалі']) ?>
+            <?= $form->field($model, 'host')->textInput(['maxlength' => true])
+                ->hint('Без мовного піддомену: referendum.social (також для www.referendum.social, якщо немає окремого правила). Для мовної версії: en.referendum.social. * — для всіх хостів.') ?>
+            <?= $form->field($model, 'language_code')->dropDownList($languageOptions, ['prompt' => CookieConsentSetting::getLanguageLabel('')])
+                ->hint('Порожня локаль — усі мови лише в межах указаного хоста. Правило для referendum.social не поширюється на мовні піддомени.') ?>
             <?= $form->field($model, 'banner_text')->textarea(['rows' => 4]) ?>
             <?= $form->field($model, 'policy_url')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'essential_button_label')->textInput(['maxlength' => true]) ?>

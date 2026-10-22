@@ -137,11 +137,9 @@ $(document).ready(function(){
             url += '&noparse=true';
             Share.popup(url);
         },
-        facebook: function(purl, ptitle, pimg, text) {
-            var url  = 'http://www.facebook.com/sharer.php?';
-            //url += 't='     + encodeURIComponent(ptitle);
-            //url += '&p[summary]='   + encodeURIComponent(text);
-            //url += '&p[url]='       + encodeURIComponent(purl);
+        facebook: function(purl) {
+            // Facebook отримує Open Graph метадані зі сторінки конкретного опитування.
+            var url  = 'https://www.facebook.com/sharer/sharer.php?';
             url += 'u=' + encodeURIComponent(purl);
             Share.popup(url);
         },

@@ -399,21 +399,15 @@ h1.title {
     .landing-statistics__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* Optional demographics after a guest vote. */
+/* The optional guest step continues the poll's own options block. */
 .guest-sample {
-    max-width: 640px;
-    margin: 24px auto;
-    padding: clamp(20px, 5vw, 40px);
-    border: 1px solid #dce8df;
-    border-radius: 12px;
-    background: #fff;
-    box-shadow: 0 6px 24px rgba(34, 99, 56, .07);
+    width: 100%;
+    padding: 8px 0;
 }
-.guest-sample h1 { margin: 12px 0; font-size: 26px; line-height: 1.3; }
+.guest-sample h2 { margin: 8px 0 16px; font-size: 20px; line-height: 1.3; }
 .guest-sample p { line-height: 1.6; }
 .guest-sample__saved { color: #226338; font-weight: 600; }
-.guest-sample__poll { color: #666; overflow-wrap: anywhere; }
-.guest-sample__choices { border: 0; padding: 0; margin: 24px 0 16px; display: flex; flex-wrap: wrap; gap: 12px; min-width: 0; }
+.guest-sample__choices { border: 0; padding: 0; margin: 16px 0; display: flex; flex-wrap: wrap; gap: 12px; min-width: 0; }
 .guest-sample__choices legend { margin-bottom: 12px; border: 0; font-size: 16px; font-weight: 600; }
 .guest-sample__choice, .guest-sample__skip {
     min-height: 48px;

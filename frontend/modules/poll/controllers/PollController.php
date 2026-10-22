@@ -100,13 +100,9 @@ class PollController extends \yii\web\Controller
         $langDomains = Yii::$app->params['langDomains'] ?? [];
         $canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
         $canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;
+        $guestSamplePending = $this->getPendingGuestVote($poll->id) !== null;
         // Keep the optional step on the voting host: session cookies may be host-only.
-        if ($this->getPendingGuestVote($poll->id) !== null) {
-            Yii::$app->view->registerLinkTag(['rel' => 'canonical', 'href' => $canonicalUrl]);
-            Yii::$app->page->setTitle(Yii::t('poll', 'Будь ласка, доповніть вибірку'));
-            return $this->render('guest-sample', ['poll' => $poll]);
-        }
-        if (Yii::$app->request->hostName !== $canonicalDomain) {
+        if (!$guestSamplePending && Yii::$app->request->hostName !== $canonicalDomain) {
             return $this->redirect($canonicalUrl, 301);
         }
         Yii::$app->view->registerLinkTag([
@@ -209,6 +205,7 @@ class PollController extends \yii\web\Controller
 //		var_dump($poll->describe);
         return $this->render('view', [
             'poll'=>$poll,
+            'guestSamplePending' => $guestSamplePending,
             'commentModel'=>$comment,
             'answerModel'=>$answer,
             'relatedPolls' => $relatedPolls,
@@ -376,6 +373,7 @@ class PollController extends \yii\web\Controller
                         self::GUEST_SAMPLE_SESSION_PREFIX . $option->poll_id,
                         $option->createdGuestVoteId
                     );
+                    return $this->redirect(['view', 'id' => $option->poll_id, '#' => 'poll-options']);
                 }
             }
         }else{
@@ -406,14 +404,14 @@ class PollController extends \yii\web\Controller
         $request = Yii::$app->request;
         $vote = $this->getPendingGuestVote((int) $id);
         if (!$request->isPost || $vote === null) {
-            return $this->redirect(['view', 'id' => (int) $id]);
+            return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
 
         if ($request->post('skip') !== '1') {
             $sex = $request->post('sex_at_birth');
             if (!in_array($sex, [(string) User::SEX_MAN, (string) User::SEX_WOMAN], true)) {
                 Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', 'Оберіть стать при народженні або пропустіть цей крок.'));
-                return $this->redirect(['view', 'id' => (int) $id]);
+                return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
             }
 
             // Scope the update to this session's vote AND its original IP; never update all votes for an IP.
@@ -426,7 +424,7 @@ class PollController extends \yii\web\Controller
         }
 
         Yii::$app->session->remove(self::GUEST_SAMPLE_SESSION_PREFIX . (int) $id);
-        return $this->redirect(['view', 'id' => (int) $id]);
+        return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
     }
 
     private function getPendingGuestVote($pollId)

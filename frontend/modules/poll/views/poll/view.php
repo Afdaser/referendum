@@ -11,6 +11,9 @@ use yii\helpers\Json;
 /* @var Poll $poll */
 /* @var Poll[] $relatedPolls */
 /* @var string|null $pageHeading */
+/* @var bool $guestSamplePending */
+
+$guestSamplePending = $guestSamplePending ?? false;
 
 if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
@@ -109,26 +112,32 @@ JS
                         <?php if ($isLongDescription): ?>
                             <label for="<?= $descriptionToggleId; ?>" class="poll_description_more"><?= Yii::t('poll', 'Читати далі'); ?></label>
                         <?php endif; ?>
-                        <?php $chartData = $poll->getChartData();?>
-                        <?php $bar = StringHelper::formatForBar($chartData); ?>
-                        <?php $pie = StringHelper::formatForPie($chartData); ?>
-                        <?php if(!$poll->isShowResult()):?>
-                            <?php // Окремий рядок не дає варіантам відповіді ставати поруч із кнопкою опису у flex-контейнері. ?>
-                            <div class="poll_options_block">
-                                <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
+                        <?php if ($guestSamplePending): ?>
+                            <div id="poll-options" class="poll_options_block">
+                                <?= $this->render('guest-sample', ['poll' => $poll]); ?>
                             </div>
-                            <div class="clearfix"></div>
-                            <div class="container_graph poll_chart_on_demand" style="display: none;">
-                                <?php // Графік не показуємо одразу, але відкриваємо його після кліку на будь-який тип. ?>
-                                <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie,'showChart'=>true,'lazyChart'=>true]); ?>
-                            </div>
-                        <?php endif;?>
-                        <?php if($poll->isShowResult()):?>
-                            <div class="clearfix"></div>
-                            <div class="container_graph">
-                                <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
-                            </div>
-                        <?php endif;?>
+                        <?php else: ?>
+                            <?php $chartData = $poll->getChartData();?>
+                            <?php $bar = StringHelper::formatForBar($chartData); ?>
+                            <?php $pie = StringHelper::formatForPie($chartData); ?>
+                            <?php if(!$poll->isShowResult()):?>
+                                <?php // Окремий рядок не дає варіантам відповіді ставати поруч із кнопкою опису у flex-контейнері. ?>
+                                <div id="poll-options" class="poll_options_block">
+                                    <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="container_graph poll_chart_on_demand" style="display: none;">
+                                    <?php // Графік не показуємо одразу, але відкриваємо його після кліку на будь-який тип. ?>
+                                    <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie,'showChart'=>true,'lazyChart'=>true]); ?>
+                                </div>
+                            <?php endif;?>
+                            <?php if($poll->isShowResult()):?>
+                                <div class="clearfix"></div>
+                                <div id="poll-options" class="container_graph">
+                                    <?= $this->render('/poll/options', ['poll' => $poll,'chartData'=>$chartData,'bar'=>$bar,'pie'=>$pie]); ?>
+                                </div>
+                            <?php endif;?>
+                        <?php endif; ?>
                     </div>
                     <div class="top_poll_b clearfix bottom_space_for_chart poll_view_footer">
                         <div class="poll_view_tags">
@@ -136,6 +145,7 @@ JS
                                 <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
                             <?php endforeach; ?>
                         </div>
+                        <?php if (!$guestSamplePending): ?>
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
                                 <span class="inner_chosen_graph" role="group" aria-label="<?= Yii::t('poll', 'Тип діаграми результатів'); ?>">
@@ -168,7 +178,9 @@ JS
                                 </span>
                             </span>
                         </div>
+                        <?php endif; ?>
                     </div>
+                    <?php if (!$guestSamplePending): ?>
                     <div class="show_voices_b">
                         <div class="title_show_voice clearfix">
                             <span class="toggle_b collapsed" data-toggle="collapse" data-target=".for_collapsing">
@@ -226,6 +238,7 @@ JS
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <div class="bottom_poll_b clearfix">
                         <span class="item_bottom_poll author-block" itemprop="author" itemscope itemtype="https://schema.org/Person">
                             <?= Yii::t('poll', 'Користувач'); ?>:
@@ -353,6 +366,7 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
             </div>
         </div>
     </div>
+<?php if (!$guestSamplePending): ?>
 <div class="info_block">
     <?php
     // Дозволяємо перевизначити стандартний блок статистики через адмінку.
@@ -438,6 +452,7 @@ $date->setTimezone(new DateTimeZone('America/New_York'));
 </div>
 
 
+<?php endif; ?>
 </div><!-- end .comments_add-answer_b -->
                 </div><!-- end .poll_block -->
             </div>

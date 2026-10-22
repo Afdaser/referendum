@@ -6,10 +6,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Poll $poll */
 ?>
-<div class="chart_b guest-sample" aria-labelledby="guest-sample-title">
+<section class="guest-sample" aria-labelledby="guest-sample-title">
     <p class="guest-sample__saved"><?= Html::encode(Yii::t('poll', 'Ваш голос зараховано')); ?></p>
-    <h1 id="guest-sample-title"><?= Html::encode(Yii::t('poll', 'Будь ласка, доповніть вибірку')); ?></h1>
-    <p class="guest-sample__poll"><?= Html::encode($poll->title); ?></p>
+    <h2 id="guest-sample-title"><?= Html::encode(Yii::t('poll', 'Будь ласка, доповніть вибірку')); ?></h2>
     <?php if ($error = Yii::$app->session->getFlash('guestSampleError')): ?>
         <p class="guest-sample__error" role="alert"><?= Html::encode($error); ?></p>
     <?php endif; ?>
@@ -27,4 +26,4 @@ use yii\helpers\Html;
             'name' => 'skip', 'value' => '1', 'class' => 'guest-sample__skip',
         ]); ?>
     <?= Html::endForm(); ?>
-</div>
+</section>

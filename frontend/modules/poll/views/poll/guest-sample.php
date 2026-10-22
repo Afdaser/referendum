@@ -34,7 +34,7 @@ $label = $step === 1 ? 'Стать при народженні' : 'Ваша ві
                 <?php endforeach; ?>
             <?php endif; ?>
         </fieldset>
-        <?= Html::submitButton(Html::encode(Yii::t('poll', $step === 1 ? 'Далі (пропустити)' : 'Показати результати (пропустити)')), [
+        <?= Html::submitButton(Html::encode(Yii::t('poll', 'Показати результати (пропустити)')), [
             'name' => 'skip', 'value' => '1', 'class' => 'guest-sample__skip',
         ]); ?>
     <?= Html::endForm(); ?>

@@ -6,7 +6,6 @@
 return array(
         'Крок {step} з {total}' => 'Step {step} of {total}',
         'Ваша вікова група' => 'Your age group',
-        'Далі (пропустити)' => 'Next (skip)',
         'Оберіть вікову групу або пропустіть цей крок.' => 'Choose your age group or skip this step.',
 
         'Ваш голос зараховано' => 'Your vote has been counted',

@@ -414,34 +414,40 @@ class PollController extends \yii\web\Controller
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
 
+        $sessionKey = self::GUEST_SAMPLE_SESSION_PREFIX . (int) $id;
+        // Skipping ends the entire optional sample, even from a previous step.
+        if ($request->post('skip') === '1') {
+            Yii::$app->session->remove($sessionKey);
+            Yii::$app->session->remove($sessionKey . ':step');
+            Yii::$app->session->removeFlash('guestSampleError');
+            return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
+        }
+
         $step = $this->getGuestSampleStep($id);
         // Ignore stale submissions from a previous step (including browser Back).
         if ($request->post('step') !== (string) $step) {
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
-        if ($request->post('skip') !== '1') {
-            $attribute = $step === 1 ? 'sex_at_birth' : 'age_interval';
-            $value = $request->post($attribute);
-            $allowed = $step === 1
-                ? [User::SEX_MAN, User::SEX_WOMAN]
-                : array_keys(User::getUserAgeIntervalList());
-            if (!in_array($value, array_map('strval', $allowed), true)) {
-                $message = $step === 1
-                    ? 'Оберіть стать при народженні або пропустіть цей крок.'
-                    : 'Оберіть вікову групу або пропустіть цей крок.';
-                Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $message));
-                return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
-            }
-            // Update only this session's vote, tied to its original IP.
-            OptionGuestVote::updateAll([$attribute => (int) $value], [
-                'id' => $vote->id,
-                'poll_id' => (int) $id,
-                'guest_ip_key' => OptionGuestVote::resolveGuestVoteKey(),
-                $attribute => null,
-            ]);
+        $attribute = $step === 1 ? 'sex_at_birth' : 'age_interval';
+        $value = $request->post($attribute);
+        $allowed = $step === 1
+            ? [User::SEX_MAN, User::SEX_WOMAN]
+            : array_keys(User::getUserAgeIntervalList());
+        if (!in_array($value, array_map('strval', $allowed), true)) {
+            $message = $step === 1
+                ? 'Оберіть стать при народженні або пропустіть цей крок.'
+                : 'Оберіть вікову групу або пропустіть цей крок.';
+            Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $message));
+            return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
+        // Update only this session's vote, tied to its original IP.
+        OptionGuestVote::updateAll([$attribute => (int) $value], [
+            'id' => $vote->id,
+            'poll_id' => (int) $id,
+            'guest_ip_key' => OptionGuestVote::resolveGuestVoteKey(),
+            $attribute => null,
+        ]);
 
-        $sessionKey = self::GUEST_SAMPLE_SESSION_PREFIX . (int) $id;
         if ($step === 1) {
             Yii::$app->session->set($sessionKey . ':step', 2);
         } else {

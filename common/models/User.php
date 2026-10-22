@@ -663,33 +663,28 @@ class User extends BaseModelUser
 
     public static function getUserAgeIntervalList()
     {
-        $result = [
-            1 => '10-15',
-            2 => '15-25',
-            3 => '25-60'
+        return [
+            1 => '18–24',
+            2 => '25–34',
+            3 => '35–44',
+            4 => '45–54',
+            5 => '55–64',
+            6 => '65+',
         ];
-
-        return $result;
     }
 
-    /*
-     * Return min and max age for interval
-     * @index
-     */
-
+    /** Return inclusive age bounds, or null for an unknown interval. */
     public static function getAgesByIntervalIndex($index)
     {
-        $array['min'] = [1 => 10, 2 => 15, 3 => 25];
-        $array['max'] = [1 => 15, 2 => 25, 3 => 60];
-        if (($index > 0) && ($index < count($array['min'])) && ($index < count($array['max']))) {
-            $result['min'] = $array['min'][$index];
-            $result['max'] = $array['max'][$index];
-        } else {
-            $result['min'] = $array['min'][1];
-            $result['max'] = $array['max'][count($array['max']) - 2];
-        }
-
-        return $result;
+        $intervals = [
+            1 => ['min' => 18, 'max' => 24],
+            2 => ['min' => 25, 'max' => 34],
+            3 => ['min' => 35, 'max' => 44],
+            4 => ['min' => 45, 'max' => 54],
+            5 => ['min' => 55, 'max' => 64],
+            6 => ['min' => 65, 'max' => PHP_INT_MAX],
+        ];
+        return $intervals[$index] ?? null;
     }
 
     /*

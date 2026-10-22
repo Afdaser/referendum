@@ -206,6 +206,7 @@ class PollController extends \yii\web\Controller
         return $this->render('view', [
             'poll'=>$poll,
             'guestSamplePending' => $guestSamplePending,
+            'guestSampleStep' => $this->getGuestSampleStep($poll->id),
             'commentModel'=>$comment,
             'answerModel'=>$answer,
             'relatedPolls' => $relatedPolls,
@@ -378,7 +379,7 @@ class PollController extends \yii\web\Controller
             if ($request->isAjax) {
                 return $this->asJson([
                     'html' => $this->getPendingGuestVote($option->poll_id) !== null
-                        ? $this->renderPartial('guest-sample', ['poll' => $option->poll])
+                        ? $this->renderPartial('guest-sample', ['poll' => $option->poll, 'step' => $this->getGuestSampleStep($option->poll_id)])
                         : null,
                 ]);
             }
@@ -413,24 +414,46 @@ class PollController extends \yii\web\Controller
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
 
+        $step = $this->getGuestSampleStep($id);
+        // Ignore stale submissions from a previous step (including browser Back).
+        if ($request->post('step') !== (string) $step) {
+            return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
+        }
         if ($request->post('skip') !== '1') {
-            $sex = $request->post('sex_at_birth');
-            if (!in_array($sex, [(string) User::SEX_MAN, (string) User::SEX_WOMAN], true)) {
-                Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', 'Оберіть стать при народженні або пропустіть цей крок.'));
+            $attribute = $step === 1 ? 'sex_at_birth' : 'age_interval';
+            $value = $request->post($attribute);
+            $allowed = $step === 1
+                ? [User::SEX_MAN, User::SEX_WOMAN]
+                : array_keys(User::getUserAgeIntervalList());
+            if (!in_array($value, array_map('strval', $allowed), true)) {
+                $message = $step === 1
+                    ? 'Оберіть стать при народженні або пропустіть цей крок.'
+                    : 'Оберіть вікову групу або пропустіть цей крок.';
+                Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $message));
                 return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
             }
-
-            // Scope the update to this session's vote AND its original IP; never update all votes for an IP.
-            OptionGuestVote::updateAll(['sex_at_birth' => (int) $sex], [
+            // Update only this session's vote, tied to its original IP.
+            OptionGuestVote::updateAll([$attribute => (int) $value], [
                 'id' => $vote->id,
                 'poll_id' => (int) $id,
                 'guest_ip_key' => OptionGuestVote::resolveGuestVoteKey(),
-                'sex_at_birth' => null,
+                $attribute => null,
             ]);
         }
 
-        Yii::$app->session->remove(self::GUEST_SAMPLE_SESSION_PREFIX . (int) $id);
+        $sessionKey = self::GUEST_SAMPLE_SESSION_PREFIX . (int) $id;
+        if ($step === 1) {
+            Yii::$app->session->set($sessionKey . ':step', 2);
+        } else {
+            Yii::$app->session->remove($sessionKey);
+            Yii::$app->session->remove($sessionKey . ':step');
+        }
         return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
+    }
+
+    private function getGuestSampleStep($pollId)
+    {
+        return (int) Yii::$app->session->get(self::GUEST_SAMPLE_SESSION_PREFIX . (int) $pollId . ':step', 1);
     }
 
     private function getPendingGuestVote($pollId)
@@ -448,10 +471,10 @@ class PollController extends \yii\web\Controller
             'id' => $voteId,
             'poll_id' => (int) $pollId,
             'guest_ip_key' => $ipKey,
-            'sex_at_birth' => null,
         ]);
         if ($vote === null) {
             Yii::$app->session->remove($sessionKey);
+            Yii::$app->session->remove($sessionKey . ':step');
         }
         return $vote;
     }

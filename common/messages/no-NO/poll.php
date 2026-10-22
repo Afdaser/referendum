@@ -1,6 +1,11 @@
 <?php
 
 return array(
+        'Крок {step} з {total}' => 'Trinn {step} av {total}',
+        'Ваша вікова група' => 'Din aldersgruppe',
+        'Далі (пропустити)' => 'Neste (hopp over)',
+        'Оберіть вікову групу або пропустіть цей крок.' => 'Velg aldersgruppen din eller hopp over dette trinnet.',
+
         'Ваш голос зараховано' => 'Stemmen din er registrert',
         'Будь ласка, доповніть вибірку' => 'Vennligst suppler utvalget',
         'Стать при народженні' => 'Kjønn ved fødselen',

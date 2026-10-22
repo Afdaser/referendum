@@ -6,9 +6,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Poll $poll */
 ?>
-<section class="guest-sample" aria-labelledby="guest-sample-title">
+<section class="guest-sample" aria-label="<?= Html::encode(Yii::t('poll', 'Стать при народженні')); ?>">
     <p class="guest-sample__saved"><?= Html::encode(Yii::t('poll', 'Ваш голос зараховано')); ?></p>
-    <h2 id="guest-sample-title"><?= Html::encode(Yii::t('poll', 'Будь ласка, доповніть вибірку')); ?></h2>
+    <h2 tabindex="-1"><?= Html::encode(Yii::t('poll', 'Будь ласка, доповніть вибірку')); ?></h2>
     <?php if ($error = Yii::$app->session->getFlash('guestSampleError')): ?>
         <p class="guest-sample__error" role="alert"><?= Html::encode($error); ?></p>
     <?php endif; ?>

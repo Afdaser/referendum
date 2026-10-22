@@ -373,8 +373,14 @@ class PollController extends \yii\web\Controller
                         self::GUEST_SAMPLE_SESSION_PREFIX . $option->poll_id,
                         $option->createdGuestVoteId
                     );
-                    return $this->redirect(['view', 'id' => $option->poll_id, '#' => 'poll-options']);
                 }
+            }
+            if ($request->isAjax) {
+                return $this->asJson([
+                    'html' => $this->getPendingGuestVote($option->poll_id) !== null
+                        ? $this->renderPartial('guest-sample', ['poll' => $option->poll])
+                        : null,
+                ]);
             }
         }else{
             if (YII_ENV == 'dev') {

@@ -2,6 +2,41 @@ console.log('~/referendum.social.local/frontend/web/js/custom.js:v0.02');
 
 window.highchartColors = ['#e0923e','#f5c356','#058f42','#3ac469','#59d9c8','#63b6dd','#238dbf','#726795','#45474d','#b16262'];
 
+// Only the guest vote advances inline; the sample form still posts to the poll page.
+$(document).on('submit', '.poll-option-form[data-guest-vote="1"]', function (event) {
+    var form = this;
+    var $form = $(form);
+    var button = (event.originalEvent && event.originalEvent.submitter) || document.activeElement;
+    var $block = $form.closest('.poll_options_block, .inner_block_chosen');
+    if (!$block.length || !button || button.form !== form || button.name !== 'option') {
+        return; // Keep the existing full-page submission as a fallback.
+    }
+    event.preventDefault();
+    if ($form.data('submitting')) {
+        return;
+    }
+    var data = $form.serializeArray();
+    data.push({name: button.name, value: button.value});
+    $form.data('submitting', true).attr('aria-busy', 'true');
+    $form.find(':submit').prop('disabled', true);
+    var pollUrl = $form.attr('data-poll-url');
+    $.ajax({url: form.action, type: 'POST', data: data, dataType: 'json', timeout: 15000})
+        .done(function (response) {
+            if (!response || !response.html) {
+                window.location.assign(pollUrl);
+                return;
+            }
+            $block.closest('.poll_block')
+                .find('.poll_chart_on_demand, .poll_view_chart_toggle, .show_voices_b, .info_block').hide();
+            $block.addClass('poll_options_block').html(response.html);
+            $block.find('.guest-sample h2').trigger('focus');
+        })
+        .fail(function () {
+            // Recover from the server's saved state without reposting an uncertain vote.
+            window.location.assign(pollUrl);
+        });
+});
+
 $(document).ready(function(){
     try {
         // Базова логіка cookie-consent:

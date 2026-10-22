@@ -3,11 +3,9 @@
 return array(
         'Ваш голос зараховано' => 'Stemmen din er registrert',
         'Будь ласка, доповніть вибірку' => 'Vennligst suppler utvalget',
-        'За бажанням вкажіть стать при народженні. Відповідь доповнить ваш голос у статистиці опитування.' => 'Hvis du ønsker det, kan du oppgi kjønn ved fødselen. Svaret tas med sammen med stemmen din i statistikken.',
         'Стать при народженні' => 'Kjønn ved fødselen',
         'Народжений чоловіком' => 'Født som mann',
         'Народжена жінкою' => 'Født som kvinne',
-        'Це необов’язково — результати доступні й без відповіді.' => 'Dette er valgfritt — du kan se resultatene uten å svare.',
         'Показати результати (пропустити)' => 'Vis resultater (hopp over)',
         'Оберіть стать при народженні або пропустіть цей крок.' => 'Velg kjønn ved fødselen eller hopp over dette trinnet.',
         'Користувач'=>'Bruker',

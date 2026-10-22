@@ -428,7 +428,6 @@ h1.title {
 }
 .guest-sample__choice { flex: 1 1 200px; color: #226338; background: #f4f9f5; }
 .guest-sample__choice:hover { background: #e4f1e7; }
-.guest-sample__optional { margin-top: 20px; color: #595959; }
 .guest-sample__skip { display: block; width: 100%; color: #fff; background: #226338; }
 .guest-sample__skip:hover { background: #174b29; }
 .guest-sample__choice:focus-visible, .guest-sample__skip:focus-visible { outline: 3px solid #e29b14; outline-offset: 3px; }

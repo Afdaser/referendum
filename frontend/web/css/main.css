@@ -1693,7 +1693,7 @@ a.btn_prev_var:hover {
     /* Після розгортання прибираємо кнопку, щоб не відволікати від опитування. */
     display: none;
 }
-.middle_name_poll_b.page .poll_options_block {
+.middle_name_poll_b .poll_options_block {
     /* Варіанти відповіді завжди починаємо з нового рядка після кнопки опису. */
     flex: 0 0 100%;
 }

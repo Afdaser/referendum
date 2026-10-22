@@ -33,6 +33,8 @@ use common\components\ActiveRecord;
  */
 class PollOption extends ActiveRecord
 {
+    /** @var int|null ID created by this request; duplicate submissions leave it null. */
+    public $createdGuestVoteId;
 
     #poll`s option statuses
     const OPTION_STATUS_PUBLISHED = 1;
@@ -274,6 +276,7 @@ class PollOption extends ActiveRecord
      * Vote by Guest for poll`s option
      */
     public function voteByGuest(){
+        $this->createdGuestVoteId = null;
         $result = false;
         $guestVoteKey = OptionGuestVote::resolveGuestVoteKey();
         if ($guestVoteKey === null) {
@@ -295,6 +298,7 @@ class PollOption extends ActiveRecord
         $vote->date_add = date('Y-m-d H:i:s');
         try {
             if($vote->save()){
+                $this->createdGuestVoteId = (int) $vote->id;
                 $result = true;
             }
         } catch (IntegrityException $e) {

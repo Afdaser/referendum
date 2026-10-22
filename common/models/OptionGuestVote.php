@@ -14,6 +14,7 @@ use common\components\ActiveRecord;
  * @property int|null $user_ip User IP
  * @property string|null $ip_of_user User IP
  * @property string|null $guest_ip_key Guest IP key for uniqueness
+ * @property int|null $sex_at_birth Optional sex at birth, using User::SEX_* values
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
  * @property int|null $updated_by Updated by:
@@ -53,6 +54,7 @@ class OptionGuestVote extends ActiveRecord
             [['option_id', 'poll_id', 'user_ip', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['date_add'], 'safe'],
             [['guest_ip_key'], 'required'],
+            [['sex_at_birth'], 'in', 'range' => [User::SEX_MAN, User::SEX_WOMAN]],
             [['ip_of_user', 'guest_ip_key'], 'string', 'max' => 67],
             [['option_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollOption::class, 'targetAttribute' => ['option_id' => 'id']],
             [['poll_id'], 'exist', 'skipOnError' => true, 'targetClass' => Poll::class, 'targetAttribute' => ['poll_id' => 'id']],

@@ -1,6 +1,13 @@
 <?php
 
 return array(
+        'Ваш голос зараховано' => 'Stemmen din er registrert',
+        'Будь ласка, доповніть вибірку' => 'Vennligst suppler utvalget',
+        'Стать при народженні' => 'Kjønn ved fødselen',
+        'Народжений чоловіком' => 'Født som mann',
+        'Народжена жінкою' => 'Født som kvinne',
+        'Показати результати (пропустити)' => 'Vis resultater (hopp over)',
+        'Оберіть стать при народженні або пропустіть цей крок.' => 'Velg kjønn ved fødselen eller hopp over dette trinnet.',
         'Користувач'=>'Bruker',
         'коментарів'=>'Kommentarer',
         'голосів'=>'Avstemninger',

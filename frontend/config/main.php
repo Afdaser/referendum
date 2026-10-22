@@ -211,6 +211,10 @@ return [
                     'route' => 'poll/poll/view',
                 ],
                 [
+                    'pattern' => 'poll/<id:\d+>/sample',
+                    'route' => 'poll/poll/guest-sample',
+                ],
+                [
                     'pattern' => '/poll/vote',
 //                    'pattern' => '/poll/vote/option=<option:\d+>',
 //                    'pattern' => '/poll/vote?option=<option:\d+>',

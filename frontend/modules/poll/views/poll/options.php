@@ -21,7 +21,9 @@ use yii\helpers\Json;
     $result_type = 'bar';
 } ?>
 <?php if (!$poll->isShowResult() && empty($showChart)): ?>
-    <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form">
+    <form method="post" action="<?= Url::toRoute(['/poll/poll/vote']); ?>" class="poll-option-form"
+          data-guest-vote="<?= Yii::$app->user->isGuest ? '1' : '0'; ?>"
+          data-poll-url="<?= Url::toRoute(['/poll/poll/view', 'id' => $poll->id, '#' => 'poll-options']); ?>">
         <input type="hidden" name="<?= Yii::$app->request->csrfParam ?>" value="<?= Yii::$app->request->getCsrfToken() ?>">
         <?php foreach($poll->pollOptions as $option):?>
             <div class="item_chose_poll">

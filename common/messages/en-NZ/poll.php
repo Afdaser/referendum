@@ -4,6 +4,13 @@
 
 
 return array(
+        'Ваш голос зараховано' => 'Your vote has been counted',
+        'Будь ласка, доповніть вибірку' => 'Please help complete the sample',
+        'Стать при народженні' => 'Sex at birth',
+        'Народжений чоловіком' => 'Born male',
+        'Народжена жінкою' => 'Born female',
+        'Показати результати (пропустити)' => 'Show results (skip)',
+        'Оберіть стать при народженні або пропустіть цей крок.' => 'Choose your sex at birth or skip this step.',
         'Користувач'=>'User',
         'коментарів'=>'Comments',
         'голосів'=>'Voted',

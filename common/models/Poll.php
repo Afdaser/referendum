@@ -1098,7 +1098,7 @@ class Poll extends ActiveRecord
      * Return cumulative percentage history for the Highcharts line chart.
      *
      * Лінійний графік показує, як змінювалась частка кожного варіанта за днями голосування.
-     * Гостьові голоси можуть мати стать при народженні, але не мають віку та країни.
+     * Гостьові голоси можуть мати стать при народженні та вікову групу, але не країну.
      */
     public function getLineChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0)
     {
@@ -1121,7 +1121,6 @@ class Poll extends ActiveRecord
             $age = User::getAgesByIntervalIndex($ageInterval);
         }
 
-        $hasProfileFilters = isset($age) || $country;
         $optionIds = array_keys($optionTitles);
 
         if ($registration !== 2) {
@@ -1145,7 +1144,7 @@ class Poll extends ActiveRecord
             }
 
             if (isset($age)) {
-                $registeredQuery->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
+                $registeredQuery->andWhere(new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE()) BETWEEN :min AND :max', [
                     ':min' => $age['min'],
                     ':max' => $age['max'],
                 ]));
@@ -1156,7 +1155,7 @@ class Poll extends ActiveRecord
                 ->all(), $dailyVotes, $dates);
         }
 
-        if (!$hasProfileFilters && $registration !== 1) {
+        if (!$country && $registration !== 1) {
             $guestQuery = (new Query())
                 ->select([
                     'option_id' => 'ogv.option_id',
@@ -1169,6 +1168,10 @@ class Poll extends ActiveRecord
 
             if ($sex) {
                 $guestQuery->andWhere(['ogv.sex_at_birth' => $sex]);
+            }
+
+            if (isset($age)) {
+                $guestQuery->andWhere(['ogv.age_interval' => $ageInterval]);
             }
 
             $this->appendLineChartRows($guestQuery->all(), $dailyVotes, $dates);
@@ -1282,7 +1285,7 @@ class Poll extends ActiveRecord
                     }
 
                     if(isset($age)){
-                        $query->andWhere(new Expression('YEAR(CURDATE())-YEAR(p.date_birthday) BETWEEN :min AND :max', [
+                        $query->andWhere(new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE()) BETWEEN :min AND :max', [
                             ':min' => $age['min'],
                             ':max' => $age['max'],
                         ]));
@@ -1291,11 +1294,14 @@ class Poll extends ActiveRecord
                     $value = (int)$query->count();
                 }
 
-                // Unknown guest demographics must not be treated as matching age/country filters.
-                if ($registration !== 1 && !isset($age) && !$country) {
+                // Unknown guest demographics do not match age/country filters.
+                if ($registration !== 1 && !$country) {
                     $guestQuery = OptionGuestVote::find()->where(['option_id' => $option->id]);
                     if ($sex) {
                         $guestQuery->andWhere(['sex_at_birth' => $sex]);
+                    }
+                    if (isset($age)) {
+                        $guestQuery->andWhere(['age_interval' => $ageInterval]);
                     }
                     $value += (int) $guestQuery->count();
                 }

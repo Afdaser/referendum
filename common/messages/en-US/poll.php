@@ -1,6 +1,15 @@
 <?php
 
 return array(
+        'Ваш голос зараховано' => 'Your vote has been counted',
+        'Будь ласка, доповніть вибірку' => 'Please help complete the sample',
+        'За бажанням вкажіть стать при народженні. Відповідь доповнить ваш голос у статистиці опитування.' => 'Optionally, indicate your sex at birth. Your answer will be included with your vote in the poll statistics.',
+        'Стать при народженні' => 'Sex at birth',
+        'Народжений чоловіком' => 'Born male',
+        'Народжена жінкою' => 'Born female',
+        'Це необов’язково — результати доступні й без відповіді.' => 'This is optional — you can see the results without answering.',
+        'Показати результати (пропустити)' => 'Show results (skip)',
+        'Оберіть стать при народженні або пропустіть цей крок.' => 'Choose your sex at birth or skip this step.',
         'Користувач'=>'User',
         'коментарів'=>'Comments',
         'голосів'=>'Voted',

@@ -13,6 +13,8 @@ use common\models\PollOption;
 use common\models\PollComment;
 use common\models\OptionGuestVote;
 use common\models\User;
+use common\models\Country;
+use common\helpers\StringHelper;
 
 class PollController extends \yii\web\Controller
 {
@@ -77,7 +79,7 @@ class PollController extends \yii\web\Controller
         if (!$this->checkRedirect()) {
             $id = intval(Yii::$app->request->get('id',0));
 //            return $this->render('view');
-            return self::renderView($id);
+            return $this->renderView($id);
         }
     }
 
@@ -87,7 +89,7 @@ class PollController extends \yii\web\Controller
     */
     private function renderView($id,$comment=null,$answer=null){
 //        $poll = Poll::model()->findByPk($id,'status<>'.Poll::POLL_STATUS_UNPUBLISHED);
-        $poll = Poll::find()->where(['id' => $id])->published()->one();
+        $poll = Poll::find()->with('tags')->where(['id' => $id])->published()->one();
         if(empty($poll)){
             throw new NotFoundHttpException(Yii::t('poll', 'Сторінку не знайдено'));
 //            throw new CHttpException(404, Yii::t('poll', 'Сторінку не знайдено'));
@@ -143,28 +145,25 @@ class PollController extends \yii\web\Controller
                 }
 
         $error = null;
-        if(!isset($poll)){
-            throw new NotFoundHttpException(Yii::t('poll', 'Сторінку не знайдено'));
-//            throw new CHttpException(404, Yii::t('poll', 'Сторінку не знайдено'));
-        }
-
         if(!$comment){
             $comment = new PollComment;
             $comment->poll_id = $id;
             $reply = intval(Yii::$app->request->get('reply'));
 
-            if(PollComment::find()->where(['id' => $reply])->count()){
+            if($reply && PollComment::find()->where(['id' => $reply])->exists()){
                 $comment->parent_id = $reply;
             }
         } else {
-            $error = Html::errorSummary($comment)?json_encode(Html::errorSummary($comment)):null;
+            $summary = Html::errorSummary($comment);
+            $error = $summary ? json_encode($summary) : null;
         }
 
         if(!$answer){
             $answer = new PollOption;
             $answer->poll_id = $id;
         } else {
-            $error = Html::errorSummary($answer)?json_encode(Html::errorSummary($answer)):null;
+            $summary = Html::errorSummary($answer);
+            $error = $summary ? json_encode($summary) : null;
         }
 
         // Підбираємо схожі опитування за найбільшою кількістю спільних тегів.
@@ -178,6 +177,7 @@ class PollController extends \yii\web\Controller
             // беремо лише ті, що належать тій самій мові та країні, що й поточне опитування.
             $relatedPolls = Poll::find()
                 ->alias('p')
+                ->with(['tags', 'language'])
                 ->select([
                     'p.*',
                     // Рахуємо, скільки тегів у кандидата збігається з поточним опитуванням.
@@ -229,13 +229,13 @@ class PollController extends \yii\web\Controller
 
         // Валідація моделі перевіряє базові правила (обов'язкові поля, формат тощо).
         if (!$comment->validate()) {
-            return self::renderView($comment->poll_id, $comment);
+            return $this->renderView($comment->poll_id, $comment);
         }
 
         // Зберігаємо без повторної валідації, бо validate() виконали вище.
         // Дозволяємо кілька гостьових коментарів з одного IP у межах одного опитування.
         if (!$comment->save(false)) {
-            return self::renderView($comment->poll_id, $comment);
+            return $this->renderView($comment->poll_id, $comment);
         }
 
         if ($comment->parent_id) {
@@ -260,12 +260,12 @@ class PollController extends \yii\web\Controller
         $answer = new PollOption();
         $answer->setUnpublishedOptionAttributes($postData['answer']);
 
-        if (!$answer->validate() || !$answer->save()) {
+        if (!$answer->save()) {
 //            echo '<h2>Error~</h2><pre>';
 //            var_dump($answer->getErrors());
 //            echo '</pre>';
 //            die(__METHOD__);
-            return self::renderView($answer->poll_id, null, $answer);
+            return $this->renderView($answer->poll_id, null, $answer);
         }
 
         $this->redirect(array('view', 'id' => $answer->poll_id));
@@ -311,8 +311,7 @@ class PollController extends \yii\web\Controller
             $id = intval(Yii::$app->request->post('id'));
             $rating = intval(Yii::$app->request->post('rating'));
             $poll = Poll::find()->where(['id' => $id])->one();
-            $isVoted = User::isVotedForPoll($id);
-            if($poll && !$isVoted && $rating){
+            if($poll && $rating && !User::isVotedForPoll($id)){
                 $newRating = $poll->changeRating($rating);
                 echo json_encode($newRating);
             }
@@ -501,7 +500,7 @@ class PollController extends \yii\web\Controller
                 $options = [];
             }
 
-            if($poll->validate() && $poll->save()){
+            if($poll->save()){
                 $poll->createNewPollOptions($options);
                 if(isset($postData['Poll']['tags'])){
                     $poll->createNewPollTags($postData['Poll']['tags']);
@@ -536,10 +535,10 @@ class PollController extends \yii\web\Controller
      * Return filtered data for chart building
      */
     public function actionGetChartData(){
-        if (Yii::$app->request->isAjaxRequest){
+        if (Yii::$app->request->isAjax){
             $id = intval(Yii::$app->request->post('id'));
             if($id){
-                $poll = Poll::model()->findByPk($id);
+                $poll = Poll::findOne($id);
                 if($poll){
                     $gender = intval(Yii::$app->request->post('gender'));
                     $ageInterval = intval(Yii::$app->request->post('age'));
@@ -566,7 +565,7 @@ class PollController extends \yii\web\Controller
      * Return region list for country
      */
     public static function actionGetRegions(){
-        if (Yii::$app->request->isAjaxRequest){
+        if (Yii::$app->request->isAjax){
             $id = intval(Yii::$app->request->post('country'));
             $regions = Country::getRegions($id);
 
@@ -578,7 +577,7 @@ class PollController extends \yii\web\Controller
      * Return city list for region
      */
     public static function actionGetCities(){
-        if (Yii::$app->request->isAjaxRequest){
+        if (Yii::$app->request->isAjax){
             $country = intval(Yii::$app->request->post('country'));
             $region = intval(Yii::$app->request->post('region'));
             $cities = Country::getCities($country,$region);
@@ -592,11 +591,11 @@ class PollController extends \yii\web\Controller
         if($postData){
             if(isset($postData['id'])){
                 $id = intval($postData['id']);
-                if($poll = Poll::model()->findByPk($id)){
+                if($poll = Poll::findOne($id)){
                     if($poll->user_id == Yii::$app->user->identity->id && $poll->isEditable()){
                         $poll->setPollAttributes($postData);
                         if(isset($postData['options'])){
-                            if($poll->validate() && $poll->save()){
+                            if($poll->save()){
                                 $poll->editPollOptions($postData['options']);
                                 $poll->editPollTags($postData['tags']);
                             }

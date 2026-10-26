@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 use common\components\ActiveRecord;
 use common\helpers\StringHelper;
-use yii\bootstrap\Html;
+use yii\helpers\Html;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -141,7 +141,6 @@ class Poll extends ActiveRecord
             'user_id' => Yii::t('app', 'User'),
             'author.name' => Yii::t('app', 'Author'),
             'rating' => Yii::t('app', 'Rating'),
-            'status' => Yii::t('app', 'Status'),
             'status' => Yii::t('app', 'Status'),
             'views' => Yii::t('app', 'Views'),
             'result_type' => Yii::t('app', 'Result type'),
@@ -443,36 +442,27 @@ class Poll extends ActiveRecord
      *
      * @return array
      */
-	public function getVoteCountries()
+    public function getVoteCountries()
     {
-        // получаем айдишники для option
-        $optionIDs = [];
-        foreach($this->pollOptions as $option) {
-            $optionIDs[] = $option->id;
-        }
-/* TODO: Remove_Yii1_code */
-//        $criteria = new CDbCriteria();
-//        $criteria->addInCondition('option_id', $optionIDs);
-//        $optionVotes = OptionVote::model()->with('user')->findAll($criteria);
-//
-        $optionVotes = OptionVote::find()->with('user')->where(['option_id' => $optionIDs])->all();
-
-        // получаем айдишники стран, участвующих в опросе и формируем массив id => кол-во голосов
-        $countryVotes = [];
-        foreach ($optionVotes as $optionVote) {
-            /** @var OptionVote $optionVote */
-            $key = $optionVote->user->profile->country_id;
-            if (!empty($key)) {
-                if (array_key_exists($key, $countryVotes)) {
-                    $countryVotes[$key]++;
-                } else {
-                    $countryVotes[$key] = 1;
-                }
-            }
+        $optionIds = array_map(static function (PollOption $option) {
+            return $option->id;
+        }, $this->pollOptions);
+        if (empty($optionIds)) {
+            return [];
         }
 
-        // всего голосов
+        $countryVotes = (new Query())
+            ->select(['votes' => new Expression('COUNT(*)'), 'country_id' => 'p.country_id'])
+            ->from(['ov' => OptionVote::tableName()])
+            ->innerJoin(['u' => User::tableName()], 'u.id = ov.user_id')
+            ->innerJoin(['p' => Profile::tableName()], 'p.user_id = u.id')
+            ->where(['ov.option_id' => $optionIds])
+            ->andWhere(['<>', 'p.country_id', 0])
+            ->groupBy('p.country_id')->indexBy('country_id')->column(static::getDb());
         $totalVotes = array_sum($countryVotes);
+        if ($totalVotes === 0) {
+            return [];
+        }
 
         $countries = Country::getCountriesList();
         $result = [];
@@ -772,25 +762,7 @@ class Poll extends ActiveRecord
      */
     public function getAbsoluteUrl()
     {
-        if(is_null(self::$subdomen)){
-            $host = explode('.', $_SERVER['SERVER_NAME']);
-            if(in_array($host[0], array('en', 'uk', 'ua' , 'ru', 'no'))){
-                $subdomen = $host[0];
-            }else{
-                $subdomen = '';
-            }
-        }
-
-        if($subdomen === ''){
-            return SITE_PROTOCOL."{$this->language->name}.".SITE_DOMAIN."/poll/{$this->id}";
-//            $prefix = str_replace('https://on', "https://{$this->language->name}.on", self::MAIN_DOMAIN);
-//            return $prefix.'/poll/'.$this->id;
-        }else{
-//            return '/poll/'.$this->id;
-            return SITE_PROTOCOL."{$this->language->name}.".SITE_DOMAIN."/poll/{$this->id}";
-        }
-
-//        return Yii::$app->createUrl('poll/view', array('id' => $this->id));
+        return SITE_PROTOCOL . $this->language->name . '.' . SITE_DOMAIN . '/poll/' . $this->id;
     }
 /* TODO: Remove_Yii1_code * /
     public function yiiOnegetUrl()
@@ -823,58 +795,17 @@ class Poll extends ActiveRecord
      */
     public function getCountPollOptionsVoters()
     {
-//        $countAuthVotes = count($this->getPollOptionsVoters()->where(['>', 'id', 0])->all());
-//        $countGuestVotes = count($this->getPollOptionsGuestVoters()->all());
-//        $countAuthVotes = $this->getPollOptionsVoters()->where(['>', 'id', 0])->count();
-        $countAuthVotes = $this->getPollOptionsVoters()->count();
-        $countGuestVotes = $this->getPollOptionsGuestVoters()->count();
+        // Include unpublished options and legacy guest votes, as the relations do.
+        $registered = (new Query())->select(new Expression('COUNT(*)'))
+            ->from(OptionVote::tableName())->where('option_id = po.id');
+        $guests = (new Query())->select(new Expression('COUNT(*)'))
+            ->from(OptionGuestVote::tableName())->where('option_id = po.id');
 
-/* TODO: Remove_Yii1_code */
-        if (0 AND YII_ENV == 'dev') {
-//            echo 'Dev2405[ ' . $countGuestVotes . ' ] + [ ' . $countAuthVotes . ' ]';
-//            echo '<pre>';
-//
-//            echo '<h3>Raw SQL:</h3>';
-//            $query = $this->getPollOptionsVotersDev();
-//            $querySQL =  $query->createCommand()->sql;
-//            echo $querySQL;
-//            echo '<h3>Loop:</h3>';
-//            foreach ($this->getPollOptionsVotersDev()->all() as $key => $item) {
-//                if($key <1){
-//                    echo "<hr><h2>Key: [{$key}]</h2><pre>";
-//                    var_dump($item);
-//                    echo '</pre>';
-//                }else{
-//                    echo "<p>Option: [{$item->id}] | `option_id` = [{$item->option_id}] |</p>"; // `option_id` = [{$item->poll_id}]</p>";
-//// `option_id` IN (SELECT `id` FROM `poll_option` WHERE `poll_id` = 432 )
-//                }
-//            }
-////            var_dump($this->getPollOptionsVoters());
-////            var_dump($this->getPollOptionsVoters());
-//            echo '</pre>';
-//
-//            die(__METHOD__);
-            return 'Dev2405[ ' . $countGuestVotes . ' ] + [ ' . $countAuthVotes . ' ]';
-        } else{
-            return ($countGuestVotes + $countAuthVotes);
-        }
-/* Old code:
-        $authVotes = $this->getPollOptionsVoters()->where(['>', 'id', 0])->all();
-        $guestVotes = $this->getPollOptionsGuestVoters()->all();
-        if (YII_ENV == 'dev') {
-            return 'Dev2405[ '.count($guestVotes).' + '.count($authVotes).' ]';
-        } else{
-            return count($guestVotes) + count($authVotes);
-        }
+        $counts = (new Query())->select(['registered' => $registered, 'guests' => $guests])
+            ->from(['po' => PollOption::tableName()])->where(['po.poll_id' => $this->id]);
 
-/* */
-//        echo '<pre>';
-//        var_dump($authVotes);
-//        echo '</pre>';
-//        die(__FILE__.'#'.__LINE__."\n\n");
-//        return count($this->pollOptionsVoters) + count($this->pollOptionsGuestVoters);
-//        return $this->getPollOptionsVoters()->count() + $this->getPollOptionsGuestVoters()->count();
-//        return '#:'.$this->getPollOptionsVoters()->count().' + '.$this->getPollOptionsGuestVoters()->count();
+        return (int) (new Query())->from(['votes' => $counts])
+            ->sum(new Expression('votes.registered + votes.guests'), static::getDb());
     }
 
     /*
@@ -933,8 +864,7 @@ class Poll extends ActiveRecord
             $conditions = ['or', $conditions, ['ogv.user_ip' => (int) $ipv4Long]];
         }
 
-        $resultOfQuery = $query->andWhere($conditions)->count();
-        return boolval($resultOfQuery);
+        return $query->andWhere($conditions)->exists();
 
 //        $criteria = new CDbCriteria;
 //        $criteria->with = array('option');
@@ -953,11 +883,11 @@ class Poll extends ActiveRecord
      * Return TRUE if user has already voted at this poll
      */
     public function isVoted(){
-        $resultOfQuery = OptionVote::find()->from(['ov' => OptionVote::tableName()])
-                ->joinWith('option')->where(['poll_option.poll_id' => $this->id])
+        return OptionVote::find()->alias('ov')
+                ->innerJoin(['po' => PollOption::tableName()], 'po.id = ov.option_id')
+                ->where(['po.poll_id' => $this->id])
                 ->andWhere(['ov.user_id' => Yii::$app->user->id])
-                ->count();
-        return boolval($resultOfQuery);
+                ->exists();
     }
 
     /*
@@ -1092,6 +1022,7 @@ class Poll extends ActiveRecord
                 $pollTag->save();
             }
         }
+        unset($this->tags);
     }
 
     /**
@@ -1117,64 +1048,29 @@ class Poll extends ActiveRecord
             return ['categories' => [], 'series' => []];
         }
 
-        if ($ageInterval) {
-            $age = User::getAgesByIntervalIndex($ageInterval);
-        }
-
+        $age = $ageInterval ? User::getAgesByIntervalIndex($ageInterval) : null;
         $optionIds = array_keys($optionTitles);
 
         if ($registration !== 2) {
-            $registeredQuery = (new Query())
+            $registeredQuery = $this->getRegisteredChartQuery($optionIds, $sex, $age, $country)
                 ->select([
                     'option_id' => 'ov.option_id',
                     'vote_date' => new Expression('DATE(ov.date_add)'),
                     'votes' => new Expression('COUNT(*)'),
                 ])
-                ->from(['ov' => OptionVote::tableName()])
-                ->leftJoin(['p' => Profile::tableName()], 'p.user_id = ov.user_id')
-                ->where(['ov.option_id' => $optionIds])
-                ->andWhere(['not', ['ov.user_id' => null]]);
-
-            if ($country) {
-                $registeredQuery->andWhere(['p.country_id' => $country]);
-            }
-
-            if ($sex) {
-                $registeredQuery->andWhere(['p.gender' => $sex]);
-            }
-
-            if (isset($age)) {
-                $registeredQuery->andWhere(new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE()) BETWEEN :min AND :max', [
-                    ':min' => $age['min'],
-                    ':max' => $age['max'],
-                ]));
-            }
-
-            $this->appendLineChartRows($registeredQuery
-                ->groupBy(['ov.option_id', new Expression('DATE(ov.date_add)')])
-                ->all(), $dailyVotes, $dates);
+                ->groupBy(['ov.option_id', new Expression('DATE(ov.date_add)')]);
+            $this->appendLineChartRows($registeredQuery->all(static::getDb()), $dailyVotes, $dates);
         }
 
         if (!$country && $registration !== 1) {
-            $guestQuery = (new Query())
+            $guestQuery = $this->getGuestChartQuery($optionIds, $sex, $age === null ? null : $ageInterval)
                 ->select([
                     'option_id' => 'ogv.option_id',
                     'vote_date' => new Expression('DATE(ogv.date_add)'),
                     'votes' => new Expression('COUNT(*)'),
                 ])
-                ->from(['ogv' => OptionGuestVote::tableName()])
-                ->where(['ogv.option_id' => $optionIds])
                 ->groupBy(['ogv.option_id', new Expression('DATE(ogv.date_add)')]);
-
-            if ($sex) {
-                $guestQuery->andWhere(['ogv.sex_at_birth' => $sex]);
-            }
-
-            if (isset($age)) {
-                $guestQuery->andWhere(['ogv.age_interval' => $ageInterval]);
-            }
-
-            $this->appendLineChartRows($guestQuery->all(), $dailyVotes, $dates);
+            $this->appendLineChartRows($guestQuery->all(static::getDb()), $dailyVotes, $dates);
         }
 
         sort($dates);
@@ -1250,76 +1146,106 @@ class Poll extends ActiveRecord
     /*
      * Return the array with poll`s data, required to chart builds
      */
-    public function getChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0){
-        $registration = (int) $registration;
-        $data = array();
+    public function getChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0)
+    {
+        $options = $this->pollOptions;
+        $counts = $this->getOptionVoteCounts($options, $sex, $ageInterval, $country, $registration);
+        $data = [];
         $max = 0;
         $maxIndex = 0;
         $sum = 0;
-        $options = $this->pollOptions;
-        if($ageInterval){
-            $age = User::getAgesByIntervalIndex($ageInterval);
-        }
-        $hasFilters = $sex || isset($age) || $country;
 
-        foreach($options as $i=>$option){
-            $data[$i]['option'] = $option->title;
-
-            if(!$hasFilters && $registration == 0){
-                $value = $option->optionVotesCount + $option->optionGuestVotesCount;
-            } else {
-                $value = 0;
-                if ($registration !== 2) {
-                    $query = OptionVote::find()->alias('ov')
-                        ->leftJoin('{{%profile}} p', 'p.user_id = ov.user_id')
-                        ->where(['ov.option_id' => $option->id])
-                        ->andWhere(['not', ['ov.user_id' => null]]);
-
-                    // Додаткові фільтри застосовуються тільки до зареєстрованих користувачів
-                    if($country){
-                        $query->andWhere(['p.country_id' => $country]);
-                    }
-
-                    if($sex){
-                        $query->andWhere(['p.gender' => $sex]);
-                    }
-
-                    if(isset($age)){
-                        $query->andWhere(new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE()) BETWEEN :min AND :max', [
-                            ':min' => $age['min'],
-                            ':max' => $age['max'],
-                        ]));
-                    }
-
-                    $value = (int)$query->count();
-                }
-
-                // Unknown guest demographics do not match age/country filters.
-                if ($registration !== 1 && !$country) {
-                    $guestQuery = OptionGuestVote::find()->where(['option_id' => $option->id]);
-                    if ($sex) {
-                        $guestQuery->andWhere(['sex_at_birth' => $sex]);
-                    }
-                    if (isset($age)) {
-                        $guestQuery->andWhere(['age_interval' => $ageInterval]);
-                    }
-                    $value += (int) $guestQuery->count();
-                }
-            }
-            $data[$i]['value'] = $value;
-            $sum += $data[$i]['value'];
-            if($data[$i]['value'] > $max){
-                $max = $data[$i]['value'];
+        foreach ($options as $i => $option) {
+            $value = ($counts['registered'][$option->id] ?? 0) + ($counts['guests'][$option->id] ?? 0);
+            $data[$i] = ['option' => $option->title, 'value' => $value];
+            $sum += $value;
+            if ($value > $max) {
+                $max = $value;
                 $maxIndex = $i;
             }
         }
 
-        foreach($options as $i=>$option){
-            $data[$i]['percent'] = PollOption::getPercentRating($sum,$data[$i]['value']);
+        foreach ($data as &$row) {
+            $row['percent'] = PollOption::getPercentRating($sum, $row['value']);
         }
+        unset($row);
 
         $data[$maxIndex]['isMax'] = true;
         return $data;
+    }
+
+    /** Count all options in at most two queries, preserving the chart filters. */
+    private function getOptionVoteCounts(array $options, $sex = 0, $ageInterval = 0, $country = 0, $registration = 0): array
+    {
+        $counts = ['registered' => [], 'guests' => []];
+        if (empty($options)) {
+            return $counts;
+        }
+
+        $optionIds = array_map(static function (PollOption $option) {
+            return $option->id;
+        }, $options);
+        $registration = (int) $registration;
+        $age = $ageInterval ? User::getAgesByIntervalIndex($ageInterval) : null;
+        $unfiltered = !$sex && $age === null && !$country && $registration === 0;
+
+        if ($registration !== 2) {
+            // Unfiltered totals historically include rows with a NULL user_id.
+            $query = $unfiltered
+                ? (new Query())->from(['ov' => OptionVote::tableName()])->where(['ov.option_id' => $optionIds])
+                : $this->getRegisteredChartQuery($optionIds, $sex, $age, $country);
+            $counts['registered'] = $query
+                ->select(['votes' => new Expression('COUNT(*)'), 'option_id' => 'ov.option_id'])
+                ->groupBy('ov.option_id')->indexBy('option_id')->column(static::getDb());
+        }
+
+        if (!$country && $registration !== 1) {
+            $counts['guests'] = $this->getGuestChartQuery($optionIds, $sex, $age === null ? null : $ageInterval)
+                ->select(['votes' => new Expression('COUNT(*)'), 'option_id' => 'ogv.option_id'])
+                ->groupBy('ogv.option_id')->indexBy('option_id')->column(static::getDb());
+        }
+
+        return $counts;
+    }
+
+    /** Shared demographic filters for totals and the daily chart. */
+    private function getRegisteredChartQuery(array $optionIds, $sex, ?array $age, $country): Query
+    {
+        $query = (new Query())->from(['ov' => OptionVote::tableName()])
+            ->where(['ov.option_id' => $optionIds])
+            ->andWhere(['not', ['ov.user_id' => null]]);
+
+        if ($sex || $age !== null || $country) {
+            $query->leftJoin(['p' => Profile::tableName()], 'p.user_id = ov.user_id');
+        }
+        if ($country) {
+            $query->andWhere(['p.country_id' => $country]);
+        }
+        if ($sex) {
+            $query->andWhere(['p.gender' => $sex]);
+        }
+        if ($age !== null) {
+            $query->andWhere(new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE()) BETWEEN :min AND :max', [
+                ':min' => $age['min'],
+                ':max' => $age['max'],
+            ]));
+        }
+
+        return $query;
+    }
+
+    private function getGuestChartQuery(array $optionIds, $sex, $ageInterval): Query
+    {
+        $query = (new Query())->from(['ogv' => OptionGuestVote::tableName()])
+            ->where(['ogv.option_id' => $optionIds]);
+        if ($sex) {
+            $query->andWhere(['ogv.sex_at_birth' => $sex]);
+        }
+        if ($ageInterval !== null) {
+            $query->andWhere(['ogv.age_interval' => $ageInterval]);
+        }
+
+        return $query;
     }
 
     public static function  empty_getPollForMainPage(){
@@ -1448,7 +1374,9 @@ class Poll extends ActiveRecord
         parent::afterFind();
 
         // Підтягуємо поточні теги, щоб показати їх у формі редагування.
-        $this->tagNames = $this->getTags()->select('name')->column();
+        $this->tagNames = array_map(static function (Tag $tag) {
+            return $tag->name;
+        }, $this->tags);
     }
 
     /**
@@ -1499,6 +1427,7 @@ class Poll extends ActiveRecord
         }
 
         $this->tagNames = array_values($normalizedNames);
+        unset($this->tags);
     }
 
     /*
@@ -1533,30 +1462,26 @@ class Poll extends ActiveRecord
     public function getStaticMeta(): array
     {
         $staticText = $this->getStaticTextRecord();
-        $replacements = $this->getStaticMetaReplacements();
-
-        // Спочатку беремо індивідуальні SEO-поля опитування (якщо їх заповнили в адмінці).
-        $meta = [
-            'heading' => $this->replaceStaticMetaTokens($this->meta_h1, $replacements),
-            'title' => $this->replaceStaticMetaTokens($this->meta_title, $replacements),
-            'description' => $this->replaceStaticMetaTokens($this->meta_description, $replacements),
+        $templates = [
+            'heading' => $this->meta_h1,
+            'title' => $this->meta_title,
+            'description' => $this->meta_description,
         ];
-
-        // Якщо якесь поле порожнє — м'яко повертаємось до шаблонних значень зі статичних налаштувань мови.
-        $staticText = $this->getStaticTextRecord();
         if ($staticText) {
-            if ($meta['heading'] === null) {
-                $meta['heading'] = $this->replaceStaticMetaTokens($staticText->heading, $replacements);
-            }
-            if ($meta['title'] === null) {
-                $meta['title'] = $this->replaceStaticMetaTokens($staticText->meta_title, $replacements);
-            }
-            if ($meta['description'] === null) {
-                $meta['description'] = $this->replaceStaticMetaTokens($staticText->meta_description, $replacements);
+            foreach (['heading' => 'heading', 'title' => 'meta_title', 'description' => 'meta_description'] as $key => $attribute) {
+                if (trim((string) $templates[$key]) === '') {
+                    $templates[$key] = $staticText->$attribute;
+                }
             }
         }
 
-        return $meta;
+        $replacements = $this->getStaticMetaReplacements(implode(' ', $templates));
+        foreach ($templates as &$value) {
+            $value = $this->replaceStaticMetaTokens($value, $replacements);
+        }
+        unset($value);
+
+        return $templates;
     }
 
     /**
@@ -1657,22 +1582,23 @@ class Poll extends ActiveRecord
      */
     public function getFaqList(): array
     {
-        $data = $this->getStaticInfoBlockData();
-        $replacements = $this->getStaticInfoReplacements($data);
-
-        $items = [];
-        $staticFaq = PollStaticFaq::find()->where(['language_id' => (int)$this->poll_language_id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
-        foreach ($staticFaq as $faq) {
-            $q = strtr((string)$faq->question, $replacements);
-            $a = strtr((string)$faq->answer, $replacements);
-            if (trim($q) !== '' && trim($a) !== '') { $items[] = ['question' => $q, 'answer' => $a]; }
+        $staticFaq = PollStaticFaq::find()->where(['language_id' => (int) $this->poll_language_id])
+            ->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
+        $pollFaq = PollFaq::find()->where(['poll_id' => (int) $this->id])
+            ->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
+        $faqs = array_merge($staticFaq, $pollFaq);
+        if (empty($faqs)) {
+            return [];
         }
 
-        $pollFaq = PollFaq::find()->where(['poll_id' => (int)$this->id])->orderBy(['position' => SORT_ASC, 'id' => SORT_ASC])->all();
-        foreach ($pollFaq as $faq) {
-            $q = strtr((string)$faq->question, $replacements);
-            $a = strtr((string)$faq->answer, $replacements);
-            if (trim($q) !== '' && trim($a) !== '') { $items[] = ['question' => $q, 'answer' => $a]; }
+        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData());
+        $items = [];
+        foreach ($faqs as $faq) {
+            $question = strtr((string) $faq->question, $replacements);
+            $answer = strtr((string) $faq->answer, $replacements);
+            if (trim($question) !== '' && trim($answer) !== '') {
+                $items[] = ['question' => $question, 'answer' => $answer];
+            }
         }
 
         return $items;
@@ -1689,11 +1615,13 @@ class Poll extends ActiveRecord
         $mostPopular = null;
         $optionsTitles = [];
 
+        $counts = $this->getOptionVoteCounts($options);
+        $votesTotal = $this->getCountPollOptionsVoters();
         foreach ($options as $opt) {
-            $optionVotes = (int) $opt->optionVotesCount;
-            $optionGuestVotes = (int) $opt->optionGuestVotesCount;
+            $optionVotes = (int) ($counts['registered'][$opt->id] ?? 0);
+            $optionGuestVotes = (int) ($counts['guests'][$opt->id] ?? 0);
             $votes = $optionVotes + $optionGuestVotes;
-            $percent = PollOption::getPercentRating($this->countPollOptionsVoters, $votes);
+            $percent = PollOption::getPercentRating($votesTotal, $votes);
 
             $stats[] = ['title' => $opt->title, 'votes' => $votes, 'percent' => $percent];
             $optionsTitles[] = $opt->title;
@@ -1705,7 +1633,7 @@ class Poll extends ActiveRecord
             }
         }
 
-        $commentsCount = count($this->pollComments);
+        $commentsCount = $this->getCommentsCount();
 
         // Рахуємо часові зрізи голосів окремо, щоб адміністратор міг виводити динаміку в статичному блоці.
         $periodVotes = $this->getStaticPeriodVotes();
@@ -1750,7 +1678,7 @@ class Poll extends ActiveRecord
         ];
 
         // Збираємо допоміжні дані про автора, щоб не дублювати запити в шаблонах.
-        $authorName = $this->user_id ? User::getUserName($this->user_id) : '';
+        $authorName = $this->user_id && $this->author ? $this->author->username : '';
 
         return [
             'stats' => $stats,
@@ -1763,7 +1691,7 @@ class Poll extends ActiveRecord
             'tagsHtml' => $tagsHtml,
             'tagsPlain' => $tagsPlain,
             'tagsCount' => $tagsCount,
-            'votesTotal' => (int) $this->countPollOptionsVoters,
+            'votesTotal' => $votesTotal,
             'votesLastMonth' => $periodVotes['lastMonth'],
             'votesThisMonth' => $periodVotes['thisMonth'],
             'votesThisYear' => $periodVotes['thisYear'],
@@ -1785,34 +1713,7 @@ class Poll extends ActiveRecord
     }
 
 
-    /**
-     * Рахує голоси опитування у потрібному часовому проміжку для статичних змінних.
-     */
-    private function countStaticVotesBetween(string $from, ?string $to = null): int
-    {
-        // Зареєстровані й гостьові голоси лежать у різних таблицях, тому об'єднуємо їх без зміни існуючої логіки голосування.
-        $registeredQuery = (new Query())
-            ->from('{{%option_vote}} ov')
-            ->innerJoin('{{%poll_option}} po', 'po.id = ov.option_id')
-            ->where(['po.poll_id' => (int) $this->id])
-            ->andWhere(['>=', 'ov.date_add', $from]);
-
-        $guestQuery = (new Query())
-            ->from('{{%option_guest_vote}} ogv')
-            ->where(['ogv.poll_id' => (int) $this->id])
-            ->andWhere(['>=', 'ogv.date_add', $from]);
-
-        if ($to !== null) {
-            $registeredQuery->andWhere(['<', 'ov.date_add', $to]);
-            $guestQuery->andWhere(['<', 'ogv.date_add', $to]);
-        }
-
-        return (int) $registeredQuery->count() + (int) $guestQuery->count();
-    }
-
-    /**
-     * Готує календарні та rolling-періоди для змінних статичного тексту опитування.
-     */
+    /** Count all calendar periods in one aggregate per vote table. */
     private function getStaticPeriodVotes(): array
     {
         $thisMonthStart = date('Y-m-01 00:00:00');
@@ -1821,15 +1722,37 @@ class Poll extends ActiveRecord
         $thisYearStart = date('Y-01-01 00:00:00');
         $nextYearStart = date('Y-01-01 00:00:00', strtotime('+1 year'));
         $previousYearStart = date('Y-01-01 00:00:00', strtotime('-1 year'));
-
-        return [
-            // @votes_last_month — це саме попередній календарний місяць, а не rolling 30 днів.
-            'lastMonth' => $this->countStaticVotesBetween($lastMonthStart, $thisMonthStart),
-            // Цей місяць рахуємо як календарний період від першого дня поточного місяця.
-            'thisMonth' => $this->countStaticVotesBetween($thisMonthStart, $nextMonthStart),
-            'thisYear' => $this->countStaticVotesBetween($thisYearStart, $nextYearStart),
-            'previousYear' => $this->countStaticVotesBetween($previousYearStart, $thisYearStart),
+        $periods = [
+            'lastMonth' => [$lastMonthStart, $thisMonthStart],
+            'thisMonth' => [$thisMonthStart, $nextMonthStart],
+            'thisYear' => [$thisYearStart, $nextYearStart],
+            'previousYear' => [$previousYearStart, $thisYearStart],
         ];
+        $select = [];
+        foreach ($periods as $name => [$from, $to]) {
+            $select[$name] = new Expression(
+                "SUM(CASE WHEN v.date_add >= :{$name}From AND v.date_add < :{$name}To THEN 1 ELSE 0 END)",
+                [":{$name}From" => $from, ":{$name}To" => $to]
+            );
+        }
+
+        $registered = (new Query())->from(['v' => OptionVote::tableName()])
+            ->innerJoin(['po' => PollOption::tableName()], 'po.id = v.option_id')
+            ->where(['po.poll_id' => (int) $this->id]);
+        // Period statistics intentionally use poll_id for guest votes, including its legacy NULL semantics.
+        $guests = (new Query())->from(['v' => OptionGuestVote::tableName()])
+            ->where(['v.poll_id' => (int) $this->id]);
+
+        $result = array_fill_keys(array_keys($periods), 0);
+        foreach ([$registered, $guests] as $query) {
+            $row = $query->select($select)->andWhere(['>=', 'v.date_add', $previousYearStart])
+                ->andWhere(['<', 'v.date_add', $nextYearStart])->one(static::getDb());
+            foreach ($result as $name => $count) {
+                $result[$name] += (int) $row[$name];
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -1850,56 +1773,64 @@ class Poll extends ActiveRecord
     /**
      * Формує підстановки для шаблонів мета-тегів опитувань.
      */
-    private function getStaticMetaReplacements(): array
+    private function getStaticMetaReplacements(string $template): array
     {
-        $tagNames = array_map(static function (Tag $tag) {
-            return $tag->name;
-        }, $this->tags);
-
-        // Формуємо частини дати, щоб їх можна було підставляти в мета-теги.
-        $dateTimestamp = $this->date_add ? strtotime($this->date_add) : null;
-        $date = $dateTimestamp ? date('d.m.Y', $dateTimestamp) : '';
-        $dateIso = $dateTimestamp ? date('Y-m-d', $dateTimestamp) : '';
-        $dateDay = $dateTimestamp ? date('d', $dateTimestamp) : '';
-        $dateMonth = $dateTimestamp ? date('m', $dateTimestamp) : '';
-        $dateYear = $dateTimestamp ? date('Y', $dateTimestamp) : '';
-
-        // Готуємо текстові підстановки, щоб токени залишались читабельними у шаблонах.
-        $optionsTitles = array_map(static function (PollOption $option) {
-            return $option->title;
-        }, $this->pollOptions);
-        $authorName = $this->user_id ? User::getUserName($this->user_id) : '';
-        $commentsCount = count($this->pollComments);
-        // Для мета-тегів використовуємо ті самі межі періодів, що й у статичному HTML-блоці.
-        $periodVotes = $this->getStaticPeriodVotes();
-
-        return [
-            '@title' => $this->title,
-            '@id' => (string) $this->id,
-            '@tags' => implode(', ', $tagNames),
-            '@tags_plain' => implode(', ', $tagNames),
-            '@tags_count' => (string) count($tagNames),
-            '@url' => $this->url,
-            '@absolute_url' => $this->getAbsoluteUrl(),
-            '@language' => $this->language ? $this->language->name : '',
-            '@language_code' => $this->language ? $this->language->name : '',
-            '@language_id' => (string) $this->poll_language_id,
-            '@author_name' => $authorName,
-            '@author_id' => (string) $this->user_id,
-            '@date' => $date,
-            '@date_iso' => $dateIso,
-            '@date_day' => $dateDay,
-            '@date_month' => $dateMonth,
-            '@date_year' => $dateYear,
-            '@votes_total' => (string) $this->countPollOptionsVoters,
-            '@votes_last_month' => (string) $periodVotes['lastMonth'],
-            '@votes_this_month' => (string) $periodVotes['thisMonth'],
-            '@votes_this_year' => (string) $periodVotes['thisYear'],
-            '@votes_previous_year' => (string) $periodVotes['previousYear'],
-            '@comments' => (string) $commentsCount,
-            '@options_count' => (string) count($this->pollOptions),
-            '@options_titles' => implode(', ', $optionsTitles),
+        $replacements = [];
+        $periodVotes = null;
+        $periodTokens = [
+            '@votes_last_month' => 'lastMonth',
+            '@votes_this_month' => 'thisMonth',
+            '@votes_this_year' => 'thisYear',
+            '@votes_previous_year' => 'previousYear',
         ];
+        $dateFormats = [
+            '@date' => 'd.m.Y', '@date_iso' => 'Y-m-d', '@date_day' => 'd',
+            '@date_month' => 'm', '@date_year' => 'Y',
+        ];
+
+        // Keep strtr's longest-token matching while avoiding queries for unused tokens.
+        foreach (self::getStaticMetaTokens() as $token => $description) {
+            if (strpos($template, $token) === false) {
+                continue;
+            }
+            if (isset($periodTokens[$token])) {
+                $periodVotes = $periodVotes ?? $this->getStaticPeriodVotes();
+                $value = $periodVotes[$periodTokens[$token]];
+            } elseif (isset($dateFormats[$token])) {
+                $timestamp = $this->date_add ? strtotime($this->date_add) : null;
+                $value = $timestamp ? date($dateFormats[$token], $timestamp) : '';
+            } else {
+                switch ($token) {
+                    case '@title': $value = $this->title; break;
+                    case '@id': $value = $this->id; break;
+                    case '@tags':
+                    case '@tags_plain':
+                        $value = implode(', ', array_map(static function (Tag $tag) {
+                            return $tag->name;
+                        }, $this->tags));
+                        break;
+                    case '@tags_count': $value = count($this->tags); break;
+                    case '@url': $value = $this->url; break;
+                    case '@absolute_url': $value = $this->getAbsoluteUrl(); break;
+                    case '@language':
+                    case '@language_code': $value = $this->language ? $this->language->name : ''; break;
+                    case '@language_id': $value = $this->poll_language_id; break;
+                    case '@author_name': $value = $this->user_id && $this->author ? $this->author->username : ''; break;
+                    case '@author_id': $value = $this->user_id; break;
+                    case '@votes_total': $value = $this->getCountPollOptionsVoters(); break;
+                    case '@comments': $value = $this->getCommentsCount(); break;
+                    case '@options_count': $value = count($this->pollOptions); break;
+                    case '@options_titles':
+                        $value = implode(', ', array_map(static function (PollOption $option) {
+                            return $option->title;
+                        }, $this->pollOptions));
+                        break;
+                }
+            }
+            $replacements[$token] = (string) $value;
+        }
+
+        return $replacements;
     }
 
     /**

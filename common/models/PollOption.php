@@ -295,8 +295,6 @@ class PollOption extends ActiveRecord
         $vote->ip_of_user = ($rawIp !== '') ? $rawIp : null;
         // Єдиний ключ IP для IPv4/IPv6 (аналогічно логіці коментарів).
         $vote->guest_ip_key = $guestVoteKey;
-        // Use the poll's edition, not the browser language or an IP lookup.
-        $vote->country_code = ($this->poll->language->locale ?? null) === 'en-US' ? 'US' : null;
         $vote->date_add = date('Y-m-d H:i:s');
         try {
             if($vote->save()){

@@ -17,7 +17,7 @@ use common\helpers\UsStates;
  * @property string|null $guest_ip_key Guest IP key for uniqueness
  * @property int|null $sex_at_birth Optional sex at birth, using User::SEX_* values
  * @property int|null $age_interval Optional adult age group
- * @property string|null $country_code Country inferred from the poll edition (US)
+ * @property string|null $country_code Country confirmed by choosing a US state
  * @property string|null $state_code Optional self-reported US state postal code
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
@@ -95,7 +95,8 @@ class OptionGuestVote extends ActiveRecord
 
     public function getSampleStepCount(): int
     {
-        return $this->country_code === 'US' ? 3 : 2;
+        // The edition determines which question to show, never the voter’s location.
+        return ($this->poll->language->locale ?? null) === 'en-US' ? 3 : 2;
     }
 
     /**

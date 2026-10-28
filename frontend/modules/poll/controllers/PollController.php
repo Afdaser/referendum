@@ -457,7 +457,10 @@ class PollController extends \yii\web\Controller
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
         // Update only this session's vote, tied to its original IP.
-        OptionGuestVote::updateAll([$attribute => $step === 3 ? $value : (int) $value], [
+        $updates = $step === 3
+            ? ['state_code' => $value, 'country_code' => 'US']
+            : [$attribute => (int) $value];
+        OptionGuestVote::updateAll($updates, [
             'id' => $vote->id,
             'poll_id' => (int) $id,
             'guest_ip_key' => OptionGuestVote::resolveGuestVoteKey(),

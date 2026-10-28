@@ -15,6 +15,7 @@ use common\models\OptionGuestVote;
 use common\models\User;
 use common\models\Country;
 use common\helpers\StringHelper;
+use common\helpers\UsStates;
 
 class PollController extends \yii\web\Controller
 {
@@ -102,7 +103,8 @@ class PollController extends \yii\web\Controller
         $langDomains = Yii::$app->params['langDomains'] ?? [];
         $canonicalDomain = $langDomains[$poll->poll_language_id] ?? 'en.referendum.social';
         $canonicalUrl = 'https://' . $canonicalDomain . '/poll/' . $poll->id;
-        $guestSamplePending = $this->getPendingGuestVote($poll->id) !== null;
+        $pendingGuestVote = $this->getPendingGuestVote($poll->id);
+        $guestSamplePending = $pendingGuestVote !== null;
         // Keep the optional step on the voting host: session cookies may be host-only.
         if (!$guestSamplePending && Yii::$app->request->hostName !== $canonicalDomain) {
             return $this->redirect($canonicalUrl, 301);
@@ -207,6 +209,7 @@ class PollController extends \yii\web\Controller
             'poll'=>$poll,
             'guestSamplePending' => $guestSamplePending,
             'guestSampleStep' => $this->getGuestSampleStep($poll->id),
+            'guestSampleTotalSteps' => $pendingGuestVote ? $pendingGuestVote->sampleStepCount : 2,
             'commentModel'=>$comment,
             'answerModel'=>$answer,
             'relatedPolls' => $relatedPolls,
@@ -376,9 +379,14 @@ class PollController extends \yii\web\Controller
                 }
             }
             if ($request->isAjax) {
+                $pendingGuestVote = $this->getPendingGuestVote($option->poll_id);
                 return $this->asJson([
-                    'html' => $this->getPendingGuestVote($option->poll_id) !== null
-                        ? $this->renderPartial('guest-sample', ['poll' => $option->poll, 'step' => $this->getGuestSampleStep($option->poll_id)])
+                    'html' => $pendingGuestVote !== null
+                        ? $this->renderPartial('guest-sample', [
+                            'poll' => $option->poll,
+                            'step' => $this->getGuestSampleStep($option->poll_id),
+                            'totalSteps' => $pendingGuestVote->sampleStepCount,
+                        ])
                         : null,
                 ]);
             }
@@ -427,28 +435,41 @@ class PollController extends \yii\web\Controller
         if ($request->post('step') !== (string) $step) {
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
-        $attribute = $step === 1 ? 'sex_at_birth' : 'age_interval';
+        $attributes = [1 => 'sex_at_birth', 2 => 'age_interval', 3 => 'state_code'];
+        if (!isset($attributes[$step]) || $step > $vote->sampleStepCount) {
+            return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
+        }
+        $attribute = $attributes[$step];
         $value = $request->post($attribute);
-        $allowed = $step === 1
-            ? [User::SEX_MAN, User::SEX_WOMAN]
-            : array_keys(User::getUserAgeIntervalList());
+        $choices = [
+            1 => [User::SEX_MAN, User::SEX_WOMAN],
+            2 => array_keys(User::getUserAgeIntervalList()),
+            3 => array_keys(UsStates::all()),
+        ];
+        $allowed = $choices[$step];
         if (!in_array($value, array_map('strval', $allowed), true)) {
-            $message = $step === 1
-                ? 'Оберіть стать при народженні або пропустіть цей крок.'
-                : 'Оберіть вікову групу або пропустіть цей крок.';
-            Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $message));
+            $messages = [
+                1 => 'Оберіть стать при народженні або пропустіть цей крок.',
+                2 => 'Оберіть вікову групу або пропустіть цей крок.',
+                3 => 'Оберіть штат або пропустіть цей крок.',
+            ];
+            Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $messages[$step]));
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
         // Update only this session's vote, tied to its original IP.
-        OptionGuestVote::updateAll([$attribute => (int) $value], [
+        $updates = $step === 3
+            ? ['state_code' => $value, 'country_code' => 'US']
+            : [$attribute => (int) $value];
+        OptionGuestVote::updateAll($updates, [
             'id' => $vote->id,
             'poll_id' => (int) $id,
             'guest_ip_key' => OptionGuestVote::resolveGuestVoteKey(),
             $attribute => null,
         ]);
 
-        if ($step === 1) {
-            Yii::$app->session->set($sessionKey . ':step', 2);
+        Yii::$app->session->removeFlash('guestSampleError');
+        if ($step < $vote->sampleStepCount) {
+            Yii::$app->session->set($sessionKey . ':step', $step + 1);
         } else {
             Yii::$app->session->remove($sessionKey);
             Yii::$app->session->remove($sessionKey . ':step');

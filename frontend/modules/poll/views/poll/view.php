@@ -114,7 +114,7 @@ JS
                         <?php endif; ?>
                         <?php if ($guestSamplePending): ?>
                             <div id="poll-options" class="poll_options_block">
-                                <?= $this->render('guest-sample', ['poll' => $poll, 'step' => $guestSampleStep ?? 1]); ?>
+                                <?= $this->render('guest-sample', ['poll' => $poll, 'step' => $guestSampleStep ?? 1, 'totalSteps' => $guestSampleTotalSteps ?? 2]); ?>
                             </div>
                         <?php else: ?>
                             <?php $chartData = $poll->getChartData();?>

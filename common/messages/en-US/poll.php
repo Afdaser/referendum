@@ -1,6 +1,14 @@
 <?php
 
 return array(
+        'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Register to skip these steps next time.',
+        'У якому штаті ви проживаєте?' => 'Which state do you live in?',
+        'Країна: США' => 'Country: United States',
+        'Штат' => 'State',
+        'Оберіть штат' => 'Select a state',
+        'Зберегти та показати результати' => 'Save and show results',
+        'Оберіть штат або пропустіть цей крок.' => 'Choose your state or skip this step.',
+
         'Крок {step} з {total}' => 'Step {step} of {total}',
         'Ваша вікова група' => 'Your age group',
         'Оберіть вікову групу або пропустіть цей крок.' => 'Choose your age group or skip this step.',

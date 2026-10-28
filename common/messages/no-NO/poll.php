@@ -1,6 +1,14 @@
 <?php
 
 return array(
+        'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Registrer deg for å slippe disse trinnene neste gang.',
+        'У якому штаті ви проживаєте?' => 'Hvilken delstat bor du i?',
+        'Країна: США' => 'Land: USA',
+        'Штат' => 'Delstat',
+        'Оберіть штат' => 'Velg en delstat',
+        'Зберегти та показати результати' => 'Lagre og vis resultater',
+        'Оберіть штат або пропустіть цей крок.' => 'Velg delstaten din eller hopp over dette trinnet.',
+
         'Крок {step} з {total}' => 'Trinn {step} av {total}',
         'Ваша вікова група' => 'Din aldersgruppe',
         'Оберіть вікову групу або пропустіть цей крок.' => 'Velg aldersgruppen din eller hopp over dette trinnet.',

@@ -592,7 +592,6 @@ class PollController extends \yii\web\Controller
                     $region = intval(Yii::$app->request->post('region'));
                     $registration = intval(Yii::$app->request->post('registration'));
                     $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration,$region);
-                    $result['total'] = array_sum(array_column($chartData, 'value'));
                     $result['bar'] = StringHelper::formatForBarAjax($chartData);
                     $result['pie'] = StringHelper::formatForPieAjax($chartData);
                     // Лінійний графік використовує ті самі фільтри, але повертає історію часток за датами.

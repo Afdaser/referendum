@@ -441,9 +441,3 @@ h1.title {
     font: inherit;
 }
 .guest-sample__state:focus-visible { outline: 3px solid #e29b14; outline-offset: 3px; }
-
-/* Region and registration filters wrap together on smaller screens. */
-.select_blocks { display: flex; flex-wrap: wrap; gap: 12px; }
-.select_blocks .item_show { flex: 1 1 140px; min-width: 0; }
-.select_blocks .item_show select { width: 100%; max-width: 100%; margin: 0; }
-.vote-sample-total { padding: 0 20px 16px; }

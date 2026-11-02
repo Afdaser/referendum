@@ -196,7 +196,7 @@ JS
                             </span>
                         </div>
                         <div class="for_collapsing collapse">
-                            <div class="select_blocks">
+                            <div class="select_blocks select_blocks--with-region">
                                 <?php // Підписи та aria-label пояснюють призначення кожного фільтра користувачам і роботам. ?>
                                 <label class="item_show">
                                     <span><?= Yii::t('poll', 'Стать'); ?></span>
@@ -219,20 +219,11 @@ JS
                                     </select>
                                 </label>
                                 <label class="item_show">
-                                    <span><?= Yii::t('poll', 'Країна'); ?></span>
-                                    <select class="country" aria-label="<?= Yii::t('poll', 'Фільтр голосів за країною'); ?>">
-                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <?php foreach ($poll->getVoteCountries() as $key => $country): ?>
-                                            <option value="<?= $key; ?>"><?= $country; ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </label>
-                                <label class="item_show">
                                     <span><?= Yii::t('poll', 'Регіон'); ?></span>
                                     <select class="vote-region" aria-label="<?= Yii::t('poll', 'Регіон'); ?>">
                                         <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
                                         <?php foreach ($poll->getVoteRegions() as $voteRegion): ?>
-                                            <option value="<?= (int) $voteRegion['id']; ?>" data-country-id="<?= (int) $voteRegion['country_id']; ?>"><?= \yii\helpers\Html::encode($voteRegion['name'] . ' — ' . $voteRegion['country_name']); ?></option>
+                                            <option value="<?= (int) $voteRegion['id']; ?>"><?= \yii\helpers\Html::encode($voteRegion['name'] . ' — ' . $voteRegion['country_name']); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </label>
@@ -245,7 +236,6 @@ JS
                                     </select>
                                 </label>
                             </div>
-                            <p class="vote-sample-total" aria-live="polite"><?= Yii::t('poll', 'Голосів у вибірці'); ?>: <strong><?= array_sum(array_column($chartData, 'value')); ?></strong></p>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -498,10 +488,7 @@ jQuery('#answer_text').on('keyup', function () {
     }
 });
 
- jQuery(document).on('change', '.gender, .age, .country, .registration, .vote-region', function () {
-     if (jQuery(this).hasClass('country')) {
-         updateVoteRegionOptions();
-     }
+ jQuery(document).on('change', '.gender, .age, .registration, .vote-region', function () {
      filterDataChart($pollId, $pollTitle);
  });
 
@@ -509,22 +496,6 @@ jQuery(document).on('click', '.clear_btn', function () {
     clearChartFilters($pollId, $pollTitle);
 });
 
-/*
-jQuery(document).on('change', '.country', function () {
-    refreshRegions(jQuery('.country').val(), jQuery('span.region'), 'regionAC', 'region', 'cityAC', jQuery('.city'), 'city');
-    jQuery('#regionAC').val('');
-    jQuery('#region').val(0);
-});
-
-jQuery(document).on('click', '.del_btn', function () {
-    jQuery('#regionAC').val('');
-    jQuery('#region').val(0);
-});
-
-jQuery(document).on('click', '.autocomplete-suggestion', function () {
-    filterDataChart($pollId, $pollTitle);
-});
-*/
 
 jQuery(document).on('click', '.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart', function () {
     jQuery('#container$pollId').removeClass('pie').removeClass('bar').removeClass('column').removeClass('line');

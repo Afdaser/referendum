@@ -228,6 +228,15 @@ JS
                                     </select>
                                 </label>
                                 <label class="item_show">
+                                    <span><?= Yii::t('poll', 'Регіон'); ?></span>
+                                    <select class="vote-region" aria-label="<?= Yii::t('poll', 'Регіон'); ?>">
+                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
+                                        <?php foreach ($poll->getVoteRegions() as $voteRegion): ?>
+                                            <option value="<?= (int) $voteRegion['id']; ?>" data-country-id="<?= (int) $voteRegion['country_id']; ?>"><?= \yii\helpers\Html::encode($voteRegion['name'] . ' — ' . $voteRegion['country_name']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </label>
+                                <label class="item_show">
                                     <span><?= Yii::t('poll', 'Реєстрація'); ?></span>
                                     <select class="registration" aria-label="<?= Yii::t('poll', 'Фільтр голосів за реєстрацією'); ?>">
                                         <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
@@ -236,6 +245,7 @@ JS
                                     </select>
                                 </label>
                             </div>
+                            <p class="vote-sample-total" aria-live="polite"><?= Yii::t('poll', 'Голосів у вибірці'); ?>: <strong><?= array_sum(array_column($chartData, 'value')); ?></strong></p>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -488,7 +498,10 @@ jQuery('#answer_text').on('keyup', function () {
     }
 });
 
- jQuery(document).on('change', '.gender, .age, .country, .registration', function () {
+ jQuery(document).on('change', '.gender, .age, .country, .registration, .vote-region', function () {
+     if (jQuery(this).hasClass('country')) {
+         updateVoteRegionOptions();
+     }
      filterDataChart($pollId, $pollTitle);
  });
 

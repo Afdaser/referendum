@@ -4,6 +4,8 @@
 
 
 return array(
+        'Регіон' => 'Region',
+        'Голосів у вибірці' => 'Votes in this sample',
         'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Register to skip these steps next time.',
 
         'Крок {step} з {total}' => 'Step {step} of {total}',

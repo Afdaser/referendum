@@ -19,7 +19,7 @@ use common\helpers\UsStates;
 
 class PollController extends \yii\web\Controller
 {
-    const GUEST_SAMPLE_SESSION_PREFIX = 'guest-vote-sample:';
+    const GUEST_SAMPLE_SESSION_PREFIX = 'guest-vote-sample-v2:';
 
     /**
      * @return array action filters
@@ -457,9 +457,17 @@ class PollController extends \yii\web\Controller
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
         }
         // Update only this session's vote, tied to its original IP.
-        $updates = $step === 3
-            ? ['state_code' => $value, 'country_code' => 'US']
-            : [$attribute => (int) $value];
+        $updates = [$attribute => (int) $value];
+        if ($step === 3) {
+            $region = \common\models\CountryRegion::find()->alias('r')
+                ->innerJoin(['c' => Country::tableName()], 'c.id = r.country_id')
+                ->where(['c.iso_code' => 'US', 'r.code' => $value])->one();
+            if ($region === null) {
+                throw new \yii\web\ServerErrorHttpException('US state dictionary is not configured.');
+            }
+            $updates = ['state_code' => $value, 'country_code' => 'US',
+                'country_id' => $region->country_id, 'region_id' => $region->id];
+        }
         OptionGuestVote::updateAll($updates, [
             'id' => $vote->id,
             'poll_id' => (int) $id,
@@ -489,6 +497,21 @@ class PollController extends \yii\web\Controller
         }
         $sessionKey = self::GUEST_SAMPLE_SESSION_PREFIX . (int) $pollId;
         $voteId = Yii::$app->session->get($sessionKey);
+        $legacyKey = 'guest-vote-sample:' . (int) $pollId;
+        if (!$voteId && Yii::$app->session->has($legacyKey)) {
+            $mapped = OptionGuestVote::find()->where([
+                'legacy_guest_id' => Yii::$app->session->get($legacyKey),
+                'poll_id' => (int) $pollId,
+                'guest_ip_key' => OptionGuestVote::resolveGuestVoteKey(),
+            ])->one();
+            if ($mapped !== null) {
+                $voteId = $mapped->id;
+                Yii::$app->session->set($sessionKey, $voteId);
+                Yii::$app->session->set($sessionKey . ':step', Yii::$app->session->get($legacyKey . ':step', 1));
+            }
+            Yii::$app->session->remove($legacyKey);
+            Yii::$app->session->remove($legacyKey . ':step');
+        }
         if (!$voteId) {
             return null;
         }
@@ -566,17 +589,14 @@ class PollController extends \yii\web\Controller
                     $gender = intval(Yii::$app->request->post('gender'));
                     $ageInterval = intval(Yii::$app->request->post('age'));
                     $country = intval(Yii::$app->request->post('country'));
-//                    if($country){
-//                        $region = intval(Yii::$app->request->post('region'));
-//                    } else {
-//                        $region = 0;
-//                    }
+                    $region = intval(Yii::$app->request->post('region'));
                     $registration = intval(Yii::$app->request->post('registration'));
-                    $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration);
+                    $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration,$region);
+                    $result['total'] = array_sum(array_column($chartData, 'value'));
                     $result['bar'] = StringHelper::formatForBarAjax($chartData);
                     $result['pie'] = StringHelper::formatForPieAjax($chartData);
                     // Лінійний графік використовує ті самі фільтри, але повертає історію часток за датами.
-                    $result['line'] = $poll->getLineChartData($gender,$ageInterval,$country,$registration);
+                    $result['line'] = $poll->getLineChartData($gender,$ageInterval,$country,$registration,$region);
 
                     echo json_encode($result);
                 }

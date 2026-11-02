@@ -459,6 +459,12 @@ class Poll extends ActiveRecord
             ->where(['ov.option_id' => $optionIds])
             ->andWhere(['<>', 'p.country_id', 0])
             ->groupBy('p.country_id')->indexBy('country_id')->column(static::getDb());
+        $guestCountries = (new Query())->select(['votes' => new Expression('COUNT(*)'), 'country_id'])
+            ->from(OptionGuestVote::tableName())->where(['option_id' => $optionIds])
+            ->andWhere(['>', 'country_id', 0])->groupBy('country_id')->indexBy('country_id')->column(static::getDb());
+        foreach ($guestCountries as $id => $votes) {
+            $countryVotes[$id] = ($countryVotes[$id] ?? 0) + (int) $votes;
+        }
         $totalVotes = array_sum($countryVotes);
         if ($totalVotes === 0) {
             return [];
@@ -476,6 +482,22 @@ class Poll extends ActiveRecord
         }
 
         return $result;
+    }
+
+    /** Shared region IDs across guest votes and current registered profiles. */
+    public function getVoteRegions(): array
+    {
+        $country = 'CASE WHEN v.is_guest = 1 THEN v.country_id ELSE p.country_id END';
+        $region = 'CASE WHEN v.is_guest = 1 THEN v.region_id ELSE p.region_id END';
+        return (new Query())->select(['id' => 'r.id', 'name' => 'r.name', 'country_id' => 'r.country_id',
+                'country_name' => 'c.name', 'votes' => new Expression('COUNT(*)')])
+            ->from(['v' => PollVote::tableName()])
+            ->leftJoin(['p' => Profile::tableName()], 'p.user_id = v.user_id AND v.is_guest = 0')
+            ->innerJoin(['r' => CountryRegion::tableName()], "r.id = ($region) AND r.country_id = ($country)")
+            ->innerJoin(['c' => Country::tableName()], 'c.id = r.country_id')
+            ->where(['v.poll_id' => $this->id])
+            ->groupBy(['r.id', 'r.name', 'r.country_id', 'c.name'])
+            ->orderBy(['c.name' => SORT_ASC, 'r.name' => SORT_ASC])->all(static::getDb());
     }
 
     /*
@@ -1029,9 +1051,9 @@ class Poll extends ActiveRecord
      * Return cumulative percentage history for the Highcharts line chart.
      *
      * Лінійний графік показує, як змінювалась частка кожного варіанта за днями голосування.
-     * Гостьові голоси можуть мати стать при народженні та вікову групу, але не країну.
+     * Guests use confirmed demographic fields; registered votes use the current profile.
      */
-    public function getLineChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0)
+    public function getLineChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0, $region = 0)
     {
         $registration = (int) $registration;
         $options = $this->pollOptions;
@@ -1052,7 +1074,7 @@ class Poll extends ActiveRecord
         $optionIds = array_keys($optionTitles);
 
         if ($registration !== 2) {
-            $registeredQuery = $this->getRegisteredChartQuery($optionIds, $sex, $age, $country)
+            $registeredQuery = $this->getRegisteredChartQuery($optionIds, $sex, $age, $country, $region)
                 ->select([
                     'option_id' => 'ov.option_id',
                     'vote_date' => new Expression('DATE(ov.date_add)'),
@@ -1062,8 +1084,8 @@ class Poll extends ActiveRecord
             $this->appendLineChartRows($registeredQuery->all(static::getDb()), $dailyVotes, $dates);
         }
 
-        if (!$country && $registration !== 1) {
-            $guestQuery = $this->getGuestChartQuery($optionIds, $sex, $age === null ? null : $ageInterval)
+        if ($registration !== 1) {
+            $guestQuery = $this->getGuestChartQuery($optionIds, $sex, $age === null ? null : $ageInterval, $country, $region)
                 ->select([
                     'option_id' => 'ogv.option_id',
                     'vote_date' => new Expression('DATE(ogv.date_add)'),
@@ -1146,10 +1168,10 @@ class Poll extends ActiveRecord
     /*
      * Return the array with poll`s data, required to chart builds
      */
-    public function getChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0)
+    public function getChartData($sex = 0, $ageInterval = 0, $country = 0, $registration = 0, $region = 0)
     {
         $options = $this->pollOptions;
-        $counts = $this->getOptionVoteCounts($options, $sex, $ageInterval, $country, $registration);
+        $counts = $this->getOptionVoteCounts($options, $sex, $ageInterval, $country, $registration, $region);
         $data = [];
         $max = 0;
         $maxIndex = 0;
@@ -1175,7 +1197,7 @@ class Poll extends ActiveRecord
     }
 
     /** Count all options in at most two queries, preserving the chart filters. */
-    private function getOptionVoteCounts(array $options, $sex = 0, $ageInterval = 0, $country = 0, $registration = 0): array
+    private function getOptionVoteCounts(array $options, $sex = 0, $ageInterval = 0, $country = 0, $registration = 0, $region = 0): array
     {
         $counts = ['registered' => [], 'guests' => []];
         if (empty($options)) {
@@ -1187,20 +1209,20 @@ class Poll extends ActiveRecord
         }, $options);
         $registration = (int) $registration;
         $age = $ageInterval ? User::getAgesByIntervalIndex($ageInterval) : null;
-        $unfiltered = !$sex && $age === null && !$country && $registration === 0;
+        $unfiltered = !$sex && $age === null && !$country && !$region && $registration === 0;
 
         if ($registration !== 2) {
             // Unfiltered totals historically include rows with a NULL user_id.
             $query = $unfiltered
                 ? (new Query())->from(['ov' => OptionVote::tableName()])->where(['ov.option_id' => $optionIds])
-                : $this->getRegisteredChartQuery($optionIds, $sex, $age, $country);
+                : $this->getRegisteredChartQuery($optionIds, $sex, $age, $country, $region);
             $counts['registered'] = $query
                 ->select(['votes' => new Expression('COUNT(*)'), 'option_id' => 'ov.option_id'])
                 ->groupBy('ov.option_id')->indexBy('option_id')->column(static::getDb());
         }
 
-        if (!$country && $registration !== 1) {
-            $counts['guests'] = $this->getGuestChartQuery($optionIds, $sex, $age === null ? null : $ageInterval)
+        if ($registration !== 1) {
+            $counts['guests'] = $this->getGuestChartQuery($optionIds, $sex, $age === null ? null : $ageInterval, $country, $region)
                 ->select(['votes' => new Expression('COUNT(*)'), 'option_id' => 'ogv.option_id'])
                 ->groupBy('ogv.option_id')->indexBy('option_id')->column(static::getDb());
         }
@@ -1209,17 +1231,20 @@ class Poll extends ActiveRecord
     }
 
     /** Shared demographic filters for totals and the daily chart. */
-    private function getRegisteredChartQuery(array $optionIds, $sex, ?array $age, $country): Query
+    private function getRegisteredChartQuery(array $optionIds, $sex, ?array $age, $country, $region = 0): Query
     {
         $query = (new Query())->from(['ov' => OptionVote::tableName()])
             ->where(['ov.option_id' => $optionIds])
             ->andWhere(['not', ['ov.user_id' => null]]);
 
-        if ($sex || $age !== null || $country) {
+        if ($sex || $age !== null || $country || $region) {
             $query->leftJoin(['p' => Profile::tableName()], 'p.user_id = ov.user_id');
         }
         if ($country) {
             $query->andWhere(['p.country_id' => $country]);
+        }
+        if ($region) {
+            $query->andWhere(['p.region_id' => $region]);
         }
         if ($sex) {
             $query->andWhere(['p.gender' => $sex]);
@@ -1234,10 +1259,16 @@ class Poll extends ActiveRecord
         return $query;
     }
 
-    private function getGuestChartQuery(array $optionIds, $sex, $ageInterval): Query
+    private function getGuestChartQuery(array $optionIds, $sex, $ageInterval, $country = 0, $region = 0): Query
     {
         $query = (new Query())->from(['ogv' => OptionGuestVote::tableName()])
             ->where(['ogv.option_id' => $optionIds]);
+        if ($country) {
+            $query->andWhere(['ogv.country_id' => $country]);
+        }
+        if ($region) {
+            $query->andWhere(['ogv.region_id' => $region]);
+        }
         if ($sex) {
             $query->andWhere(['ogv.sex_at_birth' => $sex]);
         }

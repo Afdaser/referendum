@@ -248,7 +248,9 @@ class PollOption extends ActiveRecord
         }
         $result = false;
 
-        $vote = new OptionVote;
+        $vote = new PollVote;
+        $vote->is_guest = 0;
+        $vote->poll_id = (int) $this->poll_id;
         $vote->option_id = $this->id;
 // $TASK:3.1
 //        if(! Yii::$app->user->isGuest){
@@ -258,15 +260,16 @@ class PollOption extends ActiveRecord
 //        }
         $vote->user_ip = ip2long( Yii::$app->request->userIP);
         $vote->date_add = date('Y-m-d H:i:s');
-        if($vote->save()){
-            if (YII_ENV == 'dev') {
-                echo '<h2>SAVED:!!</h2>';
-                echo '<p>vote->id:['.$vote->id.']</p>';
-                echo '<pre>';
-                var_dump($vote);
-                echo '</pre>';
+        try {
+            $result = $vote->save();
+        } catch (IntegrityException $e) {
+            $info = $e->errorInfo;
+            if (($info[0] ?? null) === '23000' && (int) ($info[1] ?? 0) === 1062
+                && strpos((string) ($info[2] ?? ''), 'uq_poll_vote_registered') !== false) {
+                $result = true;
+            } else {
+                throw $e;
             }
-            $result = true;
         }
 
         return $result;
@@ -287,7 +290,8 @@ class PollOption extends ActiveRecord
         $rawIp = (string) Yii::$app->request->getUserIP();
         $ipv4Long = filter_var($rawIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? ip2long($rawIp) : false;
 
-        $vote = new OptionGuestVote();
+        $vote = new PollVote();
+        $vote->is_guest = 1;
         $vote->option_id = $this->id;
         $vote->poll_id = (int) $this->poll_id;
         // Для сумісності з історичним полем user_ip зберігаємо лише IPv4 як int.
@@ -331,6 +335,7 @@ class PollOption extends ActiveRecord
         // Обробляємо як "вже проголосував" лише дублікат саме цільового індексу гостьового голосу.
         // Інші дублікати (наприклад, primary key) мають бути підняті вище як реальна проблема БД.
         $allowedConstraintNames = [
+            'uq_poll_vote_guest',
             'ux_option_guest_vote_poll_guest_ip_key',  // історична назва UNIQUE-індексу
             'uq_option_guest_vote_poll_guest_ip_key',  // можлива майбутня назва
         ];

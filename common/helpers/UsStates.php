@@ -2,7 +2,7 @@
 
 namespace common\helpers;
 
-/** Postal codes keep guest locations independent of translated geography tables. */
+/** US selection labels; postal codes map to the shared country_region dictionary. */
 final class UsStates
 {
     public static function all(): array

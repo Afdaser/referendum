@@ -7,7 +7,7 @@ use common\components\ActiveRecord;
 use common\helpers\UsStates;
 
 /**
- * This is the model class for table "{{%option_guest_vote}}".
+ * Guest-vote compatibility view over the unified poll_vote table.
  *
  * @property int $id ID
  * @property int $option_id Option
@@ -43,6 +43,11 @@ class OptionGuestVote extends ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
     public static function tableName()
     {
         return '{{%option_guest_vote}}';

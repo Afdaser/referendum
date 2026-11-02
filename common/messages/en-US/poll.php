@@ -1,6 +1,8 @@
 <?php
 
 return array(
+        'Регіон' => 'State / region',
+        'Голосів у вибірці' => 'Votes in this sample',
         'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Register to skip these steps next time.',
         'У якому штаті ви проживаєте?' => 'Which state do you live in?',
         'Країна: США' => 'Country: United States',

@@ -498,9 +498,11 @@ class PollController extends \yii\web\Controller
             'poll_id' => (int) $pollId,
             'guest_ip_key' => $ipKey,
         ]);
-        if ($vote === null) {
+        // Discard a pending location step carried over from another host.
+        if ($vote === null || $this->getGuestSampleStep($pollId) > $vote->sampleStepCount) {
             Yii::$app->session->remove($sessionKey);
             Yii::$app->session->remove($sessionKey . ':step');
+            return null;
         }
         return $vote;
     }

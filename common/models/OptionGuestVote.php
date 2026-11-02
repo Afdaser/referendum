@@ -95,8 +95,8 @@ class OptionGuestVote extends ActiveRecord
 
     public function getSampleStepCount(): int
     {
-        // The edition determines which question to show, never the voter’s location.
-        return ($this->poll->language->locale ?? null) === 'en-US' ? 3 : 2;
+        // Only the current US subdomain offers location collection.
+        return strtolower(Yii::$app->request->hostName) === 'en.referendum.social' ? 3 : 2;
     }
 
     /**

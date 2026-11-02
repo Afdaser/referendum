@@ -1882,17 +1882,22 @@ a.btn_prev_var:hover {
 .right_clear_btn .clear_btn:focus .clear_btn_ico {
     background: url(/img/layout/clear_btn_icon_hover.png);
 }
-.select_blocks {
-    display: flex;
-    flex-wrap: wrap;
+.show_voices_b .select_blocks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr);
     gap: 12px;
     padding: 0 20px;
     font-size: 0;
     margin-top: 14px;
     padding-bottom: 20px;
 }
+.show_voices_b .select_blocks--with-region {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2.6fr) minmax(0, 1.5fr);
+}
 .select_blocks > .item_show {
-    flex: 1 1 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     min-width: 0;
     margin: 0;
 }
@@ -1900,6 +1905,7 @@ a.btn_prev_var:hover {
     overflow-wrap: anywhere;
 }
 .select_blocks > .item_show select {
+    box-sizing: border-box;
     width: 100%;
     max-width: 100%;
     margin: 5px 0 0;

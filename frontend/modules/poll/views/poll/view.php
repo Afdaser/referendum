@@ -196,7 +196,7 @@ JS
                             </span>
                         </div>
                         <div class="for_collapsing collapse">
-                            <div class="select_blocks">
+                            <div class="select_blocks select_blocks--with-region">
                                 <?php // Підписи та aria-label пояснюють призначення кожного фільтра користувачам і роботам. ?>
                                 <label class="item_show">
                                     <span><?= Yii::t('poll', 'Стать'); ?></span>

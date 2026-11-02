@@ -446,4 +446,3 @@ h1.title {
 .select_blocks { display: flex; flex-wrap: wrap; gap: 12px; }
 .select_blocks .item_show { flex: 1 1 140px; min-width: 0; }
 .select_blocks .item_show select { width: 100%; max-width: 100%; margin: 0; }
-.vote-sample-total { padding: 0 20px 16px; }

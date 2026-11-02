@@ -145,15 +145,6 @@ if (!empty($poll->pollLanguage)) {
                                                 </select>
                                             </label>
                                             <label class="item_show">
-                                                <span><?php echo Yii::t('poll', 'Країна'); ?></span>
-                                                <select class="country" aria-label="<?php echo Yii::t('poll', 'Фільтр голосів за країною'); ?>">
-                                                    <option value="0"><?php echo Yii::t('poll', 'Всі'); ?></option>
-                                                    <?php foreach ($poll->getVoteCountries() as $key => $country): ?>
-                                                        <option value="<?php echo $key; ?>"><?php echo $country; ?></option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </label>
-                                            <label class="item_show">
                                                 <span><?php echo Yii::t('poll', 'Реєстрація'); ?></span>
                                                 <select class="registration" aria-label="<?php echo Yii::t('poll', 'Фільтр голосів за реєстрацією'); ?>">
                                                     <option value="0"><?php echo Yii::t('poll', 'Всі'); ?></option>
@@ -284,7 +275,7 @@ if (!empty($poll->pollLanguage)) {
         <?php endif;?>
     });
 
-    jQuery(document).on('change','.gender, .age, .country, .registration',function(){
+    jQuery(document).on('change','.gender, .age, .registration',function(){
         filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
@@ -292,22 +283,6 @@ if (!empty($poll->pollLanguage)) {
         clearChartFilters(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
     });
 
-/*
-    jQuery(document).on('change','.country',function(){
-        refreshRegions(jQuery('.country').val(),jQuery('span.region'),'regionAC','region','cityAC',jQuery('.city'),'city');
-        jQuery('#regionAC').val('');
-        jQuery('#region').val(0);
-    });
-
-    jQuery(document).on('click','.del_btn',function(){
-        jQuery('#regionAC').val('');
-        jQuery('#region').val(0);
-    });
-
-   jQuery(document).on('click','.autocomplete-suggestion',function(){
-       filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
-    });
-*/
 
     jQuery(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart',function(){
         // Після вибору одразу фіксуємо активну кнопку внизу перемикача, щоб hover-стан не показував порожній квадрат.

@@ -595,7 +595,6 @@ function renderChart(category,id,text,series,pie,line){
 function filterDataChart(id,title){
     gender = $('.gender').val();
     age = $('.age').val();
-    country = $('.country').val();
     var region = $('.vote-region').val() || 0;
     registration = $('.registration').val() || 0;
 
@@ -603,10 +602,9 @@ function filterDataChart(id,title){
     $.ajax({
         type: 'POST',
         url: '/poll/ajax/get-chart-data',
-        data: {gender: gender, age: age, country: country, region: region, registration: registration, id: id},
+        data: {gender: gender, age: age, region: region, registration: registration, id: id},
         success: function (data) {
             data = JSON.parse(data);
-            $('.vote-sample-total strong').text(data.total);
             for(i in data.bar.series){
                 data.bar.series[i].data[0] = parseInt(data.bar.series[i].data[0]);
             }
@@ -688,9 +686,7 @@ function refreshCities(countryVal,regionVal,cityAC,cityClass,cityId){
 }
 
 function clearChartFilters(id,title){
-    $('.gender option:first, .age option:first, .country option:first, .registration option:first, .vote-region option:first').prop('selected',true);
-    updateVoteRegionOptions();
-    //$('#region, #regionAC').val('');
+    $('.gender option:first, .age option:first, .registration option:first, .vote-region option:first').prop('selected',true);
     filterDataChart(id,title);
 }
 
@@ -831,14 +827,3 @@ $(document).on('change','#profile_main .month_birth,#profile_main .year_birth',f
         $('#profile_main .day_birth').append(opt);
     }
 });
-
-// Keep the region filter consistent when switching countries.
-function updateVoteRegionOptions() {
-    var country = $('.country').val();
-    var select = $('.vote-region');
-    select.find('option[data-country-id]').each(function () {
-        var allowed = !country || country === '0' || $(this).attr('data-country-id') === country;
-        $(this).prop('hidden', !allowed).prop('disabled', !allowed);
-        if (!allowed && this.selected) { select.val('0'); }
-    });
-}

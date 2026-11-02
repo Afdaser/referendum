@@ -56,17 +56,14 @@ class AjaxController extends \yii\web\Controller
                     $gender = intval( Yii::$app->request->post('gender'));
                     $ageInterval = intval( Yii::$app->request->post('age'));
                     $country = intval( Yii::$app->request->post('country'));
-//                    if($country){
-//                        $region = intval( Yii::$app->request->post('region'));
-//                    } else {
-//                        $region = 0;
-//                    }
+                    $region = intval(Yii::$app->request->post('region'));
                     $registration = intval( Yii::$app->request->post('registration'));
-                    $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration);
+                    $chartData = $poll->getChartData($gender,$ageInterval,$country,$registration,$region);
+                    $result['total'] = array_sum(array_column($chartData, 'value'));
                     $result['bar'] = StringHelper::formatForBarAjax($chartData);
                     $result['pie'] = StringHelper::formatForPieAjax($chartData);
                     // Лінійний графік використовує ті самі фільтри, але повертає історію часток за датами.
-                    $result['line'] = $poll->getLineChartData($gender,$ageInterval,$country,$registration);
+                    $result['line'] = $poll->getLineChartData($gender,$ageInterval,$country,$registration,$region);
                     echo json_encode($result);
                     die();
                     return $result;

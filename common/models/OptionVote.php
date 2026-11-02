@@ -6,7 +6,7 @@ use Yii;
 use common\components\ActiveRecord;
 
 /**
- * This is the model class for table "{{%option_votes}}".
+ * Registered-vote compatibility view over the unified poll_vote table.
  *
  * @property int $id ID
  * @property int $option_id Option
@@ -26,6 +26,11 @@ class OptionVote extends ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
     public static function tableName()
     {
         return '{{%option_vote}}';

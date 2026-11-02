@@ -4,9 +4,10 @@ namespace common\models;
 
 use Yii;
 use common\components\ActiveRecord;
+use common\helpers\UsStates;
 
 /**
- * This is the model class for table "{{%option_guest_vote}}".
+ * Guest-vote compatibility view over the unified poll_vote table.
  *
  * @property int $id ID
  * @property int $option_id Option
@@ -16,6 +17,8 @@ use common\components\ActiveRecord;
  * @property string|null $guest_ip_key Guest IP key for uniqueness
  * @property int|null $sex_at_birth Optional sex at birth, using User::SEX_* values
  * @property int|null $age_interval Optional adult age group
+ * @property string|null $country_code Country confirmed by choosing a US state
+ * @property string|null $state_code Optional self-reported US state postal code
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
  * @property int|null $updated_by Updated by:
@@ -40,6 +43,11 @@ class OptionGuestVote extends ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
     public static function tableName()
     {
         return '{{%option_guest_vote}}';
@@ -57,6 +65,13 @@ class OptionGuestVote extends ActiveRecord
             [['guest_ip_key'], 'required'],
             [['age_interval'], 'in', 'range' => array_keys(User::getUserAgeIntervalList())],
             [['sex_at_birth'], 'in', 'range' => [User::SEX_MAN, User::SEX_WOMAN]],
+            [['country_code'], 'in', 'range' => ['US']],
+            [['state_code'], 'in', 'range' => array_keys(UsStates::all())],
+            [['state_code'], function ($attribute) {
+                if ($this->country_code !== 'US') {
+                    $this->addError($attribute, 'A US state requires the US country code.');
+                }
+            }],
             [['ip_of_user', 'guest_ip_key'], 'string', 'max' => 67],
             [['option_id'], 'exist', 'skipOnError' => true, 'targetClass' => PollOption::class, 'targetAttribute' => ['option_id' => 'id']],
             [['poll_id'], 'exist', 'skipOnError' => true, 'targetClass' => Poll::class, 'targetAttribute' => ['poll_id' => 'id']],
@@ -81,6 +96,12 @@ class OptionGuestVote extends ActiveRecord
             'created_at' => Yii::t('app', 'Created at:'),
             'updated_at' => Yii::t('app', 'Updated at:'),
         ];
+    }
+
+    public function getSampleStepCount(): int
+    {
+        // Only the current US subdomain offers location collection.
+        return strtolower(Yii::$app->request->hostName) === 'en.referendum.social' ? 3 : 2;
     }
 
     /**

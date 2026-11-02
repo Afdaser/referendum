@@ -1,6 +1,10 @@
 <?php
 
 return array(
+        'Регіон' => 'Region',
+        'Голосів у вибірці' => 'Stemmer i utvalget',
+        'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Registrer deg for å slippe disse trinnene neste gang.',
+
         'Крок {step} з {total}' => 'Trinn {step} av {total}',
         'Ваша вікова група' => 'Din aldersgruppe',
         'Оберіть вікову групу або пропустіть цей крок.' => 'Velg aldersgruppen din eller hopp over dette trinnet.',

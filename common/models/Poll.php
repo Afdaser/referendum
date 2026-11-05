@@ -1540,6 +1540,7 @@ class Poll extends ActiveRecord
             '@date_month' => 'Місяць створення опитування (MM).',
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
+            '@voted_regions' => 'Регіони, з яких є голоси в цьому опитуванні, лише для країни поточного піддомену: назви зі спільного довідника через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих регіонів немає — порожній рядок.',
             '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
@@ -1576,6 +1577,7 @@ class Poll extends ActiveRecord
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
+            '@voted_regions' => self::getStaticMetaTokens()['@voted_regions'],
             '@votes_guest' => 'Кількість голосів від гостей.',
             '@comments' => 'Кількість коментарів.',
             '@tags' => 'Список тегів із посиланнями.',
@@ -1603,7 +1605,7 @@ class Poll extends ActiveRecord
         }
 
         $infoBlockData = $infoBlockData ?? $this->getStaticInfoBlockData();
-        $replacements = $this->getStaticInfoReplacements($infoBlockData);
+        $replacements = $this->getStaticInfoReplacements($infoBlockData, $staticText->content);
 
         return $this->replaceStaticMetaTokens($staticText->content, $replacements);
     }
@@ -1623,7 +1625,10 @@ class Poll extends ActiveRecord
             return [];
         }
 
-        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData());
+        $template = implode(' ', array_map(static function ($faq) {
+            return $faq->question . ' ' . $faq->answer;
+        }, $faqs));
+        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData(), $template);
         $items = [];
         foreach ($faqs as $faq) {
             $question = strtr((string) $faq->question, $replacements);
@@ -1787,6 +1792,23 @@ class Poll extends ActiveRecord
         return $result;
     }
 
+    /** Regions represented by votes, using the same locations as the result filters. */
+    private function getVotedRegions(): string
+    {
+        $domain = Yii::$app->request instanceof \yii\web\Request
+            ? strtolower(Yii::$app->request->hostName)
+            : (Yii::$app->params['langDomains'][$this->poll_language_id] ?? '');
+        $countryCode = Yii::$app->params['domainCountryCodes'][$domain] ?? null;
+        // Never fall back to all countries when the domain has no country mapping.
+        if (!$countryCode) {
+            return '';
+        }
+        $names = array_unique(array_column($this->getVoteRegions($countryCode), 'name'));
+        sort($names, SORT_STRING);
+
+        return implode(', ', $names);
+    }
+
     /**
      * Завантажує повʼязаний запис PollStaticText лише один раз за запит.
      */
@@ -1850,6 +1872,7 @@ class Poll extends ActiveRecord
                     case '@author_name': $value = $this->user_id && $this->author ? $this->author->username : ''; break;
                     case '@author_id': $value = $this->user_id; break;
                     case '@votes_total': $value = $this->getCountPollOptionsVoters(); break;
+                    case '@voted_regions': $value = $this->getVotedRegions(); break;
                     case '@comments': $value = $this->getCommentsCount(); break;
                     case '@options_count': $value = count($this->pollOptions); break;
                     case '@options_titles':
@@ -1870,11 +1893,11 @@ class Poll extends ActiveRecord
      *
      * @param array $data Дані, які повертає getStaticInfoBlockData().
      */
-    private function getStaticInfoReplacements(array $data): array
+    private function getStaticInfoReplacements(array $data, string $template): array
     {
         $mostPopular = $data['mostPopular'];
 
-        return [
+        $replacements = [
             '@title' => $this->title,
             '@id' => (string) $this->id,
             '@date' => $data['date'],
@@ -1907,6 +1930,12 @@ class Poll extends ActiveRecord
             '@most_popular_votes' => $mostPopular ? (string) $mostPopular['votes'] : '',
             '@most_popular_percent' => $mostPopular ? number_format($mostPopular['percent'], 1) : '',
         ];
+
+        if (strpos($template, '@voted_regions') !== false) {
+            $replacements['@voted_regions'] = Html::encode($this->getVotedRegions());
+        }
+
+        return $replacements;
     }
 
     /**

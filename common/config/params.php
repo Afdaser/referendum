@@ -57,6 +57,14 @@ return [
         'nb-NO' => '. Klikk for å delta i avstemningen, se resultater og diskutere det',
     ],
     'descriptionMaxLenth' => 156,
+    // Country scope for region variables on each national subdomain.
+    'domainCountryCodes' => [
+        'ua.referendum.social' => 'UA',
+        'ru.referendum.social' => 'RU',
+        'en.referendum.social' => 'US',
+        'no.referendum.social' => 'NO',
+        'nz.referendum.social' => 'NZ',
+    ],
     'langDomains' => [
         1 => 'ua.referendum.social',
         2 => 'ru.referendum.social',

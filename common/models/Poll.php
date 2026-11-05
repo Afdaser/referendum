@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use common\components\ActiveRecord;
 use common\helpers\StringHelper;
+use common\helpers\UsStates;
 use yii\helpers\Html;
 use yii\db\Expression;
 use yii\db\Query;
@@ -1539,6 +1540,7 @@ class Poll extends ActiveRecord
             '@date_month' => 'Місяць створення опитування (MM).',
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
+            '@voted_states' => 'Штати США (включно з округом Колумбія), з яких є голоси в цьому опитуванні: англійські назви через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих штатів немає — порожній рядок.',
             '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
@@ -1575,6 +1577,7 @@ class Poll extends ActiveRecord
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
+            '@voted_states' => self::getStaticMetaTokens()['@voted_states'],
             '@votes_guest' => 'Кількість голосів від гостей.',
             '@comments' => 'Кількість коментарів.',
             '@tags' => 'Список тегів із посиланнями.',
@@ -1602,7 +1605,7 @@ class Poll extends ActiveRecord
         }
 
         $infoBlockData = $infoBlockData ?? $this->getStaticInfoBlockData();
-        $replacements = $this->getStaticInfoReplacements($infoBlockData);
+        $replacements = $this->getStaticInfoReplacements($infoBlockData, $staticText->content);
 
         return $this->replaceStaticMetaTokens($staticText->content, $replacements);
     }
@@ -1622,7 +1625,10 @@ class Poll extends ActiveRecord
             return [];
         }
 
-        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData());
+        $template = implode(' ', array_map(static function ($faq) {
+            return $faq->question . ' ' . $faq->answer;
+        }, $faqs));
+        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData(), $template);
         $items = [];
         foreach ($faqs as $faq) {
             $question = strtr((string) $faq->question, $replacements);
@@ -1786,6 +1792,26 @@ class Poll extends ActiveRecord
         return $result;
     }
 
+    /** US states represented by votes, using the same locations as the result filters. */
+    private function getVotedStates(): string
+    {
+        $country = 'CASE WHEN v.is_guest = 1 THEN v.country_id ELSE p.country_id END';
+        $region = 'CASE WHEN v.is_guest = 1 THEN v.region_id ELSE p.region_id END';
+        $states = UsStates::all();
+        $codes = (new Query())->select('r.code')->distinct()
+            ->from(['v' => PollVote::tableName()])
+            ->leftJoin(['p' => Profile::tableName()], 'p.user_id = v.user_id AND v.is_guest = 0')
+            ->innerJoin(['r' => CountryRegion::tableName()], "r.id = ($region) AND r.country_id = ($country)")
+            ->innerJoin(['c' => Country::tableName()], 'c.id = r.country_id')
+            ->where(['v.poll_id' => (int) $this->id, 'c.iso_code' => 'US'])
+            ->andWhere(['r.code' => array_keys($states)])
+            ->column(static::getDb());
+        $names = array_intersect_key($states, array_flip($codes));
+        sort($names, SORT_STRING);
+
+        return implode(', ', $names);
+    }
+
     /**
      * Завантажує повʼязаний запис PollStaticText лише один раз за запит.
      */
@@ -1849,6 +1875,7 @@ class Poll extends ActiveRecord
                     case '@author_name': $value = $this->user_id && $this->author ? $this->author->username : ''; break;
                     case '@author_id': $value = $this->user_id; break;
                     case '@votes_total': $value = $this->getCountPollOptionsVoters(); break;
+                    case '@voted_states': $value = $this->getVotedStates(); break;
                     case '@comments': $value = $this->getCommentsCount(); break;
                     case '@options_count': $value = count($this->pollOptions); break;
                     case '@options_titles':
@@ -1869,11 +1896,11 @@ class Poll extends ActiveRecord
      *
      * @param array $data Дані, які повертає getStaticInfoBlockData().
      */
-    private function getStaticInfoReplacements(array $data): array
+    private function getStaticInfoReplacements(array $data, string $template): array
     {
         $mostPopular = $data['mostPopular'];
 
-        return [
+        $replacements = [
             '@title' => $this->title,
             '@id' => (string) $this->id,
             '@date' => $data['date'],
@@ -1906,6 +1933,12 @@ class Poll extends ActiveRecord
             '@most_popular_votes' => $mostPopular ? (string) $mostPopular['votes'] : '',
             '@most_popular_percent' => $mostPopular ? number_format($mostPopular['percent'], 1) : '',
         ];
+
+        if (strpos($template, '@voted_states') !== false) {
+            $replacements['@voted_states'] = Html::encode($this->getVotedStates());
+        }
+
+        return $replacements;
     }
 
     /**

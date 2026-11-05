@@ -485,7 +485,7 @@ class Poll extends ActiveRecord
     }
 
     /** Shared region IDs across guest votes and current registered profiles. */
-    public function getVoteRegions(): array
+    public function getVoteRegions(?string $countryIsoCode = null): array
     {
         $country = 'CASE WHEN v.is_guest = 1 THEN v.country_id ELSE p.country_id END';
         $region = 'CASE WHEN v.is_guest = 1 THEN v.region_id ELSE p.region_id END';
@@ -496,6 +496,7 @@ class Poll extends ActiveRecord
             ->innerJoin(['r' => CountryRegion::tableName()], "r.id = ($region) AND r.country_id = ($country)")
             ->innerJoin(['c' => Country::tableName()], 'c.id = r.country_id')
             ->where(['v.poll_id' => $this->id])
+            ->andFilterWhere(['c.iso_code' => $countryIsoCode])
             ->groupBy(['r.id', 'r.name', 'r.country_id', 'c.name'])
             ->orderBy(['c.name' => SORT_ASC, 'r.name' => SORT_ASC])->all(static::getDb());
     }

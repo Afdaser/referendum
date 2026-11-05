@@ -1540,7 +1540,7 @@ class Poll extends ActiveRecord
             '@date_month' => 'Місяць створення опитування (MM).',
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
-            '@voted_regions' => 'Регіони, з яких є голоси в цьому опитуванні, для всіх країн і піддоменів: назви зі спільного довідника через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих регіонів немає — порожній рядок.',
+            '@voted_regions' => 'Регіони, з яких є голоси в цьому опитуванні, лише для країни поточного піддомену: назви зі спільного довідника через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих регіонів немає — порожній рядок.',
             '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
@@ -1795,7 +1795,15 @@ class Poll extends ActiveRecord
     /** Regions represented by votes, using the same locations as the result filters. */
     private function getVotedRegions(): string
     {
-        $names = array_unique(array_column($this->getVoteRegions(), 'name'));
+        $domain = Yii::$app->request instanceof \yii\web\Request
+            ? strtolower(Yii::$app->request->hostName)
+            : (Yii::$app->params['langDomains'][$this->poll_language_id] ?? '');
+        $countryCode = Yii::$app->params['domainCountryCodes'][$domain] ?? null;
+        // Never fall back to all countries when the domain has no country mapping.
+        if (!$countryCode) {
+            return '';
+        }
+        $names = array_unique(array_column($this->getVoteRegions($countryCode), 'name'));
         sort($names, SORT_STRING);
 
         return implode(', ', $names);

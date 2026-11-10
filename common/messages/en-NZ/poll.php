@@ -4,6 +4,11 @@
 
 
 return array(
+        'У якому регіоні ви проживаєте?' => 'Which region do you live in?',
+        'Країна: Нова Зеландія' => 'Country: New Zealand',
+        'Оберіть регіон' => 'Choose your region',
+        'Оберіть регіон або пропустіть цей крок.' => 'Choose your region or skip this step.',
+        'Зберегти та показати результати' => 'Save and show results',
         'Регіон' => 'Region',
         'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Register to skip these steps next time.',
 

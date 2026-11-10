@@ -14,7 +14,8 @@ use yii\helpers\Json;
 /* @var bool $guestSamplePending */
 
 $guestSamplePending = $guestSamplePending ?? false;
-$isUsSubdomain = strtolower(Yii::$app->request->hostName) === 'en.referendum.social';
+$locationCountryCode = \common\helpers\VoteLocations::countryForHost(Yii::$app->request->hostName);
+$locationCountryLabel = ['US' => 'USA', 'NZ' => 'New Zealand'][$locationCountryCode] ?? null;
 
 if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));
@@ -223,8 +224,8 @@ JS
                                     <span><?= Yii::t('poll', 'Регіон'); ?></span>
                                     <select class="vote-region" aria-label="<?= Yii::t('poll', 'Регіон'); ?>">
                                         <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <?php foreach ($poll->getVoteRegions($isUsSubdomain ? 'US' : null) as $voteRegion): ?>
-                                            <option value="<?= (int) $voteRegion['id']; ?>"><?= \yii\helpers\Html::encode($voteRegion['name'] . ($isUsSubdomain ? ', USA' : ' — ' . $voteRegion['country_name'])); ?></option>
+                                        <?php foreach ($poll->getVoteRegions($locationCountryCode) as $voteRegion): ?>
+                                            <option value="<?= (int) $voteRegion['id']; ?>"><?= \yii\helpers\Html::encode($voteRegion['name'] . ($locationCountryLabel !== null ? ', ' . $locationCountryLabel : ' — ' . $voteRegion['country_name'])); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </label>

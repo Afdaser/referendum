@@ -40,6 +40,9 @@ AddDefaultCharset utf-8
     RewriteRule ^tags-sitemap\.xml$ sitemaps/%1.tags.xml [L]
 
     RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
+    RewriteRule ^news-sitemap\.xml$ sitemaps/%1.news.xml [L]
+
+    RewriteCond %{HTTP_HOST} ^(en|ru|ua|no|nz)\.referendum\.social$ [NC]
     RewriteRule ^sitemap\.xml$ sitemaps/%1.index.xml [L]
 
 

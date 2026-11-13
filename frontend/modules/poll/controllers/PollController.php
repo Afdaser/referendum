@@ -15,7 +15,7 @@ use common\models\OptionGuestVote;
 use common\models\User;
 use common\models\Country;
 use common\helpers\StringHelper;
-use common\helpers\UsStates;
+use common\helpers\VoteLocations;
 
 class PollController extends \yii\web\Controller
 {
@@ -441,17 +441,18 @@ class PollController extends \yii\web\Controller
         }
         $attribute = $attributes[$step];
         $value = $request->post($attribute);
+        $countryCode = VoteLocations::countryForHost($request->hostName);
         $choices = [
             1 => [User::SEX_MAN, User::SEX_WOMAN],
             2 => array_keys(User::getUserAgeIntervalList()),
-            3 => array_keys(UsStates::all()),
+            3 => array_keys(VoteLocations::regions($countryCode)),
         ];
         $allowed = $choices[$step];
         if (!in_array($value, array_map('strval', $allowed), true)) {
             $messages = [
                 1 => 'Оберіть стать при народженні або пропустіть цей крок.',
                 2 => 'Оберіть вікову групу або пропустіть цей крок.',
-                3 => 'Оберіть штат або пропустіть цей крок.',
+                3 => $countryCode === 'NZ' ? 'Оберіть регіон або пропустіть цей крок.' : 'Оберіть штат або пропустіть цей крок.',
             ];
             Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $messages[$step]));
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);
@@ -461,11 +462,11 @@ class PollController extends \yii\web\Controller
         if ($step === 3) {
             $region = \common\models\CountryRegion::find()->alias('r')
                 ->innerJoin(['c' => Country::tableName()], 'c.id = r.country_id')
-                ->where(['c.iso_code' => 'US', 'r.code' => $value])->one();
+                ->where(['c.iso_code' => $countryCode, 'r.code' => $value])->one();
             if ($region === null) {
-                throw new \yii\web\ServerErrorHttpException('US state dictionary is not configured.');
+                throw new \yii\web\ServerErrorHttpException('Region dictionary is not configured for ' . $countryCode . '.');
             }
-            $updates = ['state_code' => $value, 'country_code' => 'US',
+            $updates = ['state_code' => $value, 'country_code' => $countryCode,
                 'country_id' => $region->country_id, 'region_id' => $region->id];
         }
         OptionGuestVote::updateAll($updates, [

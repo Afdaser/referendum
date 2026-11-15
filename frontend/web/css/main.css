@@ -3231,124 +3231,11 @@ a.search_btn_inner:hover {
     background: linear-gradient(to bottom,  #3ac469 0%,#3ac469 9%,#36c066 12%,#28b25c 20%,#109a4a 30%,#058f42 38%,#058f42 100%);
 
 }
-.container_holder_page {
-    max-width: 970px;
-    margin: 0 auto;
-}
-.top_logo_block {
-    text-align: center;
-    padding-top: 30px;
-}
-.container_holder_page .sub_text_logo {
-    font-size: 20px;
-    text-align: right;
-    width: 100%;
-    margin-left: 0;
-}
-.top_holder_text {
-    text-align: center;
-    font-size: 24px;
-    line-height: 28px;
-    color: #fff;
-    font-family: "ubuntulight", sans-serif;
-    margin-top: 45px;
-}
-.top_holder_text span {
-    font-family: "UbuntuMedium", sans-serif;
-}
-.middle_text_holder {
-    font-size: 16px;
-    color: #fff;
-    margin-top: 42px;
-}
-.btn_holder_block {
-    text-align: center;
-    margin-top: 36px;
-    height: 56px;
-}
-.btn_holder_block a {
-    display: inline-block;
-    vertical-align: middle;
-    width: 250px;
-    height: 50px;
-    line-height: 50px;
-    font-size: 16px;
-    color: #058f42;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    background: #fff;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
-.btn_holder_block a:hover {
-    background: #3ac469;
-    color: #fff;
-    width: 256px;
-    height: 56px;
-    border: 3px solid #fff;
-    position: relative;
-    top: -3px;
-}
-.holder_block_for_inner_site {
-    width: 640px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #f0f4f4;
-    border: 1px solid #147536;
-    position: relative;
-}
-.for_inner_holder {
-    padding: 0;
-}
-.holder_block_for_inner_site .top_poll_b {
-    position: relative;
-}
-.holder_block_for_inner_site .poll_block {
-    margin-bottom: 0;
-}
-.block_for_share_btn_holder {
-    text-align: center;
-    margin-bottom: 130px;
-    height: 40px;
-    overflow: hidden;
-}
-.for_inner_holder .right_block_share_icon {
-    top: 24px;
-    right: 15px;
-}
-.sub_text_poll {
-    font-size: 12px;
-    color: #848484;
-    margin: 5px 0 40px 0;
-}
-.top_text_captcha {
-    font-size: 16px;
-    color: #3ac469;
-    font-family: "ArimoBold", sans-serif;
-    margin-top: 40px;
-    text-align: center;
-}
-.holder_block_for_inner_site .right_reg_label input.for_captcha {
-    width: 162px;
-}
-.holder_block_for_inner_site .right_reg_label {
-    width: 340px;
-    margin: 15px auto;
-    float: none;
-}
-.holder_block_for_inner_site .btn_b_modal {
-    text-align: center;
-}
 .search_form_bottom.bottom_select_b_search  {
     top:0;
 }
 .search_form_bottom .right_select_sort select {
     border: 1px solid #dce6e4;
-}
-.middle_text_holder>.col-md-6 .row {
-    padding-right: 10px;
 }
 .left_option_period {
     float: left;
@@ -3575,9 +3462,6 @@ a.pass_on_main_page {
         float: none;
         text-align: center;
     }
-    .holder_block_for_inner_site {
-        width: 100%;
-    }
     .for_close_radio input {
         width: 50%;
     }
@@ -3665,18 +3549,6 @@ a.pass_on_main_page {
     .left_option_period {
         float: left;
         display: block;
-    }
-    .container_holder_page {
-        padding: 0 20px;
-    }
-    .holder_block_for_inner_site .right_reg_label {
-        width: 100%;
-    }
-    .holder_block_for_inner_site .right_reg_label input.for_captcha {
-        width: 100%;
-    }
-    .holder_block_for_inner_site .right_reg_label .right_captcha_b {
-        width: 100%;
     }
     .for_close_radio {
         padding-left: 3px;

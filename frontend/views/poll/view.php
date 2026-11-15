@@ -247,6 +247,12 @@ if (!empty($poll->pollLanguage)) {
 
 
 <script>
+    var pollChartId = <?php echo (int) $poll->id; ?>;
+    var pollChartTitle = <?php echo json_encode(
+        $poll->title,
+        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    ); ?>;
+    var $pollChart = jQuery('#container' + pollChartId);
 
         jQuery(function()
         {
@@ -271,24 +277,23 @@ if (!empty($poll->pollLanguage)) {
 
     jQuery(function() {
         <?php if(isset($error) && $error):?>
-            alert(<?php echo strip_tags($error);?>);
+            alert(<?php echo json_encode(strip_tags($error), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>);
         <?php endif;?>
     });
 
     jQuery(document).on('change','.gender, .age, .registration',function(){
-        filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
+        filterDataChart(pollChartId, pollChartTitle);
     });
 
     jQuery(document).on('click','.clear_btn',function(){
-        clearChartFilters(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
+        clearChartFilters(pollChartId, pollChartTitle);
     });
 
 
     jQuery(document).on('click','.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart',function(){
         // Після вибору одразу фіксуємо активну кнопку внизу перемикача, щоб hover-стан не показував порожній квадрат.
         jQuery(this).addClass('active').siblings('.pie_chart,.horizontal_b_chart,.vertical_b_chart,.line_chart').removeClass('active');
-        jQuery('#container<?php echo $poll->id; ?>').removeClass('pie').removeClass('bar').removeClass('column').removeClass('line');
-        jQuery('#container<?php echo $poll->id; ?>').addClass(jQuery(this).attr('data-id'));
-        filterDataChart(<?php echo $poll->id;?>,'<?php echo $poll->title;?>');
+        $pollChart.removeClass('pie bar column line').addClass(jQuery(this).attr('data-id'));
+        filterDataChart(pollChartId, pollChartTitle);
     });
 </script>

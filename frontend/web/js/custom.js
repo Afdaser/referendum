@@ -318,6 +318,8 @@ function arrayTotal(data)
 }
 
 function renderChart(category,id,text,series,pie,line){
+    var $chart = $('#'+id);
+
     function htmlDecode(value){
         return $('<div/>').html(value).text();
     }
@@ -340,10 +342,9 @@ function renderChart(category,id,text,series,pie,line){
         }
     }
 
-    $('#'+id).removeClass('pie').removeClass('bar').removeClass('column').removeClass('line');
-    $('#'+id).addClass(category);
+    $chart.removeClass('pie bar column line').addClass(category);
     if(category == 'bar'){
-        $('#'+id).highcharts({
+        $chart.highcharts({
             colors: highchartColors,
             chart: {
                 type: 'bar',//column pie bar
@@ -395,7 +396,7 @@ function renderChart(category,id,text,series,pie,line){
             series: series
         });
     } else if(category == 'column'){
-        $('#'+id).highcharts({
+        $chart.highcharts({
             colors: highchartColors,
             chart: {
                 type: 'column'//column pie bar
@@ -491,7 +492,7 @@ function renderChart(category,id,text,series,pie,line){
         var lineAxisMax = calculateLineAxisMax(lineConfig.series || []);
 
         // Готуємо окрему конфігурацію для лінійного графіка Highcharts: одна лінія = один варіант відповіді.
-        $('#'+id).highcharts({
+        $chart.highcharts({
             colors: highchartColors,
             chart: {
                 type: 'line',
@@ -552,7 +553,7 @@ function renderChart(category,id,text,series,pie,line){
             series: lineConfig.series || []
         });
     } else {
-        $('#'+id).highcharts({
+        $chart.highcharts({
             colors: highchartColors,
             chart: {
                 plotBackgroundColor: null,
@@ -592,32 +593,48 @@ function renderChart(category,id,text,series,pie,line){
 
 }
 
+var chartFilterRequest = null;
+
 function filterDataChart(id,title){
-    gender = $('.gender').val();
-    age = $('.age').val();
+    var gender = $('.gender').val();
+    var age = $('.age').val();
     var region = $('.vote-region').val() || 0;
-    registration = $('.registration').val() || 0;
+    var registration = $('.registration').val() || 0;
+    var chartId = 'container' + id;
+    var $chart = $('#' + chartId);
+
+    // При швидкій зміні кількох фільтрів старіша відповідь не повинна перезаписати новішу.
+    if (chartFilterRequest && chartFilterRequest.readyState !== 4) {
+        chartFilterRequest.abort();
+    }
 
     /* url: '/poll/GetChartData' */
-    $.ajax({
+    var request = $.ajax({
         type: 'POST',
         url: '/poll/ajax/get-chart-data',
+        dataType: 'json',
         data: {gender: gender, age: age, region: region, registration: registration, id: id},
         success: function (data) {
-            data = JSON.parse(data);
-            for(i in data.bar.series){
-                data.bar.series[i].data[0] = parseInt(data.bar.series[i].data[0]);
+            for(var i in data.bar.series){
+                data.bar.series[i].data[0] = parseInt(data.bar.series[i].data[0], 10);
             }
 
-            if($('#container'+id).hasClass('pie')){
-                renderChart('pie','container'+id,title,data.bar.series,data.pie,data.line);
-            } else if($('#container'+id).hasClass('bar')){
-                renderChart('bar','container'+id,title,data.bar.series,data.pie,data.line);
-            } else if($('#container'+id).hasClass('line')){
-                renderChart('line','container'+id,title,data.bar.series,data.pie,data.line);
+            if($chart.hasClass('pie')){
+                renderChart('pie',chartId,title,data.bar.series,data.pie,data.line);
+            } else if($chart.hasClass('bar')){
+                renderChart('bar',chartId,title,data.bar.series,data.pie,data.line);
+            } else if($chart.hasClass('line')){
+                renderChart('line',chartId,title,data.bar.series,data.pie,data.line);
             } else {
-                renderChart('column','container'+id,title,data.bar.series,data.pie,data.line);
+                renderChart('column',chartId,title,data.bar.series,data.pie,data.line);
             }
+        }
+    });
+
+    chartFilterRequest = request;
+    request.always(function () {
+        if (chartFilterRequest === request) {
+            chartFilterRequest = null;
         }
     });
 }
@@ -710,7 +727,7 @@ $(document).on('click','.email .del_btn', function(){
 });
 
 $(document).on('click','.clearComments',function(){
-   id = $(this).data("id");
+    var id = $(this).data("id");
     $.ajax({
         type: 'POST',
         url: '/user/readComments',
@@ -736,7 +753,7 @@ $(document).on('click','.clearAllComments',function(){
 });
 
 $(document).on('click','.clearAnswers',function(){
-    id = $(this).data("id");
+    var id = $(this).data("id");
     $.ajax({
         type: 'POST',
         url: '/user/readAnswers',
@@ -795,35 +812,27 @@ function getDaysCount(year,month){
     return 33 - new Date(year, month-1, 33).getDate();
 }
 
-$(document).on('change','#my_profile_main .month_birth,#my_profile_main .year_birth',function(){
-    $('.day_birth option').remove();
-    days = getDaysCount($('#my_profile_main .year_birth').val(),$('#my_profile_main .month_birth').val());
-    for(i=1;i<=days;i++){
+function updateBirthDays(profileSelector) {
+    var $profile = $(profileSelector);
+    var $daySelect = $profile.find('.day_birth');
+    var selectedDay = parseInt($daySelect.val(), 10) || 1;
+    var days = getDaysCount($profile.find('.year_birth').val(), $profile.find('.month_birth').val());
+
+    $daySelect.empty();
+    for(var i = 1; i <= days; i++){
         var opt = document.createElement('option');
         opt.value = i;
         opt.innerHTML = i;
-        $('#my_profile_main .day_birth').append(opt);
+        $daySelect.append(opt);
     }
-});
+
+    $daySelect.val(Math.min(selectedDay, days));
+}
 
 $(document).on('change','#my_profile_main .month_birth,#my_profile_main .year_birth',function(){
-    $('.day_birth option').remove();
-    days = getDaysCount($('#my_profile_main .year_birth').val(),$('#my_profile_main .month_birth').val());
-    for(i=1;i<=days;i++){
-        var opt = document.createElement('option');
-        opt.value = i;
-        opt.innerHTML = i;
-        $('#my_profile_main .day_birth').append(opt);
-    }
+    updateBirthDays('#my_profile_main');
 });
 
 $(document).on('change','#profile_main .month_birth,#profile_main .year_birth',function(){
-    $('.day_birth option').remove();
-    days = getDaysCount($('#profile_main .year_birth').val(),$('#profile_main .month_birth').val());
-    for(i=1;i<=days;i++){
-        var opt = document.createElement('option');
-        opt.value = i;
-        opt.innerHTML = i;
-        $('#profile_main .day_birth').append(opt);
-    }
+    updateBirthDays('#profile_main');
 });

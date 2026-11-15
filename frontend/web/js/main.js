@@ -1,14 +1,20 @@
 var slider;
+var sliderResizeTimer;
+var sliderLayout;
 $(document).ready(function(){
     // Банер застарілого браузера вимкнено, тож жодних перевірок outdatedBrowser не запускаємо.
     initSliderHomepage();
     hoverGraphBtn();
     $('.slider_next').click(function(e){
-        slider.goToNextSlide();
+        if (slider) {
+            slider.goToNextSlide();
+        }
         e.preventDefault();
     });
     $('.slider_prev').click(function(e){
-        slider.goToPrevSlide();
+        if (slider) {
+            slider.goToPrevSlide();
+        }
         e.preventDefault();
     });
     $('.share_icon').click(function(){
@@ -17,48 +23,55 @@ $(document).ready(function(){
     toggleGraph();
     animationForZilla();
     openCloseRulesBlock();
-})
+});
 $(window).resize(function(){
-	if($('.slider').length){		
-    	if (slider) {
-            slider.destroySlider();
-        }
-    	initSliderHomepage();
-	}
-})
-function initSliderHomepage() {
-    var width = window.innerWidth;
-    if(width > 991){
-        slider = $('.slider').bxSlider({
-            slideWidth: 310,
-            minSlides: 1,
-            maxSlides: 3,
-            moveSlides: 1,
-            pager: false,
-            controls: false,
-            slideMargin: 20
-        });
-    } else if ( 768 < width && width < 991){
-        slider =$('.slider').bxSlider({
-            slideWidth: 310,
-            minSlides: 1,
-            maxSlides: 2,
-            moveSlides: 1,
-            pager: false,
-            controls: false,
-            slideMargin: 20
-        });
-    } else if (width < 768) {
-        slider = $('.slider').bxSlider({
-            slideWidth: 310,
-            minSlides: 1,
-            maxSlides: 1,
-            moveSlides: 1,
-            pager: false,
-            controls: false,
-            slideMargin: 0
-        });
+    clearTimeout(sliderResizeTimer);
+    sliderResizeTimer = setTimeout(initSliderHomepage, 150);
+});
+
+function getSliderLayout(width) {
+    if (width >= 992) {
+        return {maxSlides: 3, slideMargin: 20};
     }
+
+    if (width >= 768) {
+        return {maxSlides: 2, slideMargin: 20};
+    }
+
+    return {maxSlides: 1, slideMargin: 0};
+}
+
+function initSliderHomepage() {
+    var $slider = $('.slider');
+    if (!$slider.length || typeof $.fn.bxSlider !== 'function') {
+        return;
+    }
+
+    var nextLayout = getSliderLayout(window.innerWidth);
+    var nextLayoutKey = nextLayout.maxSlides + ':' + nextLayout.slideMargin;
+
+    // Не перестворюємо bxSlider, якщо resize не перетнув адаптивний breakpoint.
+    if (slider && sliderLayout === nextLayoutKey) {
+        if (typeof slider.redrawSlider === 'function') {
+            slider.redrawSlider();
+        }
+        return;
+    }
+
+    if (slider) {
+        slider.destroySlider();
+    }
+
+    slider = $slider.bxSlider({
+        slideWidth: 310,
+        minSlides: 1,
+        maxSlides: nextLayout.maxSlides,
+        moveSlides: 1,
+        pager: false,
+        controls: false,
+        slideMargin: nextLayout.slideMargin
+    });
+    sliderLayout = nextLayoutKey;
 }
 function hoverGraphBtn(){
     $('.chosen_graph_b').hover(function(){
@@ -75,6 +88,13 @@ function toggleGraph() {
         // Оновлюємо не лише оформлення, а й доступний стан групи кнопок для допоміжних технологій.
         graphLink.closest('.inner_chosen_graph').find('button').removeClass('active').attr('aria-pressed', 'false');
 		graphLink.addClass('active').attr('aria-pressed', 'true');
+
+        // На окремій сторінці опитування фільтри отримують актуальні дані через AJAX.
+        // Не малюємо той самий графік удруге зі старими початковими даними.
+        if (pollBlock.hasClass('poll_view_page')) {
+            chartWrapper.show();
+            return;
+        }
 
         if (chartBox.length && typeof renderChart === 'function') {
             try {
@@ -94,7 +114,6 @@ function toggleGraph() {
 }
 function animationForZilla() {
     if(navigator.userAgent.search(/Firefox/) > -1){
-    	console.log('asdasdlkjasldk');
         var elementChosen, elementBg;
         $('.chosen_graph_b span button').each(function(){
             if($(this).hasClass('pie_chart active')) {

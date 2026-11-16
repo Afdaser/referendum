@@ -3,35 +3,26 @@
     <div class="row">
         <div class="slider_top_b">
             <div class="slider_controls">
-                <a class="slider_next" href="#"><?php echo Yii::t("poll", 'Next'); ?></a>
-                <a class="slider_prev" href="#"><?php echo Yii::t("poll", 'Prev'); ?></a>
+                <a class="slider_next" href="#"><?= Yii::t('poll', 'Next') ?></a>
+                <a class="slider_prev" href="#"><?= Yii::t('poll', 'Prev') ?></a>
             </div>
             <div class="slider">
-                <?php foreach ($activePolls as $poll): ?>
-                    <div class="slide">
-                        <div class="inner_slide_b">
-                            <div class="item_normal">
-                                <?php // Тримаємо посилання на один рядок, щоб HTML у вихідному коді сторінки був компактнішим і читабельнішим. ?>
-                                <a class="poll_title_link" href="<?php echo $poll->url; ?>"><?php echo $poll->title; ?></a>
+<?php foreach ($activePolls as $poll): ?>
+                <div class="slide">
+                    <div class="inner_slide_b">
+                        <div class="item_normal">
+                            <a class="poll_title_link" href="<?= $poll->url ?>"><?= $poll->title ?></a>
+                        </div>
+                        <div class="item_hover clearfix">
+                            <div class="left_info_b">
+                                <span class="lock_item"></span>
+                                <span class="rating_text_left_info"><span class="caret_top"></span><?= $poll->rating ?><span class="caret_down"></span></span>
                             </div>
-                            <?php // Інформаційний шар наводить статистику і не блокує взаємодію з посиланням на назву. ?>
-                            <div class="item_hover clearfix">
-                                <div class="left_info_b">
-                                    <span class="lock_item"></span>
-                                    <span class="rating_text_left_info">
-                                        <span class="caret_top"></span>
-                                        <?php echo $poll->rating; ?>
-                                        <span class="caret_down"></span>
-                                    </span>
-                                </div>
-                                <div class="middle_text_info">
-                                    <?php // Тримаємо обидва рядки статистики максимально щільно, без зайвих переносів/відступів у HTML-виводі. ?>
-                                    <?php echo Yii::t("poll", 'коментарів'); ?>: <?php echo count($poll->pollComments); ?><br><?php echo Yii::t("poll", 'голосів'); ?>: <?php echo $poll->countPollOptionsVoters; ?>
-                                </div>
-                            </div>
+                            <div class="middle_text_info"><?= Yii::t('poll', 'коментарів') ?>: <?= count($poll->pollComments) ?><br><?= Yii::t('poll', 'голосів') ?>: <?= $poll->countPollOptionsVoters ?></div>
                         </div>
                     </div>
-                <?php endforeach; ?>
+                </div>
+<?php endforeach; ?>
             </div>
         </div>
     </div>

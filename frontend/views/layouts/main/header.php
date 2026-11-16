@@ -9,6 +9,10 @@ use yii\widgets\ActiveForm;
 /** @var $this Controller */
 $headerLoginModel = Yii::$app->user->isGuest ? new LoginForm() : null;
 $isHomePage = Yii::$app->request->url == '/';
+$formatLoginField = static function ($field): string {
+    $field->template = "    {input}\n    {error}";
+    return '                    ' . str_replace("\n", "\n                    ", (string) $field);
+};
 ?>
 <header class="header">
     <div class="container">
@@ -60,35 +64,44 @@ $isHomePage = Yii::$app->request->url == '/';
                     <div class="modal_title"><?= Html::encode(Yii::t('main', 'Авторизація')) ?></div>
                 </div>
                 <div class="modal-body header_login_modal_body">
-<?php $headerLoginForm = ActiveForm::begin([
+<?php ob_start(); $headerLoginForm = ActiveForm::begin([
     'id' => 'header-login-form',
     'action' => Url::toRoute('/site/login'),
 ]); echo "\n"; ?>
-                    <?= $headerLoginForm->field($headerLoginModel, 'username', [
+<?= $formatLoginField($headerLoginForm->field($headerLoginModel, 'username', [
                         'inputOptions' => [
                             'autofocus' => false,
                             'class' => 'custom_input_auth',
                             'placeholder' => Yii::t('main', 'UserName'),
                             'id' => 'header-loginform-username',
                         ],
-                    ])->textInput()->label(false) ?>
-                    <?= $headerLoginForm->field($headerLoginModel, 'password', [
+                    ])->textInput()->label(false)) . "\n" ?>
+<?= $formatLoginField($headerLoginForm->field($headerLoginModel, 'password', [
                         'inputOptions' => [
                             'autofocus' => false,
                             'class' => 'custom_input_auth',
                             'placeholder' => Yii::t('main', 'Password'),
                             'id' => 'header-loginform-password',
                         ],
-                    ])->passwordInput()->label(false) ?>
+                    ])->passwordInput()->label(false)) . "\n" ?>
                     <div class="btn_block clearfix">
                         <?= Html::submitButton(Yii::t('main', 'Вхід'), [
                             'class' => 'login',
                             'name' => 'login-button',
                             'id' => 'headerLoginBtn',
-                        ]) ?>
+                        ]) . "\n" ?>
                         <a href="#" class="toggle_modal_registrtion"><?= Html::encode(Yii::t('main', 'Реєстрація')) ?></a>
                     </div>
-<?php ActiveForm::end(); echo "\n"; ?>
+<?php
+ActiveForm::end();
+$formHtml = ob_get_clean();
+$formHtml = preg_replace(
+    ['/^<form\b/m', '/^<input type="hidden"/m', '/^<\/form>$/m'],
+    ['                    <form', '                        <input type="hidden"', '                    </form>'],
+    $formHtml
+);
+echo $formHtml . "\n";
+?>
                     <div class="refresh_password_block_for_ankor">
                         <a href="<?= Url::toRoute('/user/passwordRecovery') ?>"><?= Html::encode(Yii::t('user', 'Забули пароль?')) ?></a>
                     </div>

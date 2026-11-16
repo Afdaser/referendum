@@ -94,50 +94,34 @@ class PageMetaData extends BaseObject {
     }
 
     public function getMetaDescriptionHtml() {
-        //         <meta name="description" content="Page description">
         if (!empty($this->data['description'])) {
             $safeDescription = $this->sanitizeMetaValue($this->data['description']);
-            return <<<HTML_META_DESCRIPTION
-<meta name="description" content="{$safeDescription}">
-
-HTML_META_DESCRIPTION;
+            return '<meta name="description" content="' . $safeDescription . '">';
         }
     }
 
     public function getRobotsHtml() {
-        // <meta name="robots" content="index, follow">
         if (!empty($this->data['robots'])) {
             $safeRobots = $this->sanitizeMetaValue($this->data['robots']);
-            return <<<HTML_ROBOTS
-<meta name="robots" content="{$safeRobots}">
-
-HTML_ROBOTS;
+            return '<meta name="robots" content="' . $safeRobots . '">';
         }
     }
 
     public function getFaviconHtml() {
-
-        return <<<HTML_FAVICON
-        <!-- Favicons + Touch Icons
-        ================================================== -->
-        <link rel="icon" href="/img/favicons/favicon.ico" type="image/x-icon">
-        <link rel="apple-touch-icon" sizes="76x76" href="/img/favicons/apple-touch-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="/img/favicons/apple-touch-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="/img/favicons/apple-touch-icon-152x152.png">
-HTML_FAVICON;
+        return '<link rel="icon" href="/img/favicons/favicon.ico" type="image/x-icon">';
     }
 
     public function getOpenGraphHtml() {
-        $dataHtml = '';
+        $tags = [];
         foreach ($this->meta[self::OG] as $key => $value) {
             if (!empty($value)) {
                 // Екранування уніфіковане: одна функція для всіх значень мета-тегів.
                 $safeKey = $this->sanitizeMetaValue($key);
                 $safeValue = $this->sanitizeMetaValue($value);
-                $dataHtml .= '<meta property="og:' . $safeKey . '" content="' . $safeValue . '">' . "\n";
+                $tags[] = '<meta property="og:' . $safeKey . '" content="' . $safeValue . '">';
             }
         }
-        return $dataHtml;
+        return implode("\n    ", $tags);
     }
 
     public function establishAuto() {

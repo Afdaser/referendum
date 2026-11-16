@@ -108,59 +108,16 @@ if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id ==
                     <?= $this->render('main/right_column'); ?>
                 </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="top_banner_b">
-                        <?php /* OLD.adsbygoogle :
-                          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                          <?php /* /OLD.adsbygoogle */ ?>
-                        <!-- bot -->
-<?php if(YII_ENV == 'prod'): ?>
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-3234808971320300"
-                             data-ad-slot="5039462279"
-                             data-ad-format="auto"></ins>
-<?php else: ?>
-                        <div <?= (YII_ENV == 'dev') ? ' style="border:2px dotted red;"' : '' ?>
-                            <h4>adsbygoogle</h4>
-                            data-ad-client="ca-pub-3234808971320300"<br>
-                             data-ad-slot="5039462279"
-                        </div>
-<?php endif; ?>
-
-                             <?php /* OLD.adsbygoogle :
-                               <script>
-                               (adsbygoogle = window.adsbygoogle || []).push({});
-                               </script>
-                               <?php /* /OLD.adsbygoogle */ ?>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-<?php
-// Перевіряємо, чи користувач на головній сторінці (site/index) або на головній сторінці піддомену.
-// Додаємо умову, щоб SEO-текст показувався лише на першій сторінці пагінації.
-if ($isMainIndexPage) :
-?>
-    <div class="top_banner_b">
-        <?php
-        // Якщо категорія 'hot' — показуємо головний SEO-текст з адмінки для домену/піддомену.
-        if (Yii::$app->params['category'] == 'hot') {
-            // Показуємо лише SEO-текст: заголовок перенесли у верхню частину сторінки.
-            $mainPageText = $this->params['mainPageText'] ?? '';
-            if ($mainPageText !== '') {
-                echo $mainPageText;
-            }
-        }
-        ?>
-    </div>
-<?php endif; ?>
-
-                </div>
+<?php if (YII_ENV == 'prod'): ?>
+    <div class="container">
+        <div class="row">
+            <div class="top_banner_b">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3234808971320300" data-ad-slot="5039462279" data-ad-format="auto"></ins>
             </div>
         </div>
+    </div>
+<?php endif; ?>
+<?= $this->params['mainPageSeoContent'] ?? '' ?>
 <?= $this->render('main/footer'); ?>
 <?= $this->render('main/cookie-consent'); ?>
 <?php $this->endBody() ?>

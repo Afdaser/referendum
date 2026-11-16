@@ -84,9 +84,11 @@ if (!empty($poll->pollLanguage)) {
                                     <?php foreach ($chartTypes as $chartType): ?>
                                         <?php $active = (int) $poll->result_type === $chartType[2] || (!$poll->result_type && $chartType[2] === 1); ?>
                                         <button type="button" class="<?php echo $chartType[0] . ($active ? ' active' : ''); ?>" data-id="<?php echo $chartType[1]; ?>" aria-label="<?php echo $chartType[3]; ?>" title="<?php echo $chartType[3]; ?>" aria-pressed="<?php echo $active ? 'true' : 'false'; ?>">
-                                            <?php foreach ($chartIcons as $chartIcon): ?>
-                                                <span class="<?php echo $chartIcon; ?>"></span>
-                                            <?php endforeach; ?>
+                                            <?php if ($active): ?>
+                                                <?php foreach ($chartIcons as $chartIcon): ?>
+                                                    <span class="<?php echo $chartIcon; ?>"></span>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </button>
                                     <?php endforeach; ?>
                                 </span>

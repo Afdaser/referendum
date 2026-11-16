@@ -68,12 +68,14 @@ function hoverGraphBtn(){
 function toggleGraph() {
 	$('.inner_chosen_graph button').click(function(){
         var graphLink = $(this);
+        var chartButtons = graphLink.closest('.inner_chosen_graph').find('button');
+        chartButtons.find('span').appendTo(graphLink);
         var pollBlock = graphLink.closest('.poll_block');
         var chartBox = pollBlock.find('.inner_container_graph[data-chart-config]').first();
         var chartWrapper = chartBox.closest('.container_graph');
 
         // Оновлюємо не лише оформлення, а й доступний стан групи кнопок для допоміжних технологій.
-        graphLink.closest('.inner_chosen_graph').find('button').removeClass('active').attr('aria-pressed', 'false');
+        chartButtons.removeClass('active').attr('aria-pressed', 'false');
 		graphLink.addClass('active').attr('aria-pressed', 'true');
 
         if (chartBox.length && typeof renderChart === 'function') {
@@ -122,6 +124,10 @@ function animationForZilla() {
             }
         });
         $(".chosen_graph_b").bind("DOMSubtreeModified", function() {
+            elementChosen = $(this).find('button.active');
+            elementBg = elementChosen.hasClass('pie_chart') ? 'pie_chart'
+                : elementChosen.hasClass('horizontal_b_chart') ? 'horizontal_chart'
+                : elementChosen.hasClass('vertical_b_chart') ? 'vertical_chart' : null;
             if(!$(this).hasClass('animated_b')) {
                 elementChosen.css({
                     'background-image': elementBg ? 'url(../img/layout/'+elementBg+'_white.png)' : ''

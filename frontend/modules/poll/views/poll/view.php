@@ -178,62 +178,57 @@ $chartIcons = ['pie_chart_img', 'vertical_chart_img', 'horizontal_chart_img', 'l
                     <?php if (!$guestSamplePending): ?>
                     <div class="show_voices_b">
                         <div class="title_show_voice clearfix">
-                            <span class="toggle_b collapsed" data-toggle="collapse" data-target=".for_collapsing">
-                                <?= Yii::t('poll', 'Показати голоси'); ?>
-                                <i class="fa fa-angle-up"></i>
-                            </span>
+                            <span class="toggle_b collapsed" data-toggle="collapse" data-target=".for_collapsing"><?= Yii::t('poll', 'Показати голоси') ?> <i class="fa fa-angle-up"></i></span>
                             <span class="right_clear_btn">
-                                <?php // Кнопка очищає фільтри на поточній сторінці й не створює фіктивного посилання для роботів. ?>
-                                <button type="button" class="clear_btn" aria-label="<?= Yii::t('poll', 'Очистити фільтри голосів'); ?>" title="<?= Yii::t('poll', 'Очистити фільтри голосів'); ?>">
+                                <button type="button" class="clear_btn" aria-label="<?= Yii::t('poll', 'Очистити фільтри голосів') ?>" title="<?= Yii::t('poll', 'Очистити фільтри голосів') ?>">
                                     <i class="clear_btn_ico" aria-hidden="true"></i>
-                                    <span><?= Yii::t('poll', 'Очистити'); ?></span>
+                                    <span><?= Yii::t('poll', 'Очистити') ?></span>
                                 </button>
                             </span>
                         </div>
                         <div class="for_collapsing collapse">
                             <div class="select_blocks select_blocks--with-region">
-                                <?php // Підписи та aria-label пояснюють призначення кожного фільтра користувачам і роботам. ?>
                                 <label class="item_show">
-                                    <span><?= Yii::t('poll', 'Стать'); ?></span>
-                                    <select class="gender" aria-label="<?= Yii::t('poll', 'Фільтр голосів за статтю'); ?>">
-                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <?php $sexes = User::getUserSexList(); ?>
-                                        <?php foreach ($sexes as $index => $sex): ?>
-                                            <option value="<?= $index; ?>"><?= $sex; ?></option>
-                                        <?php endforeach; ?>
+                                    <span><?= Yii::t('poll', 'Стать') ?></span>
+                                    <select class="gender" aria-label="<?= Yii::t('poll', 'Фільтр голосів за статтю') ?>">
+                                        <option value="0"><?= Yii::t('poll', 'Всі') ?></option>
+<?php $sexes = User::getUserSexList(); ?>
+<?php foreach ($sexes as $index => $sex): ?>
+                                        <option value="<?= $index ?>"><?= $sex ?></option>
+<?php endforeach; ?>
                                     </select>
                                 </label>
                                 <label class="item_show">
-                                    <span><?= Yii::t('poll', 'Вік'); ?></span>
-                                    <select class="age" aria-label="<?= Yii::t('poll', 'Фільтр голосів за віком'); ?>">
-                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <?php $ages = User::getUserAgeIntervalList(); ?>
-                                        <?php foreach ($ages as $index => $age): ?>
-                                            <option value="<?= $index; ?>"><?= $age; ?></option>
-                                        <?php endforeach; ?>
+                                    <span><?= Yii::t('poll', 'Вік') ?></span>
+                                    <select class="age" aria-label="<?= Yii::t('poll', 'Фільтр голосів за віком') ?>">
+                                        <option value="0"><?= Yii::t('poll', 'Всі') ?></option>
+<?php $ages = User::getUserAgeIntervalList(); ?>
+<?php foreach ($ages as $index => $age): ?>
+                                        <option value="<?= $index ?>"><?= $age ?></option>
+<?php endforeach; ?>
                                     </select>
                                 </label>
                                 <label class="item_show">
-                                    <span><?= Yii::t('poll', 'Регіон'); ?></span>
-                                    <select class="vote-region" aria-label="<?= Yii::t('poll', 'Регіон'); ?>">
-                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <?php foreach ($poll->getVoteRegions($locationCountryCode) as $voteRegion): ?>
-                                            <option value="<?= (int) $voteRegion['id']; ?>"><?= \yii\helpers\Html::encode($voteRegion['name'] . ($locationCountryLabel !== null ? ', ' . $locationCountryLabel : ' — ' . $voteRegion['country_name'])); ?></option>
-                                        <?php endforeach; ?>
+                                    <span><?= Yii::t('poll', 'Регіон') ?></span>
+                                    <select class="vote-region" aria-label="<?= Yii::t('poll', 'Регіон') ?>">
+                                        <option value="0"><?= Yii::t('poll', 'Всі') ?></option>
+<?php foreach ($poll->getVoteRegions($locationCountryCode) as $voteRegion): ?>
+                                        <option value="<?= (int) $voteRegion['id'] ?>"><?= Html::encode($voteRegion['name'] . ($locationCountryLabel !== null ? ', ' . $locationCountryLabel : ' — ' . $voteRegion['country_name'])) ?></option>
+<?php endforeach; ?>
                                     </select>
                                 </label>
                                 <label class="item_show">
-                                    <span><?= Yii::t('poll', 'Реєстрація'); ?></span>
-                                    <select class="registration" aria-label="<?= Yii::t('poll', 'Фільтр голосів за реєстрацією'); ?>">
-                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <option value="1"><?= Yii::t('poll', 'Зареєстровані'); ?></option>
-                                        <option value="2"><?= Yii::t('poll', 'Незареєстровані'); ?></option>
+                                    <span><?= Yii::t('poll', 'Реєстрація') ?></span>
+                                    <select class="registration" aria-label="<?= Yii::t('poll', 'Фільтр голосів за реєстрацією') ?>">
+                                        <option value="0"><?= Yii::t('poll', 'Всі') ?></option>
+                                        <option value="1"><?= Yii::t('poll', 'Зареєстровані') ?></option>
+                                        <option value="2"><?= Yii::t('poll', 'Незареєстровані') ?></option>
                                     </select>
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <?php endif; ?>
+<?php endif; ?>
                     <div class="bottom_poll_b clearfix">
                         <span class="item_bottom_poll author-block" itemprop="author" itemscope itemtype="https://schema.org/Person">
                             <?= Yii::t('poll', 'Користувач'); ?>:

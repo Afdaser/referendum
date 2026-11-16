@@ -146,35 +146,27 @@ JS
                             <?php endforeach; ?>
                         </div>
                         <?php if (!$guestSamplePending): ?>
+                        <?php
+                        $chartTypes = [
+                            ['pie_chart', 'pie', 3, Yii::t('poll', 'Показати кругову діаграму')],
+                            ['horizontal_b_chart', 'bar', 1, Yii::t('poll', 'Показати горизонтальний графік')],
+                            ['vertical_b_chart', 'column', 2, Yii::t('poll', 'Показати вертикальний графік')],
+                            ['line_chart', 'line', 4, Yii::t('poll', 'Показати лінійний графік')],
+                        ];
+                        // CSS-анімація перемикає ці чотири іконки всередині активної кнопки.
+                        $chartIcons = ['pie_chart_img', 'vertical_chart_img', 'horizontal_chart_img', 'line_chart_img'];
+                        ?>
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
                                 <span class="inner_chosen_graph" role="group" aria-label="<?= Yii::t('poll', 'Тип діаграми результатів'); ?>">
-                                    <?php // Семантичні кнопки не виглядають для пошукового робота як навігаційні посилання. ?>
-                                    <?php // Активний перемикач синхронізуємо з result_type та повідомляємо про вибір через aria-pressed. ?>
-                                    <button type="button" class="pie_chart <?= ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie" aria-label="<?= Yii::t('poll', 'Показати кругову діаграму'); ?>" title="<?= Yii::t('poll', 'Показати кругову діаграму'); ?>" aria-pressed="<?= ($poll->result_type == 3) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
-                                    <button type="button" class="horizontal_b_chart <?= (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar" aria-label="<?= Yii::t('poll', 'Показати горизонтальний графік'); ?>" title="<?= Yii::t('poll', 'Показати горизонтальний графік'); ?>" aria-pressed="<?= (!$poll->result_type || $poll->result_type == 1) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
-                                    <button type="button" class="vertical_b_chart <?= ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column" aria-label="<?= Yii::t('poll', 'Показати вертикальний графік'); ?>" title="<?= Yii::t('poll', 'Показати вертикальний графік'); ?>" aria-pressed="<?= ($poll->result_type == 2) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
-                                    <button type="button" class="line_chart <?= ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line" aria-label="<?= Yii::t('poll', 'Показати лінійний графік'); ?>" title="<?= Yii::t('poll', 'Показати лінійний графік'); ?>" aria-pressed="<?= ($poll->result_type == 4) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
+                                    <?php foreach ($chartTypes as $chartType): ?>
+                                        <?php $active = (int) $poll->result_type === $chartType[2] || (!$poll->result_type && $chartType[2] === 1); ?>
+                                        <button type="button" class="<?= $chartType[0] . ($active ? ' active' : ''); ?>" data-id="<?= $chartType[1]; ?>" aria-label="<?= $chartType[3]; ?>" title="<?= $chartType[3]; ?>" aria-pressed="<?= $active ? 'true' : 'false'; ?>">
+                                            <?php foreach ($chartIcons as $chartIcon): ?>
+                                                <span class="<?= $chartIcon; ?>"></span>
+                                            <?php endforeach; ?>
+                                        </button>
+                                    <?php endforeach; ?>
                                 </span>
                             </span>
                         </div>

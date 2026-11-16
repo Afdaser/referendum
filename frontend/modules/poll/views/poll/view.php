@@ -143,38 +143,37 @@ JS
                     </div>
                     <div class="top_poll_b clearfix bottom_space_for_chart poll_view_footer">
                         <div class="poll_view_tags">
-                            <?php foreach ($poll->tags as $pollTag) : ?>
-                                <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name; ?></a>
-                            <?php endforeach; ?>
+<?php foreach ($poll->tags as $pollTag): ?>
+                            <a href="<?= $pollTag->url ?>" class="link_poll">#<?= $pollTag->name ?></a>
+<?php endforeach; ?>
                         </div>
-                        <?php if (!$guestSamplePending): ?>
-                        <?php
-                        $chartTypes = [
-                            ['pie_chart', 'pie', 3, Yii::t('poll', 'Показати кругову діаграму')],
-                            ['horizontal_b_chart', 'bar', 1, Yii::t('poll', 'Показати горизонтальний графік')],
-                            ['vertical_b_chart', 'column', 2, Yii::t('poll', 'Показати вертикальний графік')],
-                            ['line_chart', 'line', 4, Yii::t('poll', 'Показати лінійний графік')],
-                        ];
-                        // CSS-анімація перемикає ці чотири іконки всередині активної кнопки.
-                        $chartIcons = ['pie_chart_img', 'vertical_chart_img', 'horizontal_chart_img', 'line_chart_img'];
-                        ?>
+<?php if (!$guestSamplePending): ?>
+<?php
+$chartTypes = [
+    ['pie_chart', 'pie', 3, Yii::t('poll', 'Показати кругову діаграму')],
+    ['horizontal_b_chart', 'bar', 1, Yii::t('poll', 'Показати горизонтальний графік')],
+    ['vertical_b_chart', 'column', 2, Yii::t('poll', 'Показати вертикальний графік')],
+    ['line_chart', 'line', 4, Yii::t('poll', 'Показати лінійний графік')],
+];
+$chartIcons = ['pie_chart_img', 'vertical_chart_img', 'horizontal_chart_img', 'line_chart_img'];
+?>
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
-                                <span class="inner_chosen_graph" role="group" aria-label="<?= Yii::t('poll', 'Тип діаграми результатів'); ?>">
-                                    <?php foreach ($chartTypes as $chartType): ?>
-                                        <?php $active = (int) $poll->result_type === $chartType[2] || (!$poll->result_type && $chartType[2] === 1); ?>
-                                        <button type="button" class="<?= $chartType[0] . ($active ? ' active' : ''); ?>" data-id="<?= $chartType[1]; ?>" aria-label="<?= $chartType[3]; ?>" title="<?= $chartType[3]; ?>" aria-pressed="<?= $active ? 'true' : 'false'; ?>">
-                                            <?php if ($active): ?>
-                                                <?php foreach ($chartIcons as $chartIcon): ?>
-                                                    <span class="<?= $chartIcon; ?>"></span>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
-                                        </button>
-                                    <?php endforeach; ?>
+                                <span class="inner_chosen_graph" role="group" aria-label="<?= Yii::t('poll', 'Тип діаграми результатів') ?>">
+<?php foreach ($chartTypes as $chartType): ?>
+<?php $active = (int) $poll->result_type === $chartType[2] || (!$poll->result_type && $chartType[2] === 1); ?>
+                                    <button type="button" class="<?= $chartType[0] . ($active ? ' active' : '') ?>" data-id="<?= $chartType[1] ?>" aria-label="<?= $chartType[3] ?>" title="<?= $chartType[3] ?>" aria-pressed="<?= $active ? 'true' : 'false' ?>">
+<?php if ($active): ?>
+<?php foreach ($chartIcons as $chartIcon): ?>
+                                        <span class="<?= $chartIcon ?>"></span>
+<?php endforeach; ?>
+<?php endif; ?>
+                                    </button>
+<?php endforeach; ?>
                                 </span>
                             </span>
                         </div>
-                        <?php endif; ?>
+<?php endif; ?>
                     </div>
                     <?php if (!$guestSamplePending): ?>
                     <div class="show_voices_b">

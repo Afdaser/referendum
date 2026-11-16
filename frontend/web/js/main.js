@@ -95,50 +95,21 @@ function toggleGraph() {
 	});
 }
 function animationForZilla() {
-    if(navigator.userAgent.search(/Firefox/) > -1){
-    	console.log('asdasdlkjasldk');
-        var elementChosen, elementBg;
-        $('.chosen_graph_b span button').each(function(){
-            if($(this).hasClass('pie_chart active')) {
-                elementBg = 'pie_chart';
-                elementChosen = $(this);
-                $(this).css({
-                    'background-image' : 'none'
-                });
-            } else if($(this).hasClass('horizontal_b_chart active')) {
-                elementBg = 'horizontal_chart';
-                elementChosen = $(this);
-                $(this).css({
-                    'background-image' : 'none'
-                });
-            } else if ($(this).hasClass('vertical_b_chart active')) {
-                elementBg = 'vertical_chart';
-                elementChosen = $(this);
-                $(this).css({
-                    'background-image' : 'none'
-                });
-            } else if ($(this).hasClass('line_chart active')) {
-                // Для нового лінійного типу лишаємо CSS-іконку, бо окремого PNG немає.
-                elementBg = null;
-                elementChosen = $(this);
-            }
-        });
-        $(".chosen_graph_b").bind("DOMSubtreeModified", function() {
-            elementChosen = $(this).find('button.active');
-            elementBg = elementChosen.hasClass('pie_chart') ? 'pie_chart'
-                : elementChosen.hasClass('horizontal_b_chart') ? 'horizontal_chart'
-                : elementChosen.hasClass('vertical_b_chart') ? 'vertical_chart' : null;
-            if(!$(this).hasClass('animated_b')) {
-                elementChosen.css({
-                    'background-image': elementBg ? 'url(../img/layout/'+elementBg+'_white.png)' : ''
-                });
-            } else {
-                elementChosen.css({
-                    'background-image' : 'none'
-                });
-            }
-        });
+    if (navigator.userAgent.search(/Firefox/) === -1) return;
+
+    function syncIcon() {
+        var graph = $(this);
+        graph.find('button').css('background-image', '');
+        if (graph.hasClass('animated_b')) {
+            graph.find('button.active').css('background-image', 'none');
+        }
     }
+
+    $('.chosen_graph_b').each(syncIcon).on('mouseenter mouseleave', syncIcon);
+    $('.inner_chosen_graph button').on('click', function () {
+        var graph = $(this).closest('.chosen_graph_b');
+        setTimeout(function () { syncIcon.call(graph[0]); }, 0);
+    });
 }
 function openCloseRulesBlock() {
     $('#rules-block').click(function(e){

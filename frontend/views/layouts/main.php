@@ -75,13 +75,11 @@ if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id ==
 </head>
 
 <body class="d-flex flex-column h-100">
-    <?php $this->beginBody() ?>
-    <?php // Віджет шапки рендериться одразу, без зайвих службових коментарів у HTML для краулерів. ?>
-    <?= $this->render('main/header'); ?>
-
-            <div class="sub_header_slider_b">
-                <?= WTopPollsSlider::widget(); ?>
-            </div>
+<?php $this->beginBody() ?>
+    <?= $this->render('main/header') ?>
+    <div class="sub_header_slider_b">
+<?= '        ' . str_replace("\n", "\n        ", trim(WTopPollsSlider::widget())) . "\n" ?>
+    </div>
             <div class="container clearfix">
                 <div class="row clearfix">
                     <div class="top_banner_b" style="height:auto !important;">

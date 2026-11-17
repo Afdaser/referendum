@@ -504,35 +504,21 @@ class Poll extends ActiveRecord
     /** Age groups represented by votes in this poll. */
     public function getVotedAgeIntervals(): array
     {
-        $guestIntervals = (new Query())->select('v.age_interval')->distinct()
-            ->from(['v' => PollVote::tableName()])
-            ->where(['v.poll_id' => $this->id, 'v.is_guest' => 1])
-            ->andWhere(['not', ['v.age_interval' => null]])
-            ->column(static::getDb());
-
-        $registeredAges = (new Query())
-            ->select(['age' => new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE())')])->distinct()
-            ->from(['v' => PollVote::tableName()])
-            ->innerJoin(['p' => Profile::tableName()], 'p.user_id = v.user_id')
-            ->where(['v.poll_id' => $this->id, 'v.is_guest' => 0])
-            ->andWhere(['not', ['p.date_birthday' => null]])
-            ->column(static::getDb());
-
-        $available = array_fill_keys(array_map('intval', $guestIntervals), true);
-        foreach ($registeredAges as $age) {
-            if ($age === null) {
-                continue;
-            }
-            foreach (User::getUserAgeIntervalList() as $index => $label) {
-                $bounds = User::getAgesByIntervalIndex($index);
-                if ($age >= $bounds['min'] && $age <= $bounds['max']) {
-                    $available[$index] = true;
-                    break;
-                }
-            }
+        $intervals = User::getUserAgeIntervalList();
+        $age = 'TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE())';
+        $cases = [];
+        foreach ($intervals as $index => $label) {
+            $bounds = User::getAgesByIntervalIndex($index);
+            $cases[] = "WHEN $age BETWEEN {$bounds['min']} AND {$bounds['max']} THEN $index";
         }
+        $expression = 'CASE WHEN v.is_guest = 1 THEN v.age_interval '
+            . implode(' ', $cases) . ' END';
+        $voted = (new Query())->select(['age_interval' => new Expression($expression)])->distinct()
+            ->from(['v' => PollVote::tableName()])
+            ->leftJoin(['p' => Profile::tableName()], 'p.user_id = v.user_id AND v.is_guest = 0')
+            ->where(['v.poll_id' => $this->id])->column(static::getDb());
 
-        return array_intersect_key(User::getUserAgeIntervalList(), $available);
+        return array_intersect_key($intervals, array_fill_keys($voted, true));
     }
 
     private function getVotedAgesText(): string
@@ -1667,10 +1653,10 @@ class Poll extends ActiveRecord
             return [];
         }
 
-        $faqTemplate = implode(' ', array_map(static function ($faq) {
-            return (string) $faq->question . ' ' . (string) $faq->answer;
+        $template = implode(' ', array_map(static function ($faq) {
+            return $faq->question . ' ' . $faq->answer;
         }, $faqs));
-        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData(), $faqTemplate);
+        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData(), $template);
         $items = [];
         foreach ($faqs as $faq) {
             $question = strtr((string) $faq->question, $replacements);

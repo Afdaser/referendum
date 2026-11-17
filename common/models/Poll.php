@@ -1610,6 +1610,7 @@ class Poll extends ActiveRecord
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
             '@votes_guest' => 'Кількість голосів від гостей.',
+            '@voted_ages' => 'Вікові групи учасників голосування через кому; якщо вік невідомий — повідомлення про брак даних.',
             '@comments' => 'Кількість коментарів.',
             '@tags' => 'Список тегів із посиланнями.',
             '@tags_plain' => 'Список тегів без посилань.',
@@ -1636,7 +1637,7 @@ class Poll extends ActiveRecord
         }
 
         $infoBlockData = $infoBlockData ?? $this->getStaticInfoBlockData();
-        $replacements = $this->getStaticInfoReplacements($infoBlockData);
+        $replacements = $this->getStaticInfoReplacements($infoBlockData, $staticText->content);
 
         return $this->replaceStaticMetaTokens($staticText->content, $replacements);
     }
@@ -1656,7 +1657,10 @@ class Poll extends ActiveRecord
             return [];
         }
 
-        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData());
+        $faqTemplate = implode(' ', array_map(static function ($faq) {
+            return (string) $faq->question . ' ' . (string) $faq->answer;
+        }, $faqs));
+        $replacements = $this->getStaticInfoReplacements($this->getStaticInfoBlockData(), $faqTemplate);
         $items = [];
         foreach ($faqs as $faq) {
             $question = strtr((string) $faq->question, $replacements);
@@ -1903,11 +1907,11 @@ class Poll extends ActiveRecord
      *
      * @param array $data Дані, які повертає getStaticInfoBlockData().
      */
-    private function getStaticInfoReplacements(array $data): array
+    private function getStaticInfoReplacements(array $data, string $template): array
     {
         $mostPopular = $data['mostPopular'];
 
-        return [
+        $replacements = [
             '@title' => $this->title,
             '@id' => (string) $this->id,
             '@date' => $data['date'],
@@ -1940,6 +1944,15 @@ class Poll extends ActiveRecord
             '@most_popular_votes' => $mostPopular ? (string) $mostPopular['votes'] : '',
             '@most_popular_percent' => $mostPopular ? number_format($mostPopular['percent'], 1) : '',
         ];
+
+        if (strpos($template, '@voted_ages') !== false) {
+            $ages = $this->getVotedAgeIntervals();
+            $replacements['@voted_ages'] = Html::encode($ages
+                ? implode(', ', $ages)
+                : Yii::t('poll', 'Недостатньо даних'));
+        }
+
+        return $replacements;
     }
 
     /**

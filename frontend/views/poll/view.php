@@ -137,8 +137,8 @@ if (!empty($poll->pollLanguage)) {
                                             <label class="item_show">
                                                 <span><?php echo Yii::t('poll', 'Вік'); ?></span>
                                                 <select class="age" aria-label="<?php echo Yii::t('poll', 'Фільтр голосів за віком'); ?>">
-                                                    <?php $ages = $poll->getVotedAgeIntervals(); ?>
-                                                    <option value="0"><?php echo Yii::t('poll', $ages ? 'Всі' : 'Недостатньо даних'); ?></option>
+                                                    <option value="0"><?php echo Yii::t('poll', 'Всі'); ?></option>
+                                                    <?php $ages = User::getUserAgeIntervalList(); ?>
                                                     <?php foreach ($ages as $index => $age): ?>
                                                         <option value="<?php echo $index; ?>"><?php echo $age; ?></option>
                                                     <?php endforeach; ?>

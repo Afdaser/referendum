@@ -1,6 +1,7 @@
 <?php
 
 return array(
+        'Недостатньо даних' => 'For lite data',
         'Регіон' => 'Region',
         'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Registrer deg for å slippe disse trinnene neste gang.',
 

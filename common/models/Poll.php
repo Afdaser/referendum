@@ -501,6 +501,32 @@ class Poll extends ActiveRecord
             ->orderBy(['c.name' => SORT_ASC, 'r.name' => SORT_ASC])->all(static::getDb());
     }
 
+    /** Age groups represented by votes in this poll. */
+    public function getVotedAgeIntervals(): array
+    {
+        $intervals = User::getUserAgeIntervalList();
+        $age = 'TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE())';
+        $cases = [];
+        foreach ($intervals as $index => $label) {
+            $bounds = User::getAgesByIntervalIndex($index);
+            $cases[] = "WHEN $age BETWEEN {$bounds['min']} AND {$bounds['max']} THEN $index";
+        }
+        $expression = 'CASE WHEN v.is_guest = 1 THEN v.age_interval '
+            . implode(' ', $cases) . ' END';
+        $voted = (new Query())->select(['age_interval' => new Expression($expression)])->distinct()
+            ->from(['v' => PollVote::tableName()])
+            ->leftJoin(['p' => Profile::tableName()], 'p.user_id = v.user_id AND v.is_guest = 0')
+            ->where(['v.poll_id' => $this->id])->column(static::getDb());
+
+        return array_intersect_key($intervals, array_fill_keys($voted, true));
+    }
+
+    private function getVotedAgesText(): string
+    {
+        $ages = $this->getVotedAgeIntervals();
+        return $ages ? implode(', ', $ages) : Yii::t('poll', 'Недостатньо даних');
+    }
+
     /*
      * return TRUE if poll is open
      */
@@ -1541,6 +1567,7 @@ class Poll extends ActiveRecord
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
             '@voted_regions' => 'Регіони, з яких є голоси в цьому опитуванні, лише для країни поточного піддомену: назви зі спільного довідника через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих регіонів немає — порожній рядок.',
+            '@voted_ages' => 'Вікові групи учасників голосування через кому; якщо вік невідомий — повідомлення про брак даних.',
             '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
@@ -1579,6 +1606,7 @@ class Poll extends ActiveRecord
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
             '@voted_regions' => self::getStaticMetaTokens()['@voted_regions'],
             '@votes_guest' => 'Кількість голосів від гостей.',
+            '@voted_ages' => self::getStaticMetaTokens()['@voted_ages'],
             '@comments' => 'Кількість коментарів.',
             '@tags' => 'Список тегів із посиланнями.',
             '@tags_plain' => 'Список тегів без посилань.',
@@ -1873,6 +1901,7 @@ class Poll extends ActiveRecord
                     case '@author_id': $value = $this->user_id; break;
                     case '@votes_total': $value = $this->getCountPollOptionsVoters(); break;
                     case '@voted_regions': $value = $this->getVotedRegions(); break;
+                    case '@voted_ages': $value = $this->getVotedAgesText(); break;
                     case '@comments': $value = $this->getCommentsCount(); break;
                     case '@options_count': $value = count($this->pollOptions); break;
                     case '@options_titles':
@@ -1931,6 +1960,9 @@ class Poll extends ActiveRecord
             '@most_popular_percent' => $mostPopular ? number_format($mostPopular['percent'], 1) : '',
         ];
 
+        if (strpos($template, '@voted_ages') !== false) {
+            $replacements['@voted_ages'] = Html::encode($this->getVotedAgesText());
+        }
         if (strpos($template, '@voted_regions') !== false) {
             $replacements['@voted_regions'] = Html::encode($this->getVotedRegions());
         }

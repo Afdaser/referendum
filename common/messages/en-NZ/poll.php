@@ -4,6 +4,7 @@
 
 
 return array(
+        'Недостатньо даних' => 'Insufficient data',
         'У якому регіоні ви проживаєте?' => 'Which region do you live in?',
         'Країна: Нова Зеландія' => 'Country: New Zealand',
         'Оберіть регіон' => 'Choose your region',

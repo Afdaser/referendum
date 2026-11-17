@@ -17,6 +17,9 @@ if (in_array(Yii::$app->controller->id, ['page', 'news'], true)) {
     ]));
 }
 $this->registerCssFile('/css/bootstrap.min.css');
+$page = Yii::$app->page;
+$page->prepare();
+$this->registerCsrfMetaTags();
 
 $locale = Yii::$app->language;
 $pageNumber = (int) Yii::$app->request->get('page', 1);
@@ -26,6 +29,23 @@ $isMainIndexPage = (
     && Yii::$app->controller->action->id === 'index'
     && $isFirstPage
 );
+$rfrndmConfig = [
+    'csrf' => Yii::$app->request->csrfToken,
+    'locale' => Yii::$app->language,
+    'languageId' => Yii::$app->request->languageId,
+    'routes' => [
+        'ajax' => [
+            'registrtion_step_one' => Url::toRoute(['/ajax/modal/registrtion-step-one']),
+        ],
+        'customer' => [
+            'home' => '/home',
+        ],
+    ],
+];
+if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id === 'my-polls') {
+    $rfrndmConfig['routes']['ajax']['create_poll_step_one'] = Url::toRoute(['/ajax/modal/create-poll-step-one']);
+    $rfrndmConfig['routes']['ajax']['poll_form_ajax'] = Url::toRoute(['/ajax/modal/store-poll-form']);
+}
 
 ?>
 <?php $this->beginPage() ?>
@@ -33,78 +53,33 @@ $isMainIndexPage = (
 <html lang="<?= $locale ?>" class="no-js">
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
-    <?= Yii::$app->page->robotsHtml; ?>
-    <?= Yii::$app->page->metaDescriptionHtml; ?>
-
-    <?= Yii::$app->page->prepare(); ?>
-    <?= Yii::$app->page->openGraphHtml; ?>
-    <?php /* = Yii::$app->page->adjustOpenGraph(); /* */ ?>
-
-    <?php if ($isMainIndexPage): ?>
-        <?php
-        // Додаємо hreflang лише для головної сторінки домену або піддомену, без пагінації.
-        ?>
-        <link rel="alternate" hreflang="uk-UA" href="https://ua.referendum.social/" />
-        <link rel="alternate" hreflang="ru-RU" href="https://ru.referendum.social/" />
-        <link rel="alternate" hreflang="nb-NO" href="https://no.referendum.social/" />
-        <link rel="alternate" hreflang="en-US" href="https://en.referendum.social/" />
-        <link rel="alternate" hreflang="en-NZ" href="https://nz.referendum.social/" />
-        <link rel="alternate" hreflang="x-default" href="https://referendum.social/" />
-    <?php endif; ?>
-
     <meta name="viewport" content="width=device-width">
-
-    <?php $this->registerCsrfMetaTags() ?>
-
-    <title><?= Yii::$app->page->title ?></title>
-
-    <?php // AssetBundle формує по одному стандартному посиланню для кожного CSS-файлу. ?>
+    <?= $page->robotsHtml ?>
+    <?= $page->metaDescriptionHtml ?>
+    <title><?= $page->title ?></title>
+    <?= $page->openGraphHtml ?>
+<?php if ($isMainIndexPage): ?>
+    <link rel="alternate" hreflang="uk-UA" href="https://ua.referendum.social/" />
+    <link rel="alternate" hreflang="ru-RU" href="https://ru.referendum.social/" />
+    <link rel="alternate" hreflang="nb-NO" href="https://no.referendum.social/" />
+    <link rel="alternate" hreflang="en-US" href="https://en.referendum.social/" />
+    <link rel="alternate" hreflang="en-NZ" href="https://nz.referendum.social/" />
+    <link rel="alternate" hreflang="x-default" href="https://referendum.social/" />
+<?php endif; ?>
     <?php $this->head() ?>
-
-    <?= Yii::$app->page->faviconHtml ?>
-
-    <?php
-    // Вставляємо індивідуальні скрипти конкретної сторінки без додаткового обгортання,
-    // щоб уникнути вкладених <script>-тегів (напр. для JSON-LD).
-    if (!empty($this->params['pageCustomScripts'])) {
-        echo $this->params['pageCustomScripts'];
-    }
-    ?>
+    <?= $page->faviconHtml ?>
+<?php if (!empty($this->params['pageCustomScripts'])) echo $this->params['pageCustomScripts'] . "\n"; ?>
     <script>
-        <?php
-        // Базові JS-маршрути залишаємо глобально, а маршрути створення опитувань додаємо
-        // тільки для /site/myPolls, де ця функція справді потрібна.
-        $rfrndmConfig = [
-            'csrf' => Yii::$app->request->csrfToken,
-            'locale' => Yii::$app->language,
-            'languageId' => Yii::$app->request->languageId,
-            'routes' => [
-                'ajax' => [
-                    'registrtion_step_one' => Url::toRoute(['/ajax/modal/registrtion-step-one']),
-                ],
-                'customer' => [
-                    'home' => '/home',
-                ],
-            ],
-        ];
-
-        if (Yii::$app->controller->id === 'site' && Yii::$app->controller->action->id === 'my-polls') {
-            $rfrndmConfig['routes']['ajax']['create_poll_step_one'] = Url::toRoute(['/ajax/modal/create-poll-step-one']);
-            $rfrndmConfig['routes']['ajax']['poll_form_ajax'] = Url::toRoute(['/ajax/modal/store-poll-form']);
-        }
-        ?>
         window.rfrndm = <?= json_encode($rfrndmConfig); ?>;
     </script>
 </head>
 
 <body class="d-flex flex-column h-100">
-    <?php $this->beginBody() ?>
-    <?php // Віджет шапки рендериться одразу, без зайвих службових коментарів у HTML для краулерів. ?>
-    <?= $this->render('main/header'); ?>
-
-            <div class="sub_header_slider_b">
-                <?= WTopPollsSlider::widget(); ?>
-            </div>
+<?php $this->beginBody() ?>
+    <?= $this->render('main/header') ?>
+    <div class="sub_header_slider_b">
+<?= '        ' . str_replace("\n", "\n        ", trim(WTopPollsSlider::widget())) . "\n" ?>
+    </div>
             <div class="container clearfix">
                 <div class="row clearfix">
                     <div class="top_banner_b" style="height:auto !important;">
@@ -133,59 +108,16 @@ $isMainIndexPage = (
                     <?= $this->render('main/right_column'); ?>
                 </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="top_banner_b">
-                        <?php /* OLD.adsbygoogle :
-                          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                          <?php /* /OLD.adsbygoogle */ ?>
-                        <!-- bot -->
-<?php if(YII_ENV == 'prod'): ?>
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-3234808971320300"
-                             data-ad-slot="5039462279"
-                             data-ad-format="auto"></ins>
-<?php else: ?>
-                        <div <?= (YII_ENV == 'dev') ? ' style="border:2px dotted red;"' : '' ?>
-                            <h4>adsbygoogle</h4>
-                            data-ad-client="ca-pub-3234808971320300"<br>
-                             data-ad-slot="5039462279"
-                        </div>
-<?php endif; ?>
-
-                             <?php /* OLD.adsbygoogle :
-                               <script>
-                               (adsbygoogle = window.adsbygoogle || []).push({});
-                               </script>
-                               <?php /* /OLD.adsbygoogle */ ?>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="row">
-<?php
-// Перевіряємо, чи користувач на головній сторінці (site/index) або на головній сторінці піддомену.
-// Додаємо умову, щоб SEO-текст показувався лише на першій сторінці пагінації.
-if ($isMainIndexPage) :
-?>
-    <div class="top_banner_b">
-        <?php
-        // Якщо категорія 'hot' — показуємо головний SEO-текст з адмінки для домену/піддомену.
-        if (Yii::$app->params['category'] == 'hot') {
-            // Показуємо лише SEO-текст: заголовок перенесли у верхню частину сторінки.
-            $mainPageText = $this->params['mainPageText'] ?? '';
-            if ($mainPageText !== '') {
-                echo $mainPageText;
-            }
-        }
-        ?>
-    </div>
-<?php endif; ?>
-
-                </div>
+<?php if (YII_ENV == 'prod'): ?>
+    <div class="container">
+        <div class="row">
+            <div class="top_banner_b">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3234808971320300" data-ad-slot="5039462279" data-ad-format="auto"></ins>
             </div>
         </div>
+    </div>
+<?php endif; ?>
+<?= $this->params['mainPageSeoContent'] ?? '' ?>
 <?= $this->render('main/footer'); ?>
 <?= $this->render('main/cookie-consent'); ?>
 <?php $this->endBody() ?>

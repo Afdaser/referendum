@@ -68,40 +68,29 @@ if (!empty($poll->pollLanguage)) {
                                    class="link_poll">#<?= $pollTag->name; ?></a>
 						    <?php endforeach; ?>
                         </div>
+                        <?php
+                        $chartTypes = array(
+                            array('pie_chart', 'pie', 3, Yii::t('poll', 'Показати кругову діаграму')),
+                            array('horizontal_b_chart', 'bar', 1, Yii::t('poll', 'Показати горизонтальний графік')),
+                            array('vertical_b_chart', 'column', 2, Yii::t('poll', 'Показати вертикальний графік')),
+                            array('line_chart', 'line', 4, Yii::t('poll', 'Показати лінійний графік')),
+                        );
+                        // CSS-анімація перемикає ці чотири іконки всередині активної кнопки.
+                        $chartIcons = array('pie_chart_img', 'vertical_chart_img', 'horizontal_chart_img', 'line_chart_img');
+                        ?>
                         <div class="poll_view_chart_toggle">
                             <span class="chosen_graph_b animated_b">
-                                <span class="inner_chosen_graph" role="group" aria-label="<?php echo Yii::t("poll", 'Тип діаграми результатів'); ?>">
-                                    <?php // Додаємо доступні назви: вони потрібні і для скрінрідерів, і як підказки при наведенні. ?>
-                                    <?php $pieChartLabel = Yii::t("poll", 'Показати кругову діаграму'); ?>
-                                    <?php $horizontalChartLabel = Yii::t("poll", 'Показати горизонтальний графік'); ?>
-                                    <?php $verticalChartLabel = Yii::t("poll", 'Показати вертикальний графік'); ?>
-                                    <?php $lineChartLabel = Yii::t("poll", 'Показати лінійний графік'); ?>
-                                    <?php // Семантичні кнопки не створюють фальшивих посилань для пошукових роботів; aria-pressed повідомляє поточний вибір. ?>
-                                    <?php // Кожна кнопка містить усі іконки, щоб активний пункт міг плавно "дихати" між типами графіків. ?>
-                                    <button type="button" class="pie_chart <?php echo ($poll->result_type == 3) ? 'active' : ''; ?>" data-id="pie" aria-label="<?php echo $pieChartLabel; ?>" title="<?php echo $pieChartLabel; ?>" aria-pressed="<?php echo ($poll->result_type == 3) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
-                                    <button type="button" class="horizontal_b_chart <?php echo (!$poll->result_type || $poll->result_type == 1) ? 'active' : ''; ?>" data-id="bar" aria-label="<?php echo $horizontalChartLabel; ?>" title="<?php echo $horizontalChartLabel; ?>" aria-pressed="<?php echo (!$poll->result_type || $poll->result_type == 1) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
-                                    <button type="button" class="vertical_b_chart <?php echo ($poll->result_type == 2) ? 'active' : ''; ?>" data-id="column" aria-label="<?php echo $verticalChartLabel; ?>" title="<?php echo $verticalChartLabel; ?>" aria-pressed="<?php echo ($poll->result_type == 2) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
-                                    <button type="button" class="line_chart <?php echo ($poll->result_type == 4) ? 'active' : ''; ?>" data-id="line" aria-label="<?php echo $lineChartLabel; ?>" title="<?php echo $lineChartLabel; ?>" aria-pressed="<?php echo ($poll->result_type == 4) ? 'true' : 'false'; ?>">
-                                        <span class="pie_chart_img"></span>
-                                        <span class="vertical_chart_img"></span>
-                                        <span class="horizontal_chart_img"></span>
-                                        <span class="line_chart_img"></span>
-                                    </button>
+                                <span class="inner_chosen_graph" role="group" aria-label="<?php echo Yii::t('poll', 'Тип діаграми результатів'); ?>">
+                                    <?php foreach ($chartTypes as $chartType): ?>
+                                        <?php $active = (int) $poll->result_type === $chartType[2] || (!$poll->result_type && $chartType[2] === 1); ?>
+                                        <button type="button" class="<?php echo $chartType[0] . ($active ? ' active' : ''); ?>" data-id="<?php echo $chartType[1]; ?>" aria-label="<?php echo $chartType[3]; ?>" title="<?php echo $chartType[3]; ?>" aria-pressed="<?php echo $active ? 'true' : 'false'; ?>">
+                                            <?php if ($active): ?>
+                                                <?php foreach ($chartIcons as $chartIcon): ?>
+                                                    <span class="<?php echo $chartIcon; ?>"></span>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </button>
+                                    <?php endforeach; ?>
                                 </span>
                             </span>
                         </div>

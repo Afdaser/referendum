@@ -4,7 +4,7 @@ namespace common\models;
 
 use Yii;
 use common\components\ActiveRecord;
-use common\helpers\UsStates;
+use common\helpers\VoteLocations;
 
 /**
  * Guest-vote compatibility view over the unified poll_vote table.
@@ -17,8 +17,8 @@ use common\helpers\UsStates;
  * @property string|null $guest_ip_key Guest IP key for uniqueness
  * @property int|null $sex_at_birth Optional sex at birth, using User::SEX_* values
  * @property int|null $age_interval Optional adult age group
- * @property string|null $country_code Country confirmed by choosing a US state
- * @property string|null $state_code Optional self-reported US state postal code
+ * @property string|null $country_code Country confirmed by choosing a region
+ * @property string|null $state_code Optional region code (US postal or NZ subdivision code)
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
  * @property int|null $updated_by Updated by:
@@ -65,11 +65,10 @@ class OptionGuestVote extends ActiveRecord
             [['guest_ip_key'], 'required'],
             [['age_interval'], 'in', 'range' => array_keys(User::getUserAgeIntervalList())],
             [['sex_at_birth'], 'in', 'range' => [User::SEX_MAN, User::SEX_WOMAN]],
-            [['country_code'], 'in', 'range' => ['US']],
-            [['state_code'], 'in', 'range' => array_keys(UsStates::all())],
+            [['country_code'], 'in', 'range' => ['US', 'NZ']],
             [['state_code'], function ($attribute) {
-                if ($this->country_code !== 'US') {
-                    $this->addError($attribute, 'A US state requires the US country code.');
+                if (!is_string($this->$attribute) || !array_key_exists($this->$attribute, VoteLocations::regions($this->country_code))) {
+                    $this->addError($attribute, 'Choose a valid region for the selected country.');
                 }
             }],
             [['ip_of_user', 'guest_ip_key'], 'string', 'max' => 67],
@@ -100,8 +99,7 @@ class OptionGuestVote extends ActiveRecord
 
     public function getSampleStepCount(): int
     {
-        // Only the current US subdomain offers location collection.
-        return strtolower(Yii::$app->request->hostName) === 'en.referendum.social' ? 3 : 2;
+        return VoteLocations::countryForHost(Yii::$app->request->hostName) !== null ? 3 : 2;
     }
 
     /**

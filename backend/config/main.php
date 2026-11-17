@@ -48,6 +48,20 @@ return [
         ],
     ],
     'components' => [
+        'assetManager' => [
+            'bundles' => [
+                // Архів GitHub, встановлений як bower-asset/chartjs, може не містити
+                // згенерованої директорії dist. Завантаження відповідної версії з CDN
+                // запобігає помилці 500, коли Yii намагається опублікувати відсутню
+                // директорію, і зберігає панель керування доступною.
+                'dosamigos\\chartjs\\ChartJsAsset' => [
+                    'sourcePath' => null,
+                    'js' => [
+                        'https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js',
+                    ],
+                ],
+            ],
+        ],
         'request' => [
             'baseUrl' => '/xadmin',
             'csrfParam' => '_csrf-backend',

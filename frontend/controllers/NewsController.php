@@ -105,9 +105,38 @@ class NewsController extends Controller
         ]);
         Yii::$app->page->setTitle($pageTitle);
         Yii::$app->page->setDescription(trim((string) ($model->desc ?: $model->excerpt)));
+        if (!empty($model->image_url)) {
+            // Для поширення новини використовуємо її головне зображення замість логотипу сайту.
+            $imageUrl = Url::to((string) $model->image_url, true);
+            Yii::$app->page->establish([
+                'image' => [
+                    'uri' => $imageUrl,
+                    'width' => '',
+                    'height' => '',
+                    'mime' => $this->resolveImageMimeType($imageUrl),
+                ],
+            ]);
+        }
         $this->view->title = $pageTitle;
 
         return $this->render('view', ['model' => $model]);
+    }
+
+    private function resolveImageMimeType(string $imageUrl): string
+    {
+        $path = (string) parse_url($imageUrl, PHP_URL_PATH);
+        $extension = strtolower((string) pathinfo($path, PATHINFO_EXTENSION));
+
+        $mimeTypes = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'avif' => 'image/avif',
+        ];
+
+        return $mimeTypes[$extension] ?? '';
     }
 
     private function registerPaginationMeta(Pagination $pagination, int $currentPage): void

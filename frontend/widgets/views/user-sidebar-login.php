@@ -45,14 +45,10 @@ use frontend\helpers\Url;
         <a href="#" class="toggle_modal_registrtion"><?= Yii::t("main", 'Реєстрація'); ?></a>
     </div>
 
-    <?php ActiveForm::end(); ?>
-
+<?php ActiveForm::end(); echo "\n"; ?>
     <div class="refresh_password_block_for_ankor">
-        <a href="<?= Url::toRoute('/user/passwordRecovery'); ?>">
-            <?= Yii::t("user", 'Забули пароль?'); ?>
-        </a>
+        <a href="<?= Url::toRoute('/user/passwordRecovery') ?>"><?= Yii::t('user', 'Забули пароль?') ?></a>
     </div>
-
 </div>
 
 <div class="divider_auth"></div>

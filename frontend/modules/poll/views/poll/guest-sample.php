@@ -1,14 +1,17 @@
 <?php
 
 use common\models\User;
-use common\helpers\UsStates;
+use common\helpers\VoteLocations;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var common\models\Poll $poll */
 $step = $step ?? 1;
 $totalSteps = $totalSteps ?? 2;
-$labels = [1 => 'Стать при народженні', 2 => 'Ваша вікова група', 3 => 'У якому штаті ви проживаєте?'];
+$countryCode = VoteLocations::countryForHost(Yii::$app->request->hostName);
+$isNz = $countryCode === 'NZ';
+$labels = [1 => 'Стать при народженні', 2 => 'Ваша вікова група',
+    3 => $isNz ? 'У якому регіоні ви проживаєте?' : 'У якому штаті ви проживаєте?'];
 $label = $labels[$step];
 ?>
 <section class="guest-sample" aria-label="<?= Html::encode(Yii::t('poll', $label)); ?>">
@@ -37,12 +40,12 @@ $label = $labels[$step];
                     ]); ?>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p class="guest-sample__country"><?= Html::encode(Yii::t('poll', 'Країна: США')); ?></p>
-                <?= Html::label(Html::encode(Yii::t('poll', 'Штат')), 'guest-state-' . $poll->id); ?>
-                <?= Html::dropDownList('state_code', null, UsStates::all(), [
+                <p class="guest-sample__country"><?= Html::encode(Yii::t('poll', $isNz ? 'Країна: Нова Зеландія' : 'Країна: США')); ?></p>
+                <?= Html::label(Html::encode(Yii::t('poll', $isNz ? 'Регіон' : 'Штат')), 'guest-state-' . $poll->id); ?>
+                <?= Html::dropDownList('state_code', null, VoteLocations::regions($countryCode), [
                     'id' => 'guest-state-' . $poll->id,
                     'class' => 'guest-sample__state',
-                    'prompt' => Yii::t('poll', 'Оберіть штат'),
+                    'prompt' => Yii::t('poll', $isNz ? 'Оберіть регіон' : 'Оберіть штат'),
                     'required' => true,
                 ]); ?>
                 <?= Html::submitButton(Html::encode(Yii::t('poll', 'Зберегти та показати результати')), [

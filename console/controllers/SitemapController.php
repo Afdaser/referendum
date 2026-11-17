@@ -6,6 +6,7 @@ use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
 use common\models\Language;
+use common\models\News;
 use common\models\Tag;
 use common\models\Poll;
 
@@ -13,7 +14,7 @@ class SitemapController extends Controller
 {
     public static $subdomains= [];
     protected static $data = [];
-    protected static $types = ['poll', 'tags'];
+    protected static $types = ['poll', 'tags', 'news'];
     protected static $protocol = 'https://';
     protected static $domen = SITE_DOMAIN;
     protected static $br = "\n";
@@ -28,6 +29,7 @@ class SitemapController extends Controller
 
         $sitemap['tags'] = self::generateTag();
         $sitemap['poll'] = self::generatePoll();
+        $sitemap['news'] = self::generateNews();
         $sitemap['indexes'] = self::generateIndexes();
 
         foreach (static::$subdomains as $langId => $subdomain) {
@@ -239,6 +241,79 @@ class SitemapController extends Controller
         }
 
         return self::$data['tags']['xml'];
+    }
+
+    /**
+     * Формує окрему карту опублікованих новин для кожного мовного піддомену.
+     */
+    protected static function generateNews()
+    {
+        $list = News::find()
+            ->select(['n.slug', 'n.language_id', 'n.published_at', 'n.updated_at'])
+            ->from(['n' => News::tableName()])
+            ->where(['n.is_published' => 1])
+            // Майбутні публікації не повинні з'являтися у sitemap раніше, ніж на сайті.
+            ->andWhere(['<=', 'n.published_at', date('Y-m-d H:i:s')])
+            ->orderBy(['n.updated_at' => SORT_DESC, 'n.published_at' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        self::$data['news']['links'] = array_fill_keys(array_keys(static::$subdomains), []);
+        self::$data['news']['maxDate'] = null;
+        self::$data['news']['maxDates'] = [];
+
+        foreach ($list as $item) {
+            $languageId = (int) $item['language_id'];
+            $slug = trim((string) $item['slug']);
+            if ($languageId < 1 || $slug === '' || empty(static::$subdomains[$languageId])) {
+                continue;
+            }
+
+            $publishedTimestamp = strtotime((string) $item['published_at']) ?: 0;
+            $updatedTimestamp = (int) $item['updated_at'];
+            $lastModifiedTimestamp = max($publishedTimestamp, $updatedTimestamp);
+            $date = $lastModifiedTimestamp > 0 ? date('Y-m-d', $lastModifiedTimestamp) : null;
+
+            if ($date !== null) {
+                if (self::$data['news']['maxDate'] === null || self::$data['news']['maxDate'] < $date) {
+                    self::$data['news']['maxDate'] = $date;
+                }
+                if (empty(self::$data['news']['maxDates'][$languageId]) || self::$data['news']['maxDates'][$languageId] < $date) {
+                    self::$data['news']['maxDates'][$languageId] = $date;
+                }
+            }
+
+            self::$data['news']['links'][$languageId][] = [
+                'url' => self::$protocol . static::$subdomains[$languageId] . '.' . self::$domen . '/news/' . rawurlencode($slug),
+                'lastmod' => $date,
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ];
+        }
+
+        self::$data['news']['xml'] = [];
+        foreach (static::$subdomains as $id => $subdomain) {
+            self::$data['news']['xml'][$id] = '<?xml version="1.0" encoding="UTF-8"?>';
+            self::$data['news']['xml'][$id] .= self::$br . '<?xml-stylesheet type="text/xsl" href="//' . $subdomain . '.' . self::$domen . '/main-sitemap.xsl"?>';
+            self::$data['news']['xml'][$id] .= self::$br . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . self::$br;
+        }
+
+        foreach (self::$data['news']['links'] as $languageId => $items) {
+            foreach ($items as $item) {
+                self::$data['news']['xml'][$languageId] .= self::getUrlBlock(
+                    $item['url'],
+                    $item['lastmod'],
+                    $item['changefreq'],
+                    $item['priority']
+                );
+            }
+        }
+
+        foreach (static::$subdomains as $id => $subdomain) {
+            self::$data['news']['xml'][$id] .= self::$br . '</urlset>';
+        }
+
+        return self::$data['news']['xml'];
     }
 
     public static function getUrlBlock($url, $lastmod, $changefreq = 'monthly', $priority = 0.3)

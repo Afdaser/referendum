@@ -15,6 +15,13 @@ use yii\helpers\Html;
 
 
 /** @var yii\web\View $this */
+$mainPageText = $this->params['mainPageText'] ?? '';
+if (($this->params['isMainPageFirst'] ?? false)
+    && Yii::$app->params['category'] == 'hot'
+    && $mainPageText !== ''
+) {
+    $this->params['mainPageSeoContent'] = $this->render('_main-seo-text', ['text' => $mainPageText]);
+}
 // $qty = $dataProvider->count;
 ?>
 <div class="col-md-8">

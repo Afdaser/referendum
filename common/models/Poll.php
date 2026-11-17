@@ -485,7 +485,7 @@ class Poll extends ActiveRecord
     }
 
     /** Shared region IDs across guest votes and current registered profiles. */
-    public function getVoteRegions(): array
+    public function getVoteRegions(?string $countryIsoCode = null): array
     {
         $country = 'CASE WHEN v.is_guest = 1 THEN v.country_id ELSE p.country_id END';
         $region = 'CASE WHEN v.is_guest = 1 THEN v.region_id ELSE p.region_id END';
@@ -496,6 +496,7 @@ class Poll extends ActiveRecord
             ->innerJoin(['r' => CountryRegion::tableName()], "r.id = ($region) AND r.country_id = ($country)")
             ->innerJoin(['c' => Country::tableName()], 'c.id = r.country_id')
             ->where(['v.poll_id' => $this->id])
+            ->andFilterWhere(['c.iso_code' => $countryIsoCode])
             ->groupBy(['r.id', 'r.name', 'r.country_id', 'c.name'])
             ->orderBy(['c.name' => SORT_ASC, 'r.name' => SORT_ASC])->all(static::getDb());
     }
@@ -532,6 +533,12 @@ class Poll extends ActiveRecord
         }
 
         return array_intersect_key(User::getUserAgeIntervalList(), $available);
+    }
+
+    private function getVotedAgesText(): string
+    {
+        $ages = $this->getVotedAgeIntervals();
+        return $ages ? implode(', ', $ages) : Yii::t('poll', 'Недостатньо даних');
     }
 
     /*
@@ -1573,6 +1580,8 @@ class Poll extends ActiveRecord
             '@date_month' => 'Місяць створення опитування (MM).',
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
+            '@voted_regions' => 'Регіони, з яких є голоси в цьому опитуванні, лише для країни поточного піддомену: назви зі спільного довідника через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих регіонів немає — порожній рядок.',
+            '@voted_ages' => 'Вікові групи учасників голосування через кому; якщо вік невідомий — повідомлення про брак даних.',
             '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
             '@votes_this_year' => 'Кількість голосів за цей рік.',
@@ -1609,8 +1618,9 @@ class Poll extends ActiveRecord
             '@votes_this_year' => 'Кількість голосів за цей рік.',
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
+            '@voted_regions' => self::getStaticMetaTokens()['@voted_regions'],
             '@votes_guest' => 'Кількість голосів від гостей.',
-            '@voted_ages' => 'Вікові групи учасників голосування через кому; якщо вік невідомий — повідомлення про брак даних.',
+            '@voted_ages' => self::getStaticMetaTokens()['@voted_ages'],
             '@comments' => 'Кількість коментарів.',
             '@tags' => 'Список тегів із посиланнями.',
             '@tags_plain' => 'Список тегів без посилань.',
@@ -1824,6 +1834,23 @@ class Poll extends ActiveRecord
         return $result;
     }
 
+    /** Regions represented by votes, using the same locations as the result filters. */
+    private function getVotedRegions(): string
+    {
+        $domain = Yii::$app->request instanceof \yii\web\Request
+            ? strtolower(Yii::$app->request->hostName)
+            : (Yii::$app->params['langDomains'][$this->poll_language_id] ?? '');
+        $countryCode = Yii::$app->params['domainCountryCodes'][$domain] ?? null;
+        // Never fall back to all countries when the domain has no country mapping.
+        if (!$countryCode) {
+            return '';
+        }
+        $names = array_unique(array_column($this->getVoteRegions($countryCode), 'name'));
+        sort($names, SORT_STRING);
+
+        return implode(', ', $names);
+    }
+
     /**
      * Завантажує повʼязаний запис PollStaticText лише один раз за запит.
      */
@@ -1887,6 +1914,8 @@ class Poll extends ActiveRecord
                     case '@author_name': $value = $this->user_id && $this->author ? $this->author->username : ''; break;
                     case '@author_id': $value = $this->user_id; break;
                     case '@votes_total': $value = $this->getCountPollOptionsVoters(); break;
+                    case '@voted_regions': $value = $this->getVotedRegions(); break;
+                    case '@voted_ages': $value = $this->getVotedAgesText(); break;
                     case '@comments': $value = $this->getCommentsCount(); break;
                     case '@options_count': $value = count($this->pollOptions); break;
                     case '@options_titles':
@@ -1946,10 +1975,10 @@ class Poll extends ActiveRecord
         ];
 
         if (strpos($template, '@voted_ages') !== false) {
-            $ages = $this->getVotedAgeIntervals();
-            $replacements['@voted_ages'] = Html::encode($ages
-                ? implode(', ', $ages)
-                : Yii::t('poll', 'Недостатньо даних'));
+            $replacements['@voted_ages'] = Html::encode($this->getVotedAgesText());
+        }
+        if (strpos($template, '@voted_regions') !== false) {
+            $replacements['@voted_regions'] = Html::encode($this->getVotedRegions());
         }
 
         return $replacements;

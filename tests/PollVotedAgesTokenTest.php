@@ -29,6 +29,7 @@ class PollVotedAgesTokenTest extends TestCase
         $poll->votedAges = [2 => '25–34', 4 => '45–54'];
 
         $this->assertSame('Ages: 25–34, 45–54', $this->render($poll, 'Ages: @voted_ages'));
+        $this->assertSame('Ages: 25–34, 45–54', $this->renderMeta($poll, 'Ages: @voted_ages'));
     }
 
     public function testMissingAgeDataIsTranslated(): void
@@ -43,7 +44,14 @@ class PollVotedAgesTokenTest extends TestCase
         ] as $language => $expected) {
             Yii::$app->language = $language;
             $this->assertSame($expected, $this->render($poll, '@voted_ages'));
+            $this->assertSame($expected, $this->renderMeta($poll, '@voted_ages'));
         }
+    }
+
+    private function renderMeta(Poll $poll, string $template): string
+    {
+        $method = new ReflectionMethod(Poll::class, 'getStaticMetaReplacements');
+        return strtr($template, $method->invoke($poll, $template));
     }
 
     private function render(Poll $poll, string $template): string

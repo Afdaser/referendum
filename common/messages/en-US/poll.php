@@ -1,6 +1,7 @@
 <?php
 
 return array(
+        'Недостатньо даних' => 'Insufficient data',
         'Регіон' => 'State / region',
         'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Register to skip these steps next time.',
         'У якому штаті ви проживаєте?' => 'Which state do you live in?',

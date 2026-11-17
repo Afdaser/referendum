@@ -500,6 +500,40 @@ class Poll extends ActiveRecord
             ->orderBy(['c.name' => SORT_ASC, 'r.name' => SORT_ASC])->all(static::getDb());
     }
 
+    /** Age groups represented by votes in this poll. */
+    public function getVotedAgeIntervals(): array
+    {
+        $guestIntervals = (new Query())->select('v.age_interval')->distinct()
+            ->from(['v' => PollVote::tableName()])
+            ->where(['v.poll_id' => $this->id, 'v.is_guest' => 1])
+            ->andWhere(['not', ['v.age_interval' => null]])
+            ->column(static::getDb());
+
+        $registeredAges = (new Query())
+            ->select(['age' => new Expression('TIMESTAMPDIFF(YEAR, p.date_birthday, CURDATE())')])->distinct()
+            ->from(['v' => PollVote::tableName()])
+            ->innerJoin(['p' => Profile::tableName()], 'p.user_id = v.user_id')
+            ->where(['v.poll_id' => $this->id, 'v.is_guest' => 0])
+            ->andWhere(['not', ['p.date_birthday' => null]])
+            ->column(static::getDb());
+
+        $available = array_fill_keys(array_map('intval', $guestIntervals), true);
+        foreach ($registeredAges as $age) {
+            if ($age === null) {
+                continue;
+            }
+            foreach (User::getUserAgeIntervalList() as $index => $label) {
+                $bounds = User::getAgesByIntervalIndex($index);
+                if ($age >= $bounds['min'] && $age <= $bounds['max']) {
+                    $available[$index] = true;
+                    break;
+                }
+            }
+        }
+
+        return array_intersect_key(User::getUserAgeIntervalList(), $available);
+    }
+
     /*
      * return TRUE if poll is open
      */

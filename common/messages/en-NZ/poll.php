@@ -4,6 +4,7 @@
 
 
 return array(
+        'Недостатньо даних' => 'Insufficient data',
         'Регіон' => 'Region',
         'Зареєструйтеся, щоб не повторювати ці кроки.' => 'Register to skip these steps next time.',
 

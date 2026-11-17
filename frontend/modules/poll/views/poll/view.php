@@ -211,8 +211,8 @@ JS
                                 <label class="item_show">
                                     <span><?= Yii::t('poll', 'Вік'); ?></span>
                                     <select class="age" aria-label="<?= Yii::t('poll', 'Фільтр голосів за віком'); ?>">
-                                        <option value="0"><?= Yii::t('poll', 'Всі'); ?></option>
-                                        <?php $ages = User::getUserAgeIntervalList(); ?>
+                                        <?php $ages = $poll->getVotedAgeIntervals(); ?>
+                                        <option value="0"><?= Yii::t('poll', $ages ? 'Всі' : 'Недостатньо даних'); ?></option>
                                         <?php foreach ($ages as $index => $age): ?>
                                             <option value="<?= $index; ?>"><?= $age; ?></option>
                                         <?php endforeach; ?>

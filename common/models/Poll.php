@@ -1614,6 +1614,8 @@ class Poll extends ActiveRecord
             '@options_count' => 'Кількість варіантів відповіді.',
             '@options_titles' => 'Перелік варіантів відповіді через кому.',
             '@options_list' => 'HTML-список варіантів з голосами та відсотками.',
+            '@options_list_men' => 'HTML-список результатів голосування чоловіків за варіантами відповіді.',
+            '@options_list_women' => 'HTML-список результатів голосування жінок за варіантами відповіді.',
             '@most_popular_title' => 'Назва найпопулярнішого варіанта відповіді.',
             '@most_popular_votes' => 'Кількість голосів за найпопулярніший варіант.',
             '@most_popular_percent' => 'Відсоток голосів за найпопулярніший варіант.',
@@ -1837,6 +1839,23 @@ class Poll extends ActiveRecord
         return $names ? implode(', ', $names) : Yii::t('poll', 'Недостатньо даних');
     }
 
+    /** Render the same option breakdown as the results chart, filtered by sex. */
+    private function getOptionsListForSex(int $sex): string
+    {
+        $rows = $this->pollOptions ? $this->getChartData($sex) : [];
+        if (!array_sum(array_column($rows, 'value'))) {
+            return Html::encode(Yii::t('poll', 'Недостатньо даних'));
+        }
+
+        $items = [];
+        foreach ($rows as $row) {
+            $items[] = '<li><span>' . Html::encode($row['option']) . '</span> - <strong>'
+                . (int) $row['value'] . '</strong> ' . Yii::t('poll', 'голосів')
+                . ' (' . number_format($row['percent'], 1) . '%)</li>';
+        }
+        return '<ul class="poll-options-stats">' . implode('', $items) . '</ul>';
+    }
+
     /**
      * Завантажує повʼязаний запис PollStaticText лише один раз за запит.
      */
@@ -1965,6 +1984,12 @@ class Poll extends ActiveRecord
         }
         if (strpos($template, '@voted_regions') !== false) {
             $replacements['@voted_regions'] = Html::encode($this->getVotedRegions());
+        }
+        if (strpos($template, '@options_list_men') !== false) {
+            $replacements['@options_list_men'] = $this->getOptionsListForSex(User::SEX_MAN);
+        }
+        if (strpos($template, '@options_list_women') !== false) {
+            $replacements['@options_list_women'] = $this->getOptionsListForSex(User::SEX_WOMAN);
         }
 
         return $replacements;

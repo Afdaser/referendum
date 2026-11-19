@@ -16,16 +16,34 @@ $(document).ready(function () {
         });
 
         $(document).on('click', '.toggle_modal_registrtion', function (event) {
-            // Не даємо службовому href="#" прокручувати сторінку при відкритті модалки.
             event.preventDefault();
             $(this).closest('details.header_menu').prop('open', false);
             $('#header_login_modal').modal('hide');
-            $('#registrtion_step_1').children('.modal-dialog')
-                .load(window.rfrndm.routes.ajax.registrtion_step_one, function (responseTxt, statusTxt, xhr) {
-                    if (statusTxt == 'error') {
-                        alert('Error: ' + xhr.status + ': ' + xhr.statusText);
-                    }
-                    $('#registrtion_step_1').modal('show');
+            $('#registrtion_step_1').modal('show');
+        });
+
+        $('#registrtion_step_1').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            if (modal.find('form').length) {
+                return;
+            }
+
+            event.preventDefault();
+            if (modal.data('registrationLoading')) {
+                return;
+            }
+
+            modal.data('registrationLoading', true);
+            $.get(window.rfrndm.routes.ajax.registrtion_step_one)
+                .done(function (content) {
+                    // Відповідь містить .modal-dialog, тому вставляємо її у зовнішню модалку.
+                    modal.html(content).modal('show');
+                })
+                .fail(function () {
+                    alert('Не вдалося відкрити форму реєстрації. Спробуйте ще раз.');
+                })
+                .always(function () {
+                    modal.removeData('registrationLoading');
                 });
         });
 

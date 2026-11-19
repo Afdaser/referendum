@@ -1,24 +1,14 @@
-<?php
-//use yii\helpers\Html;
-//use yii\widgets\ActiveForm;
-//use yii\web\View;
-//use frontend\helpers\Url;
-?>
-<?= (YII_ENV != 'dev') ? '' : "<!-- #DEV24-02 \n". __FILE__."\n -->"; ?>
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">
                 <span class="sr-only"><?= Yii::t('main', 'Close'); ?></span>
             </button>
-            <div class="modal_title"><?= Yii::t('main', 'Реєстрація'); ?> <?= (YII_ENV != 'dev') ? '' : '#DEV24-02'; ?></div>
+            <div class="modal_title"><?= Yii::t('main', 'Реєстрація'); ?></div>
         </div>
-<?php /*
-        <FORM METHOD="POST" ACTION="/">
-* */ ?>
         <form method="post" action="/site/register-modal">
             <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>">
-            <div class="modal-body" id="registrationBody" style="border:1px dashed red;">
+            <div class="modal-body" id="registrationBody">
                 <div class="item_reg clearfix">
                     <div class="left_reg_label">
 <?= Yii::t('main', 'Логін'); ?> *
@@ -32,7 +22,7 @@
 <?= Yii::t('main', 'Email'); ?> *
                     </div>
                     <div class="right_reg_label item_param item_show email">
-                        <input name="RegisterForm[email]" id="email" type="text" class="autocomplete" value="<?= ($registerForm->email ?? ''); ?>">
+                        <input name="RegisterForm[email]" id="email" type="email" class="autocomplete" value="<?= ($registerForm->email ?? ''); ?>">
                         <a href="javascript:void(0)" class="del_btn"></a>
                     </div>
                 </div>
@@ -101,5 +91,3 @@
         </form>
     </div>
 </div>
-
-<?= (YII_ENV != 'dev') ? '' : '<!-- //#DEV24-02 -->'; ?>

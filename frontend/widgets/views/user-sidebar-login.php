@@ -157,24 +157,10 @@ use frontend\helpers\Url;
 </div>
 
 
-<div class="modal new_poll" id="registration_info" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span class="sr-only"><?php echo Yii::t("main", 'Close'); ?></span>
-                </button>
-                <div class="modal_title"><?php echo Yii::t("main", 'Реєстрація'); ?></div>
-            </div>
-<!--            <div class="modal-footer">
-                <div class="sub_title_modal"></div>
-                <div class="btn_b_modal">
-                    <button type="submit" class="my_profile modal_add next_modal_btn"><?php /*echo Yii::t("main", 'ЗАРЕЄСТРУВАТИСЯ'); */?></button>
-                </div>
-                <a href="#" class="create_new_poll" id="registrationCancel" data-dismiss="modal"><?php /*echo Yii::t("main", 'Скасувати'); */?></a>
-            </div-->
-        </div>
-</div>
+<?php
+// Попередній модальний блок з інформацією про реєстрацію прибрано,
+// щоб не дублювати повідомлення та рекламу у блоці авторизації.
+?>
 <?php /* * /
 $form = ActiveForm::begin([
                         'id' => 'login-form', // Optional. I just like to keep things under control

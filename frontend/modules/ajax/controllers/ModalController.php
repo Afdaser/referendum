@@ -1,139 +1,93 @@
 <?php
 
-namespace frontend\widgets;
+namespace app\modules\ajax\controllers;
 
-use Yii;
-use yii\bootstrap4\Widget;
-use common\models\form\LoginForm;
-use frontend\models\SignupForm;
+use yii\web\Controller;
 use frontend\models\forms\RegisterForm;
+//use common\models\Poll;
 use frontend\models\forms\PollForm as Poll;
 
+//use Yii;
 use yii\bootstrap\Html;
 
 /**
- * Description of WTopPollsSlider
- *
- * @author alex
+ * Контролер модальних вікон модуля `ajax`.
  */
-class WUserSidebar extends Widget
+class ModalController extends Controller
 {
-    public $model;
-
-    public function init()
+    /**
+     * Повертає форму реєстрації для модального вікна.
+     * @return string
+     */
+    public function actionRegistrtionStepOne()
     {
-       $this->model = new LoginForm;
-    }
-
-    public function runYiiOne()
-    {
-        if(Yii::app()->user->isGuest){
             $model = new RegisterForm;
             if(isset($_POST['RegisterForm'])){
                 $model->attributes = $_POST['RegisterForm'];
-                if($model->validate() && $model->register())  {
-                    $this->render('userSidebar/_sidebar',array('refresh'=>true));
-        }
+                if($model->validate())  {
+  //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
+                }
+/*
                 else {
                     $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(CHtml::errorSummary($model))));
-        }
-                } else {
+                }
+            } else {
                 $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model));
+/* */
             }
-        } else {
-            $this->render('userSidebar/_sidebar',array('refresh'=>false));
-        }
+
+        return $this->renderPartial('registrtion-step-one', [
+            'registerForm'=>$model,
+            'error'=>json_encode(Html::errorSummary($model)),
+            ]);
     }
 
-    public function run() {
-        if(Yii::$app->user->isGuest){
-//            $model = new LoginForm;
-            $model = new RegisterForm;
-            if(isset($_POST['RegisterForm'])){
-//                $model->attributes = $_POST['RegisterForm'];
-                $attributes = Yii::$app->request->post('RegisterForm');
-//                $model->load(['RegisterForm' => $attributes]);
-                $model->load(['RegisterForm' => $attributes]);
-//                $model->attributes = $_POST['RegisterForm'];
+    /**
+     * Повертає форму створення опитування для модального вікна.
+     * @return string
+     */
+    public function actionCreatePollStepOne()
+    {
 
-                if ($model->validate()) {
-                    $signupFormModel = new SignupForm();
-                    $signupAttributes = [
-                        'username' => $attributes['login'],
-                        'email' => $attributes['email'],
-                        'password' => $attributes['password'],
-                    ];
-//                    $signupFormModel->load(Yii::$app->request->post());
-                    $signupFormModel->load(['SignupForm' => $signupAttributes]);
-                    if ($signupFormModel->signup()) {
-                        Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-                        // Після успішної реєстрації формуємо модель опитування для сайдбару.
-                        $pollModel = new Poll;
-                        $pollModel->presetAttributes();
-                        // Завершуємо виконання після успішної реєстрації, щоб уникнути дублювання.
-                        return $this->render('user-sidebar', array(
-                            'refresh' => true,
-                            'pollModel' => $pollModel,
-                        ));
-                    }
-
-                    //$this->render('userSidebar/_sidebar', array('refresh' => true));
-                    $this->render('user-sidebar', array('refresh' => true));
-                } else {
-                   //  $this->render('userSidebar/_login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                    $this->render('user-sidebar-login', array("model" => $this->model, 'registerForm' => $model, 'error' => json_encode(Html::errorSummary($model))));
-                }
-
-//                die(__FILE__.'#'.__LINE__);
-
-//                    echo '<h2>Errors:</h2><pre>';
-//                    var_dump($model->getErrors());
-//                    var_dump(Html::errorSummary($model));
-//                    echo '</pre>';
-//                    die(__METHOD__ . '#' . __LINE__);
-
-            } else {
-                return $this->render('user-sidebar-login', array("model" => $this->model,'registerForm'=>$model));
-            }
-        } else {
-//            if(Yii::$app->request->isPost){
-//                $resultOfSaving = $this->processNewPoll();
-//                if($resultOfSaving){
-//                    Yii::$app->session->setFlash('success', 'Poll saved successfully');
-//                    return Yii::$app->response->redirect(['/poll/site/my-polls', ]);
-////                    return $this->redirect(['/poll/site/my-polls', ]);
-//                }
-//            }
             $pollModel = new Poll;
             $pollModel->presetAttributes();
-            
-            return $this->render('user-sidebar',[
-                'refresh'=>false,
+
+//            $model = new Poll;
+/*
+            $pollModel = new Poll;
+            $pollModel->unsetAttributes();
+
+ */
+/*
+            $model = new RegisterForm;
+            if(isset($_POST['RegisterForm'])){
+                $model->attributes = $_POST['RegisterForm'];
+                if($model->validate())  {
+  //                  $this->render('userSidebar/_sidebar',array('refresh'=>true));
+                }
+/*
+                else {
+                    $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model,'error'=>json_encode(CHtml::errorSummary($model))));
+                }
+            } else {
+                $this->render('userSidebar/_login', array("model" => $this->model,'registerForm'=>$model));
+
+            }
+/* */
+
+        return $this->renderPartial('create-poll-step-one', [
                     'pollModel' => $pollModel,
                     'error' => json_encode(Html::errorSummary($pollModel)),
-//                    'forceModal' => $this->forceModal,
-                ]
-                    );
-        }
-
-
-//        return $this->render($this->view, [
-//                    'data' => $this->data,
-//                    'activePolls' => $this->activePolls,
-//
-//        ]);
+        ]);
     }
 
-    public function processNewPoll()
+    public function actionStorePollForm()
     {
-        $this->forceModal = true;
-        return false;
-//        return true;
-        echo "\n\n\n\n\n\n\n<hr><hr><hr><hr>\n";
-        echo '<h2>processNewPoll():</h2>';
+        echo '<h2>store-poll-form</h2>';
         echo '<pre>';
-        echo var_dump($_POST);
+        var_dump($_POST);
         echo '</pre>';
         die(__METHOD__);
+
     }
 }

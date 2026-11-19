@@ -22,7 +22,7 @@ $(document).ready(function () {
             $('#registrtion_step_1').modal('show');
         });
 
-        $('#registrtion_step_1').on('show.bs.modal', function (event) {
+        $(document).on('show.bs.modal', '#registrtion_step_1', function (event) {
             var modal = $(this);
             if (modal.find('form').length) {
                 return;

@@ -20,7 +20,7 @@ class AppAsset extends AssetBundle
         // Стилі плагіна outdatedBrowser більше не підключаємо, адже банер прибрано з макету.
         '/css/jquery.bxslider.css',
         '/css/font-awesome.css',
-        '/css/main.css',
+        ['css/main.css', 'appendTimestamp' => true],
         '/css/custom.css',
     ];
     // CSS підключаємо звичайними stylesheet-посиланнями: це не дублює їх у <noscript>

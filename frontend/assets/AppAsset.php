@@ -38,7 +38,7 @@ class AppAsset extends AssetBundle
         '/js/main.js',
         '/js/custom.js',
         // Скрипт реєстраційної модалки лишається глобальним, бо використовується на різних сторінках.
-        '/js/registration-modal.js',
+        ['js/registration-modal.js', 'appendTimestamp' => true],
         '/js/highCharts/highcharts.js',
         // Централізований рендер графіків опитувань через один цикл.
         '/js/poll-chart-queue.js',

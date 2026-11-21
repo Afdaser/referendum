@@ -11,10 +11,14 @@ $appAsset = AppAsset::register($this);
 // Інформаційні матеріали з футера обслуговує PageController, а список і матеріали новин — NewsController.
 // На цих сторінках немає графіків опитувань, тому не завантажуємо їхні два окремі JS-файли.
 if (in_array(Yii::$app->controller->id, ['page', 'news'], true)) {
-    $appAsset->js = array_values(array_diff($appAsset->js, [
-        '/js/highCharts/highcharts.js',
-        '/js/poll-chart-queue.js',
-    ]));
+    $appAsset->js = array_values(array_filter($appAsset->js, static function ($script) {
+        // Порівнюємо шлях, не перетворюючи записи з appendTimestamp на рядок.
+        $path = is_array($script) ? $script[0] : $script;
+        return !in_array($path, [
+            '/js/highCharts/highcharts.js',
+            '/js/poll-chart-queue.js',
+        ], true);
+    }));
 }
 $this->registerCssFile('/css/bootstrap.min.css');
 $page = Yii::$app->page;

@@ -10,8 +10,12 @@ $step = $step ?? 1;
 $totalSteps = $totalSteps ?? 2;
 $countryCode = VoteLocations::countryForHost(Yii::$app->request->hostName);
 $isNz = $countryCode === 'NZ';
+$isUa = $countryCode === 'UA';
 $labels = [1 => 'Стать при народженні', 2 => 'Ваша вікова група',
-    3 => $isNz ? 'У якому регіоні ви проживаєте?' : 'У якому штаті ви проживаєте?'];
+    3 => $isUa ? 'У якій області або місті ви проживаєте?' : ($isNz ? 'У якому регіоні ви проживаєте?' : 'У якому штаті ви проживаєте?')];
+$countryLabel = $isUa ? 'Країна: Україна' : ($isNz ? 'Країна: Нова Зеландія' : 'Країна: США');
+$regionLabel = $isUa ? 'Область або місто' : ($isNz ? 'Регіон' : 'Штат');
+$regionPrompt = $isUa ? 'Оберіть область або місто' : ($isNz ? 'Оберіть регіон' : 'Оберіть штат');
 $label = $labels[$step];
 ?>
 <section class="guest-sample" aria-label="<?= Html::encode(Yii::t('poll', $label)); ?>">
@@ -40,12 +44,12 @@ $label = $labels[$step];
                     ]); ?>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p class="guest-sample__country"><?= Html::encode(Yii::t('poll', $isNz ? 'Країна: Нова Зеландія' : 'Країна: США')); ?></p>
-                <?= Html::label(Html::encode(Yii::t('poll', $isNz ? 'Регіон' : 'Штат')), 'guest-state-' . $poll->id); ?>
+                <p class="guest-sample__country"><?= Html::encode(Yii::t('poll', $countryLabel)); ?></p>
+                <?= Html::label(Html::encode(Yii::t('poll', $regionLabel)), 'guest-state-' . $poll->id); ?>
                 <?= Html::dropDownList('state_code', null, VoteLocations::regions($countryCode), [
                     'id' => 'guest-state-' . $poll->id,
                     'class' => 'guest-sample__state',
-                    'prompt' => Yii::t('poll', $isNz ? 'Оберіть регіон' : 'Оберіть штат'),
+                    'prompt' => Yii::t('poll', $regionPrompt),
                     'required' => true,
                 ]); ?>
                 <?= Html::submitButton(Html::encode(Yii::t('poll', 'Зберегти та показати результати')), [

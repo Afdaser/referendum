@@ -452,7 +452,7 @@ class PollController extends \yii\web\Controller
             $messages = [
                 1 => 'Оберіть стать при народженні або пропустіть цей крок.',
                 2 => 'Оберіть вікову групу або пропустіть цей крок.',
-                3 => $countryCode === 'NZ' ? 'Оберіть регіон або пропустіть цей крок.' : 'Оберіть штат або пропустіть цей крок.',
+                3 => $countryCode === 'UA' ? 'Оберіть область або місто чи пропустіть цей крок.' : ($countryCode === 'NZ' ? 'Оберіть регіон або пропустіть цей крок.' : 'Оберіть штат або пропустіть цей крок.'),
             ];
             Yii::$app->session->setFlash('guestSampleError', Yii::t('poll', $messages[$step]));
             return $this->redirect(['view', 'id' => (int) $id, '#' => 'poll-options']);

@@ -15,7 +15,7 @@ use yii\helpers\Json;
 
 $guestSamplePending = $guestSamplePending ?? false;
 $locationCountryCode = \common\helpers\VoteLocations::countryForHost(Yii::$app->request->hostName);
-$locationCountryLabel = ['US' => 'USA', 'NZ' => 'New Zealand'][$locationCountryCode] ?? null;
+$locationCountryLabel = ['US' => 'USA', 'NZ' => 'New Zealand', 'UA' => 'Україна'][$locationCountryCode] ?? null;
 
 if (!empty($poll->pollLanguage)) {
     Yii::$app->params['canonical'] = Yii::$app->urlManager->createPollLangUrl($poll->pollLanguage->name, '//poll/view', array('id' => $poll->id));

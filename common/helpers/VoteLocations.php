@@ -10,6 +10,7 @@ final class VoteLocations
         return [
             'en.referendum.social' => 'US',
             'nz.referendum.social' => 'NZ',
+            'ua.referendum.social' => 'UA',
         ][strtolower($host)] ?? null;
     }
 
@@ -18,6 +19,7 @@ final class VoteLocations
         switch ($countryCode) {
             case 'US': return UsStates::all();
             case 'NZ': return NzRegions::all();
+            case 'UA': return UaRegions::all();
             default: return [];
         }
     }

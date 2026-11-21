@@ -18,7 +18,7 @@ use common\helpers\VoteLocations;
  * @property int|null $sex_at_birth Optional sex at birth, using User::SEX_* values
  * @property int|null $age_interval Optional adult age group
  * @property string|null $country_code Country confirmed by choosing a region
- * @property string|null $state_code Optional region code (US postal or NZ subdivision code)
+ * @property string|null $state_code Код регіону, якщо гість його вибрав
  * @property string $date_add Date add
  * @property int|null $created_by Created by:
  * @property int|null $updated_by Updated by:
@@ -65,7 +65,7 @@ class OptionGuestVote extends ActiveRecord
             [['guest_ip_key'], 'required'],
             [['age_interval'], 'in', 'range' => array_keys(User::getUserAgeIntervalList())],
             [['sex_at_birth'], 'in', 'range' => [User::SEX_MAN, User::SEX_WOMAN]],
-            [['country_code'], 'in', 'range' => ['US', 'NZ']],
+            [['country_code'], 'in', 'range' => ['US', 'NZ', 'UA']],
             [['state_code'], function ($attribute) {
                 if (!is_string($this->$attribute) || !array_key_exists($this->$attribute, VoteLocations::regions($this->country_code))) {
                     $this->addError($attribute, 'Choose a valid region for the selected country.');

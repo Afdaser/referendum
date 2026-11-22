@@ -1491,6 +1491,35 @@ span.item_list_poll:hover {
     font-size: 19px;
     font-weight: 700;
 }
+.profile_social_fields p {
+    color: #848484;
+    font-size: 12px;
+    margin: 0 0 10px;
+}
+.profile_social_fields label {
+    display: block;
+    margin: 10px 0 4px;
+}
+.profile_social_input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dce6e4;
+}
+.profile_social_input span {
+    color: #848484;
+    padding: 0 8px;
+    white-space: nowrap;
+}
+.profile_social_input input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    padding: 7px;
+}
+.profile_social_links {
+    display: inline-flex;
+    margin: 2px 0 14px;
+}
 .footer {
     /* Автоматична висота дає футеру безпечно зростати разом із кількістю сторінок. */
     height: auto;

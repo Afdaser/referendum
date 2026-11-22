@@ -1,5 +1,8 @@
 <?php
 return array(
+	'Соцмережі'=>'Social networks',
+	'Вкажіть лише ім’я акаунта або ID, без повного посилання.'=>'Enter only your username or ID, without the full link.',
+	'Вкажіть лише ім’я акаунта або ID без посилання.'=>'Enter only your username or ID, without a link.',
 	'ЗБЕРЕГТИ'=>'SAVE',
         'Стать'=>'Male',
         'Дата народження'=>'Date of birth',

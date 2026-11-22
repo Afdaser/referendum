@@ -1,5 +1,8 @@
 <?php
 return array(
+	'Соцмережі'=>'Sosiale medier',
+	'Вкажіть лише ім’я акаунта або ID, без повного посилання.'=>'Skriv bare brukernavn eller ID, uten hele lenken.',
+	'Вкажіть лише ім’я акаунта або ID без посилання.'=>'Skriv bare brukernavn eller ID, uten lenken.',
 	'ЗБЕРЕГТИ'=>'LAGRE',
         'Стать'=>'Mann',
         'Дата народження'=>'Fødselsdato',

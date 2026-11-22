@@ -5,6 +5,8 @@ use common\helpers\StringHelper;
 use common\models\User;
 use common\models\Country;
 use common\models\Language;
+use common\models\Profile;
+use yii\helpers\Html;
 
 use \yii\web\View;
 
@@ -142,6 +144,24 @@ if (empty($profile)){
         </div>
         <div class="right_reg_label item_param item_show">
             <textarea name="Profile[preferences]"><?php echo $profile->preferences;?></textarea>
+        </div>
+    </div>
+    <div class="item_reg clearfix">
+        <div class="left_reg_label"><?= Yii::t('user', 'Соцмережі'); ?></div>
+        <div class="right_reg_label profile_social_fields">
+            <p><?= Yii::t('user', 'Вкажіть лише ім’я акаунта або ID, без повного посилання.'); ?></p>
+            <?php foreach (Profile::socialNetworks() as $attribute => $network): ?>
+                <label for="<?= $attribute ?>"><?= $network['label'] ?></label>
+                <div class="profile_social_input">
+                    <span><?= Html::encode($network['displayPrefix']) ?></span>
+                    <?= Html::textInput('Profile[' . $attribute . ']', $profile->$attribute, [
+                        'id' => $attribute,
+                        'maxlength' => $network['maxLength'],
+                        'autocomplete' => 'off',
+                        'aria-label' => $network['label'],
+                    ]) ?>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="btn_save_b">

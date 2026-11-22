@@ -48,6 +48,7 @@ use common\models\User;
     $dateCreated = $user->created_at ? Yii::$app->formatter->asDatetime($user->created_at, 'php:c') : null;
     $dateModified = $user->updated_at ? Yii::$app->formatter->asDatetime($user->updated_at, 'php:c') : null;
     $profileDescription = $profile && $profile->bio ? $profile->bio : ($profile->preferences ?? '');
+    $socialLinks = $profile ? $profile->getSocialLinks() : [];
 ?>
 
 <?php if (YII_DEBUG || !empty($debug)) :?>
@@ -83,6 +84,23 @@ use common\models\User;
             <div class="profile_name" itemprop="name">
                 <?= Html::encode($user->getFullUserName()); ?>
             </div>
+            <?php if ($socialLinks): ?>
+                <div class="social_grey_b profile_social_links" aria-label="<?= Html::encode(Yii::t('user', 'Соцмережі')); ?>">
+                    <?php foreach ($socialLinks as $socialLink): ?>
+                        <?php $icon = $socialLink['icon'] === 'x'
+                            ? Html::tag('span', 'X', ['class' => 'social-x-icon', 'aria-hidden' => 'true'])
+                            : Html::tag('i', '', ['class' => 'fa fa-' . $socialLink['icon'], 'aria-hidden' => 'true']); ?>
+                        <?= Html::a($icon, $socialLink['url'], [
+                            'class' => 'social-grey-link',
+                            'itemprop' => 'sameAs',
+                            'aria-label' => $socialLink['label'] . ': @' . $socialLink['handle'],
+                            'title' => $socialLink['label'] . ': @' . $socialLink['handle'],
+                            'target' => '_blank',
+                            'rel' => 'nofollow noopener noreferrer',
+                        ]); ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
             <div class="text_my_profile_data">
                 <?php
                 // Текстові лічильники нижче локалізуються через категорію "poll",

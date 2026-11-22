@@ -87,7 +87,10 @@ use common\models\User;
             <?php if ($socialLinks): ?>
                 <div class="social_grey_b profile_social_links" aria-label="<?= Html::encode(Yii::t('user', 'Соцмережі')); ?>">
                     <?php foreach ($socialLinks as $socialLink): ?>
-                        <?= Html::a(Html::tag('i', '', ['class' => 'fa fa-' . $socialLink['icon'], 'aria-hidden' => 'true']), $socialLink['url'], [
+                        <?php $icon = $socialLink['icon'] === 'x'
+                            ? Html::tag('span', 'X', ['class' => 'social-x-icon', 'aria-hidden' => 'true'])
+                            : Html::tag('i', '', ['class' => 'fa fa-' . $socialLink['icon'], 'aria-hidden' => 'true']); ?>
+                        <?= Html::a($icon, $socialLink['url'], [
                             'class' => 'social-grey-link',
                             'itemprop' => 'sameAs',
                             'aria-label' => $socialLink['label'] . ': @' . $socialLink['handle'],

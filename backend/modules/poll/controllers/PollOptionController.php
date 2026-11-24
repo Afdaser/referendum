@@ -63,7 +63,7 @@ class PollOptionController extends Controller
 
     /**
      * Creates a new PollOption model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * Після створення повертає до варіантів цього опитування.
      * @return string|\yii\web\Response
      */
     public function actionCreate($poll_id = null)
@@ -93,7 +93,7 @@ class PollOptionController extends Controller
             $model->status = PollOption::OPTION_STATUS_PUBLISHED;
             $model->rating = 0;
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['/poll/poll/view', 'id' => $model->poll_id]);
+                return $this->redirect(['index', 'PollOptionSearch' => ['poll_id' => $model->poll_id]]);
             }
         }
 
@@ -104,7 +104,7 @@ class PollOptionController extends Controller
 
     /**
      * Updates an existing PollOption model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * Після редагування повертає до варіантів цього опитування.
      * @param int $id ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -114,7 +114,7 @@ class PollOptionController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index', 'PollOptionSearch' => ['poll_id' => $model->poll_id]]);
         }
 
         return $this->render('update', [

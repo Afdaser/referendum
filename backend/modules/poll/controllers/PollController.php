@@ -84,7 +84,7 @@ class PollController extends Controller
 
     /**
      * Creates a new Poll model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * Після створення відкриває варіанти відповіді нового опитування.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
@@ -96,7 +96,7 @@ class PollController extends Controller
                 // Після збереження синхронізуємо теги, щоб одразу створити зв'язки.
                 $model->syncTags($model->tagNames);
                 $this->savePollFaq($model);
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['/poll/poll-option/index', 'PollOptionSearch' => ['poll_id' => $model->id]]);
             }
         } else {
             $model->loadDefaultValues();

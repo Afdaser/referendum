@@ -1567,6 +1567,7 @@ class Poll extends ActiveRecord
             '@date_year' => 'Рік створення опитування (YYYY).',
             '@votes_total' => 'Загальна кількість голосів.',
             '@voted_regions' => 'Регіони, з яких є голоси в цьому опитуванні, лише для країни поточного піддомену: назви зі спільного довідника через кому, за абеткою, без повторів. Враховуються гості та поточні профілі користувачів; якщо відомих регіонів немає — перекладене повідомлення «Недостатньо даних».',
+            '@most_active_region' => 'Назва регіону з найбільшою кількістю голосів у країні поточного піддомену. За рівної кількості перемагає перший за абеткою; якщо регіон невідомий — «Недостатньо даних».',
             '@voted_ages' => 'Вікові групи учасників голосування через кому; якщо вік невідомий — повідомлення про брак даних.',
             '@votes_last_month' => 'Кількість голосів за минулий календарний місяць.',
             '@votes_this_month' => 'Кількість голосів за цей місяць.',
@@ -1605,6 +1606,7 @@ class Poll extends ActiveRecord
             '@votes_previous_year' => 'Кількість голосів за минулий рік.',
             '@votes_registered' => 'Кількість голосів від зареєстрованих користувачів.',
             '@voted_regions' => self::getStaticMetaTokens()['@voted_regions'],
+            '@most_active_region' => self::getStaticMetaTokens()['@most_active_region'],
             '@votes_guest' => 'Кількість голосів від гостей.',
             '@voted_ages' => self::getStaticMetaTokens()['@voted_ages'],
             '@comments' => 'Кількість коментарів.',
@@ -1616,6 +1618,7 @@ class Poll extends ActiveRecord
             '@options_list' => 'HTML-список варіантів з голосами та відсотками.',
             '@options_list_men' => 'HTML-список результатів голосування чоловіків за варіантами відповіді.',
             '@options_list_women' => 'HTML-список результатів голосування жінок за варіантами відповіді.',
+            '@options_list_most_active_region' => 'HTML-список результатів за варіантами відповіді в регіоні з найбільшою кількістю голосів. За рівної кількості регіон обирається за абеткою.',
             '@most_popular_title' => 'Назва найпопулярнішого варіанта відповіді.',
             '@most_popular_votes' => 'Кількість голосів за найпопулярніший варіант.',
             '@most_popular_percent' => 'Відсоток голосів за найпопулярніший варіант.',
@@ -1822,14 +1825,20 @@ class Poll extends ActiveRecord
         return $result;
     }
 
-    /** Regions represented by votes, using the same locations as the result filters. */
-    private function getVotedRegions(): string
+    /** Країна поточного піддомену для регіональних змінних. */
+    private function getCurrentVoteCountryCode(): ?string
     {
         $domain = Yii::$app->request instanceof \yii\web\Request
             ? strtolower(Yii::$app->request->hostName)
             : (Yii::$app->params['langDomains'][$this->poll_language_id] ?? '');
-        $countryCode = Yii::$app->params['domainCountryCodes'][$domain] ?? null;
-        // Never fall back to all countries when the domain has no country mapping.
+        return Yii::$app->params['domainCountryCodes'][$domain] ?? null;
+    }
+
+    /** Регіони з голосами за тим самим правилом, що й фільтр результатів. */
+    private function getVotedRegions(): string
+    {
+        $countryCode = $this->getCurrentVoteCountryCode();
+        // Без країни піддомену не змішуємо регіони різних країн.
         if (!$countryCode) {
             return Yii::t('poll', 'Недостатньо даних');
         }
@@ -1839,10 +1848,43 @@ class Poll extends ActiveRecord
         return $names ? implode(', ', $names) : Yii::t('poll', 'Недостатньо даних');
     }
 
-    /** Render the same option breakdown as the results chart, filtered by sex. */
+    /** Перший за назвою серед регіонів із найбільшою кількістю голосів. */
+    private function getMostActiveRegion(): ?array
+    {
+        $countryCode = $this->getCurrentVoteCountryCode();
+        if (!$countryCode) {
+            return null;
+        }
+
+        // getVoteRegions уже сортує назви за абеткою; рівність залишає перший регіон.
+        $mostActive = null;
+        foreach ($this->getVoteRegions($countryCode) as $region) {
+            if ($mostActive === null || (int) $region['votes'] > (int) $mostActive['votes']) {
+                $mostActive = $region;
+            }
+        }
+        return $mostActive;
+    }
+
+    /** Список варіантів за тим самим регіональним фільтром, що й діаграма. */
+    private function getOptionsListForRegion(array $region): string
+    {
+        $rows = $this->pollOptions
+            ? $this->getChartData(0, 0, (int) $region['country_id'], 0, (int) $region['id'])
+            : [];
+        return $this->renderFilteredOptionsList($rows);
+    }
+
+    /** Такий самий список варіантів, як у діаграмі, з фільтром за статтю. */
     private function getOptionsListForSex(int $sex): string
     {
         $rows = $this->pollOptions ? $this->getChartData($sex) : [];
+        return $this->renderFilteredOptionsList($rows);
+    }
+
+    /** Спільне оформлення відфільтрованого списку відповідей. */
+    private function renderFilteredOptionsList(array $rows): string
+    {
         if (!array_sum(array_column($rows, 'value'))) {
             return Html::encode(Yii::t('poll', 'Недостатньо даних'));
         }
@@ -1920,6 +1962,10 @@ class Poll extends ActiveRecord
                     case '@author_id': $value = $this->user_id; break;
                     case '@votes_total': $value = $this->getCountPollOptionsVoters(); break;
                     case '@voted_regions': $value = $this->getVotedRegions(); break;
+                    case '@most_active_region':
+                        $region = $this->getMostActiveRegion();
+                        $value = $region ? $region['name'] : Yii::t('poll', 'Недостатньо даних');
+                        break;
                     case '@voted_ages': $value = $this->getVotedAgesText(); break;
                     case '@comments': $value = $this->getCommentsCount(); break;
                     case '@options_count': $value = count($this->pollOptions); break;
@@ -1984,6 +2030,19 @@ class Poll extends ActiveRecord
         }
         if (strpos($template, '@voted_regions') !== false) {
             $replacements['@voted_regions'] = Html::encode($this->getVotedRegions());
+        }
+        $hasMostActiveRegionName = strpos($template, '@most_active_region') !== false;
+        $hasMostActiveRegionList = strpos($template, '@options_list_most_active_region') !== false;
+        if ($hasMostActiveRegionName || $hasMostActiveRegionList) {
+            $region = $this->getMostActiveRegion();
+            if ($hasMostActiveRegionName) {
+                $replacements['@most_active_region'] = Html::encode($region ? $region['name'] : Yii::t('poll', 'Недостатньо даних'));
+            }
+            if ($hasMostActiveRegionList) {
+                $replacements['@options_list_most_active_region'] = $region
+                    ? $this->getOptionsListForRegion($region)
+                    : Html::encode(Yii::t('poll', 'Недостатньо даних'));
+            }
         }
         if (strpos($template, '@options_list_men') !== false) {
             $replacements['@options_list_men'] = $this->getOptionsListForSex(User::SEX_MAN);

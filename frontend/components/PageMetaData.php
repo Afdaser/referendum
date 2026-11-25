@@ -192,7 +192,21 @@ class PageMetaData extends BaseObject {
 
     private function buildBaseData() {
         // Fallback-зображення потрібне, коли сторінка не передала власний OG image.
-        $this->data['image']['uri'] = Url::to(Yii::$app->request->hostInfo . $this->imageDefault);
+        $imageUrl = $this->imageDefault;
+        $imagePath = Yii::getAlias('@webroot') . $imageUrl;
+        if (is_file($imagePath)) {
+            $imageUpdatedAt = filemtime($imagePath);
+            if ($imageUpdatedAt !== false) {
+                $imageUrl .= '?v=' . $imageUpdatedAt;
+            }
+            $imageInfo = getimagesize($imagePath);
+            if ($imageInfo !== false) {
+                $this->data['image']['width'] = $imageInfo[0];
+                $this->data['image']['height'] = $imageInfo[1];
+                $this->data['image']['mime'] = $imageInfo['mime'];
+            }
+        }
+        $this->data['image']['uri'] = Url::to(Yii::$app->request->hostInfo . $imageUrl);
         // Через request-компонент стабільніше у CLI/тестах, ніж прямий доступ до $_SERVER.
         $this->data['host'] = Yii::$app->request->hostName;
         $this->data['locale'] = Yii::$app->language;

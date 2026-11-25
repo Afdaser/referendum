@@ -9,6 +9,12 @@ use yii\widgets\ActiveForm;
 /** @var $this Controller */
 $headerLoginModel = Yii::$app->user->isGuest ? new LoginForm() : null;
 $isHomePage = Yii::$app->request->url == '/';
+$logoUrl = '/img/layout/logo.png';
+$logoPath = Yii::getAlias('@webroot') . $logoUrl;
+$logoUpdatedAt = is_file($logoPath) ? filemtime($logoPath) : false;
+if ($logoUpdatedAt !== false) {
+    $logoUrl .= '?v=' . $logoUpdatedAt;
+}
 $formatLoginField = static function ($field): string {
     $field->template = "    {input}\n    {error}";
     return '                    ' . str_replace("\n", "\n                    ", (string) $field);
@@ -19,12 +25,12 @@ $formatLoginField = static function ($field): string {
         <div class="header_row">
 <?php if ($isHomePage): ?>
             <div class="logo">
-                <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
+                <img src="<?= Html::encode($logoUrl) ?>" alt="logo of website referendum.social" width="184" height="58">
                 <span class="sub_text_logo"><?= Html::encode(Yii::t('main', 'кожен голос важливий')) ?></span>
             </div>
 <?php else: ?>
             <a href="/" class="logo">
-                <img src="/img/layout/logo.png" alt="logo of website referendum.social" width="184" height="58">
+                <img src="<?= Html::encode($logoUrl) ?>" alt="logo of website referendum.social" width="184" height="58">
                 <span class="sub_text_logo"><?= Html::encode(Yii::t('main', 'кожен голос важливий')) ?></span>
             </a>
 <?php endif; ?>

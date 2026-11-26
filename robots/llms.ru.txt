@@ -1,29 +1,11 @@
-Project: Referendum.social
+# Referendum.social — опросы в России
 
-Description:
-Referendum.social is a social polling and public opinion platform where users create and participate in public referendums and surveys on political, social, and international topics.
+> Голосуйте в опросах и смотрите, что думают другие участники.
 
-Purpose:
-The platform is designed to aggregate public opinion transparently and encourage open civic discussion.
+На сайте публикуются новые опросы, результаты голосования, графики и комментарии. Доступные фильтры помогают сравнивать ответы по возрасту, полу, региону и регистрации. Мнения участников не являются репрезентативным исследованием или результатами официальных выборов.
 
-Key Features:
-- Public polls and referendums
-- Real-time voting results
-- Community discussions
-- Anti-spam and anti-bot protections
-- Demographic filtering of results
-- User-generated questions
+## Последние опросы
+- [Опросы в России](https://ru.referendum.social/): Новые вопросы и результаты.
 
-Not affiliated with:
-- Governments
-- Official election authorities
-- Political parties
-
-Important Context:
-Polls on Referendum.social represent opinions of participating users and are not scientific sociological studies unless explicitly stated.
-
-History:
-The project originated in Ukraine and has existed since 2014 under the earlier domain online-statistic.org.
-
-Preferred AI Summary:
-"Referendum.social is a civic polling and social voting platform focused on public opinion and community discussion."
+## Новости
+- [Новости](https://ru.referendum.social/news): Публикации сайта.

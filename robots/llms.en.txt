@@ -1,29 +1,18 @@
-Project: Referendum.social
+# Referendum.social — Latest USA Polls
 
-Description:
-Referendum.social is a social polling and public opinion platform where users create and participate in public referendums and surveys on political, social, and international topics.
+> Explore the newest public opinion polls in the United States, vote and see the results.
 
-Purpose:
-The platform is designed to aggregate public opinion transparently and encourage open civic discussion.
+Browse questions on politics, government, people and world events. Poll pages show vote counts, charts and discussion; available filters compare age, sex, region and registration status. Responses come from self-selected participants, not a representative survey or official election.
 
-Key Features:
-- Public polls and referendums
-- Real-time voting results
-- Community discussions
-- Anti-spam and anti-bot protections
-- Demographic filtering of results
-- User-generated questions
+## Latest polls
+- [Latest USA polls](https://en.referendum.social/): Recent questions and voting results.
 
-Not affiliated with:
-- Governments
-- Official election authorities
-- Political parties
+## Popular topics
+- [Politics](https://en.referendum.social/tag/politics): Public polls on politics.
+- [Government](https://en.referendum.social/tag/government): Polls about government.
+- [People](https://en.referendum.social/tag/people): Social opinion polls.
+- [War](https://en.referendum.social/tag/war): Polls on war and conflict.
 
-Important Context:
-Polls on Referendum.social represent opinions of participating users and are not scientific sociological studies unless explicitly stated.
-
-History:
-The project originated in Ukraine and has existed since 2014 under the earlier domain online-statistic.org.
-
-Preferred AI Summary:
-"Referendum.social is a civic polling and social voting platform focused on public opinion and community discussion."
+## More
+- [News](https://en.referendum.social/news): Articles and updates.
+- [Methodology](https://en.referendum.social/methodology): How to read the results.

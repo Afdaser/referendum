@@ -1,29 +1,17 @@
-Project: Referendum.social
+# Referendum.social — Latest New Zealand Polls
 
-Description:
-Referendum.social is a social polling and public opinion platform where users create and participate in public referendums and surveys on political, social, and international topics.
+> Explore the newest public opinion polls in New Zealand, vote and see the results.
 
-Purpose:
-The platform is designed to aggregate public opinion transparently and encourage open civic discussion.
+Browse questions on government, relationships and religion. Poll pages show vote counts, charts and discussion; available filters compare age, sex, region and registration status. Responses come from self-selected participants, not a representative survey or official election.
 
-Key Features:
-- Public polls and referendums
-- Real-time voting results
-- Community discussions
-- Anti-spam and anti-bot protections
-- Demographic filtering of results
-- User-generated questions
+## Latest polls
+- [Latest NZ polls](https://nz.referendum.social/): Recent questions and results.
 
-Not affiliated with:
-- Governments
-- Official election authorities
-- Political parties
+## Popular topics
+- [Government](https://nz.referendum.social/tag/government): Public polls on government.
+- [Relationships](https://nz.referendum.social/tag/relationships): Social opinion polls.
+- [Religion](https://nz.referendum.social/tag/religion): Polls on religion.
 
-Important Context:
-Polls on Referendum.social represent opinions of participating users and are not scientific sociological studies unless explicitly stated.
-
-History:
-The project originated in Ukraine and has existed since 2014 under the earlier domain online-statistic.org.
-
-Preferred AI Summary:
-"Referendum.social is a civic polling and social voting platform focused on public opinion and community discussion."
+## More
+- [News](https://nz.referendum.social/news): Articles and updates.
+- [Methodology](https://nz.referendum.social/methodology): How to read the results.

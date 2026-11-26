@@ -3,12 +3,20 @@
 
     var analytics = (window.rfrndm && window.rfrndm.analytics) || {};
     var measurementId = analytics.ga4MeasurementId || '';
+    var containerId = analytics.gtmContainerId || '';
     var active = false;
+    var gtmActive = false;
+    var pageEventsSent = false;
     var pendingKey = 'referendum_analytics_next_event';
 
     function track(name, details) {
         if (active && typeof window.gtag === 'function') {
             window.gtag('event', name, details || {});
+        }
+        if (gtmActive) {
+            var eventData = {event: 'referendum_' + name};
+            Object.keys(details || {}).forEach(function (key) { eventData[key] = details[key]; });
+            window.dataLayer.push(eventData);
         }
     }
 
@@ -22,7 +30,7 @@
 
     window.referendumAnalytics = {track: track, trackAfterNavigation: trackAfterNavigation};
 
-    function start() {
+    function startGa() {
         if (active || !/^G-[A-Z0-9]+$/.test(measurementId)) {
             return;
         }
@@ -36,6 +44,28 @@
         script.async = true;
         script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
         document.head.appendChild(script);
+    }
+
+    function startGtm() {
+        if (gtmActive || !/^GTM-[A-Z0-9]+$/.test(containerId)) {
+            return;
+        }
+        gtmActive = true;
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({'gtm.start': Date.now(), event: 'gtm.js'});
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(containerId);
+        document.head.appendChild(script);
+    }
+
+    function start() {
+        startGtm();
+        startGa();
+        if (pageEventsSent || (!active && !gtmActive)) {
+            return;
+        }
+        pageEventsSent = true;
 
         var poll = location.pathname.match(/^\/poll\/(\d+)\/?$/);
         if (poll) {

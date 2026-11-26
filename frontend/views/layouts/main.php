@@ -39,6 +39,7 @@ $rfrndmConfig = [
     'languageId' => Yii::$app->request->languageId,
     'analytics' => [
         'ga4MeasurementId' => YII_ENV == 'prod' ? (string) (Yii::$app->params['ga4MeasurementId'] ?? '') : '',
+        'gtmContainerId' => YII_ENV == 'prod' ? (string) (Yii::$app->params['gtmContainerId'] ?? '') : '',
     ],
     'routes' => [
         'ajax' => [

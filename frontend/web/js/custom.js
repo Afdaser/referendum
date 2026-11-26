@@ -140,6 +140,7 @@ $(document).ready(function(){
             }
 
             var savedChoice = getSavedChoice();
+            window.rfrndmConsentChoice = savedChoice;
             if (savedChoice === 'accept' || savedChoice === 'essential') {
                 hideBanner();
             } else {
@@ -158,6 +159,8 @@ $(document).ready(function(){
                 }
 
                 saveChoice(action);
+                window.rfrndmConsentChoice = action;
+                document.dispatchEvent(new CustomEvent('referendum:consent', {detail: {choice: action}}));
                 hideBanner();
             });
         })();

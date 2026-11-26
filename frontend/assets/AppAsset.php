@@ -37,6 +37,7 @@ class AppAsset extends AssetBundle
         // Прибрано неактуальний currency-autocomplete: цільові селектори відсутні у поточних шаблонах.
         '/js/main.js',
         '/js/custom.js',
+        ['js/site-analytics.js', 'appendTimestamp' => true],
         // Скрипт реєстраційної модалки лишається глобальним, бо використовується на різних сторінках.
         ['js/registration-modal.js', 'appendTimestamp' => true],
         '/js/highCharts/highcharts.js',

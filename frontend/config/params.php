@@ -51,4 +51,5 @@ return [
     'descriptionMaxLenth' => 156,
     // Резервний URL Cookie Policy, якщо для хоста немає активного правила в адмінці.
     'cookiePolicyUrl' => '/cookie-policy',
+    'ga4MeasurementId' => getenv('GA4_MEASUREMENT_ID') ?: 'G-GBLWFCYF8N',
 ];

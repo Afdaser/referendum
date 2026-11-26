@@ -37,6 +37,9 @@ $rfrndmConfig = [
     'csrf' => Yii::$app->request->csrfToken,
     'locale' => Yii::$app->language,
     'languageId' => Yii::$app->request->languageId,
+    'analytics' => [
+        'ga4MeasurementId' => YII_ENV == 'prod' ? (string) (Yii::$app->params['ga4MeasurementId'] ?? '') : '',
+    ],
     'routes' => [
         'ajax' => [
             'registrtion_step_one' => Url::toRoute(['/ajax/modal/registrtion-step-one']),

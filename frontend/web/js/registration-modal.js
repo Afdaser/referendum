@@ -54,6 +54,9 @@ $(document).ready(function () {
             var form = $(this);
             $.post(form.attr('action'), form.serialize()).done(function (result) {
                 if (result.redirectUrl) {
+                    if (window.referendumAnalytics) {
+                        window.referendumAnalytics.trackAfterNavigation('sign_up', {method: 'email'});
+                    }
                     window.location.assign(result.redirectUrl);
                     return;
                 }

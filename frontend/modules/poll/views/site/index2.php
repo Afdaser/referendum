@@ -17,7 +17,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 $mainPageText = $this->params['mainPageText'] ?? '';
 if (($this->params['isMainPageFirst'] ?? false)
-    && Yii::$app->params['category'] == 'hot'
+    && Yii::$app->controller->id === 'site'
+    && Yii::$app->controller->action->id === 'index'
+    && ($params['category'] ?? null) === 'hot'
     && $mainPageText !== ''
 ) {
     $this->params['mainPageSeoContent'] = $this->render('_main-seo-text', ['text' => $mainPageText]);
